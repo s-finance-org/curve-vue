@@ -72,6 +72,7 @@
           <a href="https://github.com/curvefi/curve-vue" rel='noopener noreferrer'>git@UI</a>
         </div>
       </div>
+      <a href="https://dao.curve.fi" class='showmobile'>DAO</a>
       <router-link to="/audits" class='showmobile'>Audits</router-link>
       <router-link to="/events" class='showmobile'>Events</router-link>
       <router-link :to="'/' + currentPool + '/faq'" class='showmobile'>FAQ</router-link>
