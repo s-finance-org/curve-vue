@@ -2,8 +2,10 @@
 	<div class='window white'>
 		<fieldset>
 			<legend>Historical LP <img class='icon small' :src="publicPath + 'logo.png'"> CRV Distribution</legend>
-			<div class='simple-error'>
-				CRV token <b>IS NOT</b> out yet. This page is to check your <b>approximate</b> historical LP share(5% of 3.03030303B)
+			<div class='info-message gentle-message'>
+				<a href='https://dao.curve.fi/minter/vesting'>
+					Vesting UI - claim CRV
+				</a>	
 			</div>
 			<div class='input'>
 				<label for='address'>Address:</label>

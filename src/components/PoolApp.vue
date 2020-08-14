@@ -42,6 +42,7 @@
       </div>
 
       <router-link to='/'>Root</router-link>
+      <a href="https://dao.curve.fi">DAO</a>
       <router-link to='/combinedstats' class='showmobile'>All stats</router-link>
       <router-link :to="'/'+currentPool" v-show="currentPool !='susd'">Buy and sell</router-link>
       <router-link :to="'/' + currentPool + '/deposit'" v-show="currentPool !='susd'">Deposit</router-link>
@@ -94,6 +95,11 @@
         </div>
         <div class='info-message gentle-message window half-width gentle-message' v-show='hasConnectedWallet'>
           You haven't connected a wallet. <button @click='changeWallets'>Connect wallet</button>
+        </div>
+        <div class='info-message gentle-message window half-width gentle-message CRV'>
+          <div>
+            <a href='https://etherscan.io/address/0xD533a949740bb3306d119CC777fa900bA034cd52'>CRV: 0xD533a949740bb3306d119CC777fa900bA034cd52</a>
+          </div>
         </div>
         <div class='simple-error window' v-show='plsReturn'>
           Your recent withdrawal from Curve resulted in getting 1000 more USDT because of another user mistakenly transferring funds to the contract.
@@ -235,5 +241,8 @@
   }
   .simple-error.window {
     box-shadow: none;
+  }
+  .CRV a:hover, .CRV a:visited {
+    color: white;
   }
 </style>
