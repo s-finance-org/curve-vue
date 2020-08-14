@@ -789,9 +789,9 @@ export async function mintThenSwap({ id, amount, params, utxoAmount, renResponse
 	let transaction = state.transactions.find(t => t.id == id);
 	if(transaction.state == 14 && transaction.ethTxHash) {
 		let txreceipt = await contract.web3.eth.getTransactionReceipt(transaction.ethTxHash)
-		if(txreceipt.status !== false) return
+		if(txreceipt && txreceipt.status !== false) return
 	}
-	if(transaction.state == 16 && (!swapNow || !receiveRen)) return
+	//if(transaction.state == 16 && (!swapNow || !receiveRen)) return
 	let exchangeAmount = BN(utxoAmount).times(10000 - state.mintFee).div(10000)
 	let get_dy = BN(await swaps[transaction.pool].methods.get_dy(0, transaction.to_currency, exchangeAmount.toFixed(0, 1)).call())
 	let exchangeRateNow = get_dy.times(1e8).div(exchangeAmount)
@@ -844,71 +844,72 @@ export async function mintThenSwap({ id, amount, params, utxoAmount, renResponse
 	txs.push(adapterContract[0].methods.mintThenSwap(...args))
 	console.log(adapters, "ADAPTERS")
 	console.log(adapterContract, "ADAPTER CONTRACT")
-	if(adapterContract.length == 2) {
-		let nonce = await adapterContract[1].methods.getNonce(state.default_account).call()
-		let chainID = await adapterContract[1].methods.getChainID().call()
+	// if(adapterContract.length == 2) {
+	// 	let nonce = await adapterContract[1].methods.getNonce(state.default_account).call()
+	// 	let chainID = await adapterContract[1].methods.getChainID().call()
 
-		let functionSignature = adapterContract[1].methods.mintThenSwap(
-			...args
-		).encodeABI()
+	// 	let functionSignature = adapterContract[1].methods.mintThenSwap(
+	// 		...args
+	// 	).encodeABI()
 
-		let message = 'Please sign this message to send the free meta transaction'
-		let messageToSign = `${message}${nonce}${chainID}`
+	// 	let message = 'Please sign this message to send the free meta transaction'
+	// 	let messageToSign = `${message}${nonce}${chainID}`
 
-		let metaSignature = await web3.eth.personal.sign(messageToSign, state.default_account)
+	// 	let metaSignature = await web3.eth.personal.sign(messageToSign, state.default_account)
 
-		let {r, s, v} = helpers.getSignatureParameters(metaSignature)
+	// 	let {r, s, v} = helpers.getSignatureParameters(metaSignature)
 
-	    txs.unshift(
-	    	adapterContract[1].methods
-	    		.executeMetaTransaction(state.default_account, functionSignature, message, `${messageToSign.length}`, r, s, v),
-		)
-	}
+	//     txs.unshift(
+	//     	adapterContract[1].methods
+	//     		.executeMetaTransaction(state.default_account, functionSignature, message, `${messageToSign.length}`, r, s, v),
+	// 	)
+	// }
 
 	//refactor
 	let txhash
-	try {
-		txhash = await new Promise((resolve, reject) => {
-			return txs[0].send({
-				from: state.default_account,
-				gasPrice: gasPriceStore.state.gasPriceWei,
-				gas: gas.adapter[transaction.pool].mintThenSwap,
-			})
-			.once('transactionHash', hash => {
-				notifyHandler(hash)
-				transaction.state = 12
-				upsertTx(transaction)
-				resolve(hash)
-			})
-			.once('receipt', () => {
-				//this.transactions = this.transactions.filter(t => t.id != id)
-				transaction.state = 14
-				transaction.ethTxHash = receipt.transactionHash
-				upsertTx(transaction)
-			})
-			.on('error', err => {
-				console.error(err)
-				errorStore.handleError(err)
-				if(![14, 17].includes(transaction.state)) {
-					transaction.state = 16;
-					upsertTx(transaction)
-				}
-				reject(err)
-			})
-			.catch(err => {
-				console.error(err)
-				errorStore.handleError(err)
-				reject(err)
-			})
-		})
-	}
-	catch(err) {
+	// try {
+	// 	throw new Error('Normal flow')
+	// 	txhash = await new Promise((resolve, reject) => {
+	// 		return txs[0].send({
+	// 			from: state.default_account,
+	// 			gasPrice: gasPriceStore.state.gasPriceWei,
+	// 			gas: gas.adapter[transaction.pool].mintThenSwap,
+	// 		})
+	// 		.once('transactionHash', hash => {
+	// 			notifyHandler(hash)
+	// 			transaction.state = 12
+	// 			upsertTx(transaction)
+	// 			resolve(hash)
+	// 		})
+	// 		.once('receipt', () => {
+	// 			//this.transactions = this.transactions.filter(t => t.id != id)
+	// 			transaction.state = 14
+	// 			transaction.ethTxHash = receipt.transactionHash
+	// 			upsertTx(transaction)
+	// 		})
+	// 		.on('error', err => {
+	// 			console.error(err)
+	// 			errorStore.handleError(err)
+	// 			if(![14, 17].includes(transaction.state)) {
+	// 				transaction.state = 16;
+	// 				upsertTx(transaction)
+	// 			}
+	// 			reject(err)
+	// 		})
+	// 		.catch(err => {
+	// 			console.error(err)
+	// 			errorStore.handleError(err)
+	// 			reject(err)
+	// 		})
+	// 	})
+	// }
+	// catch(err) {
 		try {
-			errorStore.handleError(err)
+			//errorStore.handleError(err)
 			//biconomy returned an error - rate limit? retry with normal web3 adapter contract
-			if(adapterContract.length == 2) {
+			//if(adapterContract.length == 2) {
 				txhash = await new Promise((resolve, reject) => {
-					return txs[1].send({
+					return adapterContract[0].methods.mintThenSwap(...args).send({
 						from: state.default_account,
 						gasPrice: gasPriceStore.state.gasPriceWei,
 						gas: gas.adapter[transaction.pool].mintThenSwap,
@@ -940,12 +941,13 @@ export async function mintThenSwap({ id, amount, params, utxoAmount, renResponse
 						reject(err)
 					})
 				})
-			}
+			//}
 		}
 		catch(err) {
+			console.error(err)
 			errorStore.handleError(err)
 		}
-	}
+	//}
 
 	subscriptionStore.removeTxNotification(transaction.btcTxHash)
 
@@ -973,9 +975,9 @@ export async function mintThenDeposit({ id, amounts, min_amount, params, utxoAmo
 	let transaction = state.transactions.find(t => t.id == id);
 	if(transaction.state == 14 && transaction.ethTxHash) {
 		let txreceipt = await contract.web3.eth.getTransactionReceipt(transaction.ethTxHash)
-		if(txreceipt.status !== false) return
+		if(txreceipt && txreceipt.status !== false) return
 	}
-	if(transaction.state == 16 && (!swapNow || !receiveRen)) return
+	//if(transaction.state == 16 && (!swapNow || !receiveRen)) return
 	let renAmount = BN(utxoAmount).times(10000 - state.mintFee).div(10000)
 	if(BN(transaction.amounts[0]).lt(utxoAmount)) {
 		transaction.lessSent = true
@@ -1026,78 +1028,79 @@ export async function mintThenDeposit({ id, amounts, min_amount, params, utxoAmo
 
 	let txs = []
 	txs.push(adapterContract[0].methods.mintThenDeposit(...args))
-	if(adapterContract.length == 2) {
-		let nonce = await adapterContract[1].methods.getNonce(state.default_account).call()
-		let chainID = await adapterContract[1].methods.getChainID().call()
+	// if(adapterContract.length == 2) {
+	// 	let nonce = await adapterContract[1].methods.getNonce(state.default_account).call()
+	// 	let chainID = await adapterContract[1].methods.getChainID().call()
 
-		let functionSignature = adapterContract[1].methods.mintThenDeposit(
-			...args
-		).encodeABI()
+	// 	let functionSignature = adapterContract[1].methods.mintThenDeposit(
+	// 		...args
+	// 	).encodeABI()
 
-		let message = 'Please sign this message to send the free meta transaction'
-		let messageToSign = `${message}${nonce}${chainID}`
+	// 	let message = 'Please sign this message to send the free meta transaction'
+	// 	let messageToSign = `${message}${nonce}${chainID}`
 
-		let metaSignature = await web3.eth.personal.sign(messageToSign, state.default_account)
+	// 	let metaSignature = await web3.eth.personal.sign(messageToSign, state.default_account)
 
-		let {r, s, v} = helpers.getSignatureParameters(metaSignature)
+	// 	let {r, s, v} = helpers.getSignatureParameters(metaSignature)
 
-	    txs.unshift(
-	    	adapterContract[1].methods
-	    		.executeMetaTransaction(state.default_account, functionSignature, message, `${messageToSign.length}`, r, s, v),
-		)
-	}
+	//     txs.unshift(
+	//     	adapterContract[1].methods
+	//     		.executeMetaTransaction(state.default_account, functionSignature, message, `${messageToSign.length}`, r, s, v),
+	// 	)
+	// }
 
 	//refactor
 
 	let receipt
 	let dismissWaitStake
-	try {
-		receipt = await new Promise((resolve, reject) => {
-			return txs[0].send({
-				from: state.default_account,
-				gasPrice: gasPriceStore.state.gasPriceWei,
-				gas: gas.adapter[transaction.pool].mintThenDeposit,
-			})
-			.once('transactionHash', hash => {
-				subscriptionStore.removeTxNotification(transaction.btcTxHash)
+	// try {
+	// 	throw new Error('Normal flow')
+	// 	receipt = await new Promise((resolve, reject) => {
+	// 		return txs[0].send({
+	// 			from: state.default_account,
+	// 			gasPrice: gasPriceStore.state.gasPriceWei,
+	// 			gas: gas.adapter[transaction.pool].mintThenDeposit,
+	// 		})
+	// 		.once('transactionHash', hash => {
+	// 			subscriptionStore.removeTxNotification(transaction.btcTxHash)
 
-				transaction.state = 12
-				transaction.ethTxHash = hash
+	// 			transaction.state = 12
+	// 			transaction.ethTxHash = hash
 
-				upsertTx(transaction)
+	// 			upsertTx(transaction)
 
-				notifyHandler(hash)
-				if(transaction.stake) {
-					var { dismiss } = notifyNotification('Please wait for deposit transaction to confirm in order to stake')
-					dismissWaitStake = dismiss
-				}
-				//resolve(hash)
-			})
-			.on('receipt', receipt => {
-				//this.transactions = this.transactions.filter(t => t.id != id)
-				transaction.state = 14
-				transaction.ethTxHash = receipt.transactionHash
-				upsertTx(transaction)
-				resolve(receipt)
-			})
-			.on('error', err => {
-				if(![14, 17].includes(transaction.state)) {
-					transaction.state = 16;
-					upsertTx(transaction)
-				}
-				reject(err)
-			})
-			.catch(err => reject(err))
-		})
-	}
-	catch(err) {
-		errorStore.handleError(err)
-		console.error(err)
+	// 			notifyHandler(hash)
+	// 			if(transaction.stake) {
+	// 				var { dismiss } = notifyNotification('Please wait for deposit transaction to confirm in order to stake')
+	// 				dismissWaitStake = dismiss
+	// 			}
+	// 			//resolve(hash)
+	// 		})
+	// 		.on('receipt', receipt => {
+	// 			//this.transactions = this.transactions.filter(t => t.id != id)
+	// 			transaction.state = 14
+	// 			transaction.ethTxHash = receipt.transactionHash
+	// 			upsertTx(transaction)
+	// 			resolve(receipt)
+	// 		})
+	// 		.on('error', err => {
+	// 			if(![14, 17].includes(transaction.state)) {
+	// 				transaction.state = 16;
+	// 				upsertTx(transaction)
+	// 			}
+	// 			reject(err)
+	// 		})
+	// 		.catch(err => reject(err))
+	// 	})
+	// }
+	// catch(err) {
+	// 	errorStore.handleError(err)
+	// 	console.error(err)
 		try {
 			//biconomy returned an error - rate limit? retry with normal web3 adapter contract
-			if(adapterContract.length == 2) {
+			//if(adapterContract.length == 2) {
 				receipt = await new Promise((resolve, reject) => {
-					return txs[1].send({
+					return adapterContract[0].methods.mintThenDeposit(...args).send({
 						from: state.default_account,
 						gasPrice: gasPriceStore.state.gasPriceWei,
 						gas: gas.adapter[transaction.pool].mintThenDeposit,
@@ -1133,13 +1136,13 @@ export async function mintThenDeposit({ id, amounts, min_amount, params, utxoAmo
 					})
 					.catch(err => reject(err))
 				})
-			}
+			//}
 		}
 		catch(err) {
 			errorStore.handleError(err)
 			console.error(err)
 		}
-	}
+	//}
 
 	common.update_fee_info()
 
@@ -1390,7 +1393,10 @@ async function checkForFailed(transactions) {
 	let receipts = await Promise.all(transactions.map(t => contract.web3.eth.getTransactionReceipt(t.ethTxHash)))
 	receipts = receipts.filter(receipt => receipt && receipt.blockNumber !== null)
 	for(let receipt of receipts) {
-		if(receipt.status === false) {
+		if(receipt == null) {
+			transaction.state = 16
+		}
+		else if(receipt.status === false) {
 			txFailed(receipt.transactionHash)
 		}
 		else {
@@ -1408,7 +1414,10 @@ async function resumeStakeTransactions(transactions) {
 	receipts = receipts.filter(receipt => receipt && receipt.blockNumber !== null)
 	for(let receipt of receipts) {
 		let transaction = state.transactions.find(t => t.ethTxHash == receipt.transactionHash)
-		if(receipt.status === false) {
+		if(receipt == null) {
+			transaction.state = 16
+		}
+		else if(receipt.status === false) {
 			transaction.state = 14
 		}
 		else {
@@ -1424,7 +1433,10 @@ async function checkForFailedStake(transactions) {
 	receipts = receipts.filter(receipt => receipt && receipt.blockNumber !== null)
 	for(let receipt of receipts) {
 		let transaction = state.transactions.find(t => t.stakeTxHash == receipt.transactionHash)
-		if(receipt.status === false) {
+		if(receipt == null) {
+			transaction.state = 16
+		}
+		else if(receipt.status === false) {
 			transaction.state = 14
 		}
 		else {
