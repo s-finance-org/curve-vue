@@ -68,7 +68,7 @@
           <a href="https://github.com/curvefi/curve-vue">git@UI</a>
         </div>
       </div>
-      <a href="https://dao.curve.fi">DAO</a>
+      <a href="https://dao.curve.fi" class='showmobile'>DAO</a>
       <router-link to="/combinedstats" class='showmobile'>Stats</router-link>
       <router-link to="/dailystats" class='showmobile'>Daily stats</router-link>
       <router-link to="/volumepercoin" class='showmobile'>Coin volumes</router-link>
