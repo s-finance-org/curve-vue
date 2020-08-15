@@ -192,6 +192,21 @@
 		            </div>
 	            </div>
 
+	            <div :class="{selected: activeLink == 12}">
+	                <a href='https://coinmarketcap.com/currencies/curve-dao-token/'>
+	                	<div class='index'>12.</div>
+	                	<div class='icon-container'>
+	                		<img class='icon' :src="publicPath + 'icons/integrations/coinmarketcap.png'" alt="CoinMarketCap">
+					</div>
+            		<span class='text'>CoinMarketCap</span></a>
+
+	                <div class='descriptionscontainer'>
+	                	<div class='descriptions'>
+	                		Cryptocurrency market cap rankings, charts, and more
+	                	</div>
+	                </div>
+	            </div>
+
 	        </fieldset>
 	    </div>
 </template>
