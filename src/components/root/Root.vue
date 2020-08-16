@@ -114,7 +114,7 @@
 		                    	</span>
 	                    	</span> 
 	                    	<span :class="{'loading line': !daily_apy[5]}">{{daily_apy[5]}}</span>%
-	                    	<div :class="{'incentive-apr': true}">(+{{CRVAPYs.usdt | toFixed2}}%
+	                    	<div :class="{'incentive-apr': true}">(+{{CRVAPYs.pax | toFixed2}}%
 	                			<span class='tooltip'><img class='icon small' :src="publicPath + 'logo.png'"> CRV
 	                                <span class='tooltiptext'>
 	                                    CRV LP reward annualized
