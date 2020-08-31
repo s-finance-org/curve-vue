@@ -76,7 +76,7 @@ h6, .h6 {
   line-height: 1.375rem;
 }
 p {
-  color: rgba(255,255,255,0.65);
+  /* color: rgba(255,255,255,0.65); */
   font-size: 0.875rem;
   line-height: 1.375rem;
 }
