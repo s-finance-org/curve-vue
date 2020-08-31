@@ -23,7 +23,7 @@
           {{ $t('global.deposits') }}
         </template>
         <template v-slot:cell(funds)="data">
-          -
+          {{ data.item.funds }}
         </template>
         <template v-slot:head(volume)>
           {{ $t('global.dailyVol') }}
@@ -471,49 +471,56 @@
               to: '/compound',
               pooltext: 'Compound',
               pools: '(c)DAI (c)USDC',
-              volData: volumes.compound
+              volData: volumes.compound,
+              funds: '-'
             },
             {
               id: 5,
               to: '/pax',
               pooltext: 'PAX',
               pools: '(yc)DAI (yc)USDC (yc)USDT PAX',
-              volData: volumes.pax
+              volData: volumes.pax,
+              funds: '-'
             },
             {
               id: 2,
               to: '/y',
               pooltext: 'Y',
               pools: '(y)DAI (y)USDC (y)USDT (y)TUSD',
-              volData: volumes.y
+              volData: volumes.y,
+              funds: '-'
             },
             {
               id: 2,
               to: '/busd',
               pooltext: 'BUSD',
               pools: '(y)DAI (y)USDC (y)USDT (y)BUSD',
-              volData: volumes.busd
+              volData: volumes.busd,
+              funds: '-'
             },
             {
               id: 4,
               to: '/susdv2',
               pooltext: 'sUSD',
               pools: '(y)DAI (y)USDC (y)USDT (y)BUSD',
-              volData: volumes.susd
+              volData: volumes.susd,
+              funds: '-'
             },
             {
               id: 7,
               to: '/ren',
               pooltext: 'REN',
               pools: 'renBTC wBTC',
-              volData: volumes.ren
+              volData: volumes.ren,
+              funds: '-'
             },
             {
               id: 7,
               to: '/sbtc',
               pooltext: 'sBTC',
               pools: 'renBTC wBTC sBTC',
-              volData: volumes.sbtc
+              volData: volumes.sbtc,
+              funds: '-'
             },
           ]
         }

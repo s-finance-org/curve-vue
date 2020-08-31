@@ -47,7 +47,7 @@
           </div>
           <ul class="lists">
             <li class="d-flex align-items-center" :class="{'coins': true, [currency]: true}" v-for='(currency, i) in Object.keys(currencies)'>
-                <b-form-radio class="radio-danger" v-model="from_currency" :id="'from_cur_'+i"  name="from_cur" :value='i'></b-form-radio>
+                <b-form-radio plain class="radio-danger" v-model="from_currency" :id="'from_cur_'+i"  name="from_cur" :value='i'></b-form-radio>
                 <label :for="'from_cur_'+i" class="d-flex align-items-center mb-0">
                     <img class="mr-2 icon-w-20" :class="{'icon token-icon': true, [currency+'-icon']: true}" :src='getTokenIcon(currency)'>
                     <span v-show='!swapwrapped'> {{currency | capitalize}} </span>
@@ -92,7 +92,7 @@
           </div>
           <ul class="lists">
             <li class="d-flex align-items-center" :class="{'coins': true, [currency]: true}" v-for='(currency, i) in Object.keys(currencies)'>
-              <b-form-radio v-model="to_currency" :id="'to_cur_'+i"  name="to_cur" :value='i'></b-form-radio>
+              <b-form-radio plain class="radio-danger" v-model="to_currency" :id="'to_cur_'+i"  name="to_cur" :value='i'></b-form-radio>
               <label :for="'to_cur_'+i" class="d-flex align-items-center mb-0">
                   <img class="mr-2 icon-w-20" :class="{'icon token-icon': true, [currency+'-icon']: true}" :src='getTokenIcon(currency)'>
                   <span v-show='!swapwrapped'> {{currency | capitalize}} </span>
@@ -102,9 +102,9 @@
           </ul>
         </div>
       </div>
-      <div class="d-flex mt-4 no-gutters  align-items-center">
-        <div class="col d-flex-column align-items-end mt-2 pr-3">
-          <h6 class="mb-1 text-black-65">{{ $t('global.preview') }}</h6>
+      <div class="d-flex mt-4 no-gutters align-items-center">
+        <div class="col d-flex-column align-items-end mt-1 pr-3">
+          <h6 class="mb-0 text-black-65">{{ $t('global.preview') }}</h6>
           <span class="d-flex text-black-65">
             <span @click='swapExchangeRate'>
               {{ $t('instantSwap.exchangeRate', [getPair(swaprate)]) }}
@@ -126,7 +126,7 @@
               </span>
             </span>
             <span class="ml-auto">
-              <b-button size="sm" variant="light">{{ $t('global.advancedOptions') }}</b-button>
+              <b-button size="sm" disabled variant="light">{{ $t('global.advancedOptions') }}</b-button>
             </span>
           </span>
         </div>

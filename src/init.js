@@ -214,19 +214,20 @@ async function init(init = true, name, walletlink = false) {
 	window.web3 = web3;
   window.web3provider = web3;*/
   try {
-    state.contract.initializedContracts = false;
-    let userSelectedWallet = await onboard.walletSelect(localStorage.getItem('selectedWallet') 
-      || window.web3 && window.web3.currentProvider.isTrust && 'Trust' 
-      || window.web3 && window.web3.currentProvider.isCoinbaseWallet && 'Coinbase');
-    if(userSelectedWallet) await onboard.walletCheck();
-    else window.web3 = new Web3(infura_url)
-    state.contract.web3 = window.web3
-    state.contract.multicall = new state.contract.web3.eth.Contract(multicall_abi, multicall_address)
+    // TODO: auto show
+    // state.contract.initializedContracts = false;
+    // let userSelectedWallet = await onboard.walletSelect(localStorage.getItem('selectedWallet') 
+    //   || window.web3 && window.web3.currentProvider.isTrust && 'Trust' 
+    //   || window.web3 && window.web3.currentProvider.isCoinbaseWallet && 'Coinbase');
+    // if(userSelectedWallet) await onboard.walletCheck();
+    // else window.web3 = new Web3(infura_url)
+    // state.contract.web3 = window.web3
+    // state.contract.multicall = new state.contract.web3.eth.Contract(multicall_abi, multicall_address)
 
-    var default_account = (await state.contract.web3.eth.getAccounts())[0];
-    state.contract.default_account = default_account;
-    if(init) await state.init(name);
-    state.contract.initializedContracts = true;
+    // var default_account = (await state.contract.web3.eth.getAccounts())[0];
+    // state.contract.default_account = default_account;
+    // if(init) await state.init(name);
+    // state.contract.initializedContracts = true;
     console.timeEnd('initswap')
   }
   catch(err) {

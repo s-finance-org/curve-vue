@@ -125,10 +125,10 @@
     <b-container>
       <footer>
         <!-- <a href="###">Twitter</a> -->
-        <a href="https://t.me/StableFinance" target="_blank">Telegram</a>
-        <a href="https://t.me/StableFinanceCN" target="_blank">Telegram CN</a>
+        <a href="https://t.me/SFinanceEN" target="_blank">Telegram</a>
+        <a href="https://t.me/SFinanceCN" target="_blank">Telegram CN</a>
         <a href="https://discord.gg/pRXRTzR" target="_blank">Discord</a>
-        <a href="https://medium.com/stablefinance" target="_blank">Mdeium</a>
+        <a href="https://medium.com/s-finance" target="_blank">Mdeium</a>
         <a href="https://github.com/s-finance-org/curve-vue" target="_blank">git</a>
         <!-- <a href="###">git-UI</a>
         <a href="###">Developer Document</a> -->

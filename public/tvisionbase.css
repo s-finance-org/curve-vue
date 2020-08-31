@@ -195,3 +195,31 @@ footer a:hover {
   border-color: #EB3C00;
   background-color: #EB3C00;
 }
+.radio-danger[type="radio"]+span {
+	display:inline-block;
+	border-radius:50%;
+	width:20px;
+	height:20px;
+	border:1px solid #929292;
+	box-shadow: 1px 1px 1px #cac9c9;
+	color:#929292;
+	position:absolute;
+	top:8px;
+	left:0;
+	transform: scale(1);
+	/*transition:.5s;*/
+}
+.radio-danger[type="radio"]:checked + span:after {
+	content:'';
+	position:absolute;
+	width:10px;
+	height:10px;
+	border-radius:50%;
+	background:#1e9fff;
+	left:5px;
+	top:5px;
+}
+.radio-danger[type="radio"]:checked + span{
+	border:1px solid #1e9fff;
+	animation: mymove .5s 1
+}

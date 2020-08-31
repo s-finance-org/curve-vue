@@ -7,7 +7,7 @@ export default {
     home: '首页',
     swap: '兑换',
     liquidity: '抵押',
-    stats: '行情',
+    stats: '统计',
     operating: '操作',
     deposits: '资金',
     dailyVol: '日交易额',
