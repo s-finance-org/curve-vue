@@ -9,10 +9,10 @@
     import { capitalizeFirstLetter } from './utils/helpers'
 
     const descriptions = {
-    	compound: 'A curve.fi portal for swapping cDAI/cUSDC',
-    	usdt: 'A curve.fi Tethered portal for swapping cDAI/cUSDC/USDT',
-    	iearn: 'A curve.fi yTokens portal for swapping DAI/USDC/USDT/TUSD',
-    	busd: 'A curve.fi portal for swapping BUSD and other stablecoins',
+    	compound: 'A s.finance portal for swapping cDAI/cUSDC',
+    	usdt: 'A s.finance Tethered portal for swapping cDAI/cUSDC/USDT',
+    	iearn: 'A s.finance yTokens portal for swapping DAI/USDC/USDT/TUSD',
+    	busd: 'A s.finance portal for swapping BUSD and other stablecoins',
     }
 
     const titles = {
@@ -31,20 +31,20 @@
 	export default {
 		metaInfo() {
 			return {
-                title: "Curve.fi",
+        title: "S.finance",
 				meta: [
-					{'property': 'og:title', 'content': 'curve.fi/' + this.currentPool},
-					{'property': 'og:url', 'content': 'https://curve.fi/' + this.currentPool},
+					{'property': 'og:title', 'content': 's.finance/' + this.currentPool},
+					{'property': 'og:url', 'content': 'https://s.finance/' + this.currentPool},
 					{'property': 'og:type', 'content': 'website'},
 					{'property': 'og:description', 'content': descriptions[this.currentPool]},
-					{'property': 'og:image', 'content':  '/curve' + this.currentPool + '_preview.png'},
+					{'property': 'og:image', 'content':  '/s_finance' + this.currentPool + '_preview.png'},
 					{'name': 'twitter:card', 'content': 'summary_large_image'},
-					{'name': 'twitter:title', 'content': 'curve.fi/' + this.currentPool},
-					{'name': 'twitter:site', 'content': '@CurveFinance'},
-					{'name': 'twitter:creator', 'content': '@CurveFinance'},
+					{'name': 'twitter:title', 'content': 's.finance/' + this.currentPool},
+					{'name': 'twitter:site', 'content': ''},
+					{'name': 'twitter:creator', 'content': ''},
 					{'name': 'twitter:description', 'content': descriptions[this.currentPool]},
-					{'name': 'twitter:url', 'content': 'https://curve.fi/' + this.currentPool},
-					{'name': 'twitter:image', 'content': this.currentPool + '/curve_preview.png'},
+					{'name': 'twitter:url', 'content': 'https://s.finance/' + this.currentPool},
+					{'name': 'twitter:image', 'content': this.currentPool + '/s_finance_preview.png'},
 				]
 			}
 		},

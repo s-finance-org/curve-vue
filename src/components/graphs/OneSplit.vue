@@ -1,8 +1,142 @@
 <template>
-    <div>
+    <div class="m-4">
+      <div class="row">
+        <div class="d-flex-column col">
+          <div role="group" class="mb-2">
+            <label for="from-val" class="text-black-65">{{ $t('instantSwap.from') }}</label>
+            <div class="currentInput d-flex">
+              <span class="coin d-flex align-items-center">
+                <img class="icon-w-20 mr-2" :class="{'icon token-icon': true, [getCurrFrom+'-icon']: true}" :src='getTokenIcon(getCurrFrom)'>
+                <span v-show='!swapwrapped'> {{getCurrFrom | capitalize}} </span>
+                <span v-show='swapwrapped'> {{currencies[getCurrFrom]}} </span>
+              </span>
+              <!-- <b-form-input
+                id="from-val"
+                v-model="fromInput"
+                aria-describedby="from-val-help"
+                :placeholder="$t('instantSwap.sizePlaceholder')"
+                @input='set_to_amount'
+                type="number"
+                debounce="200"
+                name="from_currency"
+                :disabled='disabled || selldisabled'
+              ></b-form-input> -->
+              <input class="form-control" type="text" id="from_currency" :disabled='disabled || selldisabled' name="from_currency" value='0.00'
+                :placeholder="$t('instantSwap.sizePlaceholder')"
+                @input='set_to_amount'
+                v-model='fromInput'>
+            </div>
+            <b-form-text id="from-val-help" class="text-black-65 mt-0">
+              {{ $t('instantSwap.max') }}:
+              <span v-show='maxSynthBalance != -1 && [5,9].includes(from_currency)'> {{ maxSynthBalanceText }} / </span>
+                <span v-show = 'maxBalance != -1'>{{maxBalanceText}}</span>
+                <span v-show='susdWaitingPeriod' class='susd-waiting-period'>
+                    <span class='tooltip'>
+                        <img src='@/assets/clock-regular.svg' class='icon small'>
+                        <span class='tooltiptext'>
+                            Cannot transfer during waiting period. {{ (susdWaitingPeriodTime).toFixed(0) }} secs left.
+                        </span>
+                    </span>
+                </span>
+                <span v-show="[5,9].includes(from_currency)" class='tooltip'> [?]
+                    <span class='tooltiptext'>
+                        Max transferrable amount is {{ maxSynthBalanceText }}. You can free the remaining balance by settling.
+                    </span>
+                </span>
+              </b-form-text>
+          </div>
+          <ul class="lists">
+            <li class="d-flex align-items-center" :class="{'coins': true, [currency]: true}" v-for='(currency, i) in Object.keys(currencies)'>
+                <b-form-radio class="radio-danger" v-model="from_currency" :id="'from_cur_'+i"  name="from_cur" :value='i'></b-form-radio>
+                <label :for="'from_cur_'+i" class="d-flex align-items-center mb-0">
+                    <img class="mr-2 icon-w-20" :class="{'icon token-icon': true, [currency+'-icon']: true}" :src='getTokenIcon(currency)'>
+                    <span v-show='!swapwrapped'> {{currency | capitalize}} </span>
+                    <span v-show='swapwrapped'> {{currencies[currency]}} </span>
+                </label>
+            </li>
+          </ul>
+        </div>
 
-        <div class='swap exchange'>
-            
+        <div class='col-1 d-flex justify-content-center align-items-center'>
+          <b-button class="iconcontainer" @click='swapInputs' variant="light"><img :src="publicPath + 'res/icons/base/exchange.svg'" id='exchangeicon'/></b-button>
+        </div>
+
+        <div class="d-flex-column col">
+          <div role="group" class="mb-2">
+            <label for="to-val" class="text-black-65">{{ $t('instantSwap.to') }}</label>
+            <div class="currentInput d-flex">
+              <span class="coin d-flex align-items-center">
+                <img class="icon-w-20 mr-2" :class="{'icon token-icon': true, [getCurrTo+'-icon']: true}" :src='getTokenIcon(getCurrTo)'>
+                <span v-show='!swapwrapped'> {{getCurrTo | capitalize}} </span>
+                <span v-show='swapwrapped'> {{currencies[getCurrTo]}} </span>
+              </span>
+              <!-- <b-form-input
+                id="to-val"
+                v-model="toInput"
+                aria-describedby="to-val-help"
+                :placeholder="$t('instantSwap.sizePlaceholder')"
+                @input='set_to_amount'
+                type="number"
+                debounce="200"
+                name="to_currency"
+                disabled
+              ></b-form-input> -->
+              <input class="form-control" type="text" id="to-val" disabled name="to_currency" value='0.00'
+                :placeholder="$t('instantSwap.sizePlaceholder')"
+                @input='set_to_amount'
+                v-model='toInput'>
+            </div>
+            <b-form-text id="to-val-help" class="text-black-65 mt-0">
+              {{ $t('instantSwap.max') }}: -
+            </b-form-text>
+          </div>
+          <ul class="lists">
+            <li class="d-flex align-items-center" :class="{'coins': true, [currency]: true}" v-for='(currency, i) in Object.keys(currencies)'>
+              <b-form-radio v-model="to_currency" :id="'to_cur_'+i"  name="to_cur" :value='i'></b-form-radio>
+              <label :for="'to_cur_'+i" class="d-flex align-items-center mb-0">
+                  <img class="mr-2 icon-w-20" :class="{'icon token-icon': true, [currency+'-icon']: true}" :src='getTokenIcon(currency)'>
+                  <span v-show='!swapwrapped'> {{currency | capitalize}} </span>
+                  <span v-show='swapwrapped'> {{currencies[currency]}} </span>
+              </label>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="d-flex mt-4 no-gutters  align-items-center">
+        <div class="col d-flex-column align-items-end mt-2 pr-3">
+          <h6 class="mb-1 text-black-65">{{ $t('global.preview') }}</h6>
+          <span class="d-flex text-black-65">
+            <span @click='swapExchangeRate'>
+              {{ $t('instantSwap.exchangeRate', [getPair(swaprate)]) }}
+            </span>：
+            <span class="pr-4" id="exchange-rate" @click='swapExchangeRate'>{{ exchangeRateSwapped }}</span>
+            <span class="pl-3 pr-4">
+              {{ $t('instantSwap.txCost') }}：${{ (+estimateGas).toFixed(2) }}
+            </span>
+            <span class="pl-3">
+              {{ $t('instantSwap.routedThrough') }}：
+              <span v-show="bestPoolText != '1split'">
+                {{ bestPoolText }}
+              </span>
+              <span v-show="bestPoolText == '1split'">
+                {{ bestPoolText }}
+                <span class='tooltip'> [?]
+                  <span class='tooltiptext' v-html = 'distributionText'></span>
+                </span>
+              </span>
+            </span>
+            <span class="ml-auto">
+              <b-button size="sm" variant="light">{{ $t('global.advancedOptions') }}</b-button>
+            </span>
+          </span>
+        </div>
+        <b-button id="trade" size="lg" variant="danger" @click='handle_trade' :disabled='selldisabled'>
+          {{ $t('instantSwap.confirm') }}
+          <!-- <span class='loading line' v-show='loadingAction'></span> -->
+        </b-button>
+      </div>
+        <!-- <div class='swap exchange'>
+
             <div class='exchangefields'>
                 <fieldset class='item'>
                     <legend>From:</legend>
@@ -103,14 +237,6 @@
                     <input id="inf-approval" type="checkbox" name="inf-approval" checked v-model='inf_approval'>
                     <label for="inf-approval">Infinite approval - trust {{bestPoolText}} contract forever</label>
                 </li>
-                <!-- TODO add all wrapped tokens -->
-                <!-- <li v-show="['compound', 'usdt'].some(p => pools.includes(p))">
-                    <input id='swapc' type='checkbox' name='swapc' v-model = 'swapwrapped'>
-                    <label for='swapc'>Swap compounded</label>
-
-                    <input id='swapy' type='radio' name='swapy' :value='2' :checked='swapwrapped == 2' @click='handleCheck(2)' v-model = 'swapwrapped'>
-                    <label for='swapy'>Swap y</label>
-                </li> -->
             </ul>
             <div>
                 <button class='simplebutton advancedoptions' @click='showadvancedoptions = !showadvancedoptions'>
@@ -200,7 +326,7 @@
             <div class='info-message gentle-message' v-show='warningNoPool !== null'>
                 Swap not available. Please select {{warningNoPool}} in pool select
             </div>
-        </div>
+        </div> -->
     </div>
 </template>
 
@@ -481,6 +607,12 @@
             showSlippageTooLow() {
                 return this.maxInputSlippage != '' && +this.maxInputSlippage < 0.2
             },
+            getCurrFrom() {
+              return Object.keys(this.currencies)[this.from_currency]
+            },
+            getCurrTo() {
+              return Object.keys(this.currencies)[this.to_currency]
+            },
         },
         watch: {
             from_currency(val, oldval) {
@@ -520,7 +652,7 @@
             },
             fromInput() {
                 this.userInteracted = true
-            },
+            }
         },
         async created() {
             //EventBus.$on('selected', this.selectPool)
@@ -1130,7 +1262,41 @@
 </script>
 
 <style scoped>
-   #poolselect {
+  .iconcontainer {
+    width: 48px;
+    height: 48px;
+    background: #ffffff;
+    border-radius: 50%;
+    box-shadow: 0px 4px 8px 0px rgba(0,0,0,0.15);
+    cursor: pointer;
+    line-height: 20px;
+  }
+  .currentInput {
+    background: rgba(255,255,255,0.3);
+    border: 1px solid #dadedf;
+    border-radius: 2px 0px 0px 2px;
+  }
+  .currentInput .coin {
+    width: 104px;
+    border-right: 1px solid #dadedf;
+    padding-left: 12px;
+  }
+  .currentInput input {
+    border-width: 0;
+  }
+
+  ul.lists {
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 2px;
+    padding: 8px 12px;
+  }
+  .lists li {
+    font-size: 14px;
+    color: rgba(0,0,0,0.65);
+    line-height: 22px;
+    height: 30px;
+  }
+   /* #poolselect {
         margin-bottom: 1em;
     }
     #poolselect > label:nth-of-type(1) {
@@ -1183,5 +1349,5 @@
         .exchange {
             width: 80%;
         }
-    }
+    } */
 </style>

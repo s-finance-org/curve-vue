@@ -1,47 +1,57 @@
 <template>
-	<div class = 'tradeview window white'>
-		<fieldset id='onesplit'>
-			<legend class='text-center'>Swap using all Curve pools</legend>
-			<div class='aligncontainer'>
-				<div class='info-message gentle-message pulseinfo' v-show='contactUs'>
-					We believe there was an issue with your swap. 
-					Please contact us on <a href='https://t.me/curvefi'>Telegram</a> or <a href='https://twitter.com/CurveFinance'>Twitter</a>.
-				</div>
-				
-				<div class='swapBTC-wrapper'>
-					<div class='swapBTC-container info-message gentle-message'>
-				        <router-link to='/ren/native'>
-				        	Swap <img :src="publicPath + 'tokens/btc.svg'" class='token-icon vamiddle'> ren pool
-				        	<div v-show='hasIncomplete > 0'>
-				        		({{hasIncomplete}} incomplete tx)
-				        	</div>
-				        </router-link>
+  <div>
+    <h4 class="mt-5 mb-2">
+      {{ $t('instantSwap.name')}}
+      <small class="ml-3">{{ $t('instantSwap.tip')}}</small>
+    </h4>
+    <div class="box mb-3">
+      <one-split />
+    </div>
 
-				    	<span v-show='loading' class='loading line'></span>
-				    </div>
-					<div class='swapBTC-container info-message gentle-message second'>
-				        <router-link to='/sbtc/native'>
-				        	Swap <img :src="publicPath + 'tokens/btc.svg'" class='token-icon vamiddle'> sbtc pool
-				        	<div v-show='hasIncomplete > 0'>
-				        		({{hasIncomplete}} incomplete tx)
-				        	</div>
-				        </router-link>
-				    </div>
-				</div>
-			</div>
-			<one-split />
-		</fieldset>
-	</div>
+    <!-- <div class = 'tradeview window white'>
+      <fieldset id='onesplit'>
+        <legend class='text-center'>Swap using all Curve pools</legend>
+        <div class='aligncontainer'>
+          <div class='info-message gentle-message pulseinfo' v-show='contactUs'>
+            We believe there was an issue with your swap. 
+            Please contact us on <a href='https://t.me/curvefi'>Telegram</a> or <a href='https://twitter.com/CurveFinance'>Twitter</a>.
+          </div>
+
+          <div class='swapBTC-wrapper'>
+            <div class='swapBTC-container info-message gentle-message'>
+                  <router-link to='/ren/native'>
+                    Swap <img :src="publicPath + 'tokens/btc.svg'" class='token-icon vamiddle'> ren pool
+                    <div v-show='hasIncomplete > 0'>
+                      ({{hasIncomplete}} incomplete tx)
+                    </div>
+                  </router-link>
+
+                <span v-show='loading' class='loading line'></span>
+              </div>
+            <div class='swapBTC-container info-message gentle-message second'>
+                  <router-link to='/sbtc/native'>
+                    Swap <img :src="publicPath + 'tokens/btc.svg'" class='token-icon vamiddle'> sbtc pool
+                    <div v-show='hasIncomplete > 0'>
+                      ({{hasIncomplete}} incomplete tx)
+                    </div>
+                  </router-link>
+              </div>
+          </div>
+        </div>
+        <one-split />
+      </fieldset>
+    </div> -->
+  </div>
 </template>
 
 <script>
 	import OneSplit from './OneSplit.vue'
-	
+
 	import { contract, init, getters } from '../../contract'
-    import * as shiftState from '../ren/shiftState'
+  import * as shiftState from '../ren/shiftState'
 
 	import { updatePoolInfo} from './tradeStore'
-	
+
 	const SwapNative = () => ({
         component: import('../ren/Gateway.vue'),
 
@@ -53,7 +63,7 @@
 	export default {
 		data: () => ({
 			unwatch: null,
-			loading: false,
+      loading: false
 		}),
 		computed: {
 			currentPool() {

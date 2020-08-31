@@ -122,16 +122,15 @@
     v-if="!['Stats', 'FAQ', 'Donate', 'Root', 'CombinedStats'].includes($route.name)"/>
     </div>
     <footer>
-      <a :href="'https://etherscan.io/address/' + this.poolAddress" rel='noopener noreferrer'>Pool contract</a>
-      <a :href="'https://etherscan.io/address/' + this.tokenAddress" rel='noopener noreferrer'>Token contract</a>
-      <a href="https://twitter.com/CurveFinance" rel='noopener noreferrer'>#Twitter</a>
-      <a href="https://t.me/curvefi" rel='noopener noreferrer'>@Telegram</a>
-      <a href="https://t.me/curveficn" rel='noopener noreferrer'>@Telegram CN</a>
-      <a href="https://discord.gg/9uEHakc" rel='noopener noreferrer'>@Discord</a>
-      <a href="https://explore.duneanalytics.com/public/dashboards/RTH47mNjQcoLv5oG0HMDdI0iDq7BHxk1PzCRdwQB" rel='noopener noreferrer'>Dune Analytics</a>
-      <a href="https://github.com/curvefi/curve-contract">git@</a>
-      <a href="https://github.com/curvefi/curve-vue">git@UI</a>
-      <router-link to="/devdocs">Developer Docs</router-link>
+      <!-- <a :href="'https://etherscan.io/address/' + this.poolAddress" rel='noopener noreferrer'>Pool contract</a>
+      <a :href="'https://etherscan.io/address/' + this.tokenAddress" rel='noopener noreferrer'>Token contract</a> -->
+      <a href="###">Twitter</a>
+      <a href="###">Telegram</a>
+      <a href="###">Telegram CN</a>
+      <a href="###">Discord</a>
+      <a href="###">git</a>
+      <a href="###">git-UI</a>
+      <a href="###">Developer Document</a>
     </footer>
   </div>
 </template>

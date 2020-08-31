@@ -2,6 +2,8 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import VueMeta from 'vue-meta'
+import BootstrapVue from 'bootstrap-vue'
+import VueI18n from 'vue-i18n'
 
 import * as Sentry from '@sentry/browser';
 import { CaptureConsole, InboundFilters, Vue as VueIntegration } from '@sentry/integrations';
@@ -9,16 +11,42 @@ import { CaptureConsole, InboundFilters, Vue as VueIntegration } from '@sentry/i
 import * as subscriptionStore from './components/common/subscriptionStore'
 import * as helpers from './utils/helpers'
 
+import i18nLanguages from './i18n'
+
+import store from './store/index'
+
+/**
+ *  Vue uses
+ */
+
 Vue.use(VueMeta, {
   // optional pluginOptions
   refreshOnceOnNavigation: true
 })
 
+Vue.use(BootstrapVue)
+
+// Vue-i18n
+Vue.use(VueI18n)
+const i18n = new VueI18n({
+  locale: 'en-US',
+  messages: i18nLanguages
+})
+
+/**
+ *  Replace Vuex
+ */
+Vue.prototype.$store = store
+
 window.domain = ''
 if(window.location.href.includes('localhost') || !window.location.href.includes('curve.fi')) window.domain = 'https://www.curve.fi'
 
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
+
 import '../public/tvisionbase.css'
-import '../public/tvision.css'
+// import '../public/tvision.css'
+
 import './registerServiceWorker'
 
 subscriptionStore.init();
@@ -67,6 +95,7 @@ let ignoreErrors = [
 // });	
 
 new Vue({
+  i18n,
   router,
   render: h => h(App)
 }).$mount('#app')

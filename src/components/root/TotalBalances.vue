@@ -1,14 +1,30 @@
 <template>
-    <div class="window white">
+    <div>
+      <div class="total-bg">
+        <b-container class="d-flex py-4 total-cont">
+          <img class="logo_orgin" :src="publicPath + 'res/icons/logo/logo_orgin.svg'">
+          <div class="total-box mr-4 ml-auto">
+            <h6 class="text-black-65">{{ $t('total.deposits') }}</h6>
+            <h4 class="mb-0" v-show='total'>{{total | formatNumber}}$</h4>
+          </div>
+          <div class="total-box">
+            <h6 class="text-black-65">{{ $t('global.dailyVol') }}</h6>
+            <h4 class="mb-0" v-show='volume >= 0'>{{(volume | 0) | formatNumber(0)}}$</h4>
+          </div>
+        </b-container>
+      </div>
+
+      <!-- <div class="window white">
         <fieldset>
-			<legend>Total pool deposits and daily volume</legend>
-				<div :class="{'loading line': !total}" id='total-balances'>
-					Deposits: <span v-show='total'>{{total | formatNumber}}$</span>
-				</div>
-				<div :class="{'loading line': volume < 0}" >
-					Daily volume: <span v-show='volume >= 0'>{{(volume | 0) | formatNumber(0)}}$</span>
-				</div>
+          <legend>Total pool deposits and daily volume</legend>
+          <div :class="{'loading line': !total}" id='total-balances'>
+            Deposits: <span v-show='total'>{{total | formatNumber}}$</span>
+          </div>
+          <div :class="{'loading line': volume < 0}" >
+            Daily volume: <span v-show='volume >= 0'>{{(volume | 0) | formatNumber(0)}}$</span>
+          </div>
         </fieldset>
+      </div> -->
     </div>
 </template>
 
@@ -31,6 +47,9 @@
 			total: '',
 		}),
 		computed: {
+      publicPath() {
+        return process.env.BASE_URL
+      },
 			volume() {
 				return this.totalVolume !== undefined ? this.totalVolume : volumeStore.totalVolume() 
 			}
@@ -89,10 +108,26 @@
 </script>
 
 <style scoped>
-	fieldset div {
+  .total-bg {
+    background: linear-gradient(180deg,#f7f5ec, #dadedf);
+  }
+  .total-cont {
+    padding: 0 98px;
+  }
+  .total-box {
+    background: #ffffff;
+    border-radius: 2px;
+    padding: 20px 24px;
+    width: 270px;
+  }
+  .logo_orgin {
+    width: 291px;
+    height: 98px;
+  }
+	/* fieldset div {
 		display: block;
 	}
 	fieldset div:nth-of-type(2) {
 		margin-top: 1em;
-	}
+	} */
 </style>
