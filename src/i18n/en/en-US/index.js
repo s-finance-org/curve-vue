@@ -21,8 +21,9 @@ export default {
     gasPrice: 'Gas price',
 	  customize: 'Customize'
   },
-  nav: {
-
+  wallet: {
+    notConnected: "You haven't connected wallet",
+    connect: 'Connect wallet'
   },
   total: {
     deposits: 'Deposits'

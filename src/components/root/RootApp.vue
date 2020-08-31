@@ -108,7 +108,7 @@
         </div> -->
         <b-container class="mt-4">
           <div class='info-message gentle-message window half-width gentle-message' v-if='hasConnectedWallet'>
-            You haven't connected a wallet. <button @click='changeWallets'>Connect wallet</button>
+            {{ $t('wallet.notConnected') }}<button class="ml-2" @click='changeWallets'>{{ $t('wallet.connect') }}</button>
           </div>
         </b-container>
         <!-- <div class='info-message gentle-message window half-width gentle-message CRV'>

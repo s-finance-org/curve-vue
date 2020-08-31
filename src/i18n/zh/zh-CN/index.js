@@ -21,8 +21,9 @@ export default {
     gasPrice: 'Gas 费用',
 	  customize: '自定义'
   },
-  nav: {
-
+  wallet: {
+    notConnected: '你还没有连接钱包',
+    connect: '连接钱包'
   },
   total: {
     deposits: '兑换池资金'
