@@ -338,7 +338,8 @@ router.beforeEach(async (to, from, next) => {
   //if(from.path.includes('profit') && to.path.includes('profit')) return window.location.href = to.path
   if(['Donate', 'StatsDaily', 'Audits'].includes(to.name)) return next();
   if(to.name == 'RootIndex') {
-    init('compound');
+    // FIXME: temp auto show
+    // init('compound');
     return next();
   }
   let subdomain;

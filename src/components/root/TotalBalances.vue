@@ -121,7 +121,7 @@
     width: 270px;
   }
   .logo_orgin {
-    width: 291px;
+    width: 330px;
     height: 98px;
   }
 	/* fieldset div {
