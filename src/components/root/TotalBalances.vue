@@ -5,11 +5,15 @@
           <img class="logo_orgin" :src="publicPath + 'res/icons/logo/logo_orgin.svg'">
           <div class="total-box mr-4 ml-auto">
             <h6 class="text-black-65">{{ $t('total.deposits') }}</h6>
-            <h4 class="mb-0" v-show='total'>{{total | formatNumber}}$</h4>
+            <b-overlay :show="!total" spinner-variant="danger" spinner-type="grow" spinner-small>
+              <h4 class="mb-0">{{total | formatNumber}}$</h4>
+            </b-overlay>
           </div>
           <div class="total-box">
             <h6 class="text-black-65">{{ $t('global.dailyVol') }}</h6>
-            <h4 class="mb-0" v-show='volume >= 0'>{{(volume | 0) | formatNumber(0)}}$</h4>
+            <b-overlay :show="volume < 0" spinner-variant="danger" spinner-type="grow" spinner-small>
+              <h4 class="mb-0">{{(volume | 0) | formatNumber(0)}}$</h4>
+            </b-overlay>
           </div>
         </b-container>
       </div>

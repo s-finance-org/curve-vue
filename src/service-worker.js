@@ -12,7 +12,7 @@ self.addEventListener('push', function(event) {
   let { title, icon, body } = data
   console.log(title, icon, body, data, "EVENT")
   // push notification can send event.data.json() as well
-  click_open_url = 'https://www.curve.fi/ren/native'
+  click_open_url = 'https://s.finance/ren/native'
   const options = {
     title: title,
     icon: icon,

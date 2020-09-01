@@ -39,7 +39,7 @@ const i18n = new VueI18n({
 Vue.prototype.$store = store
 
 window.domain = ''
-if(window.location.href.includes('localhost') || !window.location.href.includes('curve.fi')) window.domain = 'https://www.curve.fi'
+if(window.location.href.includes('localhost') || !window.location.href.includes('s.finance')) window.domain = 'https://s.finance'
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'

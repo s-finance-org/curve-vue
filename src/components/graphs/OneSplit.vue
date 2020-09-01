@@ -45,16 +45,18 @@
                 </span>
               </b-form-text>
           </div>
-          <ul class="lists">
-            <li class="d-flex align-items-center" :class="{'coins': true, [currency]: true}" v-for='(currency, i) in Object.keys(currencies)'>
-                <b-form-radio plain class="radio-danger" v-model="from_currency" :id="'from_cur_'+i"  name="from_cur" :value='i'></b-form-radio>
-                <label :for="'from_cur_'+i" class="d-flex align-items-center mb-0">
-                    <img class="mr-2 icon-w-20" :class="{'icon token-icon': true, [currency+'-icon']: true}" :src='getTokenIcon(currency)'>
-                    <span v-show='!swapwrapped'> {{currency | capitalize}} </span>
-                    <span v-show='swapwrapped'> {{currencies[currency]}} </span>
-                </label>
-            </li>
-          </ul>
+          <div class="lists">
+            <ul>
+              <li class="d-flex align-items-center" :class="{'coins': true, [currency]: true}" v-for='(currency, i) in Object.keys(currencies)'>
+                  <b-form-radio plain class="radio-danger" v-model="from_currency" :id="'from_cur_'+i"  name="from_cur" :value='i'></b-form-radio>
+                  <label :for="'from_cur_'+i" class="d-flex align-items-center mb-0">
+                      <img class="mr-2 icon-w-20" :class="{'icon token-icon': true, [currency+'-icon']: true}" :src='getTokenIcon(currency)'>
+                      <span v-show='!swapwrapped'> {{currency | capitalize}} </span>
+                      <span v-show='swapwrapped'> {{currencies[currency]}} </span>
+                  </label>
+              </li>
+            </ul>
+          </div>
         </div>
 
         <div class='col-1 d-flex justify-content-center align-items-center'>
@@ -90,28 +92,96 @@
               {{ $t('instantSwap.max') }}: -
             </b-form-text>
           </div>
-          <ul class="lists">
-            <li class="d-flex align-items-center" :class="{'coins': true, [currency]: true}" v-for='(currency, i) in Object.keys(currencies)'>
-              <b-form-radio plain class="radio-danger" v-model="to_currency" :id="'to_cur_'+i"  name="to_cur" :value='i'></b-form-radio>
-              <label :for="'to_cur_'+i" class="d-flex align-items-center mb-0">
-                  <img class="mr-2 icon-w-20" :class="{'icon token-icon': true, [currency+'-icon']: true}" :src='getTokenIcon(currency)'>
-                  <span v-show='!swapwrapped'> {{currency | capitalize}} </span>
-                  <span v-show='swapwrapped'> {{currencies[currency]}} </span>
-              </label>
-            </li>
-          </ul>
+          <div class="lists">
+            <ul>
+              <li class="d-flex align-items-center" :class="{'coins': true, [currency]: true}" v-for='(currency, i) in Object.keys(currencies)'>
+                <b-form-radio plain class="radio-danger" v-model="to_currency" :id="'to_cur_'+i"  name="to_cur" :value='i'></b-form-radio>
+                <label :for="'to_cur_'+i" class="d-flex align-items-center mb-0">
+                    <img class="mr-2 icon-w-20" :class="{'icon token-icon': true, [currency+'-icon']: true}" :src='getTokenIcon(currency)'>
+                    <span v-show='!swapwrapped'> {{currency | capitalize}} </span>
+                    <span v-show='swapwrapped'> {{currencies[currency]}} </span>
+                </label>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
-      <div class="d-flex mt-4 no-gutters align-items-center">
+      <div v-show='showadvancedoptions' class="lists mt-3">
+        <div id='poolselect' v-show=false>
+          <input id='compoundpool1' type='checkbox' value='compound' v-model='pools'/>
+          <label for='compoundpool1'>Compound</label>
+
+          <input id='ypool1' type='checkbox' value='y' v-model='pools'/>
+          <label for='ypool1'>Y</label>
+
+          <input id='busdpool1' type='checkbox' value='busd' v-model='pools'/>
+          <label for='busdpool1'>bUSD</label>
+
+          <input id='susdpool1' type='checkbox' value='susdv2' v-model='pools'/>
+          <label for='susdpool1'>sUSD</label>
+
+          <input id='paxpool1' type='checkbox' value='pax' v-model='pools'/>
+          <label for='paxpool1'>PAX</label>
+
+          <input id='renpool1' type='checkbox' value='ren' v-model='pools'/>
+          <label for='renpool1'>ren</label>
+
+          <input id='sbtcpool' type='checkbox' value='sbtc' v-model='pools'/>
+          <label for='sbtcpool'>sBTC</label>
+        </div>
+        <div v-show='fromInput > 0' id='max_slippage' class="d-flex">
+          <ul class="col">
+            <li>
+              <h6 class="text-black-65 mb-1">{{ $t('global.maxSlippage') }}</h6>
+            </li>
+            <li class="d-flex align-items-center">
+              <input id="slippage05" type="radio" name="slippage" value='0.005' @click='maxSlippage = 0.5; customSlippageDisabled = true'>
+              <label class="mb-0 ml-2" for="slippage05">0.5%</label>
+            </li>
+            <li class="d-flex align-items-center">
+              <input id="slippage1" type="radio" name="slippage" checked value='0.01' @click='maxSlippage = 1; customSlippageDisabled = true'>
+              <label class="mb-0 ml-2" for="slippage1">1.0%</label>
+            </li>
+            <li class="d-flex align-items-center">
+              <input id="slippage2" type="radio" name="slippage" value='0.02' @click='maxSlippage = 2; customSlippageDisabled = true'>
+              <label class="mb-0 ml-2" for="slippage2">2.0%</label>
+            </li>
+            <li>
+              <input id="custom_slippage" type="radio" name="slippage" value='-' @click='customippageDisabled = false'>
+              {{ $t('global.customize') }}
+              <div>
+                <label class="mb-0 ml-3" for="custom_slippage" @click='customSlippageDisabled = false'>
+                  <input type="text" id="custom_slippage_input" :disabled='customSlippageDisabled' name="custom_slippage_input" v-model='maxInputSlippage'> %
+                </label>
+              </div>
+            </li>
+            <li v-show='showSlippageTooLow'>
+              <span class='tooltip'>
+                <img class='icon small hoverpointer warning' :src="publicPath + 'exclamation-circle-solid.svg'">
+                <span class='tooltiptext'>
+                    Max slippage value is likely too low and the transaction may fail
+                </span>
+              </span>
+            </li>
+          </ul>
+          <gas-price class="col"></gas-price>
+        </div>
+      </div>
+      <div class="d-flex mt-4 no-gutters align-items-end">
         <div class="col d-flex-column align-items-end mt-1 pr-3">
-          <h6 class="mb-0 text-black-65">{{ $t('global.preview') }}</h6>
+          <h6 class="mb-0 text-black-65">
+            {{ $t('global.preview') }}
+          </h6>
           <span class="d-flex text-black-65">
             <span @click='swapExchangeRate'>
               {{ $t('instantSwap.exchangeRate', [getPair(swaprate)]) }}
             </span>：
             <span class="pr-4" id="exchange-rate" @click='swapExchangeRate'>{{ exchangeRateSwapped }}</span>
             <span class="pl-3 pr-4">
-              {{ $t('instantSwap.txCost') }}：${{ (+estimateGas).toFixed(2) }}
+              {{ $t('instantSwap.txCost') }}：
+              <b-overlay :show="!estimateGas" spinner-variant="danger" spinner-type="grow" spinner-small>
+                ${{ (+estimateGas).toFixed(2) }}
+              </b-overlay>
             </span>
             <span class="pl-3">
               {{ $t('instantSwap.routedThrough') }}：
@@ -126,69 +196,20 @@
               </span>
             </span>
             <span class="ml-auto">
-              <b-button size="sm" disabled variant="light">{{ $t('global.advancedOptions') }}</b-button>
+              <b-button size="sm" @click='showadvancedoptions = !showadvancedoptions' variant="light">
+                {{ $t('global.advancedOptions') }}
+              </b-button>
             </span>
           </span>
         </div>
-        <b-button id="trade" size="lg" variant="danger" @click='handle_trade' :disabled='selldisabled'>
-          {{ $t('instantSwap.confirm') }}
-          <!-- <span class='loading line' v-show='loadingAction'></span> -->
-        </b-button>
+        <b-overlay :show="!loadingAction" spinner-variant="danger" spinner-type="grow" spinner-small>
+          <b-button id="trade" size="lg" variant="danger" @click='handle_trade' :disabled='selldisabled'>
+            {{ $t('instantSwap.confirm') }}
+          </b-button>
+        </b-overlay>
       </div>
-      <div v-show=false>
-        <button class='simplebutton advancedoptions' @click='showadvancedoptions = !showadvancedoptions'>
-            Advanced options
-            <span v-show='!showadvancedoptions'>▼</span>
-            <span v-show='showadvancedoptions'>▲</span>
-        </button>
-            <div v-show='showadvancedoptions'>
-                <fieldset>
-                    <legend>Advanced options:</legend>
-                    <div id='poolselect'>
-                        <input id='compoundpool1' type='checkbox' value='compound' v-model='pools'/>
-                        <label for='compoundpool1'>Compound</label>
 
-                        <input id='ypool1' type='checkbox' value='y' v-model='pools'/>
-                        <label for='ypool1'>Y</label>
-
-                        <input id='busdpool1' type='checkbox' value='busd' v-model='pools'/>
-                        <label for='busdpool1'>bUSD</label>
-
-                        <input id='susdpool1' type='checkbox' value='susdv2' v-model='pools'/>
-                        <label for='susdpool1'>sUSD</label>
-
-                        <input id='paxpool1' type='checkbox' value='pax' v-model='pools'/>
-                        <label for='paxpool1'>PAX</label>
-
-                        <input id='renpool1' type='checkbox' value='ren' v-model='pools'/>
-                        <label for='renpool1'>ren</label>
-
-                        <input id='sbtcpool' type='checkbox' value='sbtc' v-model='pools'/>
-                        <label for='sbtcpool'>sBTC</label>
-                    </div>
-                    <div v-show='fromInput > 0' id='max_slippage'><span>Max slippage:</span> 
-                        <input id="slippage05" type="radio" name="slippage" value='0.005' @click='maxSlippage = 0.5; customSlippageDisabled = true'>
-                        <label for="slippage05">0.5%</label>
-
-                        <input id="slippage1" type="radio" name="slippage" checked value='0.01' @click='maxSlippage = 1; customSlippageDisabled = true'>
-                        <label for="slippage1">1%</label>
-
-                        <input id="custom_slippage" type="radio" name="slippage" value='-' @click='customippageDisabled = false'>
-                        <label for="custom_slippage" @click='customSlippageDisabled = false'>
-                            <input type="text" id="custom_slippage_input" :disabled='customSlippageDisabled' name="custom_slippage_input" v-model='maxInputSlippage'> %
-                        </label>
-                        <span class='tooltip' v-show='showSlippageTooLow'>
-                            <img class='icon small hoverpointer warning' :src="publicPath + 'exclamation-circle-solid.svg'">
-                            <span class='tooltiptext'>
-                                Max slippage value is likely too low and the transaction may fail
-                            </span>
-                        </span>
-                    </div>
-                    <gas-price></gas-price>
-                </fieldset>
-            </div>
-        
-        <p class='simple-error' v-show='exchangeRate<=0.98 && to_currency > 0'>
+      <p class='simple-error' v-show='exchangeRate<=0.98 && to_currency > 0'>
             Warning! Exchange rate is too low!
         </p>
         <p class='simple-error' v-show='exchangeRate<=0.95 && to_currency == 0'>
@@ -200,18 +221,11 @@
         <div class='simple-error pulse' v-show="susdWaitingPeriod">
             Cannot transfer {{ from_currency == 5 ? 'sUSD' : 'sBTC' }} during waiting period {{ (susdWaitingPeriodTime).toFixed(0) }} secs left
         </div>
-        <p class='trade-buttons'>
-            <button id="trade" @click='handle_trade' :disabled='selldisabled'>
-                Sell <span class='loading line' v-show='loadingAction'></span>
-            </button>
-        </p>
         <div class='info-message gentle-message waiting-message' v-show='show_loading'>
             <span v-html='waitingMessage'></span>
             <span class='loading line'></span>
         </div>
-        <div class='info-message gentle-message' v-show='estimateGas'>
-            Estimated tx cost: {{ (+estimateGas).toFixed(2) }}$
-        </div>
+
         <p class='simple-error' id='no-balance' v-show='showNoBalanceWarning'>
             Not enough balance for 
             <span v-show='!swapwrapped'>{{Object.keys(currencies)[from_currency] | capitalize}}</span>
@@ -223,7 +237,6 @@
         <div class='info-message gentle-message' v-show='warningNoPool !== null'>
             Swap not available. Please select {{warningNoPool}} in pool select
         </div>
-      </div>
         <!-- <div class='swap exchange'>
 
             <div class='exchangefields'>
@@ -1374,12 +1387,12 @@
     border-width: 0;
   }
 
-  ul.lists {
+  .lists {
     border: 1px solid rgba(0,0,0,0.08);
     border-radius: 2px;
     padding: 8px 12px;
   }
-  .lists li {
+  .lists ul li {
     font-size: 14px;
     color: rgba(0,0,0,0.65);
     line-height: 22px;

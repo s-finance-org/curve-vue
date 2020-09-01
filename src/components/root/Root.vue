@@ -2,7 +2,7 @@
 	<b-container>
     <basic-trade class="mt-4 mb-3" />
 
-    <h4 class="mt-4 mb-2">{{ $t('stablePools.name')}}</h4>
+    <h4 class="mt-4 mb-2">{{ $t('stablePools.name') }}</h4>
     <div class="box mb-3">
       <b-table @row-clicked=stablePoolsRowClicked class="mb-0 text-right" hover :items="stablePools.items" :fields="stablePools.fields">
         <template v-slot:head(name)>

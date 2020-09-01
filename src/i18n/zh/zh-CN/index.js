@@ -19,7 +19,13 @@ export default {
     advancedOptions: '高级选项',
     maxSlippage: '最大滑点',
     gasPrice: 'Gas 费用',
-	  customize: '自定义'
+    customize: '自定义',
+    standard: '标准',
+    fast: '快速',
+    instant: '极速'
+  },
+  beta: {
+    slogan: '项目还在测试阶段，请注意风险，更多功能敬请期待~'
   },
   wallet: {
     notConnected: '你还没有连接钱包',

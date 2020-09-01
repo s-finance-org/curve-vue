@@ -1,8 +1,12 @@
 <template>
   <b-container fluid id="app" class="px-0" :class="{'root': true, [$route.name]: true}">
+    <div class="beta-banner py-2">{{ $t('beta.slogan') }}</div>
     <b-container>
       <b-navbar class="no-gutters align-items-center px-4 py-0">
-        <div class="col py-2"><img class="logo-sm" :src="publicPath + 'res/icons/logo/logo_sm.svg'"></div>
+        <div class="col py-2 d-flex align-items-start">
+          <img class="logo-sm" :src="publicPath + 'res/icons/logo/logo_sm.svg'">
+          <div class="beta-tag">BETA</div>
+        </div>
         <b-navbar-nav>
           <b-nav-item active href="###">{{ $t('global.home') }}</b-nav-item>
           <b-nav-item href="###">{{ $t('global.swap') }}</b-nav-item>
@@ -124,10 +128,10 @@
     </div>
     <b-container>
       <footer>
-        <!-- <a href="###">Twitter</a> -->
+        <a href="https://twitter.com/SFinanceEx">Twitter</a>
         <a href="https://t.me/SFinanceEN" target="_blank">Telegram</a>
         <a href="https://t.me/SFinanceCN" target="_blank">Telegram CN</a>
-        <a href="https://discord.gg/pRXRTzR" target="_blank">Discord</a>
+        <a href="https://discord.gg/rc49Dzu" target="_blank">Discord</a>
         <a href="https://medium.com/s-finance" target="_blank">Mdeium</a>
         <a href="https://github.com/s-finance-org/curve-vue" target="_blank">git</a>
         <!-- <a href="###">git-UI</a>
@@ -210,6 +214,23 @@
   .logo-sm {
     width: 34px;
     height: 40px;
+  }
+  .beta-tag {
+    background-color: #1ba57b;
+    color: rgba(255,255,255,0.85);
+    border-radius: 2px;
+    line-height: 18px;
+    font-size: 10px;
+    text-align: center;
+    padding: 0 4px;
+    margin-left: -4px;
+  }
+  .beta-banner {
+    background-color: #1BA57B;
+    color: rgba(255,255,255,0.85);
+    text-align: center;
+    line-height: 20px;
+    font-size: 12px;
   }
   /* #changeAccounts {
     margin-top: 0.3em;

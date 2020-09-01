@@ -9,7 +9,7 @@
             Providing liquidity on Curve doesn't come without risks. Before making a deposit, it is best to research and understand the risks involved.
         </p>
 
-        <a href='https://www.curve.fi/stableswap-paper.pdf'>Whitepaper</a>
+        <a href='https://s.finance/stableswap-paper.pdf'>Whitepaper</a>
 
         <h3>Audits</h3>
 

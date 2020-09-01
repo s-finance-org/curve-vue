@@ -532,3 +532,33 @@ export async function calc_slippage(values, deposit, zap_values, to_currency) {
 export async function setTimeout(timeout) {
     return new Promise(resolve => setTimeout(resolve, timeout))
 }
+
+/**
+ *  @param {string} src
+ *  @param {Object=} [attrs]
+ *  @param {Element=} [parentNode]
+ *  @return {Promise}
+ */
+export async function asyncLoadScript(src, attrs = {}, parentNode = document.head) {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement('script')
+    script.async = true
+    script.src = src
+
+    for (const key in attrs) {
+      script.setAttribute(key, attrs[key])
+    }
+
+    script.onload = () => {
+      script.onerror = script.onload = null
+      resolve(script)
+    }
+
+    script.onerror = () => {
+      script.onerror = script.onload = null
+      reject(warn(`${src}: Failed to load.`))
+    }
+
+    parentNode.appendChild(script)
+  })
+}

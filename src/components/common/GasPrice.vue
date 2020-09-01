@@ -1,54 +1,93 @@
 <template>
-    <div>
-        <p class='simple-error pulse' v-show='errorMessage'>
-            {{errorMessage}}
-        </p>
-    	<div id='gas_price' v-show='gasPriceMedium'><span>Gas price:</span>
-            <!-- <input id="gasslow" type="radio" name="gas" :value='gasPriceSlow' @click='gasPrice = gasPriceSlow'>
-            <label for="gasslow">{{Math.round(gasPriceSlow)}} Slow</label> -->
-
-            <input id="gasstandard" type="radio" name="gas" :value='gasPriceMedium' @click='customGasDisabled = true; gasPrice = gasPriceMedium'>
-            <label for="gasstandard">{{Math.round(gasPriceMedium)}} Standard</label>
-
-            <input id="gasfast" type="radio" name="gas" checked :value='gasPriceFast' @click='customGasDisabled = true; gasPrice = gasPriceFast'>
-            <label for="gasfast">{{Math.round(gasPriceFast)}} Fast</label>
-
-            <input id="gasinstant" type="radio" name="gas" :value='gasPriceFastest' @click='customGasDisabled = true; gasPrice = gasPriceFastest'>
-            <label for="gasinstant">{{Math.round(gasPriceFastest)}} Instant</label>
-            <input id="custom_gas" type="radio" name="gas" value='-' @click="customGasDisabled = false; gasPrice = gasPriceSlow">
-            <label for="custom_gas" @click="customGasDisabled = false; gasPrice = gasPriceSlow">
-                <input type="text" id="custom_gas_input" 
-                    :disabled='customGasDisabled'
-                    name="custom_gas_input"
-                    :value = 'customGasPriceInput'
-                   	@input='setCustomGas($event)'>
-                <span v-show='customGasPriceInput == gasPriceSlow'> Slow</span>
-                <span v-show='customGasPriceInput && customGasPriceInput < gasPriceSlow' class='gastoolow'> 
-                    <span class='tooltip'>
-                        Low
-                        <span class='tooltiptext'>
-                            Too low gas price. Your transaction may be dropped.
-                        </span>
+  <div>
+    <p class='simple-error pulse' v-show='errorMessage'>
+      {{errorMessage}}
+    </p>
+    <ul class="list" v-show='gasPriceMedium'>
+      <li>
+        <h6 class="text-black-65 mb-1">{{ $t('global.gasPrice') }}</h6>
+      </li>
+      <li class="d-flex align-items-center">
+        <input id="gasstandard" type="radio" name="gas" :value='gasPriceMedium' @click='customGasDisabled = true; gasPrice = gasPriceMedium'>
+        <label class="mb-0 ml-2" for="gasstandard">{{ $t('global.standard') }} ({{ Math.round(gasPriceMedium )}})</label>
+      </li>
+      <li class="d-flex align-items-center">
+        <input id="gasfast" type="radio" name="gas" checked :value='gasPriceFast' @click='customGasDisabled = true; gasPrice = gasPriceFast'>
+        <label class="mb-0 ml-2" for="gasfast">{{ $t('global.fast') }} ({{ Math.round(gasPriceFast) }})</label>
+      </li>
+      <li class="d-flex align-items-center">
+        <input id="gasinstant" type="radio" name="gas" :value='gasPriceFastest' @click='customGasDisabled = true; gasPrice = gasPriceFastest'>
+        <label class="mb-0 ml-2" for="gasinstant">{{ $t('global.instant') }} ({{ Math.round(gasPriceFastest) }})</label>
+      </li>
+      <li>
+        <input id="custom_gas" type="radio" name="gas" value='-' @click="customGasDisabled = false; gasPrice = gasPriceSlow">
+        {{ $t('global.customize') }}
+        <div>
+          <label class="mb-0 ml-3" for="custom_gas" @click="customGasDisabled = false; gasPrice = gasPriceSlow">
+            <input type="text" id="custom_gas_input" 
+                :disabled='customGasDisabled'
+                name="custom_gas_input"
+                :value = 'customGasPriceInput'
+                @input='setCustomGas($event)'>
+            <span v-show='customGasPriceInput == gasPriceSlow'> Slow</span>
+            <span v-show='customGasPriceInput && customGasPriceInput < gasPriceSlow' class='gastoolow'> 
+                <span class='tooltip'>
+                    Low
+                    <span class='tooltiptext'>
+                        Too low gas price. Your transaction may be dropped.
                     </span>
                 </span>
-            </label>
+            </span>
+          </label>
         </div>
-    </div>
+      </li>
+    </ul>
+
+    <!-- <p class='simple-error pulse' v-show='errorMessage'>
+        {{errorMessage}}
+    </p>
+    <div id='gas_price' v-show='gasPriceMedium'><span>Gas price:</span>
+      <input id="gasstandard" type="radio" name="gas" :value='gasPriceMedium' @click='customGasDisabled = true; gasPrice = gasPriceMedium'>
+      <label for="gasstandard">{{Math.round(gasPriceMedium)}} Standard</label>
+
+      <input id="gasfast" type="radio" name="gas" checked :value='gasPriceFast' @click='customGasDisabled = true; gasPrice = gasPriceFast'>
+      <label for="gasfast">{{Math.round(gasPriceFast)}} Fast</label>
+
+      <input id="gasinstant" type="radio" name="gas" :value='gasPriceFastest' @click='customGasDisabled = true; gasPrice = gasPriceFastest'>
+      <label for="gasinstant">{{Math.round(gasPriceFastest)}} Instant</label>
+      <input id="custom_gas" type="radio" name="gas" value='-' @click="customGasDisabled = false; gasPrice = gasPriceSlow">
+      <label for="custom_gas" @click="customGasDisabled = false; gasPrice = gasPriceSlow">
+          <input type="text" id="custom_gas_input" 
+              :disabled='customGasDisabled'
+              name="custom_gas_input"
+              :value = 'customGasPriceInput'
+              @input='setCustomGas($event)'>
+          <span v-show='customGasPriceInput == gasPriceSlow'> Slow</span>
+          <span v-show='customGasPriceInput && customGasPriceInput < gasPriceSlow' class='gastoolow'> 
+              <span class='tooltip'>
+                  Low
+                  <span class='tooltiptext'>
+                      Too low gas price. Your transaction may be dropped.
+                  </span>
+              </span>
+          </span>
+      </label>
+    </div> -->
+  </div>
 </template>
 
 <script>
 	import { state } from './gasPriceStore'
-    import { state as errorState } from './errorStore'
-    import { retry } from '../../utils/helpers'
+  import { state as errorState } from './errorStore'
+  import { retry } from '../../utils/helpers'
 
-    import { setIntervalAsync, clearIntervalAsync } from 'set-interval-async/dynamic'
+  import { setIntervalAsync, clearIntervalAsync } from 'set-interval-async/dynamic'
 
-    import BN from 'bignumber.js'
-
+  import BN from 'bignumber.js'
 
 	export default {
 		data: () => ({
-            customGasDisabled: true,
+      customGasDisabled: true,
 		}),
 
 		computed: {
@@ -141,7 +180,13 @@
 </script>
 
 <style scoped>
-    .pulse {
+  ul.list li {
+    font-size: 14px;
+    color: rgba(0,0,0,0.65);
+    line-height: 22px;
+    height: 30px;
+  }
+    /* .pulse {
         animation: pulse 1s 3;
         margin-bottom: 8px;
     }
@@ -158,5 +203,5 @@
             margin-top: 0;
             margin-left: 0;
         }
-    }
+    } */
 </style>

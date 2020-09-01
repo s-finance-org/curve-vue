@@ -5,28 +5,29 @@
 </template>
 
 <script>
-    import { getters, contract as currentContract } from './contract'
-    import { capitalizeFirstLetter } from './utils/helpers'
+  import { getters, contract as currentContract } from './contract'
+  import { capitalizeFirstLetter } from './utils/helpers'
+  import { googleAnalytics } from './support'
 
-    const descriptions = {
-    	compound: 'A s.finance portal for swapping cDAI/cUSDC',
-    	usdt: 'A s.finance Tethered portal for swapping cDAI/cUSDC/USDT',
-    	iearn: 'A s.finance yTokens portal for swapping DAI/USDC/USDT/TUSD',
-    	busd: 'A s.finance portal for swapping BUSD and other stablecoins',
-    }
+  const descriptions = {
+    compound: 'A s.finance portal for swapping cDAI/cUSDC',
+    usdt: 'A s.finance Tethered portal for swapping cDAI/cUSDC/USDT',
+    iearn: 'A s.finance yTokens portal for swapping DAI/USDC/USDT/TUSD',
+    busd: 'A s.finance portal for swapping BUSD and other stablecoins',
+  }
 
-    const titles = {
-    	compound: 'Compounded',
-    	usdt: 'Tethered',
-    	iearn: 'Yield',
-    	busd: 'bUSD',
-    	susd: 'sUSD-yCurve old',
-    	susdv2: 'sUSD',
-        pax: 'PAX',
-        tbtc: 'TBTC',
-        ren: 'renBTC',
-        sbtc: 'sBTC',
-    }
+  const titles = {
+    compound: 'Compounded',
+    usdt: 'Tethered',
+    iearn: 'Yield',
+    busd: 'bUSD',
+    susd: 'sUSD-yCurve old',
+    susdv2: 'sUSD',
+      pax: 'PAX',
+      tbtc: 'TBTC',
+      ren: 'renBTC',
+      sbtc: 'sBTC',
+  }
 
 	export default {
 		metaInfo() {
@@ -47,9 +48,12 @@
 					{'name': 'twitter:image', 'content': this.currentPool + '/s_finance_preview.png'},
 				]
 			}
-		},
-        computed: {
-          ...getters,
-        },
+    },
+    created () {
+      googleAnalytics()
+    },
+    computed: {
+      ...getters,
+    },
 	}
 </script>

@@ -19,7 +19,13 @@ export default {
     advancedOptions: 'Advanced options',
     maxSlippage: 'Max slippage',
     gasPrice: 'Gas price',
-	  customize: 'Customize'
+    customize: 'Customize',
+    standard: 'Standard',
+    fast: 'Fast',
+    instant: 'Instant'
+  },
+  beta: {
+    slogan: 'The project is still in testing stage, please pay attention to the risks and stay tuned for more functions~'
   },
   wallet: {
     notConnected: "You haven't connected wallet",
