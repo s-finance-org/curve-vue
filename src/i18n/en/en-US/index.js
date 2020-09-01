@@ -25,7 +25,8 @@ export default {
     instant: 'Instant'
   },
   beta: {
-    slogan: 'The project is still in testing stage, please pay attention to the risks and stay tuned for more functions~'
+    slogan: 'The project is still in testing stage, please pay attention to the risks and stay tuned for more functions~',
+    followMe: 'Follow me'
   },
   wallet: {
     notConnected: "You haven't connected wallet",

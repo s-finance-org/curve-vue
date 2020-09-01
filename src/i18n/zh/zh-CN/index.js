@@ -25,7 +25,8 @@ export default {
     instant: '极速'
   },
   beta: {
-    slogan: '项目还在测试阶段，请注意风险，更多功能敬请期待~'
+    slogan: '项目还在测试阶段，请注意风险，更多功能敬请期待~',
+    followMe: '抢先关注'
   },
   wallet: {
     notConnected: '你还没有连接钱包',

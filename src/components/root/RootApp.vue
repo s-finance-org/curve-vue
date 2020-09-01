@@ -1,6 +1,16 @@
 <template>
   <b-container fluid id="app" class="px-0" :class="{'root': true, [$route.name]: true}">
-    <div class="beta-banner py-2">{{ $t('beta.slogan') }}</div>
+    <div class="beta-banner py-2">
+      {{ $t('beta.slogan') }}<br/>{{ $t('beta.followMe') }}: 
+      <a href="https://twitter.com/SFinanceEx" target="_blank">Twitter</a>
+      <a href="https://discord.gg/rc49Dzu" target="_blank">Discord</a>
+      <template v-if="$i18n.locale === 'zh-CN'">
+        <a href="https://t.me/SFinanceCN" target="_blank">Telegram CN</a>
+      </template>
+      <template v-else>
+        <a href="https://t.me/SFinanceEN" target="_blank">Telegram</a>
+      </template>
+    </div>
     <b-container>
       <b-navbar class="no-gutters align-items-center px-4 py-0">
         <div class="col py-2 d-flex align-items-start">
@@ -231,6 +241,10 @@
     text-align: center;
     line-height: 20px;
     font-size: 12px;
+  }
+  .beta-banner a {
+    color: #fff;
+    padding-right: 8px;
   }
   /* #changeAccounts {
     margin-top: 0.3em;
