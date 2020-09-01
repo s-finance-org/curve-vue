@@ -202,7 +202,7 @@
             </span>
           </span>
         </div>
-        <b-overlay :show="!loadingAction" spinner-variant="danger" spinner-type="grow" spinner-small>
+        <b-overlay :show="loadingAction" spinner-variant="danger" spinner-type="grow" spinner-small>
           <b-button id="trade" size="lg" variant="danger" @click='handle_trade' :disabled='selldisabled'>
             {{ $t('instantSwap.confirm') }}
           </b-button>
