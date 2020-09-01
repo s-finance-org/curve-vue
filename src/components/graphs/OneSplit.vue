@@ -132,7 +132,7 @@
         <div v-show='fromInput > 0' id='max_slippage' class="d-flex">
           <ul class="col">
             <li>
-              <h6 class="text-black-65 mb-1">{{ $t('global.maxSlippage') }}</h6>
+              <h6 class="text-black-65 mb-0">{{ $t('global.maxSlippage') }}</h6>
             </li>
             <li class="d-flex align-items-center">
               <input id="slippage05" type="radio" name="slippage" value='0.005' @click='maxSlippage = 0.5; customSlippageDisabled = true'>
@@ -172,7 +172,7 @@
           <h6 class="mb-0 text-black-65">
             {{ $t('global.preview') }}
           </h6>
-          <span class="d-flex text-black-65">
+          <span class="d-flex text-black-65 align-items-end">
             <span @click='swapExchangeRate'>
               {{ $t('instantSwap.exchangeRate', [getPair(swaprate)]) }}
             </span>：
@@ -1396,7 +1396,7 @@
     font-size: 14px;
     color: rgba(0,0,0,0.65);
     line-height: 22px;
-    height: 30px;
+    padding: 4px 0;
   }
    /* #poolselect {
         margin-bottom: 1em;

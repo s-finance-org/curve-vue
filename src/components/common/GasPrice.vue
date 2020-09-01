@@ -5,7 +5,7 @@
     </p>
     <ul class="list" v-show='gasPriceMedium'>
       <li>
-        <h6 class="text-black-65 mb-1">{{ $t('global.gasPrice') }}</h6>
+        <h6 class="text-black-65 mb-0">{{ $t('global.gasPrice') }}</h6>
       </li>
       <li class="d-flex align-items-center">
         <input id="gasstandard" type="radio" name="gas" :value='gasPriceMedium' @click='customGasDisabled = true; gasPrice = gasPriceMedium'>
@@ -184,7 +184,7 @@
     font-size: 14px;
     color: rgba(0,0,0,0.65);
     line-height: 22px;
-    height: 30px;
+    padding: 4px 0;
   }
     /* .pulse {
         animation: pulse 1s 3;
