@@ -15,14 +15,16 @@ export default {
     poolName: '名称',
     assests: '资产',
     addLiquidity: '提供流动性（存币行为）',
-    preview: '预览',
     advancedOptions: '高级选项',
+    packUp: '收起',
     maxSlippage: '最大滑点',
     gasPrice: 'Gas 费用',
     customize: '自定义',
     standard: '标准',
     fast: '快速',
-    instant: '极速'
+    instant: '极速',
+    slow: '慢',
+    low: '低'
   },
   beta: {
     slogan: '项目还在测试阶段，请注意风险，更多功能敬请期待~',
@@ -45,7 +47,7 @@ export default {
     to: '兑换为',
     sizePlaceholder: '输入兑换数量',
     max: '最多',
-    exchangeRate: '{0}兑换比例(包括费用)',
+    exchangeRate: '兑换比例 (包括费用)',
     confirm: '确认兑换',
     txCost: '预计矿工费',
     routedThrough: '兑换池'

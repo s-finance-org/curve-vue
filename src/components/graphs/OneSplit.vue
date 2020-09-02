@@ -146,14 +146,12 @@
               <input id="slippage2" type="radio" name="slippage" value='0.02' @click='maxSlippage = 2; customSlippageDisabled = true'>
               <label class="mb-0 ml-2" for="slippage2">2.0%</label>
             </li>
-            <li>
-              <input id="custom_slippage" type="radio" name="slippage" value='-' @click='customippageDisabled = false'>
-              {{ $t('global.customize') }}
-              <div>
-                <label class="mb-0 ml-3" for="custom_slippage" @click='customSlippageDisabled = false'>
-                  <input type="text" id="custom_slippage_input" :disabled='customSlippageDisabled' name="custom_slippage_input" v-model='maxInputSlippage'> %
-                </label>
-              </div>
+            <li class="d-flex align-items-start">
+              <input class="mt-1" id="custom_slippage" type="radio" name="slippage" value='-' @click='customippageDisabled = false'>
+              <label class="mb-0 ml-2" for="custom_slippage" @click='customSlippageDisabled = false'>
+                {{ $t('global.customize') }}
+                <input class="d-flex" type="text" id="custom_slippage_input" :disabled='customSlippageDisabled' name="custom_slippage_input" v-model='maxInputSlippage'> %
+              </label>
             </li>
             <li v-show='showSlippageTooLow'>
               <span class='tooltip'>
@@ -169,35 +167,37 @@
       </div>
       <div class="d-flex mt-4 no-gutters align-items-end">
         <div class="col d-flex-column align-items-end mt-1 pr-3">
-          <h6 class="mb-0 text-black-65">
-            {{ $t('global.preview') }}
-          </h6>
           <span class="d-flex text-black-65 align-items-end">
-            <span @click='swapExchangeRate'>
-              {{ $t('instantSwap.exchangeRate', [getPair(swaprate)]) }}
-            </span>：
-            <span class="pr-4" id="exchange-rate" @click='swapExchangeRate'>{{ exchangeRateSwapped }}</span>
-            <span class="pl-3 pr-4">
-              {{ $t('instantSwap.txCost') }}：
+            <span class="col-auto">
+              <h6 class="mb-1">{{ $t('instantSwap.exchangeRate') }}</h6>
+              <span @click='swapExchangeRate'>{{ exchangeRateSwapped }}</span>
+            </span>
+            <span class="col-auto">
+              <h6 class="mb-1">{{ $t('instantSwap.txCost') }}</h6>
               <b-overlay :show="!estimateGas" spinner-variant="danger" spinner-type="grow" spinner-small>
                 ${{ (+estimateGas).toFixed(2) }}
               </b-overlay>
             </span>
-            <span class="pl-3">
-              {{ $t('instantSwap.routedThrough') }}：
-              <span v-show="bestPoolText != '1split'">
+            <span class="col-auto">
+              <h6 class="mb-1">{{ $t('instantSwap.routedThrough') }}</h6>
+              <div v-if="bestPoolText != '1split'">
                 {{ bestPoolText }}
-              </span>
-              <span v-show="bestPoolText == '1split'">
+              </div>
+              <div v-else-if="bestPoolText == '1split'">
                 {{ bestPoolText }}
                 <span class='tooltip'> [?]
                   <span class='tooltiptext' v-html = 'distributionText'></span>
                 </span>
-              </span>
+              </div>
             </span>
             <span class="ml-auto">
               <b-button size="sm" @click='showadvancedoptions = !showadvancedoptions' variant="light">
-                {{ $t('global.advancedOptions') }}
+                <template v-if="showadvancedoptions">
+                  {{ $t('global.packUp') }}
+                </template>
+                <template v-else>
+                  {{ $t('global.advancedOptions') }}
+                </template>
               </b-button>
             </span>
           </span>
@@ -692,10 +692,15 @@
                 return process.env.BASE_URL
             },
             exchangeRateSwapped() {
+              let from = !this.swapwrapped ? Object.keys(this.currencies)[this.from_currency] : Object.values(this.currencies)[this.from_currency]
+                let to = !this.swapwrapped ? Object.keys(this.currencies)[this.to_currency] : Object.values(this.currencies)[this.to_currency]
+                from = helpers.capitalize(from)
+                to = helpers.capitalize(to)
+
                 if(this.swaprate)
-                    return (1 / this.exchangeRate).toFixed(4)
+                    return `1 ${to} = ${(1 / this.exchangeRate).toFixed(4)} ${from}`
                 else
-                    return this.exchangeRate
+                    return `1 ${from} = ${this.exchangeRate} ${to}`
             },
             gasPrice() {
                 return gasPriceStore.state.gasPrice
@@ -788,14 +793,14 @@
             getTokenIcon(token) {
                 return helpers.getTokenIcon(token, this.swapwrapped, '')
             },
-            getPair(inverse = false) {
-                let from = !this.swapwrapped ? Object.keys(this.currencies)[this.from_currency] : Object.values(this.currencies)[this.from_currency]
-                let to = !this.swapwrapped ? Object.keys(this.currencies)[this.to_currency] : Object.values(this.currencies)[this.to_currency]
-                from = helpers.capitalize(from)
-                to = helpers.capitalize(to)
-                if(!inverse) return from + '/' + to
-                if(inverse) return to + '/' + from
-            },
+            // getPair(inverse = false) {
+            //     let from = !this.swapwrapped ? Object.keys(this.currencies)[this.from_currency] : Object.values(this.currencies)[this.from_currency]
+            //     let to = !this.swapwrapped ? Object.keys(this.currencies)[this.to_currency] : Object.values(this.currencies)[this.to_currency]
+            //     from = helpers.capitalize(from)
+            //     to = helpers.capitalize(to)
+            //     if(!inverse) return from + '/' + to
+            //     if(inverse) return to + '/' + from
+            // },
             toFixed(num) {
                 if(num == '' || num == undefined || num == 0) return '0.00'
                 if(!BN.isBigNumber(num)) num = +num

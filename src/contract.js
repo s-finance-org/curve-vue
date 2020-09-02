@@ -5,6 +5,7 @@ import allabis, { ERC20_abi, cERC20_abi, yERC20_abi, synthERC20_abi, synthetixEx
 import web3Init from './init'
 import { chunkArr } from './utils/helpers'
 import * as common from './utils/common.js'
+import * as specs from './constant/specs'
 
 var N_COINS = 2;
 var coin_precisions = [1e18, 1e6];
@@ -17,7 +18,7 @@ export const LENDING_PRECISION = 1e18;
 export const PRECISION = 1e18;
 
 var migration_address = '0x54Ee22d5593FC76fB20EafAb66C45aAb3268B800';
-export const infura_url = 'https://mainnet.infura.io/v3/c334bb4b45a444979057f0fb8a0c9d1b';
+export const infura_url = specs.infura_url;
 
 const currencies = {
 	compound: {

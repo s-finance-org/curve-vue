@@ -12,6 +12,7 @@ import Notify from "bnc-notify"
 
 import * as common from './utils/common.js'
 import * as state from './contract.js'
+import * as specs from './constant/specs'
 import { infura_url } from './allabis.js'
 import { multicall_address, multicall_abi } from './allabis'
 
@@ -67,20 +68,17 @@ export function notifyNotification(message, type = 'pending') {
 
   return notify.notification(notificationObject)
 }
-
 let wallets = [
   { walletName: "metamask" },
   {
     walletName: "trezor",
     appUrl: "https://curve.fi",
     email: "info@curve.fi",
-    rpcUrl:
-      "https://mainnet.infura.io/v3/c334bb4b45a444979057f0fb8a0c9d1b"
+    rpcUrl: specs.infura_url
   },
   {
     walletName: "ledger",
-    rpcUrl:
-      "https://mainnet.infura.io/v3/c334bb4b45a444979057f0fb8a0c9d1b",
+    rpcUrl: specs.infura_url,
     //LedgerTransport: TransportWebUSB,
   },
   { walletName: "dapper" },
@@ -90,7 +88,7 @@ let wallets = [
   { walletName: "authereum", apiKey: "_BTsipRcEmPeuVteLOGdoh1CXt733YLZ7u3ipbe_dAk" },
   { 
     walletName: "trust",
-    rpcUrl: "https://mainnet.infura.io/v3/c334bb4b45a444979057f0fb8a0c9d1b",
+    rpcUrl: specs.infura_url
   },
   {
     walletName: "walletConnect",
@@ -100,8 +98,7 @@ let wallets = [
     walletName: "walletLink",
     appName: 'Curve Finance',
     appLogoUrl: 'https://s.finance/logo.png',
-    rpcUrl:
-      "https://mainnet.infura.io/v3/c334bb4b45a444979057f0fb8a0c9d1b",
+    rpcUrl: specs.infura_url
   },
   {
     walletName: "portis",
@@ -112,7 +109,7 @@ let wallets = [
   { walletName: "opera" },
   { walletName: "operaTouch" },
   { walletName: "unilogin" },
-  { walletName: "imToken", rpcUrl: "https://mainnet.infura.io/v3/c334bb4b45a444979057f0fb8a0c9d1b" },
+  { walletName: "imToken", rpcUrl: specs.infura_url },
   { walletName: "meetone" },
 ]
 

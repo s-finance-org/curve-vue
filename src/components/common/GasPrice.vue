@@ -19,27 +19,27 @@
         <input id="gasinstant" type="radio" name="gas" :value='gasPriceFastest' @click='customGasDisabled = true; gasPrice = gasPriceFastest'>
         <label class="mb-0 ml-2" for="gasinstant">{{ $t('global.instant') }} ({{ Math.round(gasPriceFastest) }})</label>
       </li>
-      <li>
-        <input id="custom_gas" type="radio" name="gas" value='-' @click="customGasDisabled = false; gasPrice = gasPriceSlow">
-        {{ $t('global.customize') }}
-        <div>
-          <label class="mb-0 ml-3" for="custom_gas" @click="customGasDisabled = false; gasPrice = gasPriceSlow">
-            <input type="text" id="custom_gas_input" 
-                :disabled='customGasDisabled'
-                name="custom_gas_input"
-                :value = 'customGasPriceInput'
-                @input='setCustomGas($event)'>
-            <span v-show='customGasPriceInput == gasPriceSlow'> Slow</span>
-            <span v-show='customGasPriceInput && customGasPriceInput < gasPriceSlow' class='gastoolow'> 
-                <span class='tooltip'>
-                    Low
-                    <span class='tooltiptext'>
-                        Too low gas price. Your transaction may be dropped.
-                    </span>
+      <li class="d-flex align-items-start">
+        <input class="mt-1" id="custom_gas" type="radio" name="gas" value='-' @click="customGasDisabled = false; gasPrice = gasPriceSlow">
+        <label class="mb-0 ml-2" for="custom_gas" @click="customGasDisabled = false; gasPrice = gasPriceSlow">
+          {{ $t('global.customize') }}
+          <div class="d-flex align-items-center">
+            <input class="mr-1" type="text" id="custom_gas_input" 
+              :disabled='customGasDisabled'
+              name="custom_gas_input"
+              :value = 'customGasPriceInput'
+              @input='setCustomGas($event)'>
+            <span v-if='customGasPriceInput == gasPriceSlow'>{{ $t('global.slow') }}</span>
+            <span v-else-if='customGasPriceInput && customGasPriceInput < gasPriceSlow' class='gastoolow'>
+              <span class='tooltip'>
+                {{ $t('global.low') }}
+                <span class='tooltiptext'>
+                  Too low gas price. Your transaction may be dropped.
                 </span>
+              </span>
             </span>
-          </label>
-        </div>
+          </div>
+        </label>
       </li>
     </ul>
 

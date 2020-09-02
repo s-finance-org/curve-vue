@@ -12,7 +12,7 @@
       </template>
     </div>
     <b-container>
-      <b-navbar class="no-gutters align-items-center px-4 py-0">
+      <b-navbar class="no-gutters align-items-center p-0">
         <div class="col py-2 d-flex align-items-start">
           <img class="logo-sm" :src="publicPath + 'res/icons/logo/logo_sm.svg'">
           <div class="beta-tag">BETA</div>
@@ -245,6 +245,7 @@
   .beta-banner a {
     color: #fff;
     padding-right: 8px;
+    text-decoration: underline;
   }
   /* #changeAccounts {
     margin-top: 0.3em;
