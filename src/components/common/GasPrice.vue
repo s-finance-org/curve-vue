@@ -3,7 +3,7 @@
     <p v-show='errorMessage'>
       {{ errorMessage }}
     </p>
-    <b-form-group>
+    <b-form-group class="mb-0">
       <ul class="list" v-show='gasPriceMedium'>
         <li>
           <h6 class="text-black-65 mb-0">{{ $t('global.gasPrice') }}</h6>

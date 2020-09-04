@@ -130,9 +130,8 @@
           <label for='sbtcpool'>sBTC</label>
         </div>
         <div v-show='fromInput > 0' id='max_slippage' class="row">
-          <b-form-group class="col">
+          <b-form-group class="mb-0 col">
             <ul>
-              {{ maxSlippageMode }} | {{ maxSlippage }}
               <li>
                 <h6 class="text-black-65 mb-0">{{ $t('global.maxSlippage') }}</h6>
               </li>
@@ -159,7 +158,7 @@
                   v-model="selectMaxSlippageMode"
                   value=4
                 >{{ $t('global.customize') }}</b-form-radio>
-                <span class="ml-4 mt-1">
+                <span class="d-flex align-items-center ml-4 mt-1">
                   <b-form-input class="input-append-percentage" id="custom_slippage_input" :disabled="maxSlippageMode != 4" v-model="customMaxSlippageInput" :placeholder="$t('instantSwap.valuePlaceholder')"></b-form-input>
                 </span>
               </li>

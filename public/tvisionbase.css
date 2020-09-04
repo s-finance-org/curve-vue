@@ -241,24 +241,27 @@ footer a:hover {
   margin-right: 100px;
   margin-left: 100px;
   border-width: 0;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.15);
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.15);
 }
 .statement-modal header {
   border-bottom-width: 0px;
+  padding-top: 20px;
+  padding-right: 24px;
+  padding-left: 24px;
 }
 .statement-modal header h5{
   font-size: 20px;
   line-height: 28px;
 }
 .statement-modal .modal-body {
-  padding-top: 0px;
-  padding-bottom: 0px;
+  padding: 0 24px;
   font-size: 14px;
   color: rgba(0,0,0,0.65);
   line-height: 22px;
 }
 .statement-modal footer {
   border-top-width: 0px;
+  padding: 20px 24px;
 }
 /* .statement-modal footer button{
   background: #eb3c00;

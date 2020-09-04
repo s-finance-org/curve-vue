@@ -273,7 +273,7 @@
   .statement-banner a,
   .statement-banner a:hover {
     color: #1ba57b;
-    text-decoration: underline;
+    /* text-decoration: underline; */
   }
   /* #changeAccounts {
     margin-top: 0.3em;
