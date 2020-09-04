@@ -29,31 +29,31 @@
             <b-form-text id="from-val-help" class="text-black-65 mt-0">
               {{ $t('instantSwap.max') }}:
               <span v-show='maxSynthBalance != -1 && [5,9].includes(from_currency)'> {{ maxSynthBalanceText }} / </span>
-                <span v-show = 'maxBalance != -1'>{{maxBalanceText}}</span>
-                <span v-show='susdWaitingPeriod' class='susd-waiting-period'>
-                    <span class='tooltip'>
-                        <img src='@/assets/clock-regular.svg' class='icon small'>
-                        <span class='tooltiptext'>
-                            Cannot transfer during waiting period. {{ (susdWaitingPeriodTime).toFixed(0) }} secs left.
-                        </span>
-                    </span>
-                </span>
-                <span v-show="[5,9].includes(from_currency)" class='tooltip'> [?]
+              <span v-show='maxBalance != -1'>{{ maxBalanceText }}</span>
+              <span v-show='susdWaitingPeriod' class='susd-waiting-period'>
+                <span class='tooltip'>
+                    <img src='@/assets/clock-regular.svg' class='icon small'>
                     <span class='tooltiptext'>
-                        Max transferrable amount is {{ maxSynthBalanceText }}. You can free the remaining balance by settling.
+                        Cannot transfer during waiting period. {{ (susdWaitingPeriodTime).toFixed(0) }} secs left.
                     </span>
                 </span>
-              </b-form-text>
+              </span>
+              <span v-show="[5,9].includes(from_currency)" class='tooltip'> [?]
+                  <span class='tooltiptext'>
+                      Max transferrable amount is {{ maxSynthBalanceText }}. You can free the remaining balance by settling.
+                  </span>
+              </span>
+            </b-form-text>
           </div>
           <div class="lists">
             <ul>
               <li class="d-flex align-items-center" :class="{'coins': true, [currency]: true}" v-for='(currency, i) in Object.keys(currencies)'>
-                  <b-form-radio plain class="radio-danger" v-model="from_currency" :id="'from_cur_'+i"  name="from_cur" :value='i'></b-form-radio>
-                  <label :for="'from_cur_'+i" class="d-flex align-items-center mb-0">
-                      <img class="mr-2 icon-w-20" :class="{'icon token-icon': true, [currency+'-icon']: true}" :src='getTokenIcon(currency)'>
-                      <span v-show='!swapwrapped'> {{currency | capitalize}} </span>
-                      <span v-show='swapwrapped'> {{currencies[currency]}} </span>
-                  </label>
+                <b-form-radio class="radio-danger" v-model="from_currency" :id="'from_cur_'+i"  name="from_cur" :value='i'></b-form-radio>
+                <label :for="'from_cur_'+i" class="d-flex align-items-center mb-0">
+                    <img class="mr-2 icon-w-20" :class="{'icon token-icon': true, [currency+'-icon']: true}" :src='getTokenIcon(currency)'>
+                    <span v-show='!swapwrapped'> {{currency | capitalize}} </span>
+                    <span v-show='swapwrapped'> {{currencies[currency]}} </span>
+                </label>
               </li>
             </ul>
           </div>
@@ -95,7 +95,7 @@
           <div class="lists">
             <ul>
               <li class="d-flex align-items-center" :class="{'coins': true, [currency]: true}" v-for='(currency, i) in Object.keys(currencies)'>
-                <b-form-radio plain class="radio-danger" v-model="to_currency" :id="'to_cur_'+i"  name="to_cur" :value='i'></b-form-radio>
+                <b-form-radio class="radio-danger" v-model="to_currency" :id="'to_cur_'+i"  name="to_cur" :value='i'></b-form-radio>
                 <label :for="'to_cur_'+i" class="d-flex align-items-center mb-0">
                     <img class="mr-2 icon-w-20" :class="{'icon token-icon': true, [currency+'-icon']: true}" :src='getTokenIcon(currency)'>
                     <span v-show='!swapwrapped'> {{currency | capitalize}} </span>
@@ -129,114 +129,102 @@
           <input id='sbtcpool' type='checkbox' value='sbtc' v-model='pools'/>
           <label for='sbtcpool'>sBTC</label>
         </div>
-        <div v-show='fromInput > 0' id='max_slippage' class="d-flex">
-          <ul class="col">
-            <li>
-              <h6 class="text-black-65 mb-0">{{ $t('global.maxSlippage') }}</h6>
-            </li>
-            <li class="d-flex align-items-center">
-              <input id="slippage05" type="radio" name="slippage" value='0.005' @click='maxSlippage = 0.5; customSlippageDisabled = true'>
-              <label class="mb-0 ml-2" for="slippage05">0.5%</label>
-            </li>
-            <li class="d-flex align-items-center">
-              <input id="slippage1" type="radio" name="slippage" checked value='0.01' @click='maxSlippage = 1; customSlippageDisabled = true'>
-              <label class="mb-0 ml-2" for="slippage1">1.0%</label>
-            </li>
-            <li class="d-flex align-items-center">
-              <input id="slippage2" type="radio" name="slippage" value='0.02' @click='maxSlippage = 2; customSlippageDisabled = true'>
-              <label class="mb-0 ml-2" for="slippage2">2.0%</label>
-            </li>
-            <li class="d-flex align-items-start">
-              <input class="mt-1" id="custom_slippage" type="radio" name="slippage" value='-' @click='customippageDisabled = false'>
-              <label class="mb-0 ml-2" for="custom_slippage" @click='customSlippageDisabled = false'>
-                {{ $t('global.customize') }}
-                <input class="d-flex" type="text" id="custom_slippage_input" :disabled='customSlippageDisabled' name="custom_slippage_input" v-model='maxInputSlippage'> %
-              </label>
-            </li>
-            <li v-show='showSlippageTooLow'>
-              <span class='tooltip'>
-                <img class='icon small hoverpointer warning' :src="publicPath + 'exclamation-circle-solid.svg'">
-                <span class='tooltiptext'>
-                    Max slippage value is likely too low and the transaction may fail
+        <div v-show='fromInput > 0' id='max_slippage' class="row">
+          <b-form-group class="col">
+            <ul>
+              {{ maxSlippageMode }} | {{ maxSlippage }}
+              <li>
+                <h6 class="text-black-65 mb-0">{{ $t('global.maxSlippage') }}</h6>
+              </li>
+              <li>
+                <b-form-radio
+                  v-model="selectMaxSlippageMode"
+                  value=1
+                >0.5%</b-form-radio>
+              </li>
+              <li>
+                <b-form-radio
+                  v-model="selectMaxSlippageMode"
+                  value=2
+                >1.0%</b-form-radio>
+              </li>
+              <li>
+                <b-form-radio
+                  v-model="selectMaxSlippageMode"
+                  value=3
+                >2.0%</b-form-radio>
+              </li>
+              <li>
+                <b-form-radio
+                  v-model="selectMaxSlippageMode"
+                  value=4
+                >{{ $t('global.customize') }}</b-form-radio>
+                <span class="ml-4 mt-1">
+                  <b-form-input class="input-append-percentage" id="custom_slippage_input" :disabled="maxSlippageMode != 4" v-model="customMaxSlippageInput" :placeholder="$t('instantSwap.valuePlaceholder')"></b-form-input>
                 </span>
-              </span>
-            </li>
-          </ul>
+              </li>
+              <li v-show='showSlippageTooLow'>
+                <span class='tooltip'>
+                  <img class='icon small hoverpointer warning' :src="publicPath + 'exclamation-circle-solid.svg'">
+                  <span class='tooltiptext'>
+                    Max slippage value is likely too low and the transaction may fail
+                  </span>
+                </span>
+              </li>
+            </ul>
+          </b-form-group>
+          <div class="col-1"></div>
           <gas-price class="col"></gas-price>
         </div>
       </div>
-      <div class="d-flex mt-4 no-gutters align-items-end">
-        <div class="col d-flex-column align-items-end mt-1 pr-3">
-          <span class="d-flex text-black-65 align-items-end">
-            <span class="col-auto">
-              <h6 class="mb-1">{{ $t('instantSwap.exchangeRate') }}</h6>
-              <span @click='swapExchangeRate'>{{ exchangeRateSwapped }}</span>
+      <p class="mt-3" v-for="(item, idx) in messages" :key="idx">
+        {{ item.msg }}
+      </p>
+      <div class='info-message gentle-message waiting-message' v-show='show_loading'>
+        <span v-html='waitingMessage'></span>
+        <span class='loading line'></span>
+      </div>
+      <div class="row mt-3 align-items-end text-black-65">
+        <span class="col-auto">
+          <h6 class="mb-1">{{ $t('instantSwap.exchangeRate') }}</h6>
+          <text-overlay-loading :show="!checkExchangeRate">
+            <span @click='swapExchangeRate'>{{ exchangeRateSwapped }}</span>
+          </text-overlay-loading>
+        </span>
+        <span class="col-auto">
+          <h6 class="mb-1">{{ $t('instantSwap.txCost') }}</h6>
+          <text-overlay-loading :show="!estimateGas">
+            ${{ (+estimateGas).toFixed(2) }}
+          </text-overlay-loading>
+        </span>
+        <span class="col-auto">
+          <h6 class="mb-1">{{ $t('instantSwap.routedThrough') }}</h6>
+          <div v-if="bestPoolText != '1split'">
+            {{ bestPoolText }}
+          </div>
+          <div v-else-if="bestPoolText == '1split'">
+            {{ bestPoolText }}
+            <span class='tooltip'> [?]
+              <span class='tooltiptext' v-html = 'distributionText'></span>
             </span>
-            <span class="col-auto">
-              <h6 class="mb-1">{{ $t('instantSwap.txCost') }}</h6>
-              <b-overlay :show="!estimateGas" spinner-variant="danger" spinner-type="grow" spinner-small>
-                ${{ (+estimateGas).toFixed(2) }}
-              </b-overlay>
-            </span>
-            <span class="col-auto">
-              <h6 class="mb-1">{{ $t('instantSwap.routedThrough') }}</h6>
-              <div v-if="bestPoolText != '1split'">
-                {{ bestPoolText }}
-              </div>
-              <div v-else-if="bestPoolText == '1split'">
-                {{ bestPoolText }}
-                <span class='tooltip'> [?]
-                  <span class='tooltiptext' v-html = 'distributionText'></span>
-                </span>
-              </div>
-            </span>
-            <span class="ml-auto">
-              <b-button size="sm" @click='showadvancedoptions = !showadvancedoptions' variant="light">
-                <template v-if="showadvancedoptions">
-                  {{ $t('global.packUp') }}
-                </template>
-                <template v-else>
-                  {{ $t('global.advancedOptions') }}
-                </template>
-              </b-button>
-            </span>
-          </span>
-        </div>
-        <b-overlay :show="loadingAction" spinner-variant="danger" spinner-type="grow" spinner-small>
+          </div>
+        </span>
+        <span class="col text-right">
+          <b-button size="sm" @click='showadvancedoptions = !showadvancedoptions' variant="light">
+            <template v-if="showadvancedoptions">
+              {{ $t('global.packUp') }}
+            </template>
+            <template v-else>
+              {{ $t('global.advancedOptions') }}
+            </template>
+          </b-button>
+        </span>
+        <text-overlay-loading class="col-auto" :show="loadingAction">
           <b-button id="trade" size="lg" variant="danger" @click='handle_trade' :disabled='selldisabled'>
             {{ $t('instantSwap.confirm') }}
           </b-button>
-        </b-overlay>
+        </text-overlay-loading>
       </div>
-
-      <p class='simple-error' v-show='exchangeRate<=0.98 && to_currency > 0'>
-            Warning! Exchange rate is too low!
-        </p>
-        <p class='simple-error' v-show='exchangeRate<=0.95 && to_currency == 0'>
-            Warning! Exchange rate is too low!
-        </p>
-        <p class='simple-error' id='no-balance-synth' v-show='notEnoughBalanceSynth && !susdWaitingPeriod && +maxSynthBalanceText > 0'>
-            Max balance you can use is {{ maxSynthBalanceText }}
-        </p>
-        <div class='simple-error pulse' v-show="susdWaitingPeriod">
-            Cannot transfer {{ from_currency == 5 ? 'sUSD' : 'sBTC' }} during waiting period {{ (susdWaitingPeriodTime).toFixed(0) }} secs left
-        </div>
-        <div class='info-message gentle-message waiting-message' v-show='show_loading'>
-            <span v-html='waitingMessage'></span>
-            <span class='loading line'></span>
-        </div>
-
-        <p class='simple-error' id='no-balance' v-show='showNoBalanceWarning'>
-            Not enough balance for 
-            <span v-show='!swapwrapped'>{{Object.keys(currencies)[from_currency] | capitalize}}</span>
-            <span v-show='swapwrapped'>{{Object.values(currencies)[from_currency]}}</span>. <span>Swap is not available.</span>
-        </p>
-        <div class='info-message gentle-message' v-show='selldisabled'>
-            Swapping between {{Object.values(currencies)[from_currency]}} and {{Object.values(currencies)[to_currency]}} is not available currently
-        </div>
-        <div class='info-message gentle-message' v-show='warningNoPool !== null'>
-            Swap not available. Please select {{warningNoPool}} in pool select
-        </div>
         <!-- <div class='swap exchange'>
 
             <div class='exchangefields'>
@@ -454,6 +442,8 @@
 
     import * as Comlink from 'comlink'
 
+    import TextOverlayLoading from '../../components/common/TextOverlayLoading'
+
     let { setIntervalAsync, clearIntervalAsync } = require('set-interval-async/dynamic')
 
     import Worker from 'worker-loader!./worker.js';
@@ -461,11 +451,10 @@
     const calcWorker = Comlink.wrap(worker);
 
     export default {
-
         components: {
-            GasPrice,
+          GasPrice,
+          TextOverlayLoading
         },
-
         data: () => ({
             pools: ['compound', 'y', 'busd', 'susdv2', 'pax', 'ren', 'sbtc'],
             maxBalance: -1,
@@ -519,8 +508,87 @@
             loadingAction: false,
 
             interval: null,
+            maxSlippageMode: 2
         }),
         computed: {
+          customMaxSlippageInput: {
+            get () {
+              return this.maxInputSlippage
+            },
+            set (val) {
+              this.maxSlippage = this.maxInputSlippage = val
+            }
+          },
+          selectMaxSlippageMode: {
+            get () {
+              return this.maxSlippageMode
+            },
+            set (val) {
+              const { maxInputSlippage } = this
+              const modes = {
+                1: 0.5,
+                2: 1,
+                3: 2,
+                4: maxInputSlippage
+              }
+
+              this.maxSlippageMode = val
+              this.maxSlippage = modes[val]
+            }
+          },
+          messages () {
+            const { $i18n, selldisabled, susdWaitingPeriod, susdWaitingPeriodTime, maxSynthBalanceText, notEnoughBalanceSynth, exchangeRate, swapwrapped, currencies, from_currency, to_currency, showNoBalanceWarning, warningNoPool } = this
+            const result = []
+            const from = Object.values(currencies)[from_currency]
+            const to = Object.values(currencies)[to_currency]
+
+            if (exchangeRate<=0.98 && to_currency > 0 ||
+              exchangeRate<=0.95 && to_currency == 0) {
+              result.push({
+                type: 'error',
+                msg: $i18n.t('instantSwap.exchangeEateLowWarning')
+              })
+            }
+
+            notEnoughBalanceSynth && !susdWaitingPeriod && +maxSynthBalanceText > 0 &&
+              result.push({
+                  type: 'error',
+                  msg: $i18n.t('instantSwap.maxSynthBalance')
+              })
+
+            susdWaitingPeriod &&
+              result.push({
+                type: 'error',
+                msg: $i18n.t('instantSwap.susdWaitingPeriod', [
+                  from_currency == 5 ? 'sUSD' : 'sBTC',
+                  (susdWaitingPeriodTime).toFixed(0)
+                ])
+              })
+
+            showNoBalanceWarning &&
+              result.push({
+                type: 'error',
+                msg: $i18n.t('instantSwap.noBalanceWarning', [
+                  swapwrapped
+                    ? from
+                    : helpers.capitalize(Object.keys(currencies)[from_currency])
+                ])
+              })
+
+            selldisabled &&
+              result.push({
+                type: 'info',
+                msg: $i18n.t('instantSwap.selldisabled', [from, to])
+              })
+
+            warningNoPool &&
+              result.push({
+                type: 'info',
+                msg: $i18n.t('instantSwap.warningNoPool', [warningNoPool])
+              })
+
+            return result
+          },
             //onesplit exchanges [uniswap, kyber, bancor, oasis, cCurve, tCurve, yCurve, bCurve, sCurve]
             CONTRACT_FLAG() {
                 //disable uniswap, kyber, bancor, oasis, compound, fulcrum, chai, aave, smart token, bdai, iearn, weth, idle, 
@@ -693,14 +761,14 @@
             },
             exchangeRateSwapped() {
               let from = !this.swapwrapped ? Object.keys(this.currencies)[this.from_currency] : Object.values(this.currencies)[this.from_currency]
-                let to = !this.swapwrapped ? Object.keys(this.currencies)[this.to_currency] : Object.values(this.currencies)[this.to_currency]
-                from = helpers.capitalize(from)
-                to = helpers.capitalize(to)
+              let to = !this.swapwrapped ? Object.keys(this.currencies)[this.to_currency] : Object.values(this.currencies)[this.to_currency]
 
-                if(this.swaprate)
-                    return `1 ${to} = ${(1 / this.exchangeRate).toFixed(4)} ${from}`
-                else
-                    return `1 ${from} = ${this.exchangeRate} ${to}`
+              from = helpers.capitalize(from)
+              to = helpers.capitalize(to)
+
+              return this.swaprate
+                ? `1 ${to} = ${(1 / this.exchangeRate).toFixed(4)} ${from}`
+                : `1 ${from} = ${this.exchangeRate} ${to}`
             },
             gasPrice() {
                 return gasPriceStore.state.gasPrice
@@ -720,6 +788,9 @@
             getCurrTo() {
               return Object.keys(this.currencies)[this.to_currency]
             },
+            checkExchangeRate () {
+              return !isNaN(this.exchangeRate)
+            }
         },
         watch: {
             from_currency(val, oldval) {
@@ -745,7 +816,7 @@
                 if(val !== null) {
                     this.bgColor = 'red'
                     this.toInput = '0.00'
-                    this.exchangeRate = 'Not available'
+                    this.exchangeRate = this.$i18n.t('global.notAvailable')
                 }
             },
             exchangeRateSwapped() {
@@ -1080,7 +1151,7 @@
             setExchangeRate(exchangeRate) {
                 if(+exchangeRate <= 0.98) this.bgColor = 'red'
                 else this.bgColor= '#505070'
-                if(isNaN(+exchangeRate)) this.exchangeRate = "Not available"
+                if(isNaN(+exchangeRate)) this.exchangeRate = this.$i18n.t('global.notAvailable')
                 else {
                     this.exchangeRate = (+exchangeRate).toFixed(4)
                 }
@@ -1384,9 +1455,10 @@
     border-radius: 2px 0px 0px 2px;
   }
   .currentInput .coin {
-    width: 104px;
+    min-width: 104px;
     border-right: 1px solid #dadedf;
     padding-left: 12px;
+    padding-right: 12px;
   }
   .currentInput input {
     border-width: 0;

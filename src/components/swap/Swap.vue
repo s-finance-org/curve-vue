@@ -645,7 +645,7 @@
 </script>
 
 <style scoped>
-	.actualvalue {
+	/* .actualvalue {
         margin: 0.5em 0 0 0;
         text-align: right;
         font-size: 0.9em;
@@ -665,5 +665,5 @@
     }
     .advancedoptions + div legend {
         text-align: center;
-    }
+    } */
 </style>

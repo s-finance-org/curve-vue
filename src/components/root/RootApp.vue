@@ -11,6 +11,9 @@
         <a href="https://t.me/SFinanceEN" target="_blank">Telegram</a>
       </template>
     </div>
+    <div class="statement-banner py-2">
+      {{ $t('statement.slogan') }} <a @click="onStatement" href="javascript:void(0);">{{ $t('statement.more') }}</a>
+    </div>
     <b-container>
       <b-navbar class="no-gutters align-items-center p-0">
         <div class="col py-2 d-flex align-items-start">
@@ -216,6 +219,20 @@
       async changeAccounts() {
         return onboard.accountSelect();
       },
+      onStatement () {
+        const { $i18n } = this
+
+        this.$bvModal.msgBoxOk($i18n.t('statement.cont'), {
+            title: $i18n.t('statement.slogan'),
+            hideBackdrop: true,
+            size: 'lg',
+            okTitle: $i18n.t('statement.ok'),
+            okVariant: 'danger',
+            buttonSize: 'lg',
+            contentClass: 'statement-modal',
+            centered: true
+          })
+      }
     },
   }
 </script>
@@ -245,6 +262,17 @@
   .beta-banner a {
     color: #fff;
     padding-right: 8px;
+    text-decoration: underline;
+  }
+  .statement-banner {
+    text-align: center;
+    line-height: 20px;
+    font-size: 12px;
+    background-color: #F7CA00;
+  }
+  .statement-banner a,
+  .statement-banner a:hover {
+    color: #1ba57b;
     text-decoration: underline;
   }
   /* #changeAccounts {

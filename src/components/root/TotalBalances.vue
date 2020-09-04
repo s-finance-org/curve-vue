@@ -2,18 +2,18 @@
     <div>
       <div class="total-bg">
         <b-container class="d-flex py-4 total-cont">
-          <img class="logo_orgin" :src="publicPath + 'res/icons/logo/logo_orgin.svg'">
+          <img class="logo_orgin mr-4" :src="publicPath + 'res/icons/logo/logo_orgin.svg'">
           <div class="total-box mr-4 ml-auto">
             <h6 class="text-black-65">{{ $t('total.deposits') }}</h6>
-            <b-overlay :show="!total" spinner-variant="danger" spinner-type="grow" spinner-small>
+            <text-overlay-loading :show="!total">
               <h4 class="mb-0">{{total | formatNumber}}$</h4>
-            </b-overlay>
+            </text-overlay-loading>
           </div>
           <div class="total-box">
             <h6 class="text-black-65">{{ $t('global.dailyVol') }}</h6>
-            <b-overlay :show="volume < 0" spinner-variant="danger" spinner-type="grow" spinner-small>
+            <text-overlay-loading :show="volume < 0">
               <h4 class="mb-0">{{(volume | 0) | formatNumber(0)}}$</h4>
-            </b-overlay>
+            </text-overlay-loading>
           </div>
         </b-container>
       </div>
@@ -38,18 +38,23 @@
 	import { chunkArr } from '../../utils/helpers'
 	import BN from 'bignumber.js'
 	import * as volumeStore from '@/components/common/volumeStore'
-    import { contract } from '../../contract'
-    import * as priceStore from '../common/priceStore'
+  import { contract } from '../../contract'
+  import * as priceStore from '../common/priceStore'
+
+  import TextOverlayLoading from '../../components/common/TextOverlayLoading'
 
 	export default {
 		props: {
 			totalVolume: {
 				default: undefined,
 			}
-		},
+    },
 		data: () => ({
 			total: '',
-		}),
+    }),
+    components: {
+      TextOverlayLoading
+    },
 		computed: {
       publicPath() {
         return process.env.BASE_URL

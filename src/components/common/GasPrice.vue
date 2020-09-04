@@ -1,48 +1,47 @@
 <template>
   <div>
-    <p class='simple-error pulse' v-show='errorMessage'>
-      {{errorMessage}}
+    <p v-show='errorMessage'>
+      {{ errorMessage }}
     </p>
-    <ul class="list" v-show='gasPriceMedium'>
-      <li>
-        <h6 class="text-black-65 mb-0">{{ $t('global.gasPrice') }}</h6>
-      </li>
-      <li class="d-flex align-items-center">
-        <input id="gasstandard" type="radio" name="gas" :value='gasPriceMedium' @click='customGasDisabled = true; gasPrice = gasPriceMedium'>
-        <label class="mb-0 ml-2" for="gasstandard">{{ $t('global.standard') }} ({{ Math.round(gasPriceMedium )}})</label>
-      </li>
-      <li class="d-flex align-items-center">
-        <input id="gasfast" type="radio" name="gas" checked :value='gasPriceFast' @click='customGasDisabled = true; gasPrice = gasPriceFast'>
-        <label class="mb-0 ml-2" for="gasfast">{{ $t('global.fast') }} ({{ Math.round(gasPriceFast) }})</label>
-      </li>
-      <li class="d-flex align-items-center">
-        <input id="gasinstant" type="radio" name="gas" :value='gasPriceFastest' @click='customGasDisabled = true; gasPrice = gasPriceFastest'>
-        <label class="mb-0 ml-2" for="gasinstant">{{ $t('global.instant') }} ({{ Math.round(gasPriceFastest) }})</label>
-      </li>
-      <li class="d-flex align-items-start">
-        <input class="mt-1" id="custom_gas" type="radio" name="gas" value='-' @click="customGasDisabled = false; gasPrice = gasPriceSlow">
-        <label class="mb-0 ml-2" for="custom_gas" @click="customGasDisabled = false; gasPrice = gasPriceSlow">
-          {{ $t('global.customize') }}
-          <div class="d-flex align-items-center">
-            <input class="mr-1" type="text" id="custom_gas_input" 
-              :disabled='customGasDisabled'
-              name="custom_gas_input"
-              :value = 'customGasPriceInput'
-              @input='setCustomGas($event)'>
-            <span v-if='customGasPriceInput == gasPriceSlow'>{{ $t('global.slow') }}</span>
-            <span v-else-if='customGasPriceInput && customGasPriceInput < gasPriceSlow' class='gastoolow'>
-              <span class='tooltip'>
-                {{ $t('global.low') }}
-                <span class='tooltiptext'>
-                  Too low gas price. Your transaction may be dropped.
-                </span>
-              </span>
-            </span>
-          </div>
-        </label>
-      </li>
-    </ul>
-
+    <b-form-group>
+      <ul class="list" v-show='gasPriceMedium'>
+        <li>
+          <h6 class="text-black-65 mb-0">{{ $t('global.gasPrice') }}</h6>
+        </li>
+        <li>
+          <b-form-radio
+            v-model="selectGasPriceMode"
+            value=1
+          >{{ $t('global.standard') }} ({{ Math.round(gasPriceMedium )}})</b-form-radio>
+        </li>
+        <li>
+          <b-form-radio
+            v-model="selectGasPriceMode"
+            value=2
+          >{{ $t('global.fast') }} ({{ Math.round(gasPriceFast) }})</b-form-radio>
+        </li>
+        <li>
+          <b-form-radio
+            v-model="selectGasPriceMode"
+            value=3
+          >{{ $t('global.instant') }} ({{ Math.round(gasPriceFastest) }})</b-form-radio>
+        </li>
+        <li>
+          <b-form-radio
+            v-model="selectGasPriceMode"
+            value=4
+          >{{ $t('global.customize') }}</b-form-radio>
+          <span class="d-flex align-items-center ml-4 mt-1">
+            <b-form-input id="custom_gas_input" :disabled="gasPriceMode != 4" v-model="customGasPriceInput" :placeholder="$t('instantSwap.gasPlaceholder')"></b-form-input>
+            <span class="ml-2" v-show='gasPrice == gasPriceSlow'>{{ $t('global.slow') }}</span>
+            <span class="ml-2" v-show='gasPrice < gasPriceSlow' id="custom-gas-price-state">{{ $t('global.low') }}</span>
+          </span>
+          <b-tooltip target="custom-gas-price-state">
+            {{ $t('instantSwap.warnLowGasPrice') }}
+          </b-tooltip>
+        </li>
+      </ul>
+    </b-form-group>
     <!-- <p class='simple-error pulse' v-show='errorMessage'>
         {{errorMessage}}
     </p>
@@ -87,38 +86,67 @@
 
 	export default {
 		data: () => ({
-      customGasDisabled: true,
+      // customGasDisabled: true,
+      gasPriceMode: 2
 		}),
-
 		computed: {
-            gasPriceSlow() {
-                return state.gasPriceInfo && state.gasPriceInfo.low || 15
-            },
+      selectGasPriceMode: {
+        get () {
+          return this.gasPriceMode
+        },
+        set (val) {
+          const modes = {
+            1: this.gasPriceMedium,
+            2: this.gasPriceFast,
+            3: this.gasPriceFastest,
+            4: this.gasPriceSlow
+          }
+
+          this.gasPriceMode = val
+          this.gasPrice = modes[val]
+        }
+      },
+      gasPriceSlow() {
+        return state.gasPriceInfo && state.gasPriceInfo.low || 15
+      },
 			gasPriceMedium() {
-                return state.gasPriceInfo && state.gasPriceInfo.standard || 20
-            },
-            gasPriceFast() {
-                return state.gasPriceInfo && state.gasPriceInfo.fast || 25
-            },
-            gasPriceFastest() {
-                return state.gasPriceInfo && state.gasPriceInfo.instant || 30
-            },
-            gasPrice: {
-            	get() {
-            		return state.gasPrice
-            	},
-            	set(val) {
-            		state.gasPrice = val
-            	},
-            },
-            customGasPriceInput() {
-            	if(this.customGasDisabled) return this.gasPriceSlow
-            	return this.gasPrice
-            },
-            errorMessage() {
-                setTimeout(() => errorState.txError = null, 2200)
-                return errorState.txError
-            },
+        return state.gasPriceInfo && state.gasPriceInfo.standard || 20
+      },
+      gasPriceFast() {
+          return state.gasPriceInfo && state.gasPriceInfo.fast || 25
+      },
+      gasPriceFastest() {
+          return state.gasPriceInfo && state.gasPriceInfo.instant || 30
+      },
+      gasPrice: {
+        get() {
+          return state.gasPrice
+        },
+        set(val) {
+          state.gasPrice = val
+        },
+      },
+      customGasPriceInput: {
+        get () {
+          const { gasPriceMode } = this
+
+          return gasPriceMode === '4'
+            ? this.gasPrice
+            : this.gasPriceSlow
+        },
+        set (val) {
+          const maxGasPrice = this.gasPriceFastest * 2
+
+          val > maxGasPrice &&
+            (val = maxGasPrice)
+
+          this.gasPrice = val
+        }
+      },
+      errorMessage() {
+          setTimeout(() => errorState.txError = null, 2200)
+          return errorState.txError
+      },
 		},
 
 		async created() {

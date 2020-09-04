@@ -188,11 +188,18 @@ footer a:hover {
 
 
 /* Radio */
+.custom-control {
+  z-index: 0 !important;
+}
 .custom-control-input:checked ~ .custom-control-label::before {
   color: #fff;
   border-color: #EB3C00;
   background-color: #EB3C00;
 }
+.radio-danger .custom-control-input:hover ~ .custom-control-label::before {
+  border-color: #EB3C00;
+}
+
 .radio-danger[type="radio"]+span {
 	display:inline-block;
 	border-radius:50%;
@@ -221,3 +228,39 @@ footer a:hover {
 	border:1px solid #1e9fff;
 	animation: mymove .5s 1
 }
+
+/* Input group */
+.input-append-percentage::before {
+  content: "%";
+}
+
+
+/* Modal */
+.statement-modal{
+  background-color: #F7CA00;
+  margin-right: 100px;
+  margin-left: 100px;
+  border-width: 0;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.15);
+}
+.statement-modal header {
+  border-bottom-width: 0px;
+}
+.statement-modal header h5{
+  font-size: 20px;
+  line-height: 28px;
+}
+.statement-modal .modal-body {
+  padding-top: 0px;
+  padding-bottom: 0px;
+  font-size: 14px;
+  color: rgba(0,0,0,0.65);
+  line-height: 22px;
+}
+.statement-modal footer {
+  border-top-width: 0px;
+}
+/* .statement-modal footer button{
+  background: #eb3c00;
+  border-radius: 2px;
+} */
