@@ -1,5 +1,40 @@
 <template>
   <div class="blue window half-width info">
+
+    <b-container>
+      <h4 class="mt-4 mb-2">{{ $t('balancesInfo.name') }}</h4>
+      <div class="box mb-3">
+        <div class="px-4 py-3 line-bottom">
+          <h6 class="text-black-65 mb-3">{{ $t('balancesInfo.assetDistribution') }}</h6>
+          <div class="row">
+            <span class="col-3" v-for='(currency, i) in Object.keys(currencies)'>
+              {{currency | capitalize}}：
+              <text-overlay-loading inline :show="!(bal_info && bal_info[i])">
+                {{bal_info && toFixed(bal_info[i]) }} ({{((bal_info && bal_info[i] * 100) / totalBalances) | toFixed2}}%) 
+              </text-overlay-loading>
+            </span>
+          </div>
+        </div>
+        <div class="px-4 py-3 line-bottom">
+          <h6 class="text-black-65 mb-3">{{ $t('global.fee') }}</h6>
+          <div class="row">
+            <span class="col-3">{{ $t('balancesInfo.swapFeeRate') }}：?</span>
+            <span class="col-3">{{ $t('balancesInfo.depositFeeRate') }}：?</span>
+            <span class="col-3">{{ $t('balancesInfo.withdrawalFeeRate') }}：?</span>
+            <span class="col-3">{{ $t('balancesInfo.adminFeeRate') }}：?</span>
+          </div>
+        </div>
+        <div class="px-4 py-3">
+          <h6 class="text-black-65 mb-3">{{ $t('global.norm') }}</h6>
+           <div class="row">
+            <span>{{ $t('balancesInfo.avgAssetPrice') }}：?</span>
+            <span>{{ $t('balancesInfo.amplificationCoefficient') }}：?</span>
+            <span>{{ $t('balancesInfo.fundingFeeRate') }}：?</span>
+          </div>
+        </div>
+      </div>
+    </b-container>
+
     <fieldset id="lp-info-currency">
       <legend>Currency reserves</legend>
       <ul id='balances-info'>
@@ -195,6 +230,8 @@
   const calcWorker = Comlink.wrap(worker);
   import * as priceStore from './common/priceStore'
 
+  import TextOverlayLoading from '../components/common/TextOverlayLoading'
+
   export default {
     props: ['pool', 'bal_info', 'total', 'l_info', 'totalShare', 'fee', 'admin_fee', 'currencies', 'tokenSupply', 'tokenBalance', 'usdShare', 'staked_info', 'totalStake', 'usdStake', 'combinedstats', 'virtual_price', 'A', 'future_A', 'admin_actions_deadline'],
     data: () => ({
@@ -205,6 +242,9 @@
       lastPool: null,
       btcPrice: 0,
     }),
+    components: {
+      TextOverlayLoading
+    },
     methods: {
       toFixed(num, precisions = 2, round = 4) {
           if(num == '' || num === null || num === undefined) return ''

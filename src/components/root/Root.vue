@@ -472,7 +472,8 @@
               pooltext: 'Compound',
               pools: '(c)DAI (c)USDC',
               volData: volumes.compound,
-              funds: '-'
+              funds: '-',
+              link: '/compound'
             },
             {
               id: 5,
@@ -480,7 +481,8 @@
               pooltext: 'PAX',
               pools: '(yc)DAI (yc)USDC (yc)USDT PAX',
               volData: volumes.pax,
-              funds: '-'
+              funds: '-',
+              link: '/pax'
             },
             {
               id: 2,
@@ -488,7 +490,8 @@
               pooltext: 'Y',
               pools: '(y)DAI (y)USDC (y)USDT (y)TUSD',
               volData: volumes.y,
-              funds: '-'
+              funds: '-',
+              link: '/y'
             },
             {
               id: 2,
@@ -496,7 +499,8 @@
               pooltext: 'BUSD',
               pools: '(y)DAI (y)USDC (y)USDT (y)BUSD',
               volData: volumes.busd,
-              funds: '-'
+              funds: '-',
+              link: '/busd'
             },
             {
               id: 4,
@@ -504,7 +508,8 @@
               pooltext: 'sUSD',
               pools: '(y)DAI (y)USDC (y)USDT (y)BUSD',
               volData: volumes.susd,
-              funds: '-'
+              funds: '-',
+              link: '/susdv2'
             },
             {
               id: 7,
@@ -512,7 +517,8 @@
               pooltext: 'REN',
               pools: 'renBTC wBTC',
               volData: volumes.ren,
-              funds: '-'
+              funds: '-',
+              link: '/ren'
             },
             {
               id: 7,
@@ -520,7 +526,8 @@
               pooltext: 'sBTC',
               pools: 'renBTC wBTC sBTC',
               volData: volumes.sbtc,
-              funds: '-'
+              funds: '-',
+              link: '/sbtc'
             },
           ]
         }
@@ -549,20 +556,20 @@
 					[curveRewards._address, curveRewards.methods.rewardRate().encodeABI()],
 
 					[sbtcRewards._address, sbtcRewards.methods.totalSupply().encodeABI()],
-					[sbtcCurve._address, sbtcCurve.methods.get_virtual_price().encodeABI()],
+          [sbtcCurve._address, sbtcCurve.methods.get_virtual_price().encodeABI()],
 
-					[	
-						balancerPool._address, 
+					[
+						balancerPool._address,
 						balancerPool.methods.getBalance('0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f').encodeABI()
 					],
-                    [
-                    	balancerPool._address,
-                    	balancerPool.methods.getBalance('0x408e41876cccdc0f92210600ef50372656052a38').encodeABI()
-                	],
+          [
+            balancerPool._address,
+            balancerPool.methods.getBalance('0x408e41876cccdc0f92210600ef50372656052a38').encodeABI()
+          ],
 
 					[yfiRewards._address, yfiRewards.methods.totalSupply().encodeABI()],
 					[yCurve._address, yCurve.methods.get_virtual_price().encodeABI()],
-                	[yfiRewards._address, yfiRewards.methods.DURATION().encodeABI()],
+            [yfiRewards._address, yfiRewards.methods.DURATION().encodeABI()],
 					[yfiRewards._address, yfiRewards.methods.rewardRate().encodeABI()],
 
 					[curveRewards._address, curveRewards.methods.periodFinish().encodeABI()],
@@ -714,49 +721,49 @@
 						swap: '0xA2B47E3D5c44877cca798226B7B8118F9BFb7A56',
 						swap_token: '0x845838DF265Dcd2c412A1Dc9e959c7d08537f8a2',
 						name: 'compound',
-						gauge: '0x7ca5b0a2910B33e9759DC7dDB0413949071D7575',
+            gauge: '0x7ca5b0a2910B33e9759DC7dDB0413949071D7575',
 					},
 					usdt: {
 						swap: '0x52EA46506B9CC5Ef470C5bf89f17Dc28bB35D85C',
 						swap_token: '0x9fC689CCaDa600B6DF723D9E47D84d76664a1F23',
 						name: 'usdt',
-						gauge: '0xBC89cd85491d81C6AD2954E6d0362Ee29fCa8F53',
+            gauge: '0xBC89cd85491d81C6AD2954E6d0362Ee29fCa8F53',
 					},
 					y: {
 						swap: '0x45F783CCE6B7FF23B2ab2D70e416cdb7D6055f51',
 						swap_token: '0xdF5e0e81Dff6FAF3A7e52BA697820c5e32D806A8',
 						name: 'y',
-						gauge: '0xFA712EE4788C042e2B7BB55E6cb8ec569C4530c1',
+            gauge: '0xFA712EE4788C042e2B7BB55E6cb8ec569C4530c1',
 					},
 					busd: {
 						swap: '0x79a8C46DeA5aDa233ABaFFD40F3A0A2B1e5A4F27',
 						swap_token: '0x3B3Ac5386837Dc563660FB6a0937DFAa5924333B',
 						name: 'busd',
-						gauge: '0x69Fb7c45726cfE2baDeE8317005d3F94bE838840',
+            gauge: '0x69Fb7c45726cfE2baDeE8317005d3F94bE838840',
 					},
 					susdv2: {
 						swap: '0xA5407eAE9Ba41422680e2e00537571bcC53efBfD',
 						swap_token: '0xC25a3A3b969415c80451098fa907EC722572917F',
 						name: 'susdv2',
-						gauge: '0xA90996896660DEcC6E997655E065b23788857849',
+            gauge: '0xA90996896660DEcC6E997655E065b23788857849',
 					},
 					pax: {
 						swap: '0x06364f10B501e868329afBc005b3492902d6C763',
 						swap_token: '0xD905e2eaeBe188fc92179b6350807D8bd91Db0D8',
 						name: 'pax',
-						gauge: '0x64E3C23bfc40722d3B649844055F1D51c1ac041d',
+            gauge: '0x64E3C23bfc40722d3B649844055F1D51c1ac041d',
 					},
 					ren: {
 						swap: '0x93054188d876f558f4a66B2EF1d97d16eDf0895B',
 						swap_token: '0x49849C98ae39Fff122806C06791Fa73784FB3675',
 						name: 'ren',
-						gauge: '0xB1F2cdeC61db658F091671F5f199635aEF202CAC',
+            gauge: '0xB1F2cdeC61db658F091671F5f199635aEF202CAC',
 					},
 					sbtc: {
 						swap: '0x7fC77b5c7614E1533320Ea6DDc2Eb61fa00A9714',
 						swap_token: '0x075b1bb99792c9E1041bA13afEf80C91a1e70fB3',
 						name: 'sbtc',
-						gauge: '0x705350c4BcD35c9441419DdD5d2f097d7a55410F',
+            gauge: '0x705350c4BcD35c9441419DdD5d2f097d7a55410F',
 					},
 				}
 

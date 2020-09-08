@@ -18,7 +18,7 @@
 <script>
 	export default {
 		metaInfo: {
-	      title: 'Curve.fi :: Donate',
+	      title: 'S.finance Donate',
 	      meta: [
 	        {'property': 'og:title', 'content': 'curve.fi/donate'},
 	        {'property': 'og:url', 'content': 'https://curve.fi/donate'},

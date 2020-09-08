@@ -187,7 +187,7 @@
 			},
 		},
 		metaInfo: {
-	      title: 'Curve.fi :: Contracts',
+	      title: 'S.finance Contracts',
 	      meta: [
 	        {'property': 'og:title', 'content': 'beta.curve.fi/contracts'},
 	        {'property': 'og:url', 'content': 'https://curve.fi/contracts'},

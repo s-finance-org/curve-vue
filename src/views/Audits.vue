@@ -23,7 +23,7 @@
 <script>
 	export default {
 		metaInfo: {
-	      title: 'Curve.fi :: Audits',
+	      title: 'S.finance Audits',
 	      meta: [
 	        {'property': 'og:title', 'content': 'curve.fi/curve_audits'},
 	        {'property': 'og:url', 'content': 'https://curve.fi/curve_audits'},

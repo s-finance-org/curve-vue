@@ -25,7 +25,9 @@ export default {
     instant: '极速',
     slow: '慢',
     low: '低',
-    notAvailable: '无法使用'
+    notAvailable: '无法使用',
+    fee: '费用',
+    norm: '指标'
   },
   beta: {
     slogan: '项目还在测试阶段，请注意风险，更多功能敬请期待~',
@@ -67,5 +69,16 @@ export default {
     maxSynthBalance: '您可以使用的最大余额是 {0}',
     susdWaitingPeriod: '在等待时间 {1} 秒内无法转移 {0}',
     warningNoPool: '兑换不可用。请在池中选择 {0}。'
+  },
+  balancesInfo: {
+    name: '兑换池概念',
+    assetDistribution: '资产分布',
+    swapFeeRate: '兑换费',
+    depositFeeRate: '存款费',
+    withdrawalFeeRate: '取款费',
+    adminFeeRate: '管理员费',
+    avgAssetPrice: '资产均价',
+    amplificationCoefficient: '放大系数',
+    fundingFeeRate: '资金费用率'
   }
 }

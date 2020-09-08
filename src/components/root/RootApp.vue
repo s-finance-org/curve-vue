@@ -1,36 +1,8 @@
 <template>
-  <b-container fluid id="app" class="px-0" :class="{'root': true, [$route.name]: true}">
-    <div class="beta-banner py-2">
-      {{ $t('beta.slogan') }}<br/>{{ $t('beta.followMe') }}: 
-      <a href="https://twitter.com/SFinanceEx" target="_blank">Twitter</a>
-      <a href="https://discord.gg/rc49Dzu" target="_blank">Discord</a>
-      <template v-if="$i18n.locale === 'zh-CN'">
-        <a href="https://t.me/SFinanceCN" target="_blank">Telegram CN</a>
-      </template>
-      <template v-else>
-        <a href="https://t.me/SFinanceEN" target="_blank">Telegram</a>
-      </template>
-    </div>
-    <div class="statement-banner py-2">
-      {{ $t('statement.slogan') }} <a @click="onStatement" href="javascript:void(0);">{{ $t('statement.more') }}</a>
-    </div>
-    <b-container>
-      <b-navbar class="no-gutters align-items-center p-0">
-        <div class="col py-2 d-flex align-items-start">
-          <img class="logo-sm" :src="publicPath + 'res/icons/logo/logo_sm.svg'">
-          <div class="beta-tag">BETA</div>
-        </div>
-        <b-navbar-nav>
-          <b-nav-item active href="###">{{ $t('global.home') }}</b-nav-item>
-          <b-nav-item href="###">{{ $t('global.swap') }}</b-nav-item>
-          <b-nav-item href="###">{{ $t('global.liquidity') }}</b-nav-item>
-          <b-nav-item href="###">{{ $t('global.stats') }}</b-nav-item>
-        </b-navbar-nav>
-        <sel-language class="ml-2" />
-      </b-navbar>
-    </b-container>
+  <b-container fluid id="app" class="px-0">
+    <root-header />
 
-    <total-balances :total-volume='totalVolume'/>
+    <total-balances :totalVolume='totalVolume'/>
 
     <!-- <div class='screencontainer'>
     <div class="top-menu-bar">
@@ -120,37 +92,11 @@
     </div> -->
 
     <div id="screen">
-        <!-- <div :class="'blue window ' + $route.name">
-            <h1><img :src="logoSrc" alt="🌀 Curve"></h1>
-        </div> -->
-        <b-container class="mt-4">
-          <div class='info-message gentle-message window half-width gentle-message' v-if='hasConnectedWallet'>
-            {{ $t('wallet.notConnected') }}<button class="ml-2" @click='changeWallets'>{{ $t('wallet.connect') }}</button>
-          </div>
-        </b-container>
-        <!-- <div class='info-message gentle-message window half-width gentle-message CRV'>
-          <div>
-            <a href='https://etherscan.io/address/0xD533a949740bb3306d119CC777fa900bA034cd52'>CRV: 0xD533a949740bb3306d119CC777fa900bA034cd52</a>
-          </div>
-        </div>
-        <div class='simple-error window' v-show='plsReturn'>
-          Your recent withdrawal from Curve resulted in getting 1000 more USDT because of another user mistakenly transferring funds to the contract.
-          If you wish to return them - please contact us on <a href='https://twitter.com/CurveFinance'>Twitter</a>/<a href='https://t.me/curvefi'>Telegram</a>/<a href="https://discord.gg/9uEHakc" rel='noopener noreferrer'>@Discord</a>. Thank you! 
-        </div> -->
-        <router-view/>
+      <root-sub />
+      <router-view />
     </div>
-    <b-container>
-      <footer>
-        <a href="https://twitter.com/SFinanceEx">Twitter</a>
-        <a href="https://t.me/SFinanceEN" target="_blank">Telegram</a>
-        <a href="https://t.me/SFinanceCN" target="_blank">Telegram CN</a>
-        <a href="https://discord.gg/rc49Dzu" target="_blank">Discord</a>
-        <a href="https://medium.com/s-finance" target="_blank">Mdeium</a>
-        <a href="https://github.com/s-finance-org/curve-vue" target="_blank">git</a>
-        <!-- <a href="###">git-UI</a>
-        <a href="###">Developer Document</a> -->
-      </footer>
-    </b-container>
+
+    <root-footer />
   </b-container>
 </template>
 
@@ -160,8 +106,9 @@
   import * as volumeStore from '@/components/common/volumeStore'
   import constantPlatform from '../../constant/platform'
 
-  import SelLanguage from '../common/selLanguage'
-
+  import RootHeader from './RootHeader.vue'
+  import RootSub from './RootSub.vue'
+  import RootFooter from './RootFooter.vue'
   import TotalBalances from './TotalBalances.vue'
 
   export default {
@@ -183,27 +130,15 @@
       ]
     },
     components: {
-      TotalBalances,
-      SelLanguage
+      RootHeader,
+      RootSub,
+      RootFooter,
+      TotalBalances
     },
     computed: {
       ...getters,
       poolMenu() {
         return poolMenu;
-      },
-      publicPath() {
-        return process.env.BASE_URL
-      },
-      logoSrc() {
-        if(!currentContract.swapbtc) return this.publicPath + 'logo_optimized.svg'
-        else return this.publicPath + 'logo_ren_beta_optimized.svg'
-      },
-      hasConnectedWallet() {
-        return this.default_account == '0x0000000000000000000000000000000000000000' 
-                && !['Donate', 'StatsDaily', 'Audits', 'Stats', 'Contracts', 'FAQ', 'RootFAQ'].includes(this.$route.name)
-      },
-      plsReturn() {
-        return currentContract.currentContract.toLowerCase() == '0x72c20f89008729c91b6bb85f3104fda942494cef'.toLowerCase()
       },
       totalVolume() {
 				return volumeStore.totalVolume()
@@ -213,68 +148,14 @@
       changePools(pool) {
         changeContract(pool)
       },
-      async changeWallets() {
-        changeWallets()
-      },
       async changeAccounts() {
         return onboard.accountSelect();
-      },
-      onStatement () {
-        const { $i18n } = this
-
-        this.$bvModal.msgBoxOk($i18n.t('statement.cont'), {
-            title: $i18n.t('statement.slogan'),
-            hideBackdrop: true,
-            size: 'lg',
-            okTitle: $i18n.t('statement.ok'),
-            okVariant: 'danger',
-            buttonSize: 'lg',
-            contentClass: 'statement-modal',
-            centered: true
-          })
       }
     },
   }
 </script>
 
 <style scoped>
-  .logo-sm {
-    width: 34px;
-    height: 40px;
-  }
-  .beta-tag {
-    background-color: #1ba57b;
-    color: rgba(255,255,255,0.85);
-    border-radius: 2px;
-    line-height: 18px;
-    font-size: 10px;
-    text-align: center;
-    padding: 0 4px;
-    margin-left: -4px;
-  }
-  .beta-banner {
-    background-color: #1BA57B;
-    color: rgba(255,255,255,0.85);
-    text-align: center;
-    line-height: 20px;
-    font-size: 12px;
-  }
-  .beta-banner a {
-    color: #fff;
-    padding-right: 8px;
-    text-decoration: underline;
-  }
-  .statement-banner {
-    text-align: center;
-    line-height: 20px;
-    font-size: 12px;
-    background-color: #F7CA00;
-  }
-  .statement-banner a,
-  .statement-banner a:hover {
-    color: #1ba57b;
-    /* text-decoration: underline; */
-  }
   /* #changeAccounts {
     margin-top: 0.3em;
   }

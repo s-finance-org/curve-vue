@@ -25,7 +25,8 @@ export default {
     instant: 'Instant',
     slow: 'Slow',
     low: 'Low',
-    notAvailable: 'Not available'
+    notAvailable: 'Not available',
+    fee: 'Fee',
   },
   beta: {
     slogan: 'The project is still in testing stage, please pay attention to the risks and stay tuned for more functions~',
@@ -67,5 +68,16 @@ export default {
     maxSynthBalance: 'Max balance you can use is {0}',
     susdWaitingPeriod: 'Cannot transfer {0} during waiting period {1} secs left',
     warningNoPool: 'Swap not available. Please select {0} in pool select'
+  },
+  balancesInfo: {
+    name: 'Currency reserves',
+    assetDistribution: 'Asset distribution',
+    swapFeeRate: 'Swap fee',
+    depositFeeRate: 'Deposit fee',
+    withdrawalFeeRate: 'Withdrawal fee',
+    adminFeeRate: 'Admin fee',
+    avgAssetPrice: 'Average asset price',
+    amplificationCoefficient: 'AmplificationCoefficient',
+    fundingFeeRate: 'FundingFeeRate'
   }
 }

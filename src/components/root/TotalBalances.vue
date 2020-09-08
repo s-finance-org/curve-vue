@@ -1,17 +1,18 @@
 <template>
     <div>
+      {{ currentPool }}
       <div class="total-bg">
         <b-container class="d-flex py-4 total-cont">
           <img class="logo_orgin mr-4" :src="publicPath + 'res/icons/logo/logo_orgin.svg'">
           <div class="total-box mr-4 ml-auto">
             <h6 class="text-black-65">{{ $t('total.deposits') }}</h6>
-            <text-overlay-loading :show="!total">
-              <h4 class="mb-0">{{total | formatNumber}}$</h4>
+            <text-overlay-loading :show="!(totalBalances1 || total)">
+              <h4 class="mb-0">{{totalBalances1 || total | formatNumber}}$</h4>
             </text-overlay-loading>
           </div>
           <div class="total-box">
             <h6 class="text-black-65">{{ $t('global.dailyVol') }}</h6>
-            <text-overlay-loading :show="volume < 0">
+            <text-overlay-loading :show="!(volume >= 0)">
               <h4 class="mb-0">{{(volume | 0) | formatNumber(0)}}$</h4>
             </text-overlay-loading>
           </div>
@@ -44,11 +45,7 @@
   import TextOverlayLoading from '../../components/common/TextOverlayLoading'
 
 	export default {
-		props: {
-			totalVolume: {
-				default: undefined,
-			}
-    },
+		props: ['totalVolume', 'bal_info'],
 		data: () => ({
 			total: '',
     }),
@@ -60,8 +57,22 @@
         return process.env.BASE_URL
       },
 			volume() {
-				return this.totalVolume !== undefined ? this.totalVolume : volumeStore.totalVolume() 
-			}
+				return this.totalVolume || volumeStore.totalVolume()
+      },
+      // FIXME: temp
+      totalBalances1() {
+        return this.bal_info && this.bal_info.reduce((a, b) => a + b, 0) || null
+      },
+      poolVolumeUSD() {
+        const converts = {
+          'iearn': 'y',
+          'susdv2': 'susd'
+        }
+
+        return volumeStore.state.volumes[
+          converts[this.currentPool] || this.currentPool
+        ][0]
+      },
 		},
 		async created() {
 			this.totalBalances()

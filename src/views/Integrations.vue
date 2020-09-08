@@ -214,7 +214,7 @@
 <script>
 	export default {
 		metaInfo: {
-	      title: 'Curve.fi :: Integrations',
+	      title: 'S.finance Integrations',
 	      meta: [
 	        {'property': 'og:title', 'content': 'curve.fi/integrations'},
 	        {'property': 'og:url', 'content': 'https://curve.fi/integrations'},
