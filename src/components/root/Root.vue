@@ -29,16 +29,22 @@
           {{ $t('global.dailyVol') }}
         </template>
         <template v-slot:cell(volume)="data">
-            <span :class="{'loading line': data.item.volData && data.item.volData[0] < 0}">
-              <span v-show='data.item.volData && data.item.volData[0] >= 0'>${{(data.item.volData && data.item.volData[0] | 0) | formatNumber(0)}}</span>
-              <span v-show='!data.item.volData && data.item.volData[0]'>$0</span>
-            </span>
+          <text-overlay-loading :show="data.item.volData && data.item.volData[0] < 0">
+            <template v-if="data.item.volData && data.item.volData[0] >= 0">
+              ${{(data.item.volData && data.item.volData[0] | 0) | formatNumber(0)}}
+            </template>
+            <template v-else>
+              $0
+            </template>
+          </text-overlay-loading>
         </template>
         <template v-slot:head(apr)>
           {{ $t('global.apr') }}
         </template>
         <template v-slot:cell(apr)="data">
-          <span :class="{'loading line': !daily_apy[data.item.id]}">{{daily_apy[data.item.id]}}</span>%
+          <text-overlay-loading :show="!daily_apy[data.item.id]">
+            {{daily_apy[data.item.id]}}
+          </text-overlay-loading>
         </template>
         <template v-slot:head(operating)>
           {{ $t('global.operating') }}
@@ -383,11 +389,13 @@
 
 	import * as helpers from '../../utils/helpers'
 
-	import { contract } from '../../contract'
+  import { contract } from '../../contract'
+  import TextOverlayLoading from '../../components/common/TextOverlayLoading'
 
 	export default {
 		components: {
-      BasicTrade
+      BasicTrade,
+      TextOverlayLoading
 		},
 		data: () => ({
 			activePoolLink: -1,
