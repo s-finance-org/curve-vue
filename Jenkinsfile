@@ -13,7 +13,7 @@ pipeline {
     environment {
         BUILD_VERSION = ''
         LOCAL_BUILD_DIR = 'dist'
-        BUCKET_PATH = '/test'
+        BUCKET_PATH = '/'
     }
     stages {
         stage('Init') {
@@ -53,15 +53,15 @@ pipeline {
         stage('Deploy') {
             environment {
                 REGION = "cn-hongkong"
-                OSS_BUCKET = "s-finance"
+                OSS_BUCKET = ""
             }
             steps {
                 echo '---== Deploy Stage ==---'
                 script {
                     if (env.GIT_BRANCH == 'master') {
-                        BUCKET_PATH = '/prod'
+                        OSS_BUCKET = 's-finance'
                     } else {
-                        BUCKET_PATH = '/test'
+                        OSS_BUCKET = 'test-s-finance'
                     }
                 }
                 gitlabCommitStatus("deploy") {
