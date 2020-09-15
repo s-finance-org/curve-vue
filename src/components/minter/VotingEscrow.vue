@@ -383,7 +383,7 @@
 				  "0x69Fb7c45726cfE2baDeE8317005d3F94bE838840": 'busd',
 				  "0x64E3C23bfc40722d3B649844055F1D51c1ac041d": 'pax',
 				  "0xB1F2cdeC61db658F091671F5f199635aEF202CAC": 'ren',
-				  "0xA90996896660DEcC6E997655E065b23788857849": 'susdv2',
+				  [process.env.VUE_APP_PSS_GAUGE]: 'susdv2',
 				  "0x705350c4BcD35c9441419DdD5d2f097d7a55410F": 'sbtc',
 				},
 
@@ -575,7 +575,7 @@
 
 			async loadBalances() {
 				this.votingEscrow = new web3.eth.Contract(daoabis.votingescrow_abi, '0x5f3b5DfEb7B28CDbD7FAba78963EE202a494e2A2')
-				this.CRV = new web3.eth.Contract(daoabis.CRV_abi, '0xD533a949740bb3306d119CC777fa900bA034cd52')
+				this.CRV = new web3.eth.Contract(daoabis.CRV_abi, process.env.VUE_APP_SFG)
 
 				window.votingEscrow = this.votingEscrow
 				window.CRV = this.CRV
@@ -800,7 +800,7 @@
 				  "0x69Fb7c45726cfE2baDeE8317005d3F94bE838840",
 				  "0x64E3C23bfc40722d3B649844055F1D51c1ac041d",
 				  "0xB1F2cdeC61db658F091671F5f199635aEF202CAC",
-				  "0xA90996896660DEcC6E997655E065b23788857849",
+				  process.env.VUE_APP_PSS_GAUGE,
 				  "0x705350c4BcD35c9441419DdD5d2f097d7a55410F"
 				]
 

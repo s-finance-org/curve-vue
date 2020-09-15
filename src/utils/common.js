@@ -26,7 +26,7 @@ let requiresResetAllowance = [
   "0x075b1bb99792c9e1041ba13afef80c91a1e70fb3",
 
   //CRV token
-  "0xd533a949740bb3306d119cc777fa900ba034cd52",
+  process.env.VUE_APP_SFG,
 ]
 
 export function approve(contract, amount, account, toContract) {

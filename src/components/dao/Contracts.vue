@@ -61,7 +61,7 @@
 	        	<div v-show='showContracts == 3'>
 		            <fieldset>
 		            	<legend>Curve DAO</legend>
-		                	<a href = "https://etherscan.io/address/0xD533a949740bb3306d119CC777fa900bA034cd52">
+		                	<a :href = CRV_toekn_href>
 		                		<img class='icon' :src="publicPath + 'logo.png'"> <span class='text'>CRV token</span>
 		                	</a>
 		                	<a href = "https://etherscan.io/address/0x5f3b5DfEb7B28CDbD7FAba78963EE202a494e2A2">
@@ -73,7 +73,7 @@
 		                	<a href = "https://etherscan.io/address/0x2F50D538606Fa9EDD2B11E2446BEb18C9D5846bB">
 		                		<span class='text'>Gauge Controller</span>
 		                	</a>
-		                	<a href = "https://etherscan.io/address/0xd061D61a4d941c39E5453435B6345Dc261C2fcE0">
+		                	<a :href = Minter_href>
 		                		<span class='text'>Minter</span>
 		                	</a>
 		                	<a href = "https://etherscan.io/address/0x6e8f6D1DA6232d5E40b0B8758A0145D6C5123eB7">
@@ -120,7 +120,9 @@
 				{ name: 'renCurve', ticker: 'renCrv' },
 				{ name: 'sbtcCurve', ticker: 'sbtcCrv' },
 			],
-			showContracts: 3,
+      showContracts: 3,
+      CRV_toekn_href: `https://etherscan.io/address/${process.env.VUE_APP_SFG}`,
+      Minter_href: `https://etherscan.io/address/${process.env.VUE_APP_PS_MINTER}`
 		}),
 		computed: {
 			contractAddresses() {
@@ -170,7 +172,7 @@
 					},
 					{
 						name: "susdv2",
-						address: "0xA90996896660DEcC6E997655E065b23788857849",
+						address: process.env.VUE_APP_PSS_GAUGE,
 					},
 					{
 					    name: "PAX",

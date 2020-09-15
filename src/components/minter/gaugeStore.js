@@ -86,7 +86,7 @@ export async function getState() {
 
 	state.gaugeController = new contract.web3.eth.Contract(daoabis.gaugecontroller_abi, '0x2F50D538606Fa9EDD2B11E2446BEb18C9D5846bB')
 	state.votingEscrow = new contract.web3.eth.Contract(daoabis.votingescrow_abi, '0x5f3b5DfEb7B28CDbD7FAba78963EE202a494e2A2')
-	state.minter = new contract.web3.eth.Contract(daoabis.minter_abi, '0xd061D61a4d941c39E5453435B6345Dc261C2fcE0')
+	state.minter = new contract.web3.eth.Contract(daoabis.minter_abi, process.env.VUE_APP_PS_MINTER)
 
 
 	state.n_gauges = +(await state.gaugeController.methods.n_gauges().call())
