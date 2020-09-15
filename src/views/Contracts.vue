@@ -61,7 +61,7 @@
 	        	<div v-show='showContracts == 3'>
 		            <fieldset>
 		            	<legend>Curve DAO</legend>
-		                	<a href = "https://etherscan.io/address/0xD533a949740bb3306d119CC777fa900bA034cd52">
+		                	<a href =`https://etherscan.io/address/${process.env.VUE_APP_SFG}` >
 		                		<img class='icon' :src="publicPath + 'logo.png'"> <span class='text'>CRV token</span>
 		                	</a>
 		                	<a href = "https://etherscan.io/address/0x5f3b5DfEb7B28CDbD7FAba78963EE202a494e2A2">
@@ -171,7 +171,7 @@
 					},
 					{
 						name: "susdv2",
-						address: "0xA90996896660DEcC6E997655E065b23788857849",
+						address: process.env.VUE_APP_PSS_GAUGE,
 					},
 					{
 						name: "sbtc",

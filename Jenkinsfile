@@ -38,7 +38,7 @@ pipeline {
                     // Prepare Build Environment
                     sh 'npm install'
                     // Build
-                    sh "npm config set rune:build_version ${BUILD_VERSION}"
+                    sh "npm config set s-finance-web:build_version ${BUILD_VERSION}"
                     script {
                         if (env.GIT_BRANCH == 'master') {
                             sh 'npm run prod'

@@ -51,6 +51,8 @@
     },
     created () {
       googleAnalytics()
+
+      console.log('build_version:', process.env.npm_package_config_build_version)
     },
     computed: {
       ...getters,

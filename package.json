@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "serve": "vue-cli-service serve & npm config set s-finance-web:build_version 111222333",
     "build": "vue-cli-service build --mode development",
     "prod": "vue-cli-service build"
   },
