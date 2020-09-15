@@ -1,7 +1,7 @@
 <template>
   <b-container fluid id="app" class="px-0">
     <root-header />
-
+    {{ test }}
     <total-balances :totalVolume='totalVolume'/>
 
     <!-- <div class='screencontainer'>
@@ -142,6 +142,9 @@
       },
       totalVolume() {
 				return volumeStore.totalVolume()
+      },
+      test () {
+        return process.env.VUE_APP_SECRET
       }
     },
     methods: {

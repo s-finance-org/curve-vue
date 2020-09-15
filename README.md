@@ -42,14 +42,19 @@ Go to the withdraw page. If you want to withdraw some percentage of your liquidi
 npm install
 ```
 
-### Compiles and hot-reloads for development
+### Compiles and hot-reloads for development local
 ```
 npm run serve
 ```
 
-### Compiles and minifies for production
+### Compiles and hot-reloads for development build
 ```
 npm run build
+```
+
+### Compiles and minifies for production build
+```
+npm run prod
 ```
 
 ### Customize configuration

@@ -27,6 +27,7 @@ export default {
     low: 'Low',
     notAvailable: 'Not available',
     fee: 'Fee',
+    norm: 'Norm'
   },
   beta: {
     slogan: 'The project is still in testing stage, please pay attention to the risks and stay tuned for more functions~',

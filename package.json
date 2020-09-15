@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "build": "vue-cli-service build --mode development",
+    "prod": "vue-cli-service build"
   },
   "dependencies": {
     "@biconomy/mexa": "^1.5.12",
