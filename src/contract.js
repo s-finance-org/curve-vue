@@ -17,7 +17,7 @@ export const LENDING_PRECISION = 1e18;
 export const PRECISION = 1e18;
 
 var migration_address = '0x54Ee22d5593FC76fB20EafAb66C45aAb3268B800';
-export const infura_url = `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_URL}`
+export const infura_url = `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`
 
 const currencies = {
 	compound: {

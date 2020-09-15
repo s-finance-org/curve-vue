@@ -45,8 +45,8 @@ import { multicall_address, multicall_abi } from './allabis'
 });*/
 
 export const notify = Notify({
-  dappId: 'c68d8ec3-9b9a-4ba5-a3eb-6232eff79030',
-  networkId: 1,
+  dappId: process.env.VUE_APP_BLOCKNATIVE_KEY,
+  networkId: +process.env.VUE_APP_BLOCKNATIVE_NETWORK_ID,
   desktopPosition: 'topRight',
 })
 
@@ -75,12 +75,12 @@ const wallets = [
     appUrl: "https://curve.fi",
     email: "info@curve.fi",
     rpcUrl:
-      `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_URL}`
+      `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`
   },
   {
     walletName: "ledger",
     rpcUrl:
-      `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_URL}`,
+      `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`,
     LedgerTransport: TransportU2F,
   },
   { walletName: "dapper" },
@@ -90,18 +90,18 @@ const wallets = [
   { walletName: "authereum", apiKey: "_BTsipRcEmPeuVteLOGdoh1CXt733YLZ7u3ipbe_dAk" },
   { 
     walletName: "trust",
-    rpcUrl: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_URL}`,
+    rpcUrl: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`,
   },
   {
     walletName: "walletConnect",
-    infuraKey: process.env.VUE_APP_INFURA_URL
+    infuraKey: process.env.VUE_APP_INFURA_KEY
   },
   { 
     walletName: "walletLink",
     appName: 'Curve Finance',
     appLogoUrl: 'https://www.curve.fi/logo.png',
     rpcUrl:
-    `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_URL}`,
+    `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`,
   },
   {
     walletName: "portis",
@@ -112,10 +112,10 @@ const wallets = [
   { walletName: "opera" },
   { walletName: "operaTouch" },
   { walletName: "unilogin" },
-  { walletName: "imToken", rpcUrl: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_URL}` },
+  { walletName: "imToken", rpcUrl: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}` },
   { walletName: "meetone" },
-  { walletName: "mykey", rpcUrl: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_URL}` },
-  { walletName: "huobiwallet", rpcUrl: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_URL}` },
+  { walletName: "mykey", rpcUrl: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}` },
+  { walletName: "huobiwallet", rpcUrl: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}` },
 ]
 
 if(window.web3 && window.web3.currentProvider.isTrust) {
@@ -135,8 +135,8 @@ if(window.web3 && window.web3.currentProvider.wallet == "MEETONE") {
 }
 
 export const onboard = Onboard({
-  dappId: 'c68d8ec3-9b9a-4ba5-a3eb-6232eff79030',       // [String] The API key created by step one above
-  networkId: 1,  // [Integer] The Ethereum network ID your Dapp uses.
+  dappId: process.env.VUE_APP_BLOCKNATIVE_KEY,       // [String] The API key created by step one above
+  networkId: +process.env.VUE_APP_BLOCKNATIVE_NETWORK_ID,  // [Integer] The Ethereum network ID your Dapp uses.
   subscriptions: {
     wallet: wallet => {
       state.contract.web3 = window.web3 = new Web3(wallet.provider)

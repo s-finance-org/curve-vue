@@ -1,4 +1,4 @@
-export var infura_url = `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_URL}`
+export var infura_url = `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`
 export let multicall_address = '0xeefba1e63905ef1d7acba5a8513c70307c1ce441'
 export let multicall_abi = [{"constant":true,"inputs":[],"name":"getCurrentBlockTimestamp","outputs":[{"name":"timestamp","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"components":[{"name":"target","type":"address"},{"name":"callData","type":"bytes"}],"name":"calls","type":"tuple[]"}],"name":"aggregate","outputs":[{"name":"blockNumber","type":"uint256"},{"name":"returnData","type":"bytes[]"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"getLastBlockHash","outputs":[{"name":"blockHash","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"addr","type":"address"}],"name":"getEthBalance","outputs":[{"name":"balance","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCurrentBlockDifficulty","outputs":[{"name":"difficulty","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCurrentBlockGasLimit","outputs":[{"name":"gaslimit","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getCurrentBlockCoinbase","outputs":[{"name":"coinbase","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"blockNumber","type":"uint256"}],"name":"getBlockHash","outputs":[{"name":"blockHash","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"}]
 export const ERC20_abi = [{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_value","type":"uint256"}],"name":"approve","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transferFrom","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"balance","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transfer","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"},{"name":"_spender","type":"address"}],"name":"allowance","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"payable":true,"stateMutability":"payable","type":"fallback"},{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"},{"indexed":true,"name":"spender","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"from","type":"address"},{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Transfer","type":"event"}]
@@ -20,7 +20,7 @@ swap_address: '0xA2B47E3D5c44877cca798226B7B8118F9BFb7A56',
 token_address: '0x845838DF265Dcd2c412A1Dc9e959c7d08537f8a2',
 old_token_address: '0x3740fb63ab7a09891d7c0d4299442A551D06F5fD',
 migration_address: '0x54Ee22d5593FC76fB20EafAb66C45aAb3268B800',
-infura_url: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_URL}`,
+infura_url: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`,
 underlying_coins: [
         '0x6B175474E89094C44Da98b954EedeAC495271d0F',
         '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',],
@@ -1847,7 +1847,7 @@ var usdt = {
   is_plain: [false, false, true],
   swap_address: '0x52EA46506B9CC5Ef470C5bf89f17Dc28bB35D85C',
   token_address: '0x9fC689CCaDa600B6DF723D9E47D84d76664a1F23',
-  infura_url: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_URL}`,
+  infura_url: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`,
   underlying_coins: [
           '0x6B175474E89094C44Da98b954EedeAC495271d0F',
           '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
@@ -2906,7 +2906,7 @@ var iearn = {
   is_plain: [false, false, false, false],
   swap_address: '0x45F783CCE6B7FF23B2ab2D70e416cdb7D6055f51',
   token_address: '0xdF5e0e81Dff6FAF3A7e52BA697820c5e32D806A8',
-  infura_url: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_URL}`,
+  infura_url: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`,
   underlying_coins: [
         '0x6B175474E89094C44Da98b954EedeAC495271d0F',
         '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
@@ -3967,7 +3967,7 @@ var busd = {
   is_plain: [false, false, false, false],
   swap_address: '0x79a8C46DeA5aDa233ABaFFD40F3A0A2B1e5A4F27',
   token_address: '0x3B3Ac5386837Dc563660FB6a0937DFAa5924333B',
-  infura_url: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_URL}`,
+  infura_url: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`,
   underlying_coins: [
         '0x6B175474E89094C44Da98b954EedeAC495271d0F',
         '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
@@ -6882,7 +6882,7 @@ var susdv2 = {
 	is_plain: [true, true, true, true],
 	swap_address: '0xA5407eAE9Ba41422680e2e00537571bcC53efBfD',
 	token_address: '0xC25a3A3b969415c80451098fa907EC722572917F',
-	infura_url: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_URL}`,
+	infura_url: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`,
 	deposit_address: '0xFCBa3E75865d2d561BE8D220616520c171F12851',
 	underlying_coins: [
         '0x6B175474E89094C44Da98b954EedeAC495271d0F',
@@ -7998,7 +7998,7 @@ var pax = {
 	is_plain: [false, false, false, true],
 	swap_address: '0x06364f10B501e868329afBc005b3492902d6C763',
 	token_address: '0xD905e2eaeBe188fc92179b6350807D8bd91Db0D8',
-	infura_url: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_URL}`,
+	infura_url: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`,
 	deposit_address: '0xA50cCc70b6a011CffDdf45057E39679379187287',
 	underlying_coins: [
         '0x6B175474E89094C44Da98b954EedeAC495271d0F',
@@ -8846,7 +8846,7 @@ var tbtc = {
 	is_plain: [true, true, true],
 	swap_address: '0x9726e9314eF1b96E45f40056bEd61A088897313E',
 	token_address: '0x1f2a662FB513441f06b8dB91ebD9a1466462b275',
-	infura_url: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_URL}`,
+	infura_url: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`,
 	//no deposit zap
 	underlying_coins: [
 		//tbtc
@@ -8872,7 +8872,7 @@ var ren = {
 	is_plain: [true, true],
 	swap_address: '0x93054188d876f558f4a66B2EF1d97d16eDf0895B',
 	token_address: '0x49849C98ae39Fff122806C06791Fa73784FB3675',
-	infura_url: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_URL}`,
+	infura_url: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`,
 	underlying_coins: [
 		'0xEB4C2781e4ebA804CE9a9803C67d0893436bB27D',
 		'0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
@@ -8898,7 +8898,7 @@ var sbtc = {
 	is_plain: [true, true, true],
 	swap_address: '0x7fC77b5c7614E1533320Ea6DDc2Eb61fa00A9714',
 	token_address: '0x075b1bb99792c9E1041bA13afEf80C91a1e70fB3',
-	infura_url: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_URL}`,
+	infura_url: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`,
 	underlying_coins: [
 		'0xEB4C2781e4ebA804CE9a9803C67d0893436bB27D',
 		'0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
