@@ -1,6 +1,5 @@
 <template>
     <div>
-      {{ currentPool }}
       <div class="total-bg">
         <b-container class="d-flex py-4 total-cont">
           <img class="logo_orgin mr-4" :src="publicPath + 'res/icons/logo/logo_orgin.svg'">
@@ -75,7 +74,8 @@
       },
 		},
 		async created() {
-			this.totalBalances()
+      await this.totalBalances()
+
 			if(this.totalVolume === undefined)
 				this.dailyVolume()
 		},
