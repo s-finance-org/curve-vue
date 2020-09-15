@@ -19,7 +19,7 @@ import { multicall_address, multicall_abi } from './allabis'
     walletconnect: {
         package: WalletConnectProvider, // required
         options: {
-          infuraId: "c334bb4b45a444979057f0fb8a0c9d1b" // required
+          infuraId: "e96fe629996f48e2ae907a30feeefa09" // required
         }
     },
     authereum: {
@@ -75,12 +75,12 @@ const wallets = [
     appUrl: "https://curve.fi",
     email: "info@curve.fi",
     rpcUrl:
-      "https://mainnet.infura.io/v3/c334bb4b45a444979057f0fb8a0c9d1b"
+      `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_URL}`
   },
   {
     walletName: "ledger",
     rpcUrl:
-      "https://mainnet.infura.io/v3/c334bb4b45a444979057f0fb8a0c9d1b",
+      `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_URL}`,
     LedgerTransport: TransportU2F,
   },
   { walletName: "dapper" },
@@ -90,18 +90,18 @@ const wallets = [
   { walletName: "authereum", apiKey: "_BTsipRcEmPeuVteLOGdoh1CXt733YLZ7u3ipbe_dAk" },
   { 
     walletName: "trust",
-    rpcUrl: "https://mainnet.infura.io/v3/c334bb4b45a444979057f0fb8a0c9d1b",
+    rpcUrl: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_URL}`,
   },
   {
     walletName: "walletConnect",
-    infuraKey: "c334bb4b45a444979057f0fb8a0c9d1b"
+    infuraKey: process.env.VUE_APP_INFURA_URL
   },
   { 
     walletName: "walletLink",
     appName: 'Curve Finance',
     appLogoUrl: 'https://www.curve.fi/logo.png',
     rpcUrl:
-      "https://mainnet.infura.io/v3/c334bb4b45a444979057f0fb8a0c9d1b",
+    `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_URL}`,
   },
   {
     walletName: "portis",
@@ -112,10 +112,10 @@ const wallets = [
   { walletName: "opera" },
   { walletName: "operaTouch" },
   { walletName: "unilogin" },
-  { walletName: "imToken", rpcUrl: "https://mainnet.infura.io/v3/c334bb4b45a444979057f0fb8a0c9d1b" },
+  { walletName: "imToken", rpcUrl: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_URL}` },
   { walletName: "meetone" },
-  { walletName: "mykey", rpcUrl: 'https://mainnet.infura.io/v3/c334bb4b45a444979057f0fb8a0c9d1b' },
-  { walletName: "huobiwallet", rpcUrl: 'https://mainnet.infura.io/v3/c334bb4b45a444979057f0fb8a0c9d1b' },
+  { walletName: "mykey", rpcUrl: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_URL}` },
+  { walletName: "huobiwallet", rpcUrl: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_URL}` },
 ]
 
 if(window.web3 && window.web3.currentProvider.isTrust) {
