@@ -156,19 +156,19 @@
 				return [
 					{
 						name: "Compound",
-						address: "0x7ca5b0a2910B33e9759DC7dDB0413949071D7575",
+						address: process.env.VUE_APP_COMPOUND,
 					},
 					{
 					    name: "USDT",
-					    address: "0xBC89cd85491d81C6AD2954E6d0362Ee29fCa8F53",
+					    address: process.env.VUE_APP_USDT,
 					},
 					{
 					    name: "Y",
-					    address: "0xFA712EE4788C042e2B7BB55E6cb8ec569C4530c1",
+					    address: process.env.VUE_APP_Y,
 					},
 					{
 					    name: "bUSD",
-					    address: "0x69Fb7c45726cfE2baDeE8317005d3F94bE838840",
+					    address: process.env.VUE_APP_BUSD,
 					},
 					{
 						name: "susdv2",
@@ -176,15 +176,15 @@
 					},
 					{
 					    name: "PAX",
-					    address: "0x64E3C23bfc40722d3B649844055F1D51c1ac041d",
+					    address: process.env.VUE_APP_PAX,
 					},
 					{
 					    name: "RenBTC",
-					    address: "0xB1F2cdeC61db658F091671F5f199635aEF202CAC",
+					    address: process.env.VUE_APP_REN,
 					},
 					{
 						name: "sbtc",
-						address: "0x705350c4BcD35c9441419DdD5d2f097d7a55410F",
+						address: process.env.VUE_APP_SBTC,
 					},
 				]
 			},

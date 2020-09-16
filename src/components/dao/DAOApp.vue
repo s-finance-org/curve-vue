@@ -1,26 +1,19 @@
 <template>
   <div id="app" :class="{'root': true, [$route.name]: true}">
-     <div class="top-menu-bar">
+    <div class="top-menu-bar">
       <label for="hamburger" class='border-menu'></label>
       <input type="checkbox" id="hamburger"/>
 
       <div class='poolsdropdown'>
         <button class='simplebutton'>☰</button>
         <div class='dropdown'>
-           <!--  <a :href="'//compound.localhost:8080'+$route.path" :class="{selected: currentPool == 'compound'}" @click="changePools('compound')">Compound</a>
-            <a :href="'//usdt.localhost:8080'+$route.path" :class="{selected: currentPool == 'usdt'}" @click="changePools('usdt')">USDT</a>
-            <a :href="'//y.localhost:8080'+$route.path" :class="{selected: currentPool == 'iearn'}" @click="changePools('iearn')">Y</a>
-            <a :href="'//busd.localhost:8080'+$route.path" :class="{selected: currentPool == 'busd'}" @click="changePools('busd')">bUSD</a> -->
-
             <a :href="'https://curve.fi/compound/' + ($route.path.split('/')[2] || '')  ">Compound</a>
-            <!-- <a href="'https://curve.fi/usdt/' + ($route.path.split('/')[2] || '')  ">USDT</a> -->
             <a :href="'https://curve.fi/pax/' + ($route.path.split('/')[2] || '')">PAX</a>
             <a :href="'https://curve.fi/iearn/' + ($route.path.split('/')[2] || '') ">Y</a>
             <a :href="'https://curve.fi/busd/' + ($route.path.split('/')[2] || '')  ">bUSD</a>
             <a :href="'https://curve.fi/susdv2/' + ($route.path.split('/')[2] || '')">sUSD</a>
             <a :href="'https://curve.fi/ren/' + ($route.path.split('/')[2] || '')">renBTC</a>
             <a :href="'https://curve.fi/sbtc/' + ($route.path.split('/')[2] || '')">sBTC</a>
-<!--             <a href="https://iearn.finance/pool">sUSD</a> -->
             <p>____________</p>
             <button class='simplebutton' @click = 'changeWallets'>Change wallet</button>
             <button id='changeAccounts' class='simplebutton' 
@@ -93,7 +86,7 @@
       <button id='changeAccounts' class='simplebutton showmobile' 
         v-show="['ledger', 'trezor'].includes(walletName)" 
         @click = 'changeAccounts'>Change accounts</button>
-    </div>  
+    </div>
     <div id="screen">
         <div :class="'blue window ' + $route.name">
             <h1><img :src="logoSrc" alt="🌀 Curve"></h1>

@@ -212,20 +212,19 @@
 
 			gaugesNames: {
 			  "0x0000000000000000000000000000000000000000": 'Select a gauge',
-			  "0x7ca5b0a2910B33e9759DC7dDB0413949071D7575": 'compound',
-			  "0xBC89cd85491d81C6AD2954E6d0362Ee29fCa8F53": 'usdt',
-			  "0xFA712EE4788C042e2B7BB55E6cb8ec569C4530c1": 'y',
-			  "0x69Fb7c45726cfE2baDeE8317005d3F94bE838840": 'busd',
-			  "0x64E3C23bfc40722d3B649844055F1D51c1ac041d": 'pax',
-			  "0xB1F2cdeC61db658F091671F5f199635aEF202CAC": 'ren',
+			  [process.env.VUE_APP_COMPOUND]: 'compound',
+			  [process.env.VUE_APP_USDT]: 'usdt',
+			  [process.env.VUE_APP_Y]: 'y',
+			  [process.env.VUE_APP_BUSD]: 'busd',
+			  [process.env.VUE_APP_PAX]: 'pax',
+			  [process.env.VUE_APP_REN]: 'ren',
 			  [process.env.VUE_APP_PSS_GAUGE]: 'susdv2',
-			  "0x705350c4BcD35c9441419DdD5d2f097d7a55410F": 'sbtc',
+			  [process.env.VUE_APP_SBTC]: 'sbtc',
 			},
 
 		}),
 
 		async created() {
-			
 			this.$watch(() => contract.default_account && state.initialized, val => {
 				if(val) this.mounted()
 			}, {

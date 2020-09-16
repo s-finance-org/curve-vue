@@ -25,9 +25,6 @@
 				<div class='boost' v-show='currentBoost !== null && !isNaN(currentBoost)'>
 					Current boost: {{ currentBoost && currentBoost.toFixed(4) }}
 				</div>
-				<!-- <div class='boost' v-show='maxGaugeBoost !== null'>
-					Max gauge boost: {{ maxGaugeBoost && maxGaugeBoost.toFixed(4) }}
-				</div> -->
 			</div>
 			<div :class="{'pools': true, 'justifySpaceAround': gaugeBalance > 0}">
 				<div class='flex-break'></div>
@@ -90,7 +87,6 @@
 					</div>
 					<button @click='withdraw'>Withdraw</button>
 
-					<!-- <button @click='update_liquidity_limit'>Update liquidity limit</button> -->
 				</div>
 				<div class='flex-break'></div>
 				<div class='claimButtons'>
