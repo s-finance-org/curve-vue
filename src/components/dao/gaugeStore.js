@@ -87,24 +87,20 @@ export async function getState() {
 	state.gaugeController = new contract.web3.eth.Contract(daoabis.gaugecontroller_abi, process.env.VUE_APP_GAUGE_CONTROLLER)
 	state.votingEscrow = new contract.web3.eth.Contract(daoabis.votingescrow_abi, process.env.VUE_APP_VOTING_ESCROW)
 	state.minter = new contract.web3.eth.Contract(daoabis.minter_abi, process.env.VUE_APP_PS_MINTER)
-console.log(state.gaugeController)
-console.log(state.votingEscrow)
-console.log('state.minter', state.minter)
+
 	state.n_gauges = +(await state.gaugeController.methods.n_gauges().call())
-console.log(1)
-console.log(state.n_gauges)
+
 	let swap_token = new contract.web3.eth.Contract(ERC20_abi, state.pools.susdv2.swap_token)
-console.log(swap_token)
+
 	let calls = Array.from(Array(state.n_gauges), (_, i) => [state.gaugeController._address, state.gaugeController.methods.gauges(i).encodeABI()])
 	calls = calls.concat(Object.values(state.pools).map(v => v.swap_token).map(v => [v, swap_token.methods.balanceOf(contract.default_account).encodeABI()]))
-console.log(2)
+
 	let aggcalls = await contract.multicall.methods.aggregate(calls).call()
 	let decodedGauges = aggcalls[1].slice(0, state.n_gauges).map(hex => web3.eth.abi.decodeParameter('address', hex))
 	let decodedBalances = aggcalls[1].slice(state.n_gauges).map((hex, i) => ({swap_token: calls[state.n_gauges + i][0], balance: web3.eth.abi.decodeParameter('uint256', hex)}))
 
 	let example_gauge = new contract.web3.eth.Contract(daoabis.liquiditygauge_abi, decodedGauges[0])
-console.log(3)
-console.log(decodedGauges)
+
 	let calls1 = decodedGauges.flatMap(gauge => [
 		[gauge, example_gauge.methods.lp_token().encodeABI()],
 		[state.gaugeController._address, state.gaugeController.methods.gauge_types(gauge).encodeABI()],
@@ -112,8 +108,6 @@ console.log(decodedGauges)
 		[gauge, example_gauge.methods.claimable_tokens(contract.default_account).encodeABI()],
 		[state.minter._address, state.minter.methods.minted(contract.default_account, gauge).encodeABI()],
   ])
-
-console.log('calls1', calls1)
 
 	let aggcalls1
 	try {
@@ -130,10 +124,10 @@ console.log('calls1', calls1)
 		aggcalls[1][38] = "0x0000000000000000000000000000000000000000000000000000000000000000"
 
 	}
-console.log(2)
+
 	let gaugeTypes = aggcalls1[1].filter((_, i) => i % 5 == 1).map(hex => +web3.eth.abi.decodeParameter('uint256', hex))
 	gaugeTypes = [...new Set(gaugeTypes)]
-	
+
 	calls = gaugeTypes.map(type => [state.gaugeController._address, state.gaugeController.methods.gauge_type_names(type).encodeABI()])
 	aggcalls = await contract.multicall.methods.aggregate(calls).call()
 	let gaugeTypesNames = aggcalls[1].map((hex, i) => ({type: gaugeTypes[i], name: web3.eth.abi.decodeParameter('string', hex)}))
@@ -146,8 +140,7 @@ console.log(2)
 		claimable_tokens: web3.eth.abi.decodeParameter('uint256', aggcalls1[1][i*5+3]),
 		minted: web3.eth.abi.decodeParameter('uint256', aggcalls1[1][i*5+4]),
   }))
-console.log('state.pools', state.pools)
-console.log('decodedGaugeLP', decodedGaugeLP)
+
 	Object.values(decodedGaugeLP).forEach((gauge, i) => {
     const gauge_swap_token = gauge.swap_token.toLowerCase()
 
@@ -165,9 +158,7 @@ console.log('decodedGaugeLP', decodedGaugeLP)
       return bool
     })
   })
-console.log(state.pools)
 
-console.log(3)
 	let gaugeBalances = aggcalls1[1].filter((_, i) => i % 5 == 2).map((hex, i) => ({
 		gauge: calls1[i*5+2][0],
 		balance: web3.eth.abi.decodeParameter('uint256', hex),
@@ -185,7 +176,6 @@ console.log(3)
 			gaugeBalance: gaugeBalances.find(pool => pool.gauge.toLowerCase() == poolInfo.gauge.toLowerCase()).balance
 		}
   })
-  console.log('state.mypools', state.mypools)
 
 	//console.log(decodedGauges, "THE GAUGES")
 
@@ -249,7 +239,6 @@ console.log(3)
 		state.mypools.find(v => v.name == pool).working_supply = _working_supply
 		state.mypools.find(v => v.name == pool).original_supply = totalSupplies[i]
 		state.mypools.find(v => v.name == pool).currentWorkingBalance = workingBalances[i]
-		//console.log(pool, gaugeRates[i], w[1], 31536000, _working_supply, "RATE")
 		let rate = (gaugeRates[i] * w[1] * 31536000 / _working_supply * 0.4) / virtual_price
 		let apy = rate * CRVprice * 100
 		if(isNaN(apy))

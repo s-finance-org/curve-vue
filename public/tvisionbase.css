@@ -262,3 +262,30 @@ fieldset {
   background: #eb3c00;
   border-radius: 2px;
 } */
+
+
+/* Tab */
+.tabs-nav {
+
+}
+.tabs-nav .nav-link {
+  font-size: 14px;
+  color: rgba(0,0,0,0.85);
+  line-height: 22px;
+  font-weight: 400;
+  border: 1px solid rgba(0,0,0,0.25);
+  border-radius: 2px;
+  padding: 6px 16px;
+  margin-left: 8px;
+}
+.tabs-nav li:first-child .nav-link {
+  margin-left: 0px;
+}
+.tabs-nav .nav-link.active, .tabs-nav .nav-link:hover {
+  background-color: #fff;
+  border-color: #eb3c00;
+  color: #eb3c00;
+}
+.tabs-nav .nav-link:active, .tabs-nav .nav-link:focus {
+  outline-color: #eb3c00;
+}

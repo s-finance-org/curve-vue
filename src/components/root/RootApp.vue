@@ -1,7 +1,6 @@
 <template>
   <b-container fluid id="app" class="px-0">
     <root-header />
-    {{ test }}
     <total-balances :totalVolume='totalVolume'/>
 
     <!-- <div class='screencontainer'>

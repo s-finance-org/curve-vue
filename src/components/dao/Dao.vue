@@ -1,5 +1,26 @@
 <template>
 	<div>
+
+  <b-container>
+    <h4 class="mt-4 mb-2">{{ $t('dao.title', ['sUSD']) }}</h4>
+    <div class="box mb-4 px-4 py-3">
+      <b-tabs pills nav-class="tabs-nav">
+        <b-tab :title="$t('dao.staking')" active>
+          <small class="mt-3">
+            {{$t('dao.assetInStaking')}} xxxxxx
+          </small>
+        </b-tab>
+        <b-tab :title="$t('dao.redemption')">
+          2
+        </b-tab>
+        <b-tab :title="$t('dao.miningReward')">
+          3
+        </b-tab>
+      </b-tabs>
+    </div>
+  </b-container>
+
+    
     <fieldset>
       loading: {{ loading }}
 			<legend>

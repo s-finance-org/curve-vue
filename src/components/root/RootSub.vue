@@ -1,10 +1,7 @@
 <template>
   <div>
-    <!-- <div :class="'blue window ' + $route.name">
-        <h1><img :src="logoSrc" alt="🌀 Curve"></h1>
-    </div> -->
-    <div class="error window half-width info" id="error-window" v-show='error'>
-      {{ error }}
+    <div class="error window half-width info" id="error-window" v-if='errMsg'>
+      {{ errMsg }}
     </div>
     <b-container>
       <div class='info-message gentle-message window half-width gentle-message mt-4' v-if='hasConnectedWallet'>
@@ -21,7 +18,10 @@
 
   export default {
     props: {
-      error: String
+      errMsg: {
+        type: String,
+        default: ''
+      }
     },
     methods: {
       async changeWallets() {

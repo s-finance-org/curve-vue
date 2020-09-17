@@ -64,6 +64,11 @@ let routes = [
         path: '',
         component: Root
       },
+      {
+        path: '/dao',
+        name: 'Dao',
+        component: Dao
+      },
       // {
       //   path: '/basictrade',
       //   name: 'BasicTrade',
@@ -287,11 +292,6 @@ let routes = [
           if(to.params.pool == 'susd') return next()
           return next('/' + to.params.pool + '/withdraw')
         }
-      },
-      {
-        path: 'dao',
-        name: 'PoolDao',
-        component: Dao
       },
       // {
       //   path: 'stats',

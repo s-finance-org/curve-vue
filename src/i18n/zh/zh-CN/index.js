@@ -93,5 +93,15 @@ export default {
     lossContHtml: 'S.finance 智能合约通过了Trail of Bits审计。然而，安全审计并不能完全消除风险。请在能力承受范围内投资，不要盲目投入全部资产，尤其是在提供流动性时。<br/>使用S.finance作兑换交易时风险会相对降低，但这只是建议。',
     stakingTitle: '抵押风险',
     stakingContHtml: '当使用抵押功能时，每一种智能合约都有他们相应的风险。',
+  },
+  dao: {
+    title: '{0} 流动性矿池',
+    describe: '抵押 {0} LP tokens 挖矿奖励 {1}',
+    staking: '抵押',
+    redemption: '赎回',
+    miningReward: '挖矿奖励',
+    assetInStaking: '已抵押',
+    amountPlaceholder : '输入抵押数量',
+    balance: '当前可抵押'
   }
 }

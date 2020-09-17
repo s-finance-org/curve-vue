@@ -85,7 +85,7 @@
           @click = 'changeAccounts'>Change accounts</button>
       </div> -->
       <div id="screen" class="pt-5">
-        <root-sub :error=error />
+        <root-sub />
         <router-view/>
       </div>
 
