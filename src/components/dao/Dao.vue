@@ -1,6 +1,7 @@
 <template>
 	<div>
-
+    pools: {{ pools }} <br/>
+    mypools: {{ mypools }} <br/>
   <b-container>
     <h4 class="mt-4 mb-2">{{ $t('dao.title', ['sUSD']) }}</h4>
     <div class="box mb-4 px-4 py-3">
@@ -118,211 +119,11 @@
 		</fieldset>
 
  
-            <!-- <fieldset class="currencies">
-                <legend>Currencies:</legend>
-                <ul>
-                    <li v-for='(currency, i) in Object.keys(currencies)'>
-                        <label :for="'currency_'+i">
-                        	<span class='currency_label'>
-                                <img 
-                                    :class="{'token-icon': true, [currency+'-icon']: true, 'y': depositc && !isPlain}" 
-                                    :src='getTokenIcon(currency)'>
-                                <span v-show='depositc'>{{currencies[currency]}}
-    	                        	<span v-show="!(currency == 'usdt' && currentPool == 'usdt' || currency == 'pax') 
-    	                        					&& !['susdv2', 'tbtc', 'ren', 'sbtc'].includes(currentPool)"> 
-    	                        		(in {{currency | capitalize}}) 
-    	                        	</span>
-    	                        </span>
-    	                        <span v-show='!depositc'>{{currency | capitalize}}
-    	                        </span>
-                                <span @click='setMaxBalanceCoin(i)' class='maxBalanceCoin'>
-                                    Max: 
-                                    <span 
-                                        v-show="(currentPool == 'susdv2' && i == 3 || currentPool == 'sbtc' && i == 2)
-                                                    && maxBalanceCoin(i) != '0.00'"
-                                    >
-                                        {{transferableBalanceText}}/
-                                    </span>
-                                    <span>{{ maxBalanceCoin(i) }} </span>
-                                    <span v-show="susdWaitingPeriod">
-                                        <span class='tooltip'>
-                                            <img src='@/assets/clock-regular.svg' class='icon small'>
-                                            <span class='tooltiptext normalFont'>
-                                                Cannot transfer during waiting period. {{ (susdWaitingPeriodTime ).toFixed(0) }} secs left.
-                                            </span>
-                                        </span>
-                                    </span>
-                                    <span v-show="(currentPool == 'susdv2' && i == 3 || currentPool == 'sbtc' && i == 2)
-                                                    && maxBalanceCoin(i) != '0.00'" 
-                                        class='tooltip'> [?]
-                                        <span class='tooltiptext long normalFont'>
-                                            Max transferrable amount is {{ transferableBalanceText }}. You can free the remaining balance by settling.
-                                        </span>
-                                    </span>
-                                </span>
-                            </span>
-                        </label>
-                        <input 
-	                        type="text" 
-	                        :id="'currency_'+i" 
-	                        :disabled='disabled' 
-	                        name="from_cur" 
-	                        v-model = 'inputs[i]'
-	                        :style = "{backgroundColor: bgColors[i]}"
-	                        @input='change_currency(i, true)'
-	                    >
-
-                    </li>
-                </ul>
-            </fieldset>
-            <ul>
-                <gas-price></gas-price>
-
-                <li>
-                    <input id="sync-balances" type="checkbox" name="sync-balances" @change='handle_sync_balances_proportion' :disabled='disabledButtons' checked v-model='sync_balances'>
-                    <label for="sync-balances">Add all coins in a balanced proportion</label>
-                </li>
-                <li>
-                    <input id="max-balances" type="checkbox" name="max-balances" @change='handle_sync_balances' :disabled='disabledButtons' checked v-model='max_balances'>
-                    <label for="max-balances">Use maximum amount of coins available</label>
-                </li>
-                <li>
-                    <input id="inf-approval" type="checkbox" name="inf-approval" checked v-model='inf_approval'>
-                    <label for="inf-approval">Infinite approval - trust this contract forever 
-                    	<span class='tooltip'>[?]
-                    		<span class='tooltiptext long'>
-                    			Preapprove the contract to to be able to spend any amount of your coins. You will not need to approve again.
-                    		</span>
-                    	</span>
-                    </label>
-                </li>
-                <li v-show = "!['susd','susdv2','tbtc','ren','sbtc'].includes(currentPool)">
-                    <input id="depositc" type="checkbox" name="inf-approval" checked v-model='depositc'>
-                    <label for="depositc">Deposit wrapped</label>
-                </li>
-            </ul>
-            <div class='simple-error pulse' v-show="susdWaitingPeriod">
-                Cannot transfer {{ currentPool == 'susdv2' ? 'sUSD' : 'sBTC' }} during waiting period. {{ (susdWaitingPeriodTime).toFixed(0) }} secs left.
-            </div>
-            <p style="text-align: center" class='buttons'>
-                <button id="add-liquidity" 
-                    :disabled="currentPool == 'susdv2' && slippage < -0.03 || depositingZeroWarning || isZeroSlippage"
-                    @click='justDeposit = true; handle_add_liquidity()' 
-                    >
-                        Deposit <span class='loading line' v-show='loadingAction == 1'></span>
-                </button>
-                <button 
-                    id='add-liquidity-stake' 
-                    v-show="['susdv2', 'sbtc', 'y', 'iearn'].includes(currentPool) && hasRewards" 
-                    :disabled = 'slippage < -0.03 || depositingZeroWarning || isZeroSlippage'
-                    @click = 'justDeposit = false; deposit_stake()'>
-                    Deposit and stake <span class='loading line' v-show='loadingAction == 2'></span>
-                </button>
-                <button id='stakeunstaked' 
-                    v-show="totalShare > 0 && ['susdv2', 'sbtc', 'y', 'iearn'].includes(currentPool) && hasRewards"
-                    :disabled='stakePercentageInvalid' 
-                    @click='stakeTokens()'
-                    >
-                    Stake unstaked <span class='loading line' v-show='loadingAction == 3'></span>
-                </button>
-                <p class='info-message gentle-message' v-show="lpCrvReceived > 0">
-                    You'll receive minimum {{ lpCrvReceivedText }} Curve {{currentPool}} LP tokens <sub>{{ ((1 - getMaxSlippage) * 100).toFixed(2)}}% max slippage</sub>
-                    
-                    <span class='curvelpusd'> 
-                        1 Curve {{currentPool}} LP token = {{ (1 * virtual_price).toFixed(6) }} 
-                        {{ !['ren', 'sbtc'].includes(currentPool) ? 'USD' : 'BTC' }} 
-                    </span>
-                </p>
-                <div>
-                    <button class='simplebutton advancedoptions' @click='showadvancedoptions = !showadvancedoptions'>
-                        Advanced options
-                        <span v-show='!showadvancedoptions'>▼</span>
-                        <span v-show='showadvancedoptions'>▲</span>
-                    </button>
-                    <div v-show='showadvancedoptions'>
-                        <fieldset>
-                            <legend>Advanced options:</legend>
-                            <div v-show="hasRewards && totalShare > 0 && ['susdv2', 'sbtc', 'y', 'iearn'].includes(currentPool)">
-                                <label for='stakepercentage'>Stake %</label>
-                                <input id='stakepercentage' v-model='stakepercentage' :class="{'invalid': stakePercentageInvalid}">
-                                <button id='stakeunstaked' 
-                                    v-show="totalShare > 0 && ['susdv2', 'sbtc', 'y', 'iearn'].includes(currentPool)"
-                                    :disabled='stakePercentageInvalid' 
-                                    @click='stakeTokens()'
-                                >
-                                    Stake unstaked <span class='loading line' v-show='loadingAction == 3'></span>
-                                </button>
-                            </div>
-
-                            <div id='max_slippage'>
-                                <span class='tooltip'>
-                                    Max slippage:
-                                    <span class='tooltiptext long'>
-                                        Customize the maximum slippage you can get when depositing
-                                    </span>
-                                </span>
-                                <input id="slippage01" type="radio" name="slippage" value='0.1' v-model='maxSlippage'>
-                                <label for="slippage01">0.1%</label>
-
-                                <input id="slippage1" type="radio" name="slippage" checked value='1' v-model='maxSlippage'>
-                                <label for="slippage1">1%</label>
-
-                                <input id="custom_slippage" type="radio" name="slippage" value='-' @click='customippageDisabled = false'>
-                                <label for="custom_slippage" @click='customSlippageDisabled = false'>
-                                    <input type="text" id="custom_slippage_input" :disabled='customSlippageDisabled' :class="{'invalid': warningInputSlippage}" name="custom_slippage_input" v-model='maxInputSlippage'> %
-                                </label>
-
-                                <div class='simple-error' v-show='warningInputSlippage'>
-                                    {{ maxInputSlippage }}% is too low of a slippage - your transaction may fail 
-                                </div>
-                            </div>
-                        </fieldset>
-
-                    </div>
-
-                </div>
-                <p class='trade-buttons' v-show="['ren', 'sbtc'].includes(currentPool)">
-                    <a href='https://bridge.renproject.io/'>Mint/redeem renBTC</a>
-                </p>
-                <div id='mintr' v-show="['susdv2', 'sbtc'].includes(currentPool)">
-                    <a href = 'https://mintr.synthetix.io/' target='_blank' rel="noopener noreferrer">Manage staking in Mintr</a>
-                </div>
-                <div id='mintr' v-show="['y', 'iearn'].includes(currentPool)">
-                    <a href = 'https://ygov.finance/' target='_blank' rel="noopener noreferrer">Manage staking in yGov</a>
-                </div>
-                <button id="migrate-new" @click='handle_migrate_new' v-show="currentPool == 'compound' && oldBalance > 0">Migrate from old</button>
-                <div class='info-message gentle-message' v-show='show_loading'>
-                    <span v-html='waitingMessage'></span> <span class='loading line'></span>
-                </div>
-                <div class='info-message gentle-message' v-show='estimateGas'>
-                    Estimated tx cost: {{ (estimateGas * gasPrice / 1e9 * ethPrice).toFixed(2) }}$
-                </div>
-                <div class='simple-error' v-show='errorStaking'>
-                    There was an error in staking your tokens. You can manually stake them on 
-                    <a href = 'https://mintr.synthetix.io/' v-show="['susdv2', 'sbtc'].includes(currentPool)" target='_blank' rel="noopener noreferrer"> Mintr. </a>
-                    <a href = 'https://ygov.finance/' v-show="['y', 'iearn'].includes(currentPool)" target='_blank' rel="noopener noreferrer"> yGov. </a>
-                </div>
-                <div class='simple-error pulse' v-show='compareInputsWarning.length && !max_balances'>
-                    Not enough balance for currencies {{ compareInputsWarning.toString() }}
-                    <p v-show='compareInputsWarning.length == N_COINS - 1'> 
-                        Maybe you forgot to uncheck the first 
-                        "Add all coins in a balanced proportion" checkbox?
-                    </p>
-                </div>
-                <div class='simple-error pulse' v-show='depositingZeroWarning && !max_balances'>
-                    You're depositing 0 coins.
-                    <p>
-                        Maybe you forgot to uncheck the first 
-                        "Add all coins in a balanced proportion" checkbox?
-                    </p>
-                </div>
-                <Slippage/>
-            </p> -->
 	</div>
 </template>
 
 <script>
-	import Vue from 'vue'
+	  import Vue from 'vue'
     import { notify, notifyHandler, notifyNotification } from '../../init'
     import * as common from '../../utils/common.js'
     import { getters, contract as currentContract, gas as contractGas } from '../../contract'
@@ -345,6 +146,7 @@
     		Slippage, GasPrice,
     	},
     	data: () => ({
+        currentPool: {},
         pools: [],
 			  mypools: [],
         loading: true,
@@ -1094,6 +896,7 @@
             this.loading = false
 
             this.pools = gaugeStore.state.pools
+
             this.mypools = gaugeStore.state.mypools
 
             this.claimFromGauges = this.myGauges
