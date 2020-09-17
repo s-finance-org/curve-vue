@@ -38,12 +38,6 @@ import { multicall_address, multicall_abi } from './allabis'
     }
 };*/
 
-/*const web3Modal = new Web3Modal({
-  network: "mainnet", // optional
-  cacheProvider: true, // optional
-  providerOptions // required
-});*/
-
 export const notify = Notify({
   dappId: process.env.VUE_APP_BLOCKNATIVE_KEY,
   networkId: +process.env.VUE_APP_BLOCKNATIVE_NETWORK_ID,
@@ -144,12 +138,11 @@ export const onboard = Onboard({
       localStorage.setItem('selectedWallet', wallet.name)
     },
     network: network => {
-      if(network != 1) {
+      if(process.env.VUE_APP_ONLY_MAINNETWORK === true && network != 1) {
         state.contract.error = 'Error: wrong network type. Please switch to mainnet';
         state.contract.showShares = false
         window.web3 = new Web3(infura_url)
-      }
-      else {
+      } else {
         state.contract.error = ''
         state.contract.showShares = true;
       }

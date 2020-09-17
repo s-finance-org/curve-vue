@@ -12,7 +12,7 @@ const blocknative = new BlocknativeSdk({
 	dappId: process.env.VUE_APP_BLOCKNATIVE_KEY,       // [String] The API key created by step one above
 	networkId: +process.env.VUE_APP_BLOCKNATIVE_NETWORK_ID,
 })
-const sdk = new RenSDK('mainnet', {
+const sdk = new RenSDK(process.env.VUE_APP_RENSDK_NETWORK, {
 	//logLevel: 'trace'
 })
 let Box

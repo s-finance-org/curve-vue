@@ -407,8 +407,8 @@
 
 		methods: {
 			async mounted() {
-				this.votingEscrow = new web3.eth.Contract(daoabis.votingescrow_abi, '0x5f3b5DfEb7B28CDbD7FAba78963EE202a494e2A2')
-				this.gaugeController = new contract.web3.eth.Contract(daoabis.gaugecontroller_abi, '0x2F50D538606Fa9EDD2B11E2446BEb18C9D5846bB')
+				this.votingEscrow = new web3.eth.Contract(daoabis.votingescrow_abi, process.env.VUE_APP_VOTING_ESCROW)
+				this.gaugeController = new contract.web3.eth.Contract(daoabis.gaugecontroller_abi, process.env.VUE_APP_GAUGE_CONTROLLER)
 
 				let calls = [
 					[this.votingEscrow._address, this.votingEscrow.methods.balanceOf(contract.default_account).encodeABI()],

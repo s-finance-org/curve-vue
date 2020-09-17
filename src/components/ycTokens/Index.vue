@@ -125,7 +125,7 @@
 						[t.contract._address, t.contract.methods.getPricePerFullShare().encodeABI()]
 					]
 				)
-				
+
 				let aggcalls = await contract.multicall.methods.aggregate(calls).call()
 				let balances = aggcalls[1].map((hex, i) => {
 					let paramArray = new Array(10).fill('uint256')

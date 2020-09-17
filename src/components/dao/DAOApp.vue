@@ -88,9 +88,10 @@
         @click = 'changeAccounts'>Change accounts</button>
     </div>
     <div id="screen">
-        <div :class="'blue window ' + $route.name">
+        <!-- <div :class="'blue window ' + $route.name">
             <h1><img :src="logoSrc" alt="🌀 Curve"></h1>
-        </div>
+        </div> -->
+        hasConnectedWallet?: {{ hasConnectedWallet }}
         <div class='info-message gentle-message window half-width gentle-message' v-if='hasConnectedWallet'>
           You haven't connected a wallet. <button @click='changeWallets'>Connect wallet</button>
         </div>
@@ -153,9 +154,9 @@
       },
     },
     methods: {
-      changePools(pool) {
-        changeContract(pool)
-      },
+      // changePools(pool) {
+      //   changeContract(pool)
+      // },
       async changeWallets() {
         currentContract.default_account = ''
         onboard.walletReset()

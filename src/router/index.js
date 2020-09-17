@@ -461,7 +461,8 @@ router.beforeEach(async (to, from, next) => {
 /*  if(window.location.hostname.split('.').length > 1) subdomain = window.location.hostname.split('.')[0]
   else subdomain = to.path.split('/')[1]*/
   if(subdomain == 'y') subdomain = 'iearn'
-  if(!pools.includes(subdomain)) subdomain = 'compound'
+  // init currentContract
+  if(!pools.includes(subdomain)) subdomain = 'susdv2'
 
   if(!['ren', 'sbtc'].includes(subdomain)) {
     currentContract.swapbtc = false

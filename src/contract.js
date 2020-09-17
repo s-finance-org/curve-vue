@@ -325,7 +325,7 @@ const state = Vue.observable({
 	},
 	swapbtc: false,
 	adapterContract: null,
-	currentContract: 'compound',
+	currentContract: 'susdv2',
 	currencies: currencies.compound,
 	N_COINS: N_COINS,
 	coin_precisions: coin_precisions,
@@ -437,25 +437,28 @@ export const getters = {
 
 
 export async function init(contract, refresh = false) {
+console.log(state.currentContract)
 	state.multicall = state.multicall || new web3.eth.Contract(multicall_abi, multicall_address)
-	console.time('init')
+  console.time('init')
+
 	//contract = contracts.compound for example
 	if(state.initializedContracts && contract.currentContract == state.currentContract && !refresh) return Promise.resolve();
 	if(contract && (contract.currentContract == state.currentContract || state.contracts[contract.currentContract].initializedContracts) && !refresh) return Promise.resolve();
-	if(!contract) contract = state
-	try {
-        let networkId = await state.web3.eth.net.getId();
-        if(networkId != 1) {
-            this.error = 'Error: wrong network type. Please switch to mainnet';
-        }
-    }
-    catch(err) {
-        console.error(err);
-        this.error = 'There was an error connecting. Please refresh page';
-    }
 
-	if(['ren', 'sbtc'].includes(contract.currentContract))
-		state.chi = state.chi || new web3.eth.Contract(ERC20_abi, CHI_address)
+  if(!contract) contract = state
+	try {
+      let networkId = await state.web3.eth.net.getId();
+      if(networkId != 1) {
+          this.error = 'Error: wrong network type. Please switch to mainnet';
+      }
+  }
+  catch(err) {
+      console.error(err);
+      this.error = 'There was an error connecting. Please refresh page';
+  }
+
+    if(['ren', 'sbtc'].includes(contract.currentContract))
+      state.chi = state.chi || new web3.eth.Contract(ERC20_abi, CHI_address)
 
     let calls  = [
     	//get_virtual_price
@@ -463,11 +466,11 @@ export async function init(contract, refresh = false) {
     	//A
     	[allabis[contract.currentContract].swap_address, '0xf446c1d0'],
     	//future_A
-        [allabis[contract.currentContract].swap_address, '0xb4b577ad'],
-        //admin_actions_deadline
-        [allabis[contract.currentContract].swap_address, '0x405e28f8'],
+      [allabis[contract.currentContract].swap_address, '0xb4b577ad'],
+      //admin_actions_deadline
+      [allabis[contract.currentContract].swap_address, '0x405e28f8'],
     ];
-    
+
     if(contract.currentContract == 'compound') {
 	    state.old_swap = new state.web3.eth.Contract(allabis.compound.old_swap_abi, old_swap_address);
 	    state.old_swap_token = new state.web3.eth.Contract(ERC20_abi, old_token_address);
@@ -481,15 +484,13 @@ export async function init(contract, refresh = false) {
     	let default_account = state.default_account || '0x0000000000000000000000000000000000000000'
     	calls.push([allabis.susd.token_address, '0x70a08231000000000000000000000000'+default_account.slice(2)])
 
-		contract.curveRewards = new state.web3.eth.Contract(allabis.susdv2.sCurveRewards_abi, allabis.susdv2.sCurveRewards_address)
-		calls.push([contract.curveRewards._address, contract.curveRewards.methods.balanceOf(state.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
-    	
+      contract.curveRewards = new state.web3.eth.Contract(allabis.susdv2.sCurveRewards_abi, allabis.susdv2.sCurveRewards_address)
+      calls.push([contract.curveRewards._address, contract.curveRewards.methods.balanceOf(state.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
     	contract.snxExchanger = new state.web3.eth.Contract(synthetixExchanger_ABI, synthetixExchanger_address)
     }
     if(contract.currentContract == 'sbtc') {
-
     	contract.curveRewards = new state.web3.eth.Contract(allabis.sbtc.sCurveRewards_abi, allabis.sbtc.sCurveRewards_address)
-		calls.push([contract.curveRewards._address, contract.curveRewards.methods.balanceOf(state.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
+		  calls.push([contract.curveRewards._address, contract.curveRewards.methods.balanceOf(state.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
 
     	contract.snxExchanger = new state.web3.eth.Contract(synthetixExchanger_ABI, synthetixExchanger_address)
     }
@@ -503,6 +504,7 @@ export async function init(contract, refresh = false) {
     }
     if(!['susd', 'tbtc', 'ren', 'sbtc'].includes(contract.currentContract))
     	state.deposit_zap = new state.web3.eth.Contract(allabis[state.currentContract].deposit_abi, allabis[state.currentContract].deposit_address)
+
     contract.swap = new state.web3.eth.Contract(allabis[contract.currentContract].swap_abi, allabis[contract.currentContract].swap_address);
     contract.swap_token = new state.web3.eth.Contract(ERC20_abi, allabis[contract.currentContract].token_address);
     window[contract.currentContract] = {};
@@ -514,8 +516,9 @@ export async function init(contract, refresh = false) {
     contract.underlying_coins = []
     if(window.location.href.includes('withdraw_old')) 
       calls.push(...(await common.update_fee_info('old', contract, false)))
-  	else 
+  	else
       calls.push(...(await common.update_fee_info('new', contract, false)));
+
     for (let i = 0; i < allabis[contract.currentContract].N_COINS; i++) {
 	  	let coinsCall = contract.swap.methods.coins(i).encodeABI()
 	  	let underlyingCoinsCall = ['tbtc', 'ren', 'sbtc'].includes(contract.currentContract) ?
@@ -524,8 +527,10 @@ export async function init(contract, refresh = false) {
     	calls.push([contract.swap._address, coinsCall])
     	calls.push([contract.swap._address, underlyingCoinsCall])
     }
+
     await common.multiInitState(calls, contract, true)
-  	contract.initializedContracts = true;
+    contract.initializedContracts = true;
+
   	console.timeEnd('init')
   	state.allInitContracts = new Set(state.allInitContracts.add(contract.currentContract))
   	console.log([...state.allInitContracts])
@@ -550,6 +555,7 @@ export async function getAllUnderlying() {
 }
 
 export async function changeContract(pool) {
+console.log('pool', pool)
 	//re-init contract with different pool
 	if(!(pool in allabis)) return;
 	state.initializedContracts = false;

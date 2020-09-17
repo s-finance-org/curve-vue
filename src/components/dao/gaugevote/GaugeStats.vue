@@ -267,7 +267,7 @@
 		methods: {
 			async mounted() {
 
-				this.gaugeController = new contract.web3.eth.Contract(daoabis.gaugecontroller_abi, '0x2F50D538606Fa9EDD2B11E2446BEb18C9D5846bB')
+				this.gaugeController = new contract.web3.eth.Contract(daoabis.gaugecontroller_abi, process.env.VUE_APP_GAUGE_CONTROLLER)
 				let example_gauge = new contract.web3.eth.Contract(daoabis.liquiditygauge_abi, process.env.VUE_APP_COMPOUND)
 
 				let calls = [
@@ -317,7 +317,7 @@
 				  process.env.VUE_APP_SBTC
 				]
 
-				let gaugeController_address = '0x2F50D538606Fa9EDD2B11E2446BEb18C9D5846bB'
+				let gaugeController_address = process.env.VUE_APP_GAUGE_CONTROLLER
 				let gauge_relative_weight = '0x6207d866000000000000000000000000'
 
 				let pools = ['compound','usdt','iearn','busd','susdv2','pax','ren','sbtc']

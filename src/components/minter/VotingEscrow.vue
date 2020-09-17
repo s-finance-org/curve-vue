@@ -574,7 +574,7 @@
 			},
 
 			async loadBalances() {
-				this.votingEscrow = new web3.eth.Contract(daoabis.votingescrow_abi, '0x5f3b5DfEb7B28CDbD7FAba78963EE202a494e2A2')
+				this.votingEscrow = new web3.eth.Contract(daoabis.votingescrow_abi, process.env.VUE_APP_VOTING_ESCROW)
 				this.CRV = new web3.eth.Contract(daoabis.CRV_abi, process.env.VUE_APP_SFG)
 
 				window.votingEscrow = this.votingEscrow

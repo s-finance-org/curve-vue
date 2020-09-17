@@ -84,32 +84,37 @@ export async function getState() {
 		},
 	}
 
-	state.gaugeController = new contract.web3.eth.Contract(daoabis.gaugecontroller_abi, '0x2F50D538606Fa9EDD2B11E2446BEb18C9D5846bB')
-	state.votingEscrow = new contract.web3.eth.Contract(daoabis.votingescrow_abi, '0x5f3b5DfEb7B28CDbD7FAba78963EE202a494e2A2')
+	state.gaugeController = new contract.web3.eth.Contract(daoabis.gaugecontroller_abi, process.env.VUE_APP_GAUGE_CONTROLLER)
+	state.votingEscrow = new contract.web3.eth.Contract(daoabis.votingescrow_abi, process.env.VUE_APP_VOTING_ESCROW)
 	state.minter = new contract.web3.eth.Contract(daoabis.minter_abi, process.env.VUE_APP_PS_MINTER)
-
-
+console.log(state.gaugeController)
+console.log(state.votingEscrow)
+console.log(state.minter)
 	state.n_gauges = +(await state.gaugeController.methods.n_gauges().call())
-
+console.log(1)
+console.log(state.n_gauges)
 	let swap_token = new contract.web3.eth.Contract(ERC20_abi, state.pools.susdv2.swap_token)
-
+console.log(swap_token)
 	let calls = Array.from(Array(state.n_gauges), (_, i) => [state.gaugeController._address, state.gaugeController.methods.gauges(i).encodeABI()])
 	calls = calls.concat(Object.values(state.pools).map(v => v.swap_token).map(v => [v, swap_token.methods.balanceOf(contract.default_account).encodeABI()]))
-
+console.log(2)
 	let aggcalls = await contract.multicall.methods.aggregate(calls).call()
 	let decodedGauges = aggcalls[1].slice(0, state.n_gauges).map(hex => web3.eth.abi.decodeParameter('address', hex))
 	let decodedBalances = aggcalls[1].slice(state.n_gauges).map((hex, i) => ({swap_token: calls[state.n_gauges + i][0], balance: web3.eth.abi.decodeParameter('uint256', hex)}))
 
 	let example_gauge = new contract.web3.eth.Contract(daoabis.liquiditygauge_abi, decodedGauges[0])
-
+console.log(3)
+console.log(decodedGauges)
 	let calls1 = decodedGauges.flatMap(gauge => [
 		[gauge, example_gauge.methods.lp_token().encodeABI()],
 		[state.gaugeController._address, state.gaugeController.methods.gauge_types(gauge).encodeABI()],
 		[gauge, example_gauge.methods.balanceOf(contract.default_account).encodeABI()],
 		[gauge, example_gauge.methods.claimable_tokens(contract.default_account).encodeABI()],
 		[state.minter._address, state.minter.methods.minted(contract.default_account, gauge).encodeABI()],
+  ])
 
-	])
+console.log('calls1', calls1)
+
 	let aggcalls1
 	try {
 		aggcalls1 = await contract.multicall.methods.aggregate(calls1).call()
@@ -125,7 +130,7 @@ export async function getState() {
 		aggcalls[1][38] = "0x0000000000000000000000000000000000000000000000000000000000000000"
 
 	}
-
+console.log(2)
 	let gaugeTypes = aggcalls1[1].filter((_, i) => i % 5 == 1).map(hex => +web3.eth.abi.decodeParameter('uint256', hex))
 	gaugeTypes = [...new Set(gaugeTypes)]
 	
@@ -140,17 +145,29 @@ export async function getState() {
 		typeName: Object.values(gaugeTypesNames).find(v => v.type == +web3.eth.abi.decodeParameter('uint256', aggcalls1[1][i*5+1])).name,
 		claimable_tokens: web3.eth.abi.decodeParameter('uint256', aggcalls1[1][i*5+3]),
 		minted: web3.eth.abi.decodeParameter('uint256', aggcalls1[1][i*5+4]),
-	}))
+  }))
+console.log('state.pools', state.pools)
+console.log('decodedGaugeLP', decodedGaugeLP)
 	Object.values(decodedGaugeLP).forEach((gauge, i) => {
-		let poolgauge = Object.values(state.pools).find(pool => pool.swap_token.toLowerCase() == gauge.swap_token.toLowerCase())
-		poolgauge.gauge = gauge.gauge
-		poolgauge.type = gauge.type
-		poolgauge.typeName = gauge.typeName
-		poolgauge.claimable_tokens = gauge.claimable_tokens
-		poolgauge.minted = gauge.minted
-	})
+    const gauge_swap_token = gauge.swap_token.toLowerCase()
 
+    Object.values(state.pools).some(pool => {
+      let bool = pool.swap_token.toLowerCase() == gauge_swap_token
 
+      if (bool) {
+        pool.gauge = gauge.gauge
+        pool.type = gauge.type
+        pool.typeName = gauge.typeName
+        pool.claimable_tokens = gauge.claimable_tokens
+        pool.minted = gauge.minted
+      }
+
+      return bool
+    })
+  })
+console.log(state.pools)
+
+console.log(3)
 	let gaugeBalances = aggcalls1[1].filter((_, i) => i % 5 == 2).map((hex, i) => ({
 		gauge: calls1[i*5+2][0],
 		balance: web3.eth.abi.decodeParameter('uint256', hex),
@@ -160,20 +177,24 @@ export async function getState() {
 
 	state.mypools = decodedBalances.map(v => {
 		let poolInfo = Object.values(state.pools).find(pool => pool.swap_token.toLowerCase() == v.swap_token.toLowerCase())
-		return {
+    
+    return {
 			...poolInfo, 
 			balance: v.balance,
 			origBalance: v.balance,
 			gaugeBalance: gaugeBalances.find(pool => pool.gauge.toLowerCase() == poolInfo.gauge.toLowerCase()).balance
 		}
-	})
+  })
+  console.log('state.mypools', state.mypools)
 
 	//console.log(decodedGauges, "THE GAUGES")
 
 	let pools = ['compound','usdt','iearn','busd','susdv2','pax','ren','sbtc']
 
 	let prices = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,curve-dao-token&vs_currencies=usd')
-	prices = await prices.json()
+
+  prices = await prices.json()
+
 	let btcPrice = prices.bitcoin.usd
 	let CRVprice = prices['curve-dao-token'].usd
 
@@ -183,7 +204,7 @@ export async function getState() {
 	let aggCallsWeights = await contract.multicall.methods.aggregate(weightCalls).call()
 	let decodedWeights = aggCallsWeights[1].map((hex, i) => [weightCalls[i][0], web3.eth.abi.decodeParameter('uint256', hex) / 1e18])
 
-	//console.log(decodedWeights, "DECODED WEIGHTS")
+	console.log(decodedWeights, "DECODED WEIGHTS")
 
 	let ratesCalls = decodedGauges.map(gauge => [
 		[gauge, example_gauge.methods.inflation_rate().encodeABI()],
@@ -210,7 +231,13 @@ export async function getState() {
 
 	window.gauges = {}
 	let weightData = decodedWeights.map((w, i) => {
-		let pool = state.mypools.find(v => v.gauge.toLowerCase() == '0x' + weightCalls[i][1].slice(34).toLowerCase()).name
+		// let pool = state.mypools.find(v => v.gauge.toLowerCase() == '0x' + weightCalls[i][1].slice(34).toLowerCase()).name
+
+    const __pool = state.mypools.find(v => v.gauge.toLowerCase() == ('0x' + weightCalls[i][1].slice(34).toLowerCase()))
+
+    if (!__pool) return false
+
+    let pool = __pool.name
 		let swap_address = state.pools[pool].swap
 		let virtual_price = decodedVirtualPrices.find(v => v[0].toLowerCase() == swap_address.toLowerCase())[1]
 		let _working_supply = workingSupplies[i]

@@ -25,6 +25,9 @@
 				<div class='boost' v-show='currentBoost !== null && !isNaN(currentBoost)'>
 					Current boost: {{ currentBoost && currentBoost.toFixed(4) }}
 				</div>
+				<!-- <div class='boost' v-show='maxGaugeBoost !== null'>
+					Max gauge boost: {{ maxGaugeBoost && maxGaugeBoost.toFixed(4) }}
+				</div> -->
 			</div>
 			<div :class="{'pools': true, 'justifySpaceAround': gaugeBalance > 0}">
 				<div class='flex-break'></div>
@@ -52,14 +55,14 @@
 					<div>
 						<p>
 							<input :id="'inf-approval-'+gauge.name" type="checkbox" name="inf-approval" v-model='inf_approval'>
-              <label :for="'inf-approval-'+gauge.name" class='inf-approval-label'>Infinite approval 
-                <span class='tooltip'>[?]
-                  <span class='tooltiptext long'>
-                    Preapprove the contract to to be able to spend any amount of your coins. You will not need to approve again.
-                  </span>
-                </span>
-              </label>
-            </p>
+		                    <label :for="'inf-approval-'+gauge.name" class='inf-approval-label'>Infinite approval 
+		                    	<span class='tooltip'>[?]
+		                    		<span class='tooltiptext long'>
+		                    			Preapprove the contract to to be able to spend any amount of your coins. You will not need to approve again.
+		                    		</span>
+		                    	</span>
+		                    </label>
+	                	</p>
 						<div>
 							<button @click='deposit'>
 								Deposit
@@ -87,6 +90,7 @@
 					</div>
 					<button @click='withdraw'>Withdraw</button>
 
+					<!-- <button @click='update_liquidity_limit'>Update liquidity limit</button> -->
 				</div>
 				<div class='flex-break'></div>
 				<div class='claimButtons'>
@@ -104,7 +108,7 @@
 
 <script>
 	import { contract, getters } from '../../contract'
-    import { notify, notifyHandler, notifyNotification } from '../../init'
+  import { notify, notifyHandler, notifyNotification } from '../../init'
 
 	import * as common from '../../utils/common'
 
@@ -124,7 +128,6 @@
 
 	export default {
 		props: ['i'],
-
 
 		data: () => ({
 			depositAmount: 0,
@@ -250,49 +253,7 @@
 
 		methods: {
 			async mounted() {
-				this.depositAmount = this.poolBalanceFormat
-				this.withdrawAmount = this.gaugeBalanceFormat
-
-				this.gaugeContract = new contract.web3.eth.Contract(daoabis.liquiditygauge_abi, this.gauge.gauge)
-
-				this.swap_token = new contract.web3.eth.Contract(ERC20_abi, this.gauge.swap_token)
-
-				this.loaded = true
-
-				//this.claimableTokens = await this.gaugeContract.methods.claimable_tokens(contract.default_account).call()
-				this.claimableTokens = +this.gauge.claimable_tokens
-
-				gaugeStore.state.totalClaimableCRV += +this.claimableTokens
-				if(['susdv2', 'sbtc'].includes(this.gauge.name)) {
-					let curveRewards = new web3.eth.Contract(allabis[this.gauge.name].sCurveRewards_abi, allabis[this.gauge.name].sCurveRewards_address)
-					this.stakedBalance = await curveRewards.methods.balanceOf(contract.default_account).call()
-
-					// gaugeStore.state.mypools[this.i].balance = 0
-					// gaugeStore.state.mypools[this.i].balance = +gaugeStore.state.mypools[this.i].balance + +this.stakedBalance
-
-					this.claimableReward = await this.gaugeContract.methods.claimable_reward(contract.default_account).call()
-					this.claimedRewards = await this.gaugeContract.methods.claimed_rewards_for(contract.default_account).call()
-
-					this.claimableReward -= this.claimedRewards
-				}
-				
-				//this.minted = await gaugeStore.state.minter.methods.minted(contract.default_account, this.gauge.gauge).call()
-				this.minted = this.gauge.minted
-
-				gaugeStore.state.totalMintedCRV += +this.minted
-
-				let allowance = BN(await this.swap_token.methods.allowance(contract.default_account, this.gauge.gauge).call())
-
-				if(allowance.lte(contract.max_allowance.div(BN(2))))
-					this.inf_approval = false
-
-				if(+this.gauge.gaugeBalance > 0) {
-					this.currentBoost = Math.max(1, gaugeStore.state.boosts[this.gauge.name])
-					this.checkLimit()
-				}
-
-				//this.maxGaugeBoost = this.gauge.original_supply / this.gauge.working_supply
-
+				console.log('temp')
 			},
 
 			async deposit() {
@@ -304,36 +265,28 @@
 				let gas = 500000
 
 				// if(['susdv2', 'sbtc'].includes(this.gauge.name) && deposit.gt(BN(this.gauge.origBalance))) {
-          // console.log(this.gauge.balance)
-          // // console.log(allabis[this.gauge.name].sCurveRewards_abi, JSON.stringify(allabis[this.gauge.name].sCurveRewards_abi))
-          // const __sCurveRewards_abi = [{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event","signature":"0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"reward","type":"uint256"}],"name":"RewardAdded","type":"event","signature":"0xde88a922e0d3b88b24e9623efeb464919c6bf9f66857a65e2bfcf2ce87a9433d"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"reward","type":"uint256"}],"name":"RewardPaid","type":"event","signature":"0xe2403640ba68fed3a2f88b7557551d1993f84b99bb10ff833f0cf8db0c5e0486"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"Staked","type":"event","signature":"0x9e71bc8eea02a63969f509818f2dafb9254532904319f9dbda79b67bd34a5f3d"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"Withdrawn","type":"event","signature":"0x7084f5476618d8e60b11ef0d7d3f06914655adb8793e28ff7f018d4c76d505d5"},{"constant":true,"inputs":[],"name":"DURATION","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function","signature":"0x1be05289"},{"constant":true,"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function","signature":"0x70a08231"},{"constant":true,"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"earned","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function","signature":"0x008cc262"},{"constant":false,"inputs":[],"name":"exit","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function","signature":"0xe9fad8ee"},{"constant":false,"inputs":[],"name":"getReward","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function","signature":"0x3d18b912"},{"constant":true,"inputs":[],"name":"isOwner","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function","signature":"0x8f32d59b"},{"constant":true,"inputs":[],"name":"lastTimeRewardApplicable","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function","signature":"0x80faa57d"},{"constant":true,"inputs":[],"name":"lastUpdateTime","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function","signature":"0xc8f33c91"},{"constant":false,"inputs":[{"internalType":"uint256","name":"reward","type":"uint256"}],"name":"notifyRewardAmount","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function","signature":"0x3c6b16ab"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function","signature":"0x8da5cb5b"},{"constant":true,"inputs":[],"name":"periodFinish","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function","signature":"0xebe2b12b"},{"constant":false,"inputs":[],"name":"renounceOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function","signature":"0x715018a6"},{"constant":true,"inputs":[],"name":"rewardPerToken","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function","signature":"0xcd3daf9d"},{"constant":true,"inputs":[],"name":"rewardPerTokenStored","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function","signature":"0xdf136d65"},{"constant":true,"inputs":[],"name":"rewardRate","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function","signature":"0x7b0a47ee"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"rewards","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function","signature":"0x0700037d"},{"constant":false,"inputs":[{"internalType":"address","name":"_rewardDistribution","type":"address"}],"name":"setRewardDistribution","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function","signature":"0x0d68b761"},{"constant":true,"inputs":[],"name":"snx","outputs":[{"internalType":"contract IERC20","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function","signature":"0xe7d27998"},{"constant":false,"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"stake","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function","signature":"0xa694fc3a"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function","signature":"0x18160ddd"},{"constant":false,"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function","signature":"0xf2fde38b"},{"constant":true,"inputs":[],"name":"uni","outputs":[{"internalType":"contract IERC20","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function","signature":"0xedc9af95"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"userRewardPerTokenPaid","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function","signature":"0x8b876347"},{"constant":false,"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"withdraw","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function","signature":"0x2e1a7d4d"}]
-          // console.log(allabis[this.gauge.name].sCurveRewards_address, '0xdcb6a51ea3ca5d3fd898fd6564757c7aaec3ca92')
-          // console.log(contract.default_account)
-          // deposit = BN(99)
-          // console.log(deposit, BN(0))
-					// let curveRewards = new web3.eth.Contract(allabis[this.gauge.name].sCurveRewards_abi, allabis[this.gauge.name].sCurveRewards_address)
-					// let stakedBalance = BN(await curveRewards.methods.balanceOf(contract.default_account).call())
-          // let withdraw = deposit
-          // console.log(withdraw, stakedBalance)
-					// // if(withdraw.gt(stakedBalance))
-					// // 	withdraw = stakedBalance
+				// 	let curveRewards = new web3.eth.Contract(allabis[this.gauge.name].sCurveRewards_abi, allabis[this.gauge.name].sCurveRewards_address)
+				// 	let stakedBalance = BN(await curveRewards.methods.balanceOf(contract.default_account).call())
+				// 	let withdraw = deposit
+				// 	if(withdraw.gt(stakedBalance))
+				// 		withdraw = stakedBalance
 
-					// await new Promise((resolve, reject) => {
-    			// 		curveRewards.methods.withdraw(withdraw.toFixed(0,1))
-    			// 			.send({
-    			// 				from: contract.default_account,
-    			// 				gas: 125000,
-    			// 			})
-    			// 			.once('transactionHash', resolve)
-          //                   .catch(err => reject(err))
-    			// 	})
+				// 	await new Promise((resolve, reject) => {
+    // 					curveRewards.methods.withdraw(withdraw.toFixed(0,1))
+    // 						.send({
+    // 							from: contract.default_account,
+    // 							gas: 125000,
+    // 						})
+    // 						.once('transactionHash', resolve)
+    //                         .catch(err => reject(err))
+    // 				})
 
-        // }
-        // return false
+				// }
 
 				if(['susdv2', 'sbtc'].includes(this.gauge.name)) {
 					gas = 1000000
 				}
+
 
 				await common.approveAmount(this.swap_token, deposit, contract.default_account, this.gauge.gauge, this.inf_approval)
 

@@ -203,8 +203,8 @@
 		methods: {
 			async mounted() {
 				let CRV = new contract.web3.eth.Contract(ERC20_abi, daoabis.CRV_address)
-				this.gaugeController = new contract.web3.eth.Contract(daoabis.gaugecontroller_abi, '0x2F50D538606Fa9EDD2B11E2446BEb18C9D5846bB')
-				this.votingEscrow = new contract.web3.eth.Contract(daoabis.votingescrow_abi, '0x5f3b5DfEb7B28CDbD7FAba78963EE202a494e2A2')
+				this.gaugeController = new contract.web3.eth.Contract(daoabis.gaugecontroller_abi, process.env.VUE_APP_GAUGE_CONTROLLER)
+				this.votingEscrow = new contract.web3.eth.Contract(daoabis.votingescrow_abi, process.env.VUE_APP_VOTING_ESCROW)
 				this.myCRV = (await CRV.methods.balanceOf(contract.default_account).call() / 1e18).toFixed(2)
 				this.myveCRV = (await this.votingEscrow.methods.balanceOf(contract.default_account).call() / 1e18).toFixed(2),
 				this.totalveCRV = (await this.votingEscrow.methods.totalSupply().call() / 1e18).toFixed(2)

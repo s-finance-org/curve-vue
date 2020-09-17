@@ -146,9 +146,9 @@
       },
     },
     methods: {
-      changePools(pool) {
-        changeContract(pool)
-      },
+      // changePools(pool) {
+      //   changeContract(pool)
+      // },
       async changeWallets() {
         currentContract.default_account = ''
         onboard.walletReset()
