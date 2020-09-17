@@ -307,7 +307,15 @@
       gauge: '',
       name: 'susdv2',
 
-      gaugeBalance: 0
+      gaugeBalance: 0,
+
+      gasPriceStore: {
+        fetched: false,
+        gasPriceInfo: {},
+        gasPrice: 20,
+        gasPriceWei: BN(2).times(1e9).toFixed(0,1),
+        gasPriceInterval: null,
+      }
 		}),
 
 		async created() {
@@ -321,7 +329,35 @@
 			if(contract.default_account && contract.multicall)
         this.mounted()
 
-      // FIXME: 
+      /* Function */
+      // user_checkpoint bool
+      // claimable_tokens uint256
+      // claimable_reward uint256
+      // kick 
+      // set_approve_deposit 
+      // deposit 
+      // withdraw
+      // claim_rewards 
+      // integrate_checkpoint uint256
+      // minter address
+      // crv_token address
+      // lp_token address
+      // controller address
+      // voting_escrow address
+      // balanceOf uint256
+      // totalSupply uint256
+      // future_epoch_time uint256
+      // approved_to_deposit bool
+      // working_balances uint256
+      // working_supply uint256
+      // period int128
+      // period_timestamp uint256
+      // integrate_inv_supply uint256
+      // integrate_inv_supply_of uint256
+      // integrate_checkpoint_of uint256
+      // integrate_fraction uint256
+      // inflation_rate uint256
+      // claimed_rewards_for uint256
       const daoabis_liquiditygaugerewards_abi = [
     {
         "name":"Deposit",
@@ -977,10 +1013,10 @@
 				return gaugeStore.state.totalGaugeBalance
 			},
 			gasPrice() {
-          return gasPriceStore.state.gasPrice
+          return this.gasPriceStore.gasPrice
       },
       gasPriceWei() {
-          return gasPriceStore.state.gasPriceWei
+          return this.gasPriceStore.gasPriceWei
       },
       showApplyBoostAll() {
         return gaugeStore.state.gaugesNeedApply.length > 0
@@ -1208,7 +1244,7 @@
 				await this.gaugeContract.methods.claim_rewards(contract.default_account).send({
 					from: contract.default_account,
 					gasPrice: this.gasPriceWei,
-					gas: gas,
+					gas: gas * 1.2 | 0,
 				})
 				.once('transactionHash', hash => {
 					dismiss()

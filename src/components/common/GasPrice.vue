@@ -86,16 +86,17 @@
 		},
 
 		async created() {
-            !state.fetched && this.getGasPrice()
-            state.gasPriceInterval && clearIntervalAsync(state.gasPriceInterval)
-            if(!state.gasPriceInterval || state.gasPriceInterval.stopped) {
-                state.gasPriceInterval = setIntervalAsync(() => this.getGasPrice(), 10000)
-            }
-			this.$watch(() => state.gasPrice, val => {
-				state.gasPriceWei = BN(val).times(1e9).toFixed(0,1)
-			}, {
-				immediate: true,
-			})
+        !state.fetched && this.getGasPrice()
+        state.gasPriceInterval && clearIntervalAsync(state.gasPriceInterval)
+        if(!state.gasPriceInterval || state.gasPriceInterval.stopped) {
+            state.gasPriceInterval = setIntervalAsync(() => this.getGasPrice(), 10000)
+        }
+        
+        this.$watch(() => state.gasPrice, val => {
+          state.gasPriceWei = BN(val).times(1e9).toFixed(0,1)
+        }, {
+          immediate: true,
+        })
 		},
 
         methods: {
