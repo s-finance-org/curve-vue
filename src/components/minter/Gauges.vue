@@ -1185,14 +1185,14 @@
       },
 
       async claim1 () {
-      // this.gas = await gaugeStore.state.minter.methods.mint(this.gauge.gauge).estimateGas()
+        let gas = await gaugeStore.state.minter.methods.mint(this.gauge).estimateGas()
 
 				var { dismiss } = notifyNotification(`Please confirm claiming CRV from ${this.name} gauge`)
 
 				await this.gaugeStore.state.minter.methods.mint(this.gauge).send({
 					from: contract.default_account,
 					gasPrice: this.gasPriceWei,
-					gas: this.gas * 1.5 | 0,
+					gas: gas * 1.5 | 0,
 				})
 				.once('transactionHash', hash => {
 					dismiss()
@@ -1201,14 +1201,14 @@
       },
 
       async claimRewards () {
-        // let gas = await this.gaugeContract.methods.claim_rewards(contract.default_account).estimateGas()
+        let gas = await this.gaugeContract.methods.claim_rewards(contract.default_account).estimateGas()
 
 				var { dismiss } = notifyNotification(`Please confirm claiming SNX`)
 
 				await this.gaugeContract.methods.claim_rewards(contract.default_account).send({
 					from: contract.default_account,
 					gasPrice: this.gasPriceWei,
-					gas: this.gas,
+					gas: gas,
 				})
 				.once('transactionHash', hash => {
 					dismiss()
