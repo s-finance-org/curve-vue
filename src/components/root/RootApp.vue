@@ -104,7 +104,6 @@
   import { getters, contract as currentContract, changeContract, poolMenu } from '../../contract'
   import init, { onboard, changeWallets } from '../../init'
   import * as volumeStore from '@/components/common/volumeStore'
-  import constantPlatform from '../../constant/platform'
 
   import RootHeader from './RootHeader.vue'
   import RootSub from './RootSub.vue'

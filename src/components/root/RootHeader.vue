@@ -22,9 +22,11 @@
         </div>
         <b-navbar-nav>
           <b-nav-item :to="{name: 'RootIndex'}" href="###">{{ $t('global.home') }}</b-nav-item>
-          <b-nav-item :to="{name: 'Index'}">{{ $t('global.swap') }}</b-nav-item>
-          <b-nav-item href="###">{{ $t('global.liquidity') }}</b-nav-item>
-          <b-nav-item href="###">{{ $t('global.stats') }}</b-nav-item>
+          <b-nav-item :to="{name: 'Swap', path: '/susdv2/swap'}">{{ $t('global.swap') }}</b-nav-item>
+          <b-nav-item :to="'/susdv2/deposit'">{{ $t('global.liquidity') }}</b-nav-item>
+          <b-nav-item :to="{name: 'PoolDao', path: '/susdv2/dao'}">{{ $t('global.dao') }}</b-nav-item>
+          <b-nav-item :to="{name: 'PoolRisks', path: '/susdv2/risks'}">{{ $t('global.risks') }}</b-nav-item>
+          <!-- <b-nav-item href="###">{{ $t('global.stats') }}</b-nav-item> -->
         </b-navbar-nav>
         <sel-language class="ml-2" />
       </b-navbar>

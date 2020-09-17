@@ -6,7 +6,7 @@ export default {
   global: {
     home: '首页',
     swap: '兑换',
-    liquidity: '抵押',
+    liquidity: '存取款',
     stats: '统计',
     operating: '操作',
     deposits: '资金',
@@ -27,7 +27,9 @@ export default {
     low: '低',
     notAvailable: '无法使用',
     fee: '费用',
-    norm: '指标'
+    norm: '指标',
+    risks: '风险',
+    dao: '挖矿'
   },
   beta: {
     slogan: '项目还在测试阶段，请注意风险，更多功能敬请期待~',
@@ -80,5 +82,16 @@ export default {
     avgAssetPrice: '资产均价',
     amplificationCoefficient: '放大系数',
     fundingFeeRate: '资金费用率'
+  },
+  risk: {
+    title: '使用 S.Finance 的风险',
+    auditTitle: '审计',
+    auditContHtml: 'S.finance 智能合约通过了Trail of Bits审计。<br/>然而，安全审计并不能完全消除风险。请在能力承受范围内投资，不要盲目投入全部资产，尤其是在提供流动性交易时。<br/>使用S.finance 做兑换交易时风险会相对降低，但这只是建议。',
+    adminKeyTitle: '管理密钥',
+    adminKeyContHtml: '管理密钥在紧急情况下允许暂停合约，但仅可在最初2个月使用。它还允许改变放大系数(S.Finance参数)，管理费用(不超过流动性凭证花费的一半)和费用。所有的变更将在提交额外申请之前的3天内进行。<br/>S.Finance将向去中心化的DAO过渡。',
+    lossTitle: '资产损失',
+    lossContHtml: 'S.finance 智能合约通过了Trail of Bits审计。然而，安全审计并不能完全消除风险。请在能力承受范围内投资，不要盲目投入全部资产，尤其是在提供流动性时。<br/>使用S.finance作兑换交易时风险会相对降低，但这只是建议。',
+    stakingTitle: '抵押风险',
+    stakingContHtml: '当使用抵押功能时，每一种智能合约都有他们相应的风险。',
   }
 }

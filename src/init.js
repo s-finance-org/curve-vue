@@ -12,42 +12,12 @@ import Notify from "bnc-notify"
 
 import * as common from './utils/common.js'
 import * as state from './contract.js'
-import * as specs from './constant/specs'
 import { infura_url } from './allabis.js'
 import { multicall_address, multicall_abi } from './allabis'
 
-/*const providerOptions = {
-    walletconnect: {
-        package: WalletConnectProvider, // required
-        options: {
-          infuraId: "c334bb4b45a444979057f0fb8a0c9d1b" // required
-        }
-    },
-    authereum: {
-        package: Authereum, // required
-        options: {}
-    },
-    burnerconnect: {
-        package: BurnerConnectProvider, // required
-        options: {}
-    },
-    fortmatic: {
-        package: Fortmatic, // required
-        options: {
-          key: "pk_live_190B10CE18F47DCD" // required
-        }
-    }
-};*/
-
-/*const web3Modal = new Web3Modal({
-  network: "mainnet", // optional
-  cacheProvider: true, // optional
-  providerOptions // required
-});*/
-
 export const notify = Notify({
-  dappId: 'c68d8ec3-9b9a-4ba5-a3eb-6232eff79030',
-  networkId: 1,
+  dappId: process.env.VUE_APP_BLOCKNATIVE_KEY,
+  networkId: +process.env.VUE_APP_BLOCKNATIVE_NETWORK_ID,
   desktopPosition: 'topRight',
 })
 
@@ -74,11 +44,11 @@ let wallets = [
     walletName: "trezor",
     appUrl: "https://curve.fi",
     email: "info@curve.fi",
-    rpcUrl: specs.infura_url
+    rpcUrl: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`
   },
   {
     walletName: "ledger",
-    rpcUrl: specs.infura_url,
+    rpcUrl: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`,
     //LedgerTransport: TransportWebUSB,
   },
   { walletName: "dapper" },
@@ -88,7 +58,7 @@ let wallets = [
   { walletName: "authereum", apiKey: "_BTsipRcEmPeuVteLOGdoh1CXt733YLZ7u3ipbe_dAk" },
   { 
     walletName: "trust",
-    rpcUrl: specs.infura_url
+    rpcUrl: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`
   },
   {
     walletName: "walletConnect",
@@ -98,7 +68,7 @@ let wallets = [
     walletName: "walletLink",
     appName: 'Curve Finance',
     appLogoUrl: 'https://s.finance/logo.png',
-    rpcUrl: specs.infura_url
+    rpcUrl: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`
   },
   {
     walletName: "portis",
@@ -109,7 +79,7 @@ let wallets = [
   { walletName: "opera" },
   { walletName: "operaTouch" },
   { walletName: "unilogin" },
-  { walletName: "imToken", rpcUrl: specs.infura_url },
+  { walletName: "imToken", rpcUrl: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}` },
   { walletName: "meetone" },
 ]
 
@@ -159,8 +129,8 @@ if(window.web3 && window.web3.currentProvider.wallet == "MEETONE") {
 }
 
 export const onboard = Onboard({
-  dappId: 'c68d8ec3-9b9a-4ba5-a3eb-6232eff79030',       // [String] The API key created by step one above
-  networkId: 1,  // [Integer] The Ethereum network ID your Dapp uses.
+  dappId: process.env.VUE_APP_BLOCKNATIVE_KEY,       // [String] The API key created by step one above
+  networkId: +process.env.VUE_APP_BLOCKNATIVE_NETWORK_ID,  // [Integer] The Ethereum network ID your Dapp uses.
   subscriptions: {
     wallet: wallet => {
       state.contract.web3 = window.web3 = new Web3(wallet.provider)
@@ -168,12 +138,11 @@ export const onboard = Onboard({
       localStorage.setItem('selectedWallet', wallet.name)
     },
     network: network => {
-      if(network != 1) {
+      if(process.env.VUE_APP_ONLY_MAINNETWORK === 'true' && network != 1) {
         state.contract.error = 'Error: wrong network type. Please switch to mainnet';
         state.contract.showShares = false
         window.web3 = new Web3(infura_url)
-      }
-      else {
+      } else {
         state.contract.error = ''
         state.contract.showShares = true;
       }

@@ -3,7 +3,7 @@
     <basic-trade class="mt-4 mb-3" />
 
     <h4 class="mt-4 mb-2">{{ $t('stablePools.name') }}</h4>
-    <div class="box mb-3">
+    <div class="box mb-4">
       <b-table @row-clicked=stablePoolsRowClicked class="mb-0 text-right" hover :items="stablePools.items" :fields="stablePools.fields">
         <template v-slot:head(name)>
           {{ $t('global.poolName')}}
@@ -729,7 +729,7 @@
 						swap: '0xA2B47E3D5c44877cca798226B7B8118F9BFb7A56',
 						swap_token: '0x845838DF265Dcd2c412A1Dc9e959c7d08537f8a2',
 						name: 'compound',
-            gauge: '0x7ca5b0a2910B33e9759DC7dDB0413949071D7575',
+            gauge: process.env.VUE_APP_COMPOUND_GAUGE,
 					},
 					usdt: {
 						swap: '0x52EA46506B9CC5Ef470C5bf89f17Dc28bB35D85C',
@@ -776,7 +776,7 @@
 				}
 
 				let decodedGauges = [
-				  "0x7ca5b0a2910B33e9759DC7dDB0413949071D7575",
+				  process.env.VUE_APP_COMPOUND_GAUGE,
 				  "0xBC89cd85491d81C6AD2954E6d0362Ee29fCa8F53",
 				  "0xFA712EE4788C042e2B7BB55E6cb8ec569C4530c1",
 				  "0x69Fb7c45726cfE2baDeE8317005d3F94bE838840",

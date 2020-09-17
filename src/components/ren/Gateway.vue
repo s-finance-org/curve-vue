@@ -166,7 +166,6 @@
 	import Vue from 'vue'
     import { notify, notifyHandler } from '../../init'
 	import { getters, allCurrencies, contract, gas as contractGas } from '../../contract'
-	import RenSDK from '@renproject/ren'
 	import BN from 'bignumber.js'
 	import * as helpers from '../../utils/helpers'
 	import * as common from '../../utils/common'

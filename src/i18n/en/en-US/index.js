@@ -27,7 +27,9 @@ export default {
     low: 'Low',
     notAvailable: 'Not available',
     fee: 'Fee',
-    norm: 'Norm'
+    norm: 'Norm',
+    risks: 'Risks',
+    dao: 'DAO'
   },
   beta: {
     slogan: 'The project is still in testing stage, please pay attention to the risks and stay tuned for more functions~',
@@ -80,5 +82,16 @@ export default {
     avgAssetPrice: 'Average asset price',
     amplificationCoefficient: 'AmplificationCoefficient',
     fundingFeeRate: 'FundingFeeRate'
+  },
+  risk: {
+    title: 'Risks Warning',
+    auditTitle: 'Audits',
+    auditContHtml: 'S.Finance smart contracts were Audited by Trail of Bits.<br/>However, security audits don\'t eliminate risks completely. Please don’t supply your life savings, or assets you can’t afford to lose, to S.Finance, especially as a liquidity provider.<br/>Using S.Finance as an exchange user should be significantly less risky, but this is not advice.',
+    adminKeyTitle: 'Admin keys',
+    adminKeyContHtml: 'Admin key allows to pause the contract in an emergency, but only during first 2 months in existence. Also it allows to change amplification coefficient (S.Finance parameter), admin fee (not more than half of fee which LPs take) and the fee. All the changes are timelocked for 3 days before being applied for enough notice.<br/>S.Finance will be transitioning to a DAO to be fully decentralized.',
+    lossTitle: 'Permanent loss of a peg',
+    lossContHtml: 'S.Finance smart contracts were Audited by Trail of Bits.<br/>However, security audits don\'t eliminate risks completely. Please don’t supply your life savings, or assets you can’t afford to lose, to S.Finance, especially as a liquidity provider.<br/>Using S.Finance as an exchange user should be significantly less risky, but this is not advice.',
+    stakingTitle: 'Staking risks',
+    stakingContHtml: 'When staking you use multiple smart contract products each of which has its own risks',
   }
 }

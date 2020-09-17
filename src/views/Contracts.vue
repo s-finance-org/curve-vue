@@ -147,7 +147,7 @@
 				return [
 					{
 						name: "Compound",
-						address: "0x7ca5b0a2910B33e9759DC7dDB0413949071D7575",
+						address: process.env.VUE_APP_COMPOUND_GAUGE,
 					},
 					{
 					    name: "USDT",

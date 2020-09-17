@@ -84,7 +84,7 @@
           v-show="['ledger', 'trezor'].includes(walletName)" 
           @click = 'changeAccounts'>Change accounts</button>
       </div> -->
-      <div id="screen">
+      <div id="screen" class="pt-5">
         <root-sub :error=error />
         <router-view/>
       </div>

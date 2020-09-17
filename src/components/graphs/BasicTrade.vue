@@ -4,7 +4,7 @@
       {{ $t('instantSwap.name')}}
       <small class="ml-3">{{ $t('instantSwap.tip')}}</small>
     </h4>
-    <div class="box mb-3">
+    <div class="box mb-4">
       <one-split />
     </div>
 
