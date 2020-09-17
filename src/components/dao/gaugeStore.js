@@ -89,7 +89,7 @@ export async function getState() {
 	state.minter = new contract.web3.eth.Contract(daoabis.minter_abi, process.env.VUE_APP_PS_MINTER)
 console.log(state.gaugeController)
 console.log(state.votingEscrow)
-console.log(state.minter)
+console.log('state.minter', state.minter)
 	state.n_gauges = +(await state.gaugeController.methods.n_gauges().call())
 console.log(1)
 console.log(state.n_gauges)

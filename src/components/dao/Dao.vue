@@ -1,6 +1,7 @@
 <template>
 	<div>
-<fieldset>
+    <fieldset>
+      loading: {{ loading }}
 			<legend>
 				_{ gauge.name }} _{ gauge.typeName }} gauge
 				<b>CRV APY:</b> _{ CRVAPY.toFixed(2) }}%
@@ -95,12 +96,7 @@
 			</div>
 		</fieldset>
 
-  
-
-
-
-
-      
+ 
             <!-- <fieldset class="currencies">
                 <legend>Currencies:</legend>
                 <ul>
@@ -328,6 +324,13 @@
     		Slippage, GasPrice,
     	},
     	data: () => ({
+        pools: [],
+			  mypools: [],
+        loading: true,
+
+        claimFromGauges: [],
+
+
     		deposit_gas: 500000,
         gas: 1000000,
         inf_approval: true,
@@ -346,20 +349,26 @@
 
         gaugeBalance: 0,
 
+        // FIXME: test
         gasPriceStore: {
           fetched: false,
           gasPriceInfo: {},
           gasPrice: 20,
           gasPriceWei: BN(2).times(1e9).toFixed(0,1),
           gasPriceInterval: null,
-        }
-    	}),
-        async created() {
+        },
 
-        },
-        watch: {
-        	
-        },
+        // thegauge: {
+        //   balance: 0,
+        //   gauge: '0xd13BBE09C4532CdbBC42bf9205CaED3587F25789',
+        //   gaugeBalance: 0,
+        //   name: 'curvepool1',
+        //   swap: '0xbbe6874b45eFd4E44396F6aE619663067424b218',
+        //   swap_token: '0x1796E153ce80fCf2015E19035DcecFb005bc017D',
+        //   type: 0,
+        //   typeName: 'Liquidity'
+        // }
+    	}),
         computed: {
           ...getters,
           // FIXME: 
@@ -370,10 +379,6 @@
           gasPriceWei() {
             return this.gasPriceStore.gasPriceWei
           },
-          // FIXME: 
-          gaugeStore () {
-            return gaugeStore
-          },
           claimableTokensFormat() {
             return (this.claimableTokens / 1e0).toFixed(2)
           },
@@ -382,8 +387,10 @@
           },
         },
         async mounted() {
-          
-          
+          // if(currentContract.initializedContracts) 
+          // if(currentContract.default_account && currentContract.multicall)
+              // this.mounted()
+
           /* Function */
           // user_checkpoint bool
           // claimable_tokens uint256
@@ -1043,8 +1050,70 @@
 
           this.gaugeBalance = BN(await this.gaugeContract.methods.balanceOf(currentContract.default_account).call()).toFixed(0,1)
 
+          this.mounted();
+        },
+        watch: {
+          depositAmount(val) {
+            // let depositVal = (val * 100 / (this.gauge.balance / 1e0)) || 0
+            // this.depositSlider = (Math.min(depositVal, 100)).toFixed(0)
+          },
+
+          withdrawAmount(val) {
+            // let withdrawVal = (val * 100 / (this.gauge.gaugeBalance / 1e0)) || 0
+            // this.withdrawSlider = (Math.min(withdrawVal, 100)).toFixed(0)
+          },
         },
         methods: {
+          async mounted() {
+            gaugeStore.state.totalClaimableCRV = null
+            gaugeStore.state.totalMintedCRV = null
+
+            await gaugeStore.getState()
+
+            this.loading = false
+
+            this.pools = gaugeStore.state.pools
+            this.mypools = gaugeStore.state.mypools
+
+            this.claimFromGauges = this.myGauges
+
+            let btcPrice = await getBTCPrice()
+
+            let total = this.mypools.reduce((a,b,i) => {
+              let balance = +b.gaugeBalance
+              if(['ren','sbtc'].includes(this.mypools[i].name))
+                balance *= btcPrice
+              return +a + balance
+            }, 0)
+
+            let piedata = this.mypools.map(pool => {
+              let balance = pool.gaugeBalance
+              if(['ren','sbtc'].includes(pool.name))
+                balance = pool.gaugeBalance * btcPrice
+              return { 
+                name: pool.name,
+                y: total == 0 ? 0 : balance / total
+              }
+            })
+            piedata = piedata.filter(pool => pool.y > 0)
+
+       
+
+
+
+            let gaugeSum = Object.values(gaugeStore.state.pools).reduce((a,b) => +a + +b.gauge_relative_weight, 0)
+            let piegauges = Object.values(gaugeStore.state.pools).map(v => ({ name: v.name, y: v.gauge_relative_weight / gaugeSum}))
+
+            let highest = piegauges.map(data=>data.y).indexOf(Math.max(...piegauges.map(data => data.y)))
+            piegauges[highest].sliced = true;
+            piegauges[highest].selected = true;
+
+         
+
+
+           
+
+          },
         	toFixed(num) {
             if(num == '' || num == undefined || +num == 0) return '0.00'
             if(!BN.isBigNumber(num)) num = +num
@@ -1123,6 +1192,7 @@
           },
 
           async claim1 () {
+        console.log(gaugeStore.state.minter)
             let gas = await gaugeStore.state.minter.methods.mint(this.gauge).estimateGas()
 console.log('gas', gas)
             var { dismiss } = notifyNotification(`Please confirm claiming CRV from ${this.name} gauge`)

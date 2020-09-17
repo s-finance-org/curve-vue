@@ -297,9 +297,9 @@
         		//await Promise.all([...Array(currentContract.N_COINS).keys()].map(i=>this.change_currency(i, false)))
         		await this.calcSlippage()
         	},
-            getMaxSlippage() {
-                this.getLPCrvReceived()
-            },
+          getMaxSlippage() {
+              this.getLPCrvReceived()
+          },
         },
         computed: {
           ...getters,
@@ -469,21 +469,21 @@
             	}
             },
             setInputStyles(newInputs = false, newContract, oldContract) {
-				if(oldContract) {
-					for(let i = 0; i < allabis[newContract].N_COINS - allabis[oldContract].N_COINS; i++) {
-						this.inputs.push('0.00')
-					}
-					if(allabis[oldContract].N_COINS - allabis[newContract].N_COINS > 0) {
-						this.inputs = this.inputs.filter((_, i) => i < allabis[newContract].N_COINS)
-					}
-				}
-				else if(newInputs) {
-					this.inputs = new Array(Object.keys(this.currencies).length).fill('0.00')
-				}
-	        	this.bgColors = Array(currentContract.N_COINS).fill({
-	        		backgroundColor: '#707070',
-	        		color: '#d0d0d0',
-	        	})
+              if(oldContract) {
+                for(let i = 0; i < allabis[newContract].N_COINS - allabis[oldContract].N_COINS; i++) {
+                  this.inputs.push('0.00')
+                }
+                if(allabis[oldContract].N_COINS - allabis[newContract].N_COINS > 0) {
+                  this.inputs = this.inputs.filter((_, i) => i < allabis[newContract].N_COINS)
+                }
+              }
+              else if(newInputs) {
+                this.inputs = new Array(Object.keys(this.currencies).length).fill('0.00')
+              }
+              this.bgColors = Array(currentContract.N_COINS).fill({
+                backgroundColor: '#707070',
+                color: '#d0d0d0',
+              })
             },
             async calcSlippage() {
             	try {
