@@ -213,7 +213,7 @@
         <div class='flex-break'></div>
 
         CRV claimableReward: {{ claimableReward }}
-        <button @click='claimRewards' v-show='claimableReward > 0' class='claimrewards'>
+        <button @click='claimRewards' class='claimrewards'>
           Claim {{ claimableRewardFormat }}
           <span>SNX</span>
         </button>
