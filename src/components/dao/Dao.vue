@@ -1094,9 +1094,11 @@
           // this.claimableTokens = +this.gauge.claimable_tokens
 
 this.mounted();
-
+console.log('---')
+console.log(this.gaugeContract.methods)
+console.log('claimable_reward', await this.gaugeContract.methods.claimable_reward(currentContract.default_account).call())
           this.claimableReward = await this.gaugeContract.methods.claimable_reward(currentContract.default_account).call()
-    
+
           this.currentPool.tokens.crv_snx.child.crv.mining.pendingReward = this.claimableReward
 
     
@@ -1106,8 +1108,6 @@ this.mounted();
 // FIXME: temp
 this.currentPool.tokens.sfg.mining.claimConfirm = this.claim1
 this.currentPool.tokens.crv_snx.claimConfirm = this.claimRewards
-
-          
         },
         watch: {
           depositAmount(val) {
@@ -1164,10 +1164,6 @@ this.currentPool.tokens.crv_snx.claimConfirm = this.claimRewards
             piegauges[highest].sliced = true;
             piegauges[highest].selected = true;
 
-         
-
-
-           
 
           },
         	getTokenIcon(token) {
@@ -1250,7 +1246,6 @@ console.log(1)
           },
 
           async claim1 () {
-        console.log(gaugeStore.state.minter)
             let gas = await gaugeStore.state.minter.methods.mint(this.gauge).estimateGas()
 console.log('gas', gas)
             var { dismiss } = notifyNotification(`Please confirm claiming CRV from ${this.name} gauge`)
