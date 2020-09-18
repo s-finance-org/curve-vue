@@ -571,7 +571,7 @@
                 this.setLoadingAction(actionType)
                 let promises = await Promise.all([helpers.getETHPrice()])
                 this.ethPrice = promises[0]
-                
+
 				this.show_loading = true
                 let calls = [...Array(currentContract.N_COINS).keys()].map(i=> {
                           if(this.currentPool == 'susdv2' && i == 3 || this.currentPool == 'sbtc' && i == 2)

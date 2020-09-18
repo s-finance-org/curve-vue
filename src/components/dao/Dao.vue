@@ -378,11 +378,14 @@
           ...getters,
           // FIXME: 
           gasPrice() {
-            return gasPriceStore.state.gasPrice
+            console.log('gasPrice', gasPriceStore.state.gasPrice)
             // return this.gasPriceStore.gasPrice
+            return gasPriceStore.state.gasPrice
           },
           gasPriceWei() {
-            return this.gasPriceStore.gasPriceWei
+            console.log('gasPriceWei', gasPriceStore.gasPriceWei)
+            // return this.gasPriceStore.gasPriceWei
+            return gasPriceStore.gasPriceWei
           },
           claimableTokensFormat() {
             return (this.claimableTokens / 1e18).toFixed(2)
@@ -432,6 +435,7 @@
           }
         },
         async mounted() {
+          console.log('o gasPriceWei', gasPriceStore.gasPriceWei)
           // if(currentContract.initializedContracts) 
           // if(currentContract.default_account && currentContract.multicall)
               // this.mounted()
@@ -1091,8 +1095,13 @@
           // this.claimableTokens = await this.gaugeContract.methods.claimable_tokens(currentContract.default_account).call()
           // this.claimableTokens = +this.gauge.claimable_tokens
 
+this.mounted();
+
           this.claimableReward = await this.gaugeContract.methods.claimable_reward(currentContract.default_account).call()
+    
           this.currentPool.tokens.crv_snx.child.crv.mining.pendingReward = this.claimableReward
+
+    
 
           this.gaugeBalance = BN(await this.gaugeContract.methods.balanceOf(currentContract.default_account).call()).toFixed(0,1)
 
@@ -1100,7 +1109,7 @@
 this.currentPool.tokens.sfg.mining.claimConfirm = this.claim1
 this.currentPool.tokens.crv_snx.claimConfirm = this.claimRewards
 
-          this.mounted();
+          
         },
         watch: {
           depositAmount(val) {
@@ -1115,6 +1124,7 @@ this.currentPool.tokens.crv_snx.claimConfirm = this.claimRewards
         },
         methods: {
           async mounted() {
+            console.log('mounted 1')
             await gaugeStore.getState()
 
             this.loadingAction = false
