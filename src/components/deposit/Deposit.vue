@@ -1,6 +1,7 @@
 <template>
 	<div>
 		<div class="add-liquidity">
+      {{ disabled }}
             <fieldset class="currencies">
                 <legend>Currencies:</legend>
                 <ul>
@@ -527,6 +528,7 @@
                     this.susdWaitingPeriod = (+decoded[decoded.length - 1] != 0)
                     this.susdWaitingPeriodTime = +decoded[decoded.length - 1]
                 }
+
 			    if (this.max_balances) {
 			        this.disabled = true;
 			        for (let i = 0; i < currentContract.N_COINS; i++) {
@@ -545,7 +547,11 @@
 			        }
 			    }
 			    else
-			        this.disabled = false;
+              this.disabled = false;
+              
+
+          // FIXME: temp
+          this.disabled = false;
 			},
 			async handle_sync_balances_proportion() {
 				await this.handle_sync_balances();

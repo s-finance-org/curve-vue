@@ -293,7 +293,7 @@
                 pendingReward: -1,
                 paidReward: -1,
                 claimConfirm: () => {
-                  console.log(1)
+                  
                 }
               }
             },
@@ -323,7 +323,6 @@
                 }
               },
               claimConfirm: () => {
-                console.log(1)
               }
             }
           }
@@ -1092,9 +1091,14 @@
           // this.claimableTokens = await this.gaugeContract.methods.claimable_tokens(currentContract.default_account).call()
           // this.claimableTokens = +this.gauge.claimable_tokens
 
-          this.currentPool.tokens.crv_snx.child.crv.mining.pendingReward = await this.gaugeContract.methods.claimable_reward(currentContract.default_account).call()
+          this.claimableReward = await this.gaugeContract.methods.claimable_reward(currentContract.default_account).call()
+          this.currentPool.tokens.crv_snx.child.crv.mining.pendingReward = this.claimableReward
 
           this.gaugeBalance = BN(await this.gaugeContract.methods.balanceOf(currentContract.default_account).call()).toFixed(0,1)
+
+// FIXME: temp
+this.currentPool.tokens.sfg.mining.claimConfirm = this.claim1
+this.currentPool.tokens.crv_snx.claimConfirm = this.claimRewards
 
           this.mounted();
         },
@@ -1185,8 +1189,9 @@
             const swap_token = new currentContract.web3.eth.Contract(ERC20_abi, gauge_swap_token)
 console.log('swap_token', swap_token)
 console.log('gauge', this.gauge)
+console.log('inf_approval', this.inf_approval)
             await common.approveAmount(swap_token, deposit, currentContract.default_account, this.gauge, this.inf_approval)
-
+console.log(1)
             var { dismiss } = notifyNotification(`Please confirm depositing into ${this.name} gauge`)
 
             await this.gaugeContract.methods.deposit(deposit.toFixed(0,1)).send({

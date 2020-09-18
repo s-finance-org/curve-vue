@@ -273,8 +273,8 @@ let routes = [
   //   ]
   // },
   {
-    // path: '/:pool(compound|usdt|y|iearn|busd|susdv2|pax|tbtc|ren|sbtc)/',
-    path: '/:pool(susdv2)/',
+    path: '/:pool(compound|usdt|y|iearn|busd|susdv2|pax|tbtc|ren|sbtc)/',
+    // path: '/:pool(susdv2)/',
     name: 'Index',
     component: PoolApp,
     children: [
