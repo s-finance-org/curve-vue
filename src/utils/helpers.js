@@ -30,7 +30,7 @@ export function totalCurrencies(currencies) {
 	return Object.keys(currencies).join('+');
 }
 
-export function getTokenIcon(token, wrapped, pool) {
+export function getTokenIcon(token, wrapped = false, pool = '') {
     if(wrapped && ['compound', 'usdt'].includes(pool) && token != 'pax') {
         token = 'c' + token
     }

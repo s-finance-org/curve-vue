@@ -29,7 +29,7 @@ Vue.use(BootstrapVue)
 // Vue-i18n
 Vue.use(VueI18n)
 const i18n = new VueI18n({
-  locale: 'en-US',
+  locale: process.env.VUE_APP_I18N_LOCALE,
   messages: i18nLanguages
 })
 
@@ -45,7 +45,7 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 import '../public/tvisionbase.css'
-// import '../public/tvision.css'
+import '../public/tvision.css'
 
 import './registerServiceWorker'
 

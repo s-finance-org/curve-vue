@@ -4,6 +4,7 @@
 
 export default {
   global: {
+    sFinance: 'S.Finance',
     home: 'Home',
     swap: 'Swap',
     liquidity: 'Liquidity',
@@ -101,7 +102,17 @@ export default {
     redemption: 'Redemption',
     miningReward: 'Mining reward',
     assetInStaking: 'Asset in staking',
-    amountPlaceholder : 'Amount',
-    balance: 'Balance'
+    stakingAmountPlaceholder: 'Amount',
+    stakingBalance: 'Balance',
+    infiniteApproval: 'Infinite approval',
+    stakingConfirmTip: 'Deposit to get LP tokens',
+    stakingConfirm: 'Confirm',
+    redemptionBalance: 'Balance',
+    redemptionAmountPlaceholder: 'Amount',
+    redemptionConfirm: 'Confirm',
+    miningPendingReward: 'Pending reward',
+    miningPaidReward: 'Paid reward',
+    miningTotalReward: 'Total reward',
+    miningClaimConfirm: 'Claim',
   }
 }

@@ -89,6 +89,8 @@ fieldset {
   min-width: 0;
 }
 
+/* Text Color */
+
 /* Shadow */
 .box {
   overflow: hidden;
@@ -114,6 +116,15 @@ fieldset {
 .text-black-65 {
   color: rgba(0, 0, 0, .65);
 }
+.text-black-45 {
+  color: rgba(0, 0, 0, .45);
+}
+.text-black-15 {
+  color: rgba(0,0,0,0.15);
+}
+.text-blue-1 {
+  color: #1BA57B;
+}
 
 /* Nav */
 .navbar-expand .navbar-nav .nav-link {
@@ -138,18 +149,19 @@ fieldset {
 }
 
 /* Button */
-.btn-sm, .btn-group-sm > .btn {
-  padding: 0px 8px;
+.btn, .btn-group > .btn {
+  padding: 7px 16px;
   font-size: 14px;
   line-height: 22px;
   border-radius: 2px;
 }
-
+.btn-sm, .btn-group-sm > .btn {
+  padding: 0px 8px;
+}
 .btn-lg, .btn-group-lg > .btn {
   padding: 12px 24px;
   font-size: 16px;
   line-height: 24px;
-  border-radius: 2px;
 }
 
 .btn-danger {
@@ -181,6 +193,22 @@ fieldset {
   text-align: left;
 }
 
+/* Input Textarea */
+input[type="text"] {
+  font-size: 14px;
+}
+input[type="text"]::-webkit-input-placeholder, textarea::-webkit-input-placeholder {
+  color: rgba(0,0,0,0.45);
+  font-size: 14px;
+}
+input[type="text"]::-moz-placeholder, textarea::-moz-placeholder {
+  color: rgba(0,0,0,0.45);
+  font-size: 14px;
+}
+input[type="text"]::-moz-placeholder, textarea::-moz-placeholder {
+  color: rgba(0,0,0,0.45);
+  font-size: 14px;
+}
 
 /* Radio */
 .custom-control {
@@ -224,11 +252,17 @@ fieldset {
 	animation: mymove .5s 1
 }
 
+/* Checkbox */
+.custom-checkbox {
+  font-size: 14px;
+  color: rgba(0,0,0,0.65);
+  line-height: 24px;
+}
+
 /* Input group */
 .input-append-percentage::before {
   content: "%";
 }
-
 
 /* Modal */
 .statement-modal{
@@ -265,9 +299,6 @@ fieldset {
 
 
 /* Tab */
-.tabs-nav {
-
-}
 .tabs-nav .nav-link {
   font-size: 14px;
   color: rgba(0,0,0,0.85);
@@ -289,3 +320,25 @@ fieldset {
 .tabs-nav .nav-link:active, .tabs-nav .nav-link:focus {
   outline-color: #eb3c00;
 }
+
+/*  */
+.btn-group-toggle label.btn {
+  margin-right: 8px;
+  border-radius: 2px;
+  padding-right: 16px;
+  padding-left: 16px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 22px;
+}
+.btn-group-toggle label.btn:last-child {
+  margin-right: 0px;
+}
+
+
+
+
+
+
+
+

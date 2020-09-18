@@ -17,6 +17,7 @@ const Donate = () => import('../views/Donate.vue')
 const Profit = () => import('../components/Profit.vue')
 const ProfitRouter = () => import('../components/ProfitRouter.vue')
 const RootApp = () => import('../components/root/RootApp.vue')
+const RootDefault = () => import('../components/root/RootDefault.vue')
 const Root = () => import('../components/root/Root.vue')
 const CombinedStats = () => import('../components/root/CombinedStats.vue')
 const StatsDaily = () => import('../components/root/StatsDaily.vue')
@@ -63,11 +64,6 @@ let routes = [
         name: 'RootIndex',
         path: '',
         component: Root
-      },
-      {
-        path: '/dao',
-        name: 'Dao',
-        component: Dao
       },
       // {
       //   path: '/basictrade',
@@ -160,11 +156,6 @@ let routes = [
       //   component: Integrations,
       // },
       // {
-      //   path: 'risks',
-      //   name: 'Risks',
-      //   component: Risks,
-      // },
-      // {
       //   path: 'bugbounty',
       //   name: 'BugBounty',
       //   component: BugBounty,
@@ -179,6 +170,23 @@ let routes = [
       //   name: 'earlyCRV',
       //   component: earlyCRV,
       // },
+    ]
+  },
+  {
+    path: '/',
+    name: 'RootDefault',
+    component: RootDefault,
+    children: [
+      {
+        path: 'risks',
+        name: 'Risks',
+        component: Risks,
+      },
+      {
+        path: '/dao',
+        name: 'Dao',
+        component: Dao
+      },
     ]
   },
   // {
@@ -318,11 +326,11 @@ let routes = [
       //   name: 'Audits',
       //   component: Audits,
       // },
-      {
-        path: 'risks',
-        name: 'PoolRisks',
-        component: PoolRisks,
-      },
+      // {
+      //   path: 'risks',
+      //   name: 'PoolRisks',
+      //   component: PoolRisks,
+      // },
     ]
   },
   {

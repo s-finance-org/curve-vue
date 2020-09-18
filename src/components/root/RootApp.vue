@@ -104,29 +104,15 @@
   import init, { onboard, changeWallets } from '../../init'
   import * as volumeStore from '@/components/common/volumeStore'
 
+  import store from '../../store'
+
   import RootHeader from './RootHeader.vue'
   import RootSub from './RootSub.vue'
   import RootFooter from './RootFooter.vue'
   import TotalBalances from './TotalBalances.vue'
 
   export default {
-    metaInfo: {
-      title: 'S.finance',
-      meta: [
-        {'property': 'og:title', 'content': 's.finance'},
-        {'property': 'og:url', 'content': 'https://s.finance'},
-        {'property': 'og:type', 'content': 'website'},
-        {'property': 'og:description', 'content': ''},
-        {'property': 'og:image', 'content': '/curve.png'},
-        {'name': 'twitter:card', 'content': 'summary_large_image'},
-        {'name': 'twitter:title', 'content': 's.finance'},
-        {'name': 'twitter:site', 'content': ''},
-        {'name': 'twitter:creator', 'content': ''},
-        {'name': 'twitter:description', 'content': ''},
-        {'name': 'twitter:url', 'content': 'https://s.finance'},
-        {'name': 'twitter:image', 'content': '/curve.png'},
-      ]
-    },
+    metaInfo: store.metaInfo.getData(),
     components: {
       RootHeader,
       RootSub,
@@ -140,9 +126,6 @@
       },
       totalVolume() {
 				return volumeStore.totalVolume()
-      },
-      test () {
-        return process.env.VUE_APP_SECRET
       }
     },
     methods: {

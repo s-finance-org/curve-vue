@@ -435,7 +435,9 @@ export const getters = {
 	totalStake: () => state.totalStake,
 
 	usdShare: () => state.usdShare,
-	usdStake: () => state.usdStake,
+  usdStake: () => state.usdStake,
+
+  publicPath: () => process.env.BASE_URL,
 }
 
 

@@ -1,35 +1,21 @@
 <template>
-    <div>
-      <div class="total-bg">
-        <b-container class="d-flex py-4 total-cont">
-          <img class="logo_orgin mr-4" :src="publicPath + 'res/icons/logo/logo_orgin.svg'">
-          <div class="total-box mr-4 ml-auto">
-            <h6 class="text-black-65">{{ $t('total.deposits') }}</h6>
-            <text-overlay-loading :show="!(totalBalances1 || total)">
-              <h4 class="mb-0">{{totalBalances1 || total | formatNumber}}$</h4>
-            </text-overlay-loading>
-          </div>
-          <div class="total-box">
-            <h6 class="text-black-65">{{ $t('global.dailyVol') }}</h6>
-            <text-overlay-loading :show="!(volume >= 0)">
-              <h4 class="mb-0">{{(volume | 0) | formatNumber(0)}}$</h4>
-            </text-overlay-loading>
-          </div>
-        </b-container>
+  <div class="total-bg">
+    <b-container class="d-flex py-4 total-cont">
+      <img class="logo_orgin mr-4" :src="publicPath + 'res/icons/logo/logo_orgin.svg'">
+      <div class="total-box mr-4 ml-auto">
+        <h6 class="text-black-65">{{ $t('total.deposits') }}</h6>
+        <text-overlay-loading :show="!(totalBalances1 || total)">
+          <h4 class="mb-0">{{totalBalances1 || total | formatNumber}}$</h4>
+        </text-overlay-loading>
       </div>
-
-      <!-- <div class="window white">
-        <fieldset>
-          <legend>Total pool deposits and daily volume</legend>
-          <div :class="{'loading line': !total}" id='total-balances'>
-            Deposits: <span v-show='total'>{{total | formatNumber}}$</span>
-          </div>
-          <div :class="{'loading line': volume < 0}" >
-            Daily volume: <span v-show='volume >= 0'>{{(volume | 0) | formatNumber(0)}}$</span>
-          </div>
-        </fieldset>
-      </div> -->
-    </div>
+      <div class="total-box">
+        <h6 class="text-black-65">{{ $t('global.dailyVol') }}</h6>
+        <text-overlay-loading :show="!(volume >= 0)">
+          <h4 class="mb-0">{{(volume | 0) | formatNumber(0)}}$</h4>
+        </text-overlay-loading>
+      </div>
+    </b-container>
+  </div>
 </template>
 
 <script>
@@ -128,26 +114,5 @@
 </script>
 
 <style scoped>
-  .total-bg {
-    background: linear-gradient(180deg,#f7f5ec, #dadedf);
-  }
-  .total-cont {
-    padding: 0 98px;
-  }
-  .total-box {
-    background: #ffffff;
-    border-radius: 2px;
-    padding: 20px 24px;
-    width: 270px;
-  }
-  .logo_orgin {
-    width: 330px;
-    height: 98px;
-  }
-	/* fieldset div {
-		display: block;
-	}
-	fieldset div:nth-of-type(2) {
-		margin-top: 1em;
-	} */
+  
 </style>

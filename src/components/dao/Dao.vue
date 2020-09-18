@@ -1,29 +1,134 @@
 <template>
 	<div>
-    pools: {{ pools }} <br/>
-    mypools: {{ mypools }} <br/>
-  <b-container>
-    <h4 class="mt-4 mb-2">{{ $t('dao.title', ['sUSD']) }}</h4>
-    <div class="box mb-4 px-4 py-3">
-      <b-tabs pills nav-class="tabs-nav">
-        <b-tab :title="$t('dao.staking')" active>
-          <small class="mt-3">
-            {{$t('dao.assetInStaking')}} xxxxxx
-          </small>
-        </b-tab>
-        <b-tab :title="$t('dao.redemption')">
-          2
-        </b-tab>
-        <b-tab :title="$t('dao.miningReward')">
-          3
-        </b-tab>
-      </b-tabs>
+    <div class="total-bg">
+      <b-container class="d-flex py-4 total-cont align-items-center">
+        <img class="logo_lg mr-4" :src="publicPath + 'res/icons/logo/logo_sm.svg'">
+        <h3 class="mb-0">{{ $t('global.sFinance') }}<br/>{{ $t('global.dao') }}</h3>
+      </b-container>
     </div>
-  </b-container>
 
-    
+    <b-container>
+      <h4 class="mt-4 mb-2">
+        {{ $t('dao.title', [currentPool.nameCont]) }}
+        <small class="pl-3">{{ $t('dao.describe', [currentPool.name, currentPool.describeTokensCont]) }}</small>
+      </h4>
+      <div class="box mb-4 px-4 py-3">
+        <b-tabs pills nav-class="tabs-nav" class="mt-1">
+          <b-tab :title="$t('dao.staking')" class="pt-3" active>
+            <small class="d-flex mb-3">{{ $t('dao.assetInStaking') }}：{{ gaugeBalance }} {{ currentPool.name }} LP tokens</small>
+            <label class="text-black-65">{{ $t('dao.staking') }}</label>
+            <template v-show=true>
+              Gas: 
+              <input id='deposit' type='text' v-model='deposit_gas'>
+            </template>
+            <div class="d-flex">
+              <b-form-input class="col mr-4" v-model="depositAmountInput" :placeholder="$t('dao.stakingAmountPlaceholder')"></b-form-input>
+              <b-form-radio-group
+                class
+                v-model="depositSliderSelected"
+                :options="depositSliderOptions"
+                buttons
+                button-variant="outline-secondary"
+              ></b-form-radio-group>
+            </div>
+            <small>{{ $t('dao.stakingBalance') }}： {{ currentPool.balance }} {{ currentPool.name }} LP tokens</small>
+            <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('dao.infiniteApproval') }}</b-form-checkbox>
+            <div class="d-flex align-items-end mt-5 float-right">
+              <h6 class="text-blue-1 mb-0 mr-4">{{ $t('dao.stakingConfirmTip') }}</h6>
+              <text-overlay-loading :show="loadingAction">
+                <b-button size="lg" variant="danger" @click=deposit>
+                  {{ $t('dao.stakingConfirm') }}
+                </b-button>
+              </text-overlay-loading>
+            </div>
+          </b-tab>
+          <b-tab :title="$t('dao.redemption')" class="pt-3">
+            <label class="text-black-65">{{ $t('dao.redemption') }}</label>
+            <template v-show=true>
+              Gas:
+              <input id='deposit' type='text' v-model='gas'>
+            </template>
+            <div class="d-flex">
+              <b-form-input class="col mr-4" v-model="withdrawAmountInput" :placeholder="$t('dao.redemptionAmountPlaceholder')"></b-form-input>
+              <b-form-radio-group
+                class
+                v-model="withdrawSliderSelectedRadio"
+                :options="withdrawSliderOptions"
+                buttons
+                button-variant="outline-secondary"
+              ></b-form-radio-group>
+            </div>
+            <small>{{ $t('dao.redemptionBalance') }}：{{ gaugeBalance }} {{ currentPool.name }} LP tokens</small>
+            <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('dao.infiniteApproval') }}</b-form-checkbox>
+            <div class="d-flex align-items-end mt-5 float-right">
+              <text-overlay-loading :show="loadingAction">
+                <b-button size="lg" variant="danger" @click=withdraw>
+                  {{ $t('dao.redemptionConfirm') }}
+                </b-button>
+              </text-overlay-loading>
+            </div>
+          </b-tab>
+          <b-tab :title="$t('dao.miningReward')" class="pt-3">
+            <div class="area" v-for="token in currentPool.tokens" :key="'token-'+token.name">
+              <template v-if="token.child">
+                <div class="row">
+                  <div class="col" v-for="childToken in token.child" :key="'token-'+childToken.name">
+                    <h5 class="mb-3 d-flex align-items-center">
+                      <img :src="getTokenIcon(childToken.name)" class="mr-2 icon-w-20 icon token-icon" :class="[childToken.name+'-icon']">
+                      {{ childToken.nameCont }}
+                    </h5>
+                    <h6 class="mb-0 text-black-65">{{ $t('dao.miningPendingReward') }}</h6>
+                    <h4 class="mb-1">{{ childToken.mining.pendingReward }} {{ childToken.nameCont }}</h4>
+                    <div class="d-flex no-gutters align-items-end mt-3">
+                      <small class="col">
+                        {{ $t('dao.miningPaidReward') }}：{{ childToken.mining.paidReward }} {{ childToken.nameCont }}
+                        <em class="px-3 text-black-15">/</em>
+                        {{ $t('dao.miningTotalReward') }}：{{ childToken.mining.totalReward }} {{ childToken.nameCont }}
+                        <em class="px-3 text-black-15">/</em>
+                        1 {{ childToken.nameCont }} = {{ childToken.rateUsd }} USD
+                      </small>
+                    </div>
+                  </div>
+                </div>
+                <div class="d-flex mt-4 justify-content-end">
+                  <text-overlay-loading :show="loadingAction">
+                    <b-button variant="danger" @click=token.claimConfirm>
+                      {{ $t('dao.miningClaimConfirm') }}
+                    </b-button>
+                  </text-overlay-loading>
+                </div>
+              </template>
+              <template v-else>
+                <h5 class="mb-3 d-flex align-items-center">
+                  <img :src="getTokenIcon(token.name)" class="mr-2 icon-w-20 icon token-icon" :class="[token.name+'-icon']">
+                  {{ token.nameCont }}
+                </h5>
+                <h6 class="mb-0 text-black-65">{{ $t('dao.miningPendingReward') }}</h6>
+                <h4 class="mb-1">{{ token.mining.pendingReward }} {{ token.nameCont }}</h4>
+                <div class="d-flex no-gutters align-items-end">
+                  <small class="col">
+                    {{ $t('dao.miningPaidReward') }}：{{ token.mining.paidReward }} {{ token.nameCont }}
+                    <em class="px-3 text-black-15">/</em>
+                    {{ $t('dao.miningTotalReward') }}：{{ token.mining.totalReward }} {{ token.nameCont }}
+                    <em class="px-3 text-black-15">/</em>
+                    1 {{ token.nameCont }} = {{ token.rateUsd }} USD
+                  </small>
+                  <text-overlay-loading :show="loadingAction">
+                    <b-button variant="danger" @click=token.mining.claimConfirm>
+                      {{ $t('dao.miningClaimConfirm') }}
+                    </b-button>
+                  </text-overlay-loading>
+                </div>
+              </template>
+            </div>
+          </b-tab>
+        </b-tabs>
+      </div>
+    </b-container>
+
+
     <fieldset>
-      loading: {{ loading }}
+      loading: {{ loadingAction }}
 			<legend>
 				_{ gauge.name }} _{ gauge.typeName }} gauge
 				<b>CRV APY:</b> _{ CRVAPY.toFixed(2) }}%
@@ -57,8 +162,6 @@
 				</div> -->
 				<div class='pool'>
           LPT deposit:<br/>
-          Gas: 
-          <input id='deposit' type='text' v-model='deposit_gas'>
 					<div class='poolBalance'>Balance: <span class='hoverpointer'>_{ poolBalanceFormat }}</span> _{ gauge.name }} LP token</div>
 					<div class='input'>
 						<label for='deposit'>Amount:</label>
@@ -86,8 +189,7 @@
 				</div>
         <div class='flex-break'></div>
         LPT withdraw:<br/>
-        Gas:  
-          <input id='deposit' type='text' v-model='gas'>
+
 				<div class='gauge'>
 					<div class='gaugeBalance'>Balance: <span class='hoverpointer'>{{ gaugeBalance }}</span> in gauge</div>
 					<div class='input'>
@@ -136,6 +238,8 @@
 
     import * as errorStore from '../common/errorStore'
 
+    import TextOverlayLoading from '../../components/common/TextOverlayLoading'
+
     import BN from 'bignumber.js'
 
     import Slippage from '../common/Slippage.vue'
@@ -143,13 +247,91 @@
 
     export default {
     	components: {
-    		Slippage, GasPrice,
+        Slippage,
+        GasPrice,
+        TextOverlayLoading,
     	},
     	data: () => ({
-        currentPool: {},
+        depositSliderSelected: 0,
+        depositSliderOptions: [
+          { text: '25%', value: 0.25 },
+          { text: '50%', value: 0.5 },
+          { text: '75%', value: 0.75 },
+          { text: '100%', value: 1 }
+        ],
+        withdrawSliderSelected: 0,
+        withdrawSliderOptions: [
+          { text: '25%', value: 0.25 },
+          { text: '50%', value: 0.5 },
+          { text: '75%', value: 0.75 },
+          { text: '100%', value: 1 }
+        ],
+
+
+
+        currentPool: {
+          swap: '',
+          swap_token: '',
+          id: '',
+          name: 'susdv2',
+          nameCont: 'sUSD',
+          priceDecimal: 2,
+          typeName: 'Liquidity',
+          describeTokensCont: 'SFG + CRV + SNX',
+          staking: {
+            in: -1,
+            balance: -1
+          },
+          tokens: {
+            sfg: {
+              name: 'sfg',
+              nameCont: 'SFG',
+              rateUsd: -1,
+              priceDecimal: 18,
+              mining: {
+                totalReward: -1,
+                pendingReward: -1,
+                paidReward: -1,
+                claimConfirm: () => {
+                  console.log(1)
+                }
+              }
+            },
+            crv_snx: {
+              child: {
+                crv: {
+                  name: 'crv',
+                  nameCont: 'CRV',
+                  rateUsd: -1,
+                  priceDecimal: 18,
+                  mining: {
+                    totalReward: -1,
+                    pendingReward: -1,
+                    paidReward: -1
+                  }
+                },
+                snx: {
+                  name: 'snx',
+                  nameCont: 'SNX',
+                  rateUsd: -1,
+                  priceDecimal: 18,
+                  mining: {
+                    totalReward: -1,
+                    pendingReward: -1,
+                    paidReward: -1,
+                  }
+                }
+              },
+              claimConfirm: () => {
+                console.log(1)
+              }
+            }
+          }
+        },
         pools: [],
-			  mypools: [],
-        loading: true,
+        mypools: [],
+        // FIXME: 
+        loadingAction: false,
 
         claimFromGauges: [],
 
@@ -165,6 +347,7 @@
         withdrawSlider: 100,
 
         claimableTokens: 0,
+        // FIXME:
         claimableReward: 0,
         gaugeContract: null,
         gauge: '',
@@ -196,18 +379,58 @@
           ...getters,
           // FIXME: 
           gasPrice() {
-            // return gasPriceStore.state.gasPrice
-            return this.gasPriceStore.gasPrice
+            return gasPriceStore.state.gasPrice
+            // return this.gasPriceStore.gasPrice
           },
           gasPriceWei() {
             return this.gasPriceStore.gasPriceWei
           },
           claimableTokensFormat() {
-            return (this.claimableTokens / 1e0).toFixed(2)
+            return (this.claimableTokens / 1e18).toFixed(2)
           },
           claimableRewardFormat() {
-            return this.toFixed(this.claimableReward / 1e0)
+            return this.toFixed(this.claimableReward / 1e18)
           },
+
+          depositAmountInput: {
+            get () {
+              const { depositAmount } = this
+
+              return depositAmount === 0 ? '' : this.depositAmount
+            },
+            set (val) {
+              this.depositSliderSelected = 0
+              // FIXME: 做格式校验
+              this.depositAmount = val
+            }
+          },
+
+          withdrawAmountInput: {
+            get () {
+              const { withdrawAmount } = this
+
+              return withdrawAmount === 0 ? '' : this.withdrawAmount
+            },
+            set (val) {
+              this.withdrawSliderSelected = 0
+              // FIXME: 做格式校验
+              this.withdrawAmount = val
+            }
+          },
+
+          withdrawSliderSelectedRadio: {
+            get () {
+              return this.withdrawSliderSelected
+            },
+            set (val) {
+              const { gaugeBalance, currentPool: { priceDecimal } } = this
+
+              console.log(val)
+              this.withdrawAmountInput = BN(val).times(gaugeBalance).toFixed(priceDecimal)
+
+              this.withdrawSliderSelected = val
+            }
+          }
         },
         async mounted() {
           // if(currentContract.initializedContracts) 
@@ -869,7 +1092,7 @@
           // this.claimableTokens = await this.gaugeContract.methods.claimable_tokens(currentContract.default_account).call()
           // this.claimableTokens = +this.gauge.claimable_tokens
 
-          this.claimableReward = await this.gaugeContract.methods.claimable_reward(currentContract.default_account).call()
+          this.currentPool.tokens.crv_snx.child.crv.mining.pendingReward = await this.gaugeContract.methods.claimable_reward(currentContract.default_account).call()
 
           this.gaugeBalance = BN(await this.gaugeContract.methods.balanceOf(currentContract.default_account).call()).toFixed(0,1)
 
@@ -877,23 +1100,20 @@
         },
         watch: {
           depositAmount(val) {
-            // let depositVal = (val * 100 / (this.gauge.balance / 1e0)) || 0
+            // let depositVal = (val * 100 / (this.gauge.balance / 1e18)) || 0
             // this.depositSlider = (Math.min(depositVal, 100)).toFixed(0)
           },
 
           withdrawAmount(val) {
-            // let withdrawVal = (val * 100 / (this.gauge.gaugeBalance / 1e0)) || 0
+            // let withdrawVal = (val * 100 / (this.gauge.gaugeBalance / 1e18)) || 0
             // this.withdrawSlider = (Math.min(withdrawVal, 100)).toFixed(0)
           },
         },
         methods: {
           async mounted() {
-            gaugeStore.state.totalClaimableCRV = null
-            gaugeStore.state.totalMintedCRV = null
-
             await gaugeStore.getState()
 
-            this.loading = false
+            this.loadingAction = false
 
             this.pools = gaugeStore.state.pools
 
@@ -938,7 +1158,10 @@
            
 
           },
-        	toFixed(num) {
+        	getTokenIcon(token) {
+            return helpers.getTokenIcon(token, false, '')
+          },
+          toFixed(num) {
             if(num == '' || num == undefined || +num == 0) return '0.00'
             if(!BN.isBigNumber(num)) num = +num
             return num.toFixed(2)
@@ -953,34 +1176,33 @@
             let val = event.target.value
             this.withdrawSlider = val
             // FIXME:
-            // this.withdrawAmount = this.toFixed((this.gauge.gaugeBalance / 1e0) * val/100)
+            // this.withdrawAmount = this.toFixed((this.gauge.gaugeBalance / 1e18) * val/100)
           },
 
           async deposit () {
-            let deposit = BN(this.depositAmount).times(1e0)
+            let deposit = BN(this.depositAmount).times(1e18)
             const gauge_swap_token = process.env.VUE_APP_LPT
             const swap_token = new currentContract.web3.eth.Contract(ERC20_abi, gauge_swap_token)
+console.log('swap_token', swap_token)
+console.log('gauge', this.gauge)
+            await common.approveAmount(swap_token, deposit, currentContract.default_account, this.gauge, this.inf_approval)
 
+            var { dismiss } = notifyNotification(`Please confirm depositing into ${this.name} gauge`)
 
-
-              await common.approveAmount(swap_token, deposit, currentContract.default_account, this.gauge, this.inf_approval)
-
-              var { dismiss } = notifyNotification(`Please confirm depositing into ${this.name} gauge`)
-
-              await this.gaugeContract.methods.deposit(deposit.toFixed(0,1)).send({
-                from: currentContract.default_account,
-                gasPrice: this.gasPriceWei,
-                gas: this.deposit_gas,
-              })
-              .once('transactionHash', hash => {
-                dismiss()
-                notifyHandler(hash)
-              })
+            await this.gaugeContract.methods.deposit(deposit.toFixed(0,1)).send({
+              from: currentContract.default_account,
+              gasPrice: this.gasPriceWei,
+              gas: this.deposit_gas,
+            })
+            .once('transactionHash', hash => {
+              dismiss()
+              notifyHandler(hash)
+            })
 
           },
 
           async withdraw () {
-            let withdraw = BN(this.withdrawAmount).times(1e0)
+            let withdraw = BN(this.withdrawAmount).times(1e18)
             let balance = BN(await this.gaugeContract.methods.balanceOf(currentContract.default_account).call())
 
             console.log('withdraw', withdraw, 'balance', balance)
@@ -1000,8 +1222,7 @@
             catch(err) {
               console.error(err)
             }
-            console.log('gas', gas)
-        console.log(this.name)
+
             var { dismiss } = notifyNotification(`Please confirm withdrawing from ${this.name} gauge`)
 
             await withdrawMethod.send({
@@ -1048,92 +1269,24 @@ console.log('gas', gas)
             })
           },
         }
-    }
-
+  }
 </script>
 
 <style>
-	
-
-  legend {
-		text-align: center;
-	}
-	.pools {
-		display: flex;
-		flex-wrap: wrap;
-		width: 80%;
-		margin: 0 auto;
-	}
-	.pools.justifySpaceAround {
-		width: 100%;
-		margin: 0;
-		justify-content: space-around;
-	}
-	.pools .hoverpointer {
-		cursor: pointer;
-		border-bottom: 1px solid black;
-		border-bottom-style: dotted;
-	}
-	.pools .hoverpointer:hover {
-		border-bottom-style: solid;
-	}
-	.pools button {
-		margin-top: 1em;
-	}
-	.pools input {
-		width: 6em;
-	}
-	.pools .input {
-		margin-top: 1em;
-	}
-	.range {
-		margin-top: 1em;
-	}
-	.range label {
-		margin-right: 1em;
-	}
-	.range div {
-		display: inline-block;
-	}
-	.range div.label {
-		width: 3em;
-	}
-	.claimtokens {
-		margin-right: 1em;
-	}
-	.pool-info {
-		text-align: center;
-	}
-	.pool-info .boost {
-		margin-top: 1em;
-	}
-	.claimButtons {
-		/*width: 100%;*/
-		display: flex;
-		flex-wrap: wrap;
-		justify-content: space-around;
-	}
-	.poolBalance, .gaugeBalance {
-		margin-top: 1em;
-	}
-	.inf-approval-label {
-		margin-top: 1em;
-	}
-	.gauge .unstake {
-		visibility: hidden;
-	}
-	.mintedCRVFrom, .gaugeRelativeWeight, .claimedRewards {
-		margin-top: 0.4em;
-	}
-	.gaugeRelativeWeight {
-		margin-top: 1em;
-	}
-	.greentext {
-		color: green;
-	}
-	@media only screen and (max-device-width: 730px) {
-		.gauge .unstake {
-			display: none;
-		}
-	}
+  .area {
+    background: rgba(255,255,255,0.3);
+    border: 1px solid #dadedf;
+    border-radius: 2px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .area:last-child {
+    margin-bottom: 0px;
+  }
+  .area > .row > .col {
+    border-right: 1px solid rgba(0,0,0,0.08);
+  }
+  .area > .row > .col:last-child {
+    border-right-width: 0px;
+  }
 </style>

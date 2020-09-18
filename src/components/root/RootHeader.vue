@@ -25,7 +25,7 @@
           <b-nav-item :to="{name: 'Swap', path: '/susdv2/swap'}">{{ $t('global.swap') }}</b-nav-item>
           <b-nav-item :to="'/susdv2/deposit'">{{ $t('global.liquidity') }}</b-nav-item>
           <b-nav-item :to="{name: 'Dao', path: '/dao'}">{{ $t('global.dao') }}</b-nav-item>
-          <b-nav-item :to="{name: 'PoolRisks', path: '/susdv2/risks'}">{{ $t('global.risks') }}</b-nav-item>
+          <b-nav-item :to="{name: 'Risks', path: '/risks'}">{{ $t('global.risks') }}</b-nav-item>
           <!-- <b-nav-item href="###">{{ $t('global.stats') }}</b-nav-item> -->
         </b-navbar-nav>
         <sel-language class="ml-2" />
@@ -80,10 +80,6 @@
 </script>
 
 <style scoped>
-  .logo-sm {
-    width: 34px;
-    height: 40px;
-  }
   .beta-tag {
     background-color: #1ba57b;
     color: rgba(255,255,255,0.85);

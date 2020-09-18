@@ -4,6 +4,7 @@
 
 export default {
   global: {
+    sFinance: 'S.Finance',
     home: '首页',
     swap: '兑换',
     liquidity: '存取款',
@@ -101,7 +102,17 @@ export default {
     redemption: '赎回',
     miningReward: '挖矿奖励',
     assetInStaking: '已抵押',
-    amountPlaceholder : '输入抵押数量',
-    balance: '当前可抵押'
+    stakingAmountPlaceholder: '输入抵押数量',
+    stakingBalance: '当前可抵押',
+    infiniteApproval: '信任此合约使用最佳矿工费，后续将无需再次批准',
+    stakingConfirmTip: '存款获得 LP tokens',
+    stakingConfirm: '确认抵押',
+    redemptionBalance: '可赎回数量',
+    redemptionAmountPlaceholder: '输入赎回数量',
+    redemptionConfirm: '确认赎回',
+    miningPendingReward: '未提取奖励',
+    miningPaidReward: '已提取奖励',
+    miningTotalReward: '合计奖励',
+    miningClaimConfirm: '领取奖励',
   }
 }
