@@ -219,8 +219,6 @@
         </button>
 			</div>
 		</fieldset>
-
- 
 	</div>
 </template>
 
