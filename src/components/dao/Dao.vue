@@ -8,6 +8,8 @@
     </div>
 
     <b-container>
+      <root-sub />
+
       <h4 class="mt-4 mb-2">
         {{ $t('dao.title', [currentPool.nameCont]) }}
         <small class="pl-3">{{ $t('dao.describe', [currentPool.name, currentPool.describeTokensCont]) }}</small>
@@ -233,6 +235,7 @@
 
     import * as gasPriceStore from '../common/gasPriceStore'
     import GasPrice from '../common/GasPrice.vue'
+    import RootSub from '../root/RootSub.vue'
 
     import * as errorStore from '../common/errorStore'
 
@@ -248,6 +251,7 @@
         Slippage,
         GasPrice,
         TextOverlayLoading,
+        RootSub
     	},
     	data: () => ({
         depositSliderSelected: 0,
@@ -434,6 +438,7 @@
         },
         async mounted() {
           console.log('o gasPriceWei', gasPriceStore.gasPriceWei)
+          console.log('initializedContracts', currentContract.initializedContracts)
           // if(currentContract.initializedContracts) 
           // if(currentContract.default_account && currentContract.multicall)
               // this.mounted()
@@ -1087,6 +1092,7 @@
         }
     ]
           this.gauge = process.env.VUE_APP_PSS_GAUGE
+console.log('gauge', this.gauge )
           this.gaugeContract = new currentContract.web3.eth.Contract(daoabis_liquiditygaugerewards_abi, this.gauge)
 
           // 值不准，因此源码也是注释
@@ -1096,7 +1102,8 @@
 this.mounted();
 console.log('---')
 console.log(this.gaugeContract.methods)
-console.log('claimable_reward', await this.gaugeContract.methods.claimable_reward(currentContract.default_account).call())
+console.log('default_account', currentContract.default_account)
+console.log('claimable_reward', this.gaugeContract.methods.claimable_reward(currentContract.default_account).call())
           this.claimableReward = await this.gaugeContract.methods.claimable_reward(currentContract.default_account).call()
 
           this.currentPool.tokens.crv_snx.child.crv.mining.pendingReward = this.claimableReward
