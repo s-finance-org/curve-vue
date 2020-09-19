@@ -9,7 +9,6 @@
 
     <b-container>
       <root-sub />
-
       <h4 class="mt-4 mb-2">
         {{ $t('dao.title', [currentPool.nameCont]) }}
         <small class="pl-3">{{ $t('dao.describe', [currentPool.name, currentPool.describeTokensCont]) }}</small>
@@ -17,12 +16,11 @@
       <div class="box mb-4 px-4 py-3">
         <b-tabs pills nav-class="tabs-nav" class="mt-1">
           <b-tab :title="$t('dao.staking')" class="pt-3" active>
-            <small class="d-flex mb-3">{{ $t('dao.assetInStaking') }}：{{ gaugeBalance }} {{ currentPool.name }} LP tokens</small>
+            <small class="d-flex mb-3">
+              {{ $t('dao.assetInStaking') }}：
+              <text-overlay-loading :show="loadingAction || currentPool.gaugeBalanceLoading">{{ currentPool.gaugeBalanceCont }} {{ currentPool.name }} LP tokens</text-overlay-loading>
+            </small>
             <label class="text-black-65">{{ $t('dao.staking') }}</label>
-            <template v-show=true>
-              Gas: 
-              <input id='deposit' type='text' v-model='deposit_gas'>
-            </template>
             <div class="d-flex">
               <b-form-input class="col mr-4" v-model="depositAmountInput" :placeholder="$t('dao.stakingAmountPlaceholder')"></b-form-input>
               <b-form-radio-group
@@ -46,10 +44,6 @@
           </b-tab>
           <b-tab :title="$t('dao.redemption')" class="pt-3">
             <label class="text-black-65">{{ $t('dao.redemption') }}</label>
-            <template v-show=true>
-              Gas:
-              <input id='deposit' type='text' v-model='gas'>
-            </template>
             <div class="d-flex">
               <b-form-input class="col mr-4" v-model="withdrawAmountInput" :placeholder="$t('dao.redemptionAmountPlaceholder')"></b-form-input>
               <b-form-radio-group
@@ -60,7 +54,10 @@
                 button-variant="outline-secondary"
               ></b-form-radio-group>
             </div>
-            <small>{{ $t('dao.redemptionBalance') }}：{{ gaugeBalance }} {{ currentPool.name }} LP tokens</small>
+            <small class="d-flex">
+              {{ $t('dao.redemptionBalance') }}：
+              <text-overlay-loading :show="loadingAction || currentPool.gaugeBalanceLoading">{{ currentPool.gaugeBalanceCont }} {{ currentPool.name }} LP tokens</text-overlay-loading>
+            </small>
             <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('dao.infiniteApproval') }}</b-form-checkbox>
             <div class="d-flex align-items-end mt-5 float-right">
               <text-overlay-loading :show="loadingAction">
@@ -94,7 +91,7 @@
                 </div>
                 <div class="d-flex mt-4 justify-content-end">
                   <text-overlay-loading :show="loadingAction">
-                    <b-button variant="danger" @click=token.claimConfirm>
+                    <b-button variant="danger" @click=token.mining.claimConfirm>
                       {{ $t('dao.miningClaimConfirm') }}
                     </b-button>
                   </text-overlay-loading>
@@ -129,7 +126,7 @@
     </b-container>
 
 
-    <fieldset>
+    <fieldset v-if=false>
       loading: {{ loadingAction }}
 			<legend>
 				_{ gauge.name }} _{ gauge.typeName }} gauge
@@ -193,10 +190,10 @@
         LPT withdraw:<br/>
 
 				<div class='gauge'>
-					<div class='gaugeBalance'>Balance: <span class='hoverpointer'>{{ gaugeBalance }}</span> in gauge</div>
+					<div class='gaugeBalance'>Balance: <span class='hoverpointer'>{{ currentPool.gaugeBalanceCont }}</span> in gauge</div>
 					<div class='input'>
 						<label for='withdraw'>Amount:</label>
-						<input id='withdraw' type='text' v-model='withdrawAmount'>
+						<input id='withdraw' type='text' v-model='currentPool.withdraw.amount'>
 					</div>
 					<div class='range' v-show=false>
 						<div class='label'>
@@ -211,7 +208,7 @@
 				<div class='flex-break'></div>
 
         SFG claimableTokens: {{ claimableTokens }}
-        <button @click='claim1' class='claimtokens'>Claim _{ claimableTokensFormat }} CRV</button>
+        <button @click='claim' class='claimtokens'>Claim _{ claimableTokensFormat }} CRV</button>
         <div class='flex-break'></div>
 
         CRV claimableReward: {{ claimableReward }}
@@ -246,6 +243,16 @@
     import Slippage from '../common/Slippage.vue'
     import * as gaugeStore from './gaugeStore'
 
+    import { getBTCPrice } from '../common/priceStore'
+
+    const __store__ = {
+
+      loadingAction: true,
+
+      gaugeBalanceTether: 0,
+      gaugeBalanceHandled: 0
+    }
+
     export default {
     	components: {
         Slippage,
@@ -269,20 +276,62 @@
           { text: '100%', value: 1 }
         ],
 
-
-
         currentPool: {
           swap: '',
           swap_token: '',
           id: '',
           name: 'susdv2',
           nameCont: 'sUSD',
+          /**
+           *  价格精度
+           *  @type {number}
+           */
           priceDecimal: 2,
+          /**
+           *  科学计数法精度
+           *  @type {number}
+           */
+          notationDecimal: 1e18,
           typeName: 'Liquidity',
+
+          balance: 0,
+          balanceCont: 0,
+          gauge: '',
+          gaugeBalanceLoading: true,
+          get gaugeBalanceTether () {
+            return __store__.gaugeBalanceTether
+          },
+          set gaugeBalanceTether (val) {
+            const { notationDecimal } = this
+            const result = __store__.gaugeBalanceTether = val
+
+            this.gaugeBalanceHandled = result / notationDecimal
+          },
+          get gaugeBalanceHandled () {
+            return __store__.gaugeBalanceHandled
+          },
+          set gaugeBalanceHandled (val) {
+            const { priceDecimal } = this
+            const result = __store__.gaugeBalanceHandled = val
+
+            this.gaugeBalanceCont = BN(result).toFixed(priceDecimal)
+          },
+          gaugeBalanceCont: '0',
+          swap: '',
+          swap_token: '',
+          type: 0,
+
           describeTokensCont: 'SFG + CRV + SNX',
           staking: {
             in: -1,
             balance: -1
+          },
+          deposit: {
+            gas: 750000
+          },
+          withdraw: {
+            gas: 1000000,
+            amount: 0
           },
           tokens: {
             sfg: {
@@ -294,12 +343,12 @@
                 totalReward: -1,
                 pendingReward: -1,
                 paidReward: -1,
-                claimConfirm: () => {
-                  
-                }
+                claimConfirm: null
               }
             },
             crv_snx: {
+              name: 'crv & snx',
+              nameCont: 'CRV & SNX',
               child: {
                 crv: {
                   name: 'crv',
@@ -324,25 +373,20 @@
                   }
                 }
               },
-              claimConfirm: () => {
+              mining: {
+                claimConfirm: null
               }
             }
           }
         },
         pools: [],
         mypools: [],
-        // FIXME: 
-        loadingAction: false,
 
         claimFromGauges: [],
 
-
-    		deposit_gas: 500000,
-        gas: 1000000,
         inf_approval: true,
 
         depositAmount: 0,
-        withdrawAmount: 0,
         gaugeContract: null,
         depositSlider: 100,
         withdrawSlider: 100,
@@ -352,9 +396,7 @@
         claimableReward: 0,
         gaugeContract: null,
         gauge: '',
-        name: 'susdv2',
 
-        gaugeBalance: 0,
 
         // FIXME: test
         gasPriceStore: {
@@ -363,19 +405,9 @@
           gasPrice: 20,
           gasPriceWei: BN(2).times(1e9).toFixed(0,1),
           gasPriceInterval: null,
-        },
-
-        // thegauge: {
-        //   balance: 0,
-        //   gauge: '0xd13BBE09C4532CdbBC42bf9205CaED3587F25789',
-        //   gaugeBalance: 0,
-        //   name: 'curvepool1',
-        //   swap: '0xbbe6874b45eFd4E44396F6aE619663067424b218',
-        //   swap_token: '0x1796E153ce80fCf2015E19035DcecFb005bc017D',
-        //   type: 0,
-        //   typeName: 'Liquidity'
-        // }
-    	}),
+        }
+      }),
+        
         computed: {
           ...getters,
           // FIXME: 
@@ -385,7 +417,6 @@
             return gasPriceStore.state.gasPrice
           },
           gasPriceWei() {
-            console.log('gasPriceWei', gasPriceStore.gasPriceWei)
             // return this.gasPriceStore.gasPriceWei
             return gasPriceStore.gasPriceWei
           },
@@ -395,30 +426,46 @@
           claimableRewardFormat() {
             return this.toFixed(this.claimableReward / 1e18)
           },
+          loadingAction: {
+            get () {
+              // FIXME: 
+              if (__store__.loadingAction && currentContract.initializedContracts) {
+                this.mounted()
+                __store__.loadingAction = false
+              }
+
+              return __store__.loadingAction
+            },
+            set (val) {
+              __store__.loadingAction = val
+            }
+          },
 
           depositAmountInput: {
             get () {
-              const { depositAmount } = this
+              const { currentPool: { deposit }  } = this
 
-              return depositAmount === 0 ? '' : this.depositAmount
+              return deposit.amount || ''
             },
             set (val) {
+              const { currentPool: { deposit }  } = this
+
               this.depositSliderSelected = 0
-              // FIXME: 做格式校验
-              this.depositAmount = val
+              deposit.amount = val
             }
           },
 
           withdrawAmountInput: {
             get () {
-              const { withdrawAmount } = this
+              const { currentPool: { withdraw }  } = this
 
-              return withdrawAmount === 0 ? '' : this.withdrawAmount
+              return withdraw.amount || ''
             },
             set (val) {
+              const { currentPool: { withdraw }  } = this
+
+              withdraw.amount = val
               this.withdrawSliderSelected = 0
-              // FIXME: 做格式校验
-              this.withdrawAmount = val
             }
           },
 
@@ -427,22 +474,87 @@
               return this.withdrawSliderSelected
             },
             set (val) {
-              const { gaugeBalance, currentPool: { priceDecimal } } = this
+              const { currentPool: { withdraw, priceDecimal, gaugeBalanceHandled } } = this
 
-              console.log(val)
-              this.withdrawAmountInput = BN(val).times(gaugeBalance).toFixed(priceDecimal)
-
+              withdraw.amount = BN(val).times(gaugeBalanceHandled).toFixed(priceDecimal)
               this.withdrawSliderSelected = val
             }
           }
         },
+        created() {
+          // FIXME: ?
+          this.$watch(() => currentContract.currentContract, (val, oldval) => {
+            console.log('watch currentContract', val, oldval)
+          })
+        },
         async mounted() {
+        },
+        watch: {
+          loadingAction (val) {
+            console.log('watch ---- ', val)
+          },
+          depositAmount(val) {
+            // let depositVal = (val * 100 / (this.gauge.balance / 1e18)) || 0
+            // this.depositSlider = (Math.min(depositVal, 100)).toFixed(0)
+          },
+
+          withdrawAmount(val) {
+            // let withdrawVal = (val * 100 / (this.gauge.gaugeBalance / 1e18)) || 0
+            // this.withdrawSlider = (Math.min(withdrawVal, 100)).toFixed(0)
+          },
+        },
+        methods: {
+          async mounted() {
+            await gaugeStore.getState()
+
+            this.loadingAction = false
+
+            this.pools = gaugeStore.state.pools
+
+            this.mypools = gaugeStore.state.mypools
+
+            this.claimFromGauges = this.myGauges
+
+            let btcPrice = await getBTCPrice()
+
+            let total = this.mypools.reduce((a,b,i) => {
+              let balance = +b.gaugeBalance
+              if(['ren','sbtc'].includes(this.mypools[i].name))
+                balance *= btcPrice
+              return +a + balance
+            }, 0)
+
+            let piedata = this.mypools.map(pool => {
+              let balance = pool.gaugeBalance
+              if(['ren','sbtc'].includes(pool.name))
+                balance = pool.gaugeBalance * btcPrice
+              return { 
+                name: pool.name,
+                y: total == 0 ? 0 : balance / total
+              }
+            })
+            piedata = piedata.filter(pool => pool.y > 0)
+
+            let gaugeSum = Object.values(gaugeStore.state.pools).reduce((a,b) => +a + +b.gauge_relative_weight, 0)
+            let piegauges = Object.values(gaugeStore.state.pools).map(v => ({ name: v.name, y: v.gauge_relative_weight / gaugeSum}))
+
+            let highest = piegauges.map(data=>data.y).indexOf(Math.max(...piegauges.map(data => data.y)))
+            piegauges[highest].sliced = true;
+            piegauges[highest].selected = true;
+
+
+
+
+
+
+ // set currentPool confirm
+          this.currentPool.tokens.sfg.mining.claimConfirm = this.claim
+          this.currentPool.tokens.crv_snx.mining.claimConfirm = this.claimRewards
+
           console.log('o gasPriceWei', gasPriceStore.gasPriceWei)
-          console.log('initializedContracts', currentContract.initializedContracts)
           // if(currentContract.initializedContracts) 
           // if(currentContract.default_account && currentContract.multicall)
               // this.mounted()
-
           /* Function */
           // user_checkpoint bool
           // claimable_tokens uint256
@@ -1091,85 +1203,29 @@
             "signature":"0xfd96044b"
         }
     ]
-          this.gauge = process.env.VUE_APP_PSS_GAUGE
-console.log('gauge', this.gauge )
-          this.gaugeContract = new currentContract.web3.eth.Contract(daoabis_liquiditygaugerewards_abi, this.gauge)
 
+          this.currentPool.gauge = process.env.VUE_APP_PSS_GAUGE
+
+          this.gaugeContract = new currentContract.web3.eth.Contract(daoabis_liquiditygaugerewards_abi, this.currentPool.gauge)
+
+//             let balance = BN(await this.gaugeContract.methods.balanceOf(currentContract.default_account).call())
+// console.log( 'balance', balance.dividedBy(1e18).toFixed(0,1) )
+          this.currentPool.gaugeBalanceTether = await this.gaugeContract.methods.balanceOf(currentContract.default_account).call()
+          this.currentPool.gaugeBalanceLoading = false
+console.log('claimableReward before')
+          this.claimableReward = await this.gaugeContract.methods.claimable_reward(currentContract.default_account).call()
+  console.log('claimableReward', this.claimableReward)
           // 值不准，因此源码也是注释
           // this.claimableTokens = await this.gaugeContract.methods.claimable_tokens(currentContract.default_account).call()
           // this.claimableTokens = +this.gauge.claimable_tokens
 
-this.mounted();
+
 console.log('---')
 console.log(this.gaugeContract.methods)
 console.log('default_account', currentContract.default_account)
-console.log('claimable_reward', this.gaugeContract.methods.claimable_reward(currentContract.default_account).call())
-          this.claimableReward = await this.gaugeContract.methods.claimable_reward(currentContract.default_account).call()
 
           this.currentPool.tokens.crv_snx.child.crv.mining.pendingReward = this.claimableReward
 
-    
-
-          this.gaugeBalance = BN(await this.gaugeContract.methods.balanceOf(currentContract.default_account).call()).toFixed(0,1)
-
-// FIXME: temp
-this.currentPool.tokens.sfg.mining.claimConfirm = this.claim1
-this.currentPool.tokens.crv_snx.claimConfirm = this.claimRewards
-        },
-        watch: {
-          depositAmount(val) {
-            // let depositVal = (val * 100 / (this.gauge.balance / 1e18)) || 0
-            // this.depositSlider = (Math.min(depositVal, 100)).toFixed(0)
-          },
-
-          withdrawAmount(val) {
-            // let withdrawVal = (val * 100 / (this.gauge.gaugeBalance / 1e18)) || 0
-            // this.withdrawSlider = (Math.min(withdrawVal, 100)).toFixed(0)
-          },
-        },
-        methods: {
-          async mounted() {
-            console.log('mounted 1')
-            await gaugeStore.getState()
-
-            this.loadingAction = false
-
-            this.pools = gaugeStore.state.pools
-
-            this.mypools = gaugeStore.state.mypools
-
-            this.claimFromGauges = this.myGauges
-
-            let btcPrice = await getBTCPrice()
-
-            let total = this.mypools.reduce((a,b,i) => {
-              let balance = +b.gaugeBalance
-              if(['ren','sbtc'].includes(this.mypools[i].name))
-                balance *= btcPrice
-              return +a + balance
-            }, 0)
-
-            let piedata = this.mypools.map(pool => {
-              let balance = pool.gaugeBalance
-              if(['ren','sbtc'].includes(pool.name))
-                balance = pool.gaugeBalance * btcPrice
-              return { 
-                name: pool.name,
-                y: total == 0 ? 0 : balance / total
-              }
-            })
-            piedata = piedata.filter(pool => pool.y > 0)
-
-       
-
-
-
-            let gaugeSum = Object.values(gaugeStore.state.pools).reduce((a,b) => +a + +b.gauge_relative_weight, 0)
-            let piegauges = Object.values(gaugeStore.state.pools).map(v => ({ name: v.name, y: v.gauge_relative_weight / gaugeSum}))
-
-            let highest = piegauges.map(data=>data.y).indexOf(Math.max(...piegauges.map(data => data.y)))
-            piegauges[highest].sliced = true;
-            piegauges[highest].selected = true;
 
 
           },
@@ -1198,17 +1254,15 @@ this.currentPool.tokens.crv_snx.claimConfirm = this.claimRewards
             let deposit = BN(this.depositAmount).times(1e18)
             const gauge_swap_token = process.env.VUE_APP_LPT
             const swap_token = new currentContract.web3.eth.Contract(ERC20_abi, gauge_swap_token)
-console.log('swap_token', swap_token)
-console.log('gauge', this.gauge)
-console.log('inf_approval', this.inf_approval)
-            await common.approveAmount(swap_token, deposit, currentContract.default_account, this.gauge, this.inf_approval)
-console.log(1)
-            var { dismiss } = notifyNotification(`Please confirm depositing into ${this.name} gauge`)
+
+            await common.approveAmount(swap_token, deposit, currentContract.default_account, this.currentPool.gauge, this.inf_approval)
+
+            var { dismiss } = notifyNotification(`Please confirm depositing into ${this.currentPool.name} gauge`)
 
             await this.gaugeContract.methods.deposit(deposit.toFixed(0,1)).send({
               from: currentContract.default_account,
               gasPrice: this.gasPriceWei,
-              gas: this.deposit_gas,
+              gas: this.currentPool.deposit.gas,
             })
             .once('transactionHash', hash => {
               dismiss()
@@ -1218,28 +1272,24 @@ console.log(1)
           },
 
           async withdraw () {
-            let withdraw = BN(this.withdrawAmount).times(1e18)
+            let withdraw = BN(this.currentPool.withdraw.amount).times(1e18)
             let balance = BN(await this.gaugeContract.methods.balanceOf(currentContract.default_account).call())
-
+console.log( 'balance', balance.dividedBy(1e18).toFixed(0,1) )
             console.log('withdraw', withdraw, 'balance', balance)
 
             if(withdraw.gt(balance))
               withdraw = balance
 
-            let gas = this.gas
-          const __synthsUnavailable = true
+            let gas = this.currentPool.deposit.gas
             let withdrawMethod = this.gaugeContract.methods.withdraw(withdraw.toFixed(0,1))
-            // if(['susdv2', 'sbtc'].includes(this.gauge.name) && this.synthsUnavailable) {
-              // let withdrawMethod = gaugeContract.methods.withdraw(withdraw.toFixed(0,1), !__synthsUnavailable)
-            // }
+
             try {
+              // update
               gas = await withdrawMethod.estimateGas()
             }
-            catch(err) {
-              console.error(err)
-            }
+            catch(err) { }
 
-            var { dismiss } = notifyNotification(`Please confirm withdrawing from ${this.name} gauge`)
+            var { dismiss } = notifyNotification(`Please confirm withdrawing from ${this.currentPool.name} gauge`)
 
             await withdrawMethod.send({
               from: currentContract.default_account,
@@ -1252,12 +1302,14 @@ console.log(1)
             })
           },
 
-          async claim1 () {
-            let gas = await gaugeStore.state.minter.methods.mint(this.gauge).estimateGas()
-console.log('gas', gas)
-            var { dismiss } = notifyNotification(`Please confirm claiming CRV from ${this.name} gauge`)
+          async claim () {
+            const mint = await gaugeStore.state.minter.methods.mint(this.currentPool.gauge)
 
-            await gaugeStore.state.minter.methods.mint(this.gauge).send({
+            let gas = await  mint.estimateGas()
+console.log('gauge', this.currentPool.gauge, gas)
+            var { dismiss } = notifyNotification(`Please confirm claiming ${this.currentPool.tokens.sfg.name} from ${this.currentPool.name} gauge`)
+
+            await mint.send({
               from: currentContract.default_account,
               gasPrice: this.gasPriceWei,
               gas: gas * 1.5 | 0,
@@ -1271,7 +1323,7 @@ console.log('gas', gas)
           async claimRewards () {
             let gas = await this.gaugeContract.methods.claim_rewards(currentContract.default_account).estimateGas()
 
-            var { dismiss } = notifyNotification(`Please confirm claiming SNX`)
+            var { dismiss } = notifyNotification(`Please confirm claiming ${this.currentPool.tokens.crv_snx.name}`)
 
             await this.gaugeContract.methods.claim_rewards(currentContract.default_account).send({
               from: currentContract.default_account,

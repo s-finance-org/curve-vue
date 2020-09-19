@@ -22,8 +22,9 @@
         </div>
         <b-navbar-nav>
           <b-nav-item :to="{name: 'RootIndex'}" href="###">{{ $t('global.home') }}</b-nav-item>
-          <b-nav-item :to="{name: 'Swap', path: '/susdv2/swap'}">{{ $t('global.swap') }}</b-nav-item>
-          <b-nav-item :to="'/susdv2/deposit'">{{ $t('global.liquidity') }}</b-nav-item>
+          <!-- <b-nav-item :to="{name: 'Swap', path: '/susdv2/swap'}">{{ $t('global.swap') }}</b-nav-item> -->
+          <b-nav-item :to="'/susdv2/liquidity/'">{{ $t('global.liquidity') }}</b-nav-item>
+          <!-- <b-nav-item :to="{name: 'Liquidity', path: '/:pool(susdv2)/liquidity'}">{{ $t('global.liquidity') }}</b-nav-item> -->
           <b-nav-item :to="{name: 'Dao', path: '/dao'}">{{ $t('global.dao') }}</b-nav-item>
           <b-nav-item :to="{name: 'Risks', path: '/risks'}">{{ $t('global.risks') }}</b-nav-item>
           <!-- <b-nav-item href="###">{{ $t('global.stats') }}</b-nav-item> -->

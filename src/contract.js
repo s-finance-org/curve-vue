@@ -326,8 +326,9 @@ const state = Vue.observable({
 	},
 	swapbtc: false,
 	adapterContract: null,
-	currentContract: 'susdv2',
-	currencies: currencies.compound,
+  currentContract: 'susdv2',
+  // FIXME:
+	currencies: currencies.susdv2,
 	N_COINS: N_COINS,
 	coin_precisions: coin_precisions,
 	wrapped_precisions: [],

@@ -2,13 +2,13 @@
   <div class="total-bg">
     <b-container class="d-flex py-4 total-cont">
       <img class="logo_orgin mr-4" :src="publicPath + 'res/icons/logo/logo_orgin.svg'">
-      <div class="total-box mr-4 ml-auto">
+      <div class="total-box px-4 py-3 w-270 mr-4 ml-auto">
         <h6 class="text-black-65">{{ $t('total.deposits') }}</h6>
         <text-overlay-loading :show="!(totalBalances1 || total)">
           <h4 class="mb-0">{{totalBalances1 || total | formatNumber}}$</h4>
         </text-overlay-loading>
       </div>
-      <div class="total-box">
+      <div class="total-box px-4 py-3 w-270">
         <h6 class="text-black-65">{{ $t('global.dailyVol') }}</h6>
         <text-overlay-loading :show="!(volume >= 0)">
           <h4 class="mb-0">{{(volume | 0) | formatNumber(0)}}$</h4>

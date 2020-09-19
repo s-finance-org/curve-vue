@@ -30,7 +30,11 @@ export default {
     fee: 'Fee',
     norm: 'Norm',
     risks: 'Risks',
-    dao: 'DAO'
+    dao: 'DAO',
+    deposit: 'Deposit',
+    withdraw: 'Withdraw',
+    all: 'All',
+    poolProfit: 'Pool profit',
   },
   beta: {
     slogan: 'The project is still in testing stage, please pay attention to the risks and stay tuned for more functions~',
@@ -94,6 +98,20 @@ export default {
     lossContHtml: 'S.Finance smart contracts were Audited by Trail of Bits.<br/>However, security audits don\'t eliminate risks completely. Please don’t supply your life savings, or assets you can’t afford to lose, to S.Finance, especially as a liquidity provider.<br/>Using S.Finance as an exchange user should be significantly less risky, but this is not advice.',
     stakingTitle: 'Staking risks',
     stakingContHtml: 'When staking you use multiple smart contract products each of which has its own risks',
+  },
+  liquidity: {
+    name: 'Liquidity gauge',
+    reservesTitle: 'Currency Reserves',
+    depositTip: 'You can deposit one or more kind of the stable coins below, and the smart contract will automatically balance the deposited assets proportionally',
+    depositWrapped: 'Deposit wrapped',
+    willReceive: 'You will receive at least',
+    bonus: 'Bonus(plus pricing)',
+    slippage: 'Slippage(plus pricing)',
+    depositStakeGauge: 'Deposit & stake in gauge',
+    withdrawAvailableAmount: 'available amount',
+    withdrawAmountPlaceholder: 'amount',
+    withdrawRedemptionTip: 'LP token redemption',
+    dailyProfit: 'Daily profit'
   },
   dao: {
     title: '{0} Liquidity gauge',

@@ -7,7 +7,7 @@ export default {
     sFinance: 'S.Finance',
     home: '首页',
     swap: '兑换',
-    liquidity: '存取款',
+    liquidity: '抵押',
     stats: '统计',
     operating: '操作',
     deposits: '资金',
@@ -30,7 +30,11 @@ export default {
     fee: '费用',
     norm: '指标',
     risks: '风险',
-    dao: '挖矿'
+    dao: '挖矿',
+    deposit: '存款',
+    withdraw: '取款',
+    all: '全部',
+    poolProfit: '流动性奖励'
   },
   beta: {
     slogan: '项目还在测试阶段，请注意风险，更多功能敬请期待~',
@@ -94,6 +98,20 @@ export default {
     lossContHtml: 'S.finance 智能合约通过了Trail of Bits审计。然而，安全审计并不能完全消除风险。请在能力承受范围内投资，不要盲目投入全部资产，尤其是在提供流动性时。<br/>使用S.finance作兑换交易时风险会相对降低，但这只是建议。',
     stakingTitle: '抵押风险',
     stakingContHtml: '当使用抵押功能时，每一种智能合约都有他们相应的风险。',
+  },
+  liquidity: {
+    name: '流动性矿池',
+    reservesTitle: '资产分布',
+    depositTip: '你可以存入下方任意一种或多种稳定币，智能合约将按比例自动平衡存入的资产',
+    depositWrapped: '存入抵押凭据',
+    willReceive: '你将至少收到',
+    bonus: '额外奖励',
+    slippage: '额外成本',
+    depositStakeGauge: '存款并抵押挖矿',
+    withdrawAvailableAmount: '可取款数量',
+    withdrawAmountPlaceholder: '输入取出数量',
+    withdrawRedemptionTip: '赎回挖矿中的 LP token',
+    dailyProfit: '今日收益'
   },
   dao: {
     title: '{0} 流动性矿池',

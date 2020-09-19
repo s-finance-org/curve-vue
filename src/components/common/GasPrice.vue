@@ -3,8 +3,8 @@
     <p v-show='errorMessage'>
       {{ errorMessage }}
     </p>
-    <b-form-group class="mb-0">
-      <ul class="list" v-show='gasPriceMedium'>
+    <b-form-group class="mb-0 .lists-select">
+      <ul v-show='gasPriceMedium'>
         <li>
           <h6 class="text-black-65 mb-0">{{ $t('global.gasPrice') }}</h6>
         </li>
@@ -208,12 +208,6 @@
 </script>
 
 <style scoped>
-  ul.list li {
-    font-size: 14px;
-    color: rgba(0,0,0,0.65);
-    line-height: 22px;
-    padding: 4px 0;
-  }
     /* .pulse {
         animation: pulse 1s 3;
         margin-bottom: 8px;

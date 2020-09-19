@@ -276,12 +276,18 @@ let routes = [
     path: '/:pool(compound|usdt|y|iearn|busd|susdv2|pax|tbtc|ren|sbtc)/',
     // path: '/:pool(susdv2)/',
     name: 'Index',
-    component: PoolApp,
+    // component: PoolApp,
+    component: RootDefault,
     children: [
       {
         path: '',
         name: 'Swap',
         component: SwapRouter,
+      },
+      {
+        path: 'liquidity',
+        name: 'Liquidity',
+        component: DepositRouter
       },
       {
         path: 'deposit',
@@ -293,14 +299,14 @@ let routes = [
         name: 'Withdraw',
         component: WithdrawRouter
       },
-      {
-        path: 'withdraw_old',
-        name: 'WithdrawOld',
-        beforeEnter: (to, from, next) => {
-          if(to.params.pool == 'susd') return next()
-          return next('/' + to.params.pool + '/withdraw')
-        }
-      },
+      // {
+      //   path: 'withdraw_old',
+      //   name: 'WithdrawOld',
+      //   beforeEnter: (to, from, next) => {
+      //     if(to.params.pool == 'susd') return next()
+      //     return next('/' + to.params.pool + '/withdraw')
+      //   }
+      // },
       // {
       //   path: 'stats',
       //   name: 'Stats',

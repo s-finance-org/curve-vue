@@ -1,7 +1,371 @@
 <template>
 	<div>
+    <div class="total-bg">
+      <b-container class="d-flex py-4 total-cont align-items-center">
+        <div class="total-box p-2 mr-4 col-auto box-98 d-flex flex-wrap">
+          <img v-for='(currency, i) in Object.keys(currencies)' :key="'icon-'+currency" class="icon-w-40"
+            :class="{'token-icon': true, [currency+'-icon']: true, 'y': depositc && !isPlain}" 
+            :src='getTokenIcon(currency)'>
+        </div>
+        <h3 class="mb-0">{{ currentPool }}<br/>{{ $t('liquidity.name') }}</h3>
+        <div class="total-box px-4 py-3 w-270 ml-auto mr-4">
+          <h6 class="text-black-65">{{ $t('global.deposits') }}</h6>
+          <text-overlay-loading>
+            <h4 class="mb-0">?$</h4>
+          </text-overlay-loading>
+        </div>
+        <div class="total-box px-4 py-3 w-270">
+          <h6 class="text-black-65">{{ $t('global.dailyVol') }}</h6>
+          <text-overlay-loading>
+            <h4 class="mb-0">?$</h4>
+          </text-overlay-loading>
+        </div>
+      </b-container>
+    </div>
+
+
+
+    <b-container>
+      <root-sub />
+      <h4 class="mt-4 mb-2">
+        {{ $t('liquidity.reservesTitle') }}
+      </h4>
+
+      <div class="box mb-5">
+        <div class="p-4">
+          <div class="row">
+            <span class="col" v-for='(currency, i) in Object.keys(currencies)' :key="'currency-'+currency">
+              <h6 class="mb-1 text-black-65">{{currency | capitalize}}</h6>
+              <text-overlay-loading inline :show="!(bal_info && bal_info[i])">
+                {{bal_info && toFixed(bal_info[i]) }} ({{((bal_info && bal_info[i] * 100) / totalBalances) | toFixed2}}%)
+              </text-overlay-loading>
+            </span>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="box mb-4 px-4 py-3">
+        <b-tabs pills nav-class="tabs-nav" class="mt-1">
+          <b-tab :title="$t('global.deposit')" class="pt-3" active>
+            <small class="d-flex mb-3">{{ $t('liquidity.depositTip') }}</small>
+
+            <div class="row">
+              <div class="col pr-4 line-right">
+                <div role="group" class="mb-3" v-for='(currency, i) in Object.keys(currencies)' :key="'icon-'+currency">
+                  <!-- <label :for="'currency_'+i" class="text-black-65">{{ $t('instantSwap.from') }}</label> -->
+                  <div class="currentInput d-flex">
+                    <span class="coin d-flex align-items-center">
+                      <img class="icon-w-20 mr-2"
+                        :class="{'token-icon': true, [currency+'-icon']: true, 'y': depositc && !isPlain}" 
+                        :src='getTokenIcon(currency)'>
+                      <span v-show='depositc'>{{currencies[currency]}}
+                        <span v-show="!(currency == 'usdt' && currentPool == 'usdt' || currency == 'pax') 
+                                && !['susdv2', 'tbtc', 'ren', 'sbtc'].includes(currentPool)"> 
+                          (in {{currency | capitalize}}) 
+                        </span>
+                      </span>
+                      <span v-show='!depositc'>{{currency | capitalize}}</span>
+                    </span>
+                    <input class="form-control" type="text" :id="'currency_'+i" :disabled='disabled' name="from_cur" value='0.00'
+                      :placeholder="$t('liquidity.depositWrapped')"
+                      @input='change_currency(i, true)'
+                      v-model = 'inputs[i]'>
+                  </div>
+                  <b-form-text id="from-val-help" class="text-black-65 mt-0">
+                    {{ $t('instantSwap.max') }}:
+                    <span v-show="(currentPool == 'susdv2' && i == 3 || currentPool == 'sbtc' && i == 2)
+                                                    && maxBalanceCoin(i) != '0.00'">{{transferableBalanceText}}/</span>
+                    <span>{{ maxBalanceCoin(i) }} </span>
+                    <span v-show="susdWaitingPeriod">
+                      <span class='tooltip'>
+                          <img src='@/assets/clock-regular.svg' class='icon small'>
+                          <span class='tooltiptext normalFont'>
+                              Cannot transfer during waiting period. {{ (susdWaitingPeriodTime ).toFixed(0) }} secs left.
+                          </span>
+                      </span>
+                    </span>
+                    <span v-show="(currentPool == 'susdv2' && i == 3 || currentPool == 'sbtc' && i == 2)
+                                  && maxBalanceCoin(i) != '0.00'" 
+                      class='tooltip'> [?]
+                      <span class='tooltiptext long normalFont'>
+                          Max transferrable amount is {{ transferableBalanceText }}. You can free the remaining balance by settling.
+                      </span>
+                    </span>
+                  </b-form-text>
+                </div>
+                <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('dao.infiniteApproval') }}</b-form-checkbox>
+              </div>
+              <div class="col pl-4 d-flex flex-column text-black-65">
+                <label class="d-flex justify-content-between mb-3">
+                  {{ $t('instantSwap.txCost') }}<span>?? USD</span>
+                </label>
+                <label class="d-flex justify-content-between mb-3">
+                  {{ $t('global.maxSlippage') }}<span>??%</span>
+                </label>
+                <label class="d-flex justify-content-between mb-3">
+                  {{ $t('liquidity.bonus') }}/{{ $t('liquidity.slippage') }}<span>??%</span>
+                </label>
+                <label class="d-flex justify-content-between mb-3">
+                  <span class="text-danger-1">{{ $t('liquidity.willReceive') }}</span>
+                  <span>
+                    <span class="text-danger-1 text-18">??</span> {{ currentPool }} LP tokens
+                  </span>
+                </label>
+              </div>
+            </div>
+
+            <button id="migrate-new" @click='handle_migrate_new' v-show="currentPool == 'compound' && oldBalance > 0">Migrate from old</button>
+            <div class='info-message gentle-message' v-show='show_loading'>
+                <span v-html='waitingMessage'></span> <span class='loading line'></span>
+            </div>
+            <div class='info-message gentle-message' v-show='estimateGas'>
+                Estimated tx cost: {{ (estimateGas * gasPrice / 1e9 * ethPrice).toFixed(2) }}$
+            </div>
+            <div class='simple-error' v-show='errorStaking'>
+                There was an error in staking your tokens. You can manually stake them on 
+                <a href = 'https://mintr.synthetix.io/' v-show="['susdv2', 'sbtc'].includes(currentPool)" target='_blank' rel="noopener noreferrer"> Mintr. </a>
+                <a href = 'https://ygov.finance/' v-show="['y', 'iearn'].includes(currentPool)" target='_blank' rel="noopener noreferrer"> yGov. </a>
+            </div>
+            <div class='simple-error pulse' v-show='compareInputsWarning.length && !max_balances'>
+                Not enough balance for currencies {{ compareInputsWarning.toString() }}
+                <p v-show='compareInputsWarning.length == N_COINS - 1'> 
+                    Maybe you forgot to uncheck the first 
+                    "Add all coins in a balanced proportion" checkbox?
+                </p>
+            </div>
+            <div class='simple-error pulse' v-show='depositingZeroWarning && !max_balances'>
+                You're depositing 0 coins.
+                <p>
+                    Maybe you forgot to uncheck the first 
+                    "Add all coins in a balanced proportion" checkbox?
+                </p>
+            </div>
+
+            <div v-show='showadvancedoptions'>
+              <div id='max_slippage' class="lists lists-select mt-3 d-flex">
+                <b-form-group class="mb-0 col">
+                  <ul>
+                    <li>
+                      <h6 class="text-black-65 mb-0">{{ $t('global.maxSlippage') }}</h6>
+                    </li>
+                    <li>
+                      <b-form-radio
+                        v-model="selectMaxSlippageMode"
+                        value=1
+                      >0.5%</b-form-radio>
+                    </li>
+                    <li>
+                      <b-form-radio
+                        v-model="selectMaxSlippageMode"
+                        value=2
+                      >1.0%</b-form-radio>
+                    </li>
+                    <li>
+                      <b-form-radio
+                        v-model="selectMaxSlippageMode"
+                        value=3
+                      >2.0%</b-form-radio>
+                    </li>
+                    <li>
+                      <b-form-radio
+                        v-model="selectMaxSlippageMode"
+                        value=4
+                      >{{ $t('global.customize') }}</b-form-radio>
+                      <span class="d-flex align-items-center ml-4 mt-1">
+                        <b-form-input class="input-append-percentage" id="custom_slippage_input" :disabled="maxSlippageMode != 4" v-model="customMaxSlippageInput" :placeholder="$t('instantSwap.valuePlaceholder')"></b-form-input>
+                      </span>
+                    </li>
+                    <li v-show='showSlippageTooLow'>
+                      <span class='tooltip'>
+                        <img class='icon small hoverpointer warning' :src="publicPath + 'exclamation-circle-solid.svg'">
+                        <span class='tooltiptext'>
+                          Max slippage value is likely too low and the transaction may fail
+                        </span>
+                      </span>
+                    </li>
+                  </ul>
+                </b-form-group>
+                <div class="col-1"></div>
+                <gas-price class="col"></gas-price>
+              </div>
+            </div>
+
+            <div class="d-flex mt-4 justify-content-end">
+              <span class="col text-right pt-4">
+                <b-button size="sm" @click='showadvancedoptions = !showadvancedoptions' variant="light">
+                  <template v-if="showadvancedoptions">
+                    {{ $t('global.packUp') }}
+                  </template>
+                  <template v-else>
+                    {{ $t('global.advancedOptions') }}
+                  </template>
+                </b-button>
+              </span>
+              <text-overlay-loading :show="loadingAction == 1">
+                <b-button size="lg" variant="danger" class="mr-3"
+                  id="add-liquidity"
+                  @click='justDeposit = true; handle_add_liquidity()'
+                  :disabled="currentPool == 'susdv2' && slippage < -0.03 || depositingZeroWarning || isZeroSlippage">
+                  {{ $t('global.deposit') }}
+                </b-button>
+              </text-overlay-loading>
+              <text-overlay-loading :show="loadingAction == 2">
+                <b-button size="lg" variant="outline-secondary"
+                  id='add-liquidity-stake'
+                  @click='justDeposit = false; deposit_stake()'
+                  :disabled = 'slippage < -0.03 || depositingZeroWarning || isZeroSlippage'
+                  >
+                  {{ $t('liquidity.depositStakeGauge') }}
+                </b-button>
+              </text-overlay-loading>
+            </div>
+          </b-tab>
+          <b-tab :title="$t('global.withdraw')" class="pt-3">
+            <small class="d-flex mb-3">{{ $t('liquidity.withdrawAvailableAmount') }}：?? susdv2 LP tokens</small>
+
+            <div class="row">
+              <div class="col pr-4 line-right">
+                <div role="group" class="mb-3" v-for='(currency, i) in Object.keys(currencies)' :key="'icon-'+currency">
+                  <!-- <label :for="'currency_'+i" class="text-black-65">{{ $t('instantSwap.from') }}</label> -->
+                  <div class="currentInput d-flex">
+                    <span class="coin d-flex align-items-center">
+                      <img class="icon-w-20 mr-2"
+                        :class="{'token-icon': true, [currency+'-icon']: true, 'y': depositc && !isPlain}" 
+                        :src='getTokenIcon(currency)'>
+                      <span v-show='depositc'>{{currencies[currency]}}
+                        <span v-show="!(currency == 'usdt' && currentPool == 'usdt' || currency == 'pax') 
+                                && !['susdv2', 'tbtc', 'ren', 'sbtc'].includes(currentPool)"> 
+                          (in {{currency | capitalize}}) 
+                        </span>
+                      </span>
+                      <span v-show='!depositc'>{{currency | capitalize}}</span>
+                    </span>
+                    <input class="form-control" type="text" :id="'currency_'+i" :disabled='disabled' name="from_cur" value='0.00'
+                      :placeholder="$t('liquidity.depositWrapped')"
+                      @input='change_currency(i, true)'
+                      v-model = 'inputs[i]'>
+                  </div>
+                  <b-form-text id="from-val-help" class="text-black-65 mt-0">
+                    {{ $t('instantSwap.max') }}:
+                    <span v-show="(currentPool == 'susdv2' && i == 3 || currentPool == 'sbtc' && i == 2)
+                                                    && maxBalanceCoin(i) != '0.00'">{{transferableBalanceText}}/</span>
+                    <span>{{ maxBalanceCoin(i) }} </span>
+                    <span v-show="susdWaitingPeriod">
+                      <span class='tooltip'>
+                          <img src='@/assets/clock-regular.svg' class='icon small'>
+                          <span class='tooltiptext normalFont'>
+                              Cannot transfer during waiting period. {{ (susdWaitingPeriodTime ).toFixed(0) }} secs left.
+                          </span>
+                      </span>
+                    </span>
+                    <span v-show="(currentPool == 'susdv2' && i == 3 || currentPool == 'sbtc' && i == 2)
+                                  && maxBalanceCoin(i) != '0.00'" 
+                      class='tooltip'> [?]
+                      <span class='tooltiptext long normalFont'>
+                          Max transferrable amount is {{ transferableBalanceText }}. You can free the remaining balance by settling.
+                      </span>
+                    </span>
+                  </b-form-text>
+                </div>
+                <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('dao.infiniteApproval') }}</b-form-checkbox>
+              </div>
+              <div class="col pl-4 d-flex flex-column text-black-65">
+                <label class="d-flex justify-content-between mb-3">
+                  {{ $t('instantSwap.txCost') }}<span>?? USD</span>
+                </label>
+                <label class="d-flex justify-content-between mb-3">
+                  {{ $t('global.maxSlippage') }}<span>??%</span>
+                </label>
+                <label class="d-flex justify-content-between mb-3">
+                  {{ $t('liquidity.bonus') }}/{{ $t('liquidity.slippage') }}<span>??%</span>
+                </label>
+                <label class="d-flex justify-content-between mb-3">
+                  <span class="text-danger-1">{{ $t('liquidity.willReceive') }}</span>
+                  <span>
+                    <span class="text-danger-1 text-18">??</span> ??
+                  </span>
+                </label>
+              </div>
+            </div>
+
+            <div v-show='showadvancedoptions'>
+              <div id='max_slippage' class="lists lists-select mt-3 d-flex">
+                <b-form-group class="mb-0 col">
+                  <ul>
+                    <li>
+                      <h6 class="text-black-65 mb-0">{{ $t('global.maxSlippage') }}</h6>
+                    </li>
+                    <li>
+                      <b-form-radio
+                        v-model="selectMaxSlippageMode"
+                        value=1
+                      >0.5%</b-form-radio>
+                    </li>
+                    <li>
+                      <b-form-radio
+                        v-model="selectMaxSlippageMode"
+                        value=2
+                      >1.0%</b-form-radio>
+                    </li>
+                    <li>
+                      <b-form-radio
+                        v-model="selectMaxSlippageMode"
+                        value=3
+                      >2.0%</b-form-radio>
+                    </li>
+                    <li>
+                      <b-form-radio
+                        v-model="selectMaxSlippageMode"
+                        value=4
+                      >{{ $t('global.customize') }}</b-form-radio>
+                      <span class="d-flex align-items-center ml-4 mt-1">
+                        <b-form-input class="input-append-percentage" id="custom_slippage_input" :disabled="maxSlippageMode != 4" v-model="customMaxSlippageInput" :placeholder="$t('instantSwap.valuePlaceholder')"></b-form-input>
+                      </span>
+                    </li>
+                    <li v-show='showSlippageTooLow'>
+                      <span class='tooltip'>
+                        <img class='icon small hoverpointer warning' :src="publicPath + 'exclamation-circle-solid.svg'">
+                        <span class='tooltiptext'>
+                          Max slippage value is likely too low and the transaction may fail
+                        </span>
+                      </span>
+                    </li>
+                  </ul>
+                </b-form-group>
+                <div class="col-1"></div>
+                <gas-price class="col"></gas-price>
+              </div>
+            </div>
+            <div class="d-flex mt-4 justify-content-end">
+              <span class="col text-right pt-4">
+                <b-button size="sm" @click='showadvancedoptions = !showadvancedoptions' variant="light">
+                  <template v-if="showadvancedoptions">
+                    {{ $t('global.packUp') }}
+                  </template>
+                  <template v-else>
+                    {{ $t('global.advancedOptions') }}
+                  </template>
+                </b-button>
+              </span>
+              <text-overlay-loading :show="loadingAction == 1">
+                <b-button size="lg" variant="danger" class="mr-3" @click='justDeposit = true; handle_add_liquidity()'>
+                  {{ $t('global.withdraw') }}
+                </b-button>
+              </text-overlay-loading>
+            </div>
+          </b-tab>
+          <b-tab :title="$t('global.poolProfit')" class="pt-3">
+            <h6 class="text-black-65 mb-2">{{ $t('dao.staking') }}</h6>
+            <h4 class="mb-0">?? USD</h4>
+          </b-tab>
+        </b-tabs>
+      </div>
+
+    </b-container>
+
+
 		<div class="add-liquidity">
-      {{ disabled }}
             <fieldset class="currencies">
                 <legend>Currencies:</legend>
                 <ul>
@@ -12,11 +376,11 @@
                                     :class="{'token-icon': true, [currency+'-icon']: true, 'y': depositc && !isPlain}" 
                                     :src='getTokenIcon(currency)'>
                                 <span v-show='depositc'>{{currencies[currency]}}
-    	                        	<span v-show="!(currency == 'usdt' && currentPool == 'usdt' || currency == 'pax') 
-    	                        					&& !['susdv2', 'tbtc', 'ren', 'sbtc'].includes(currentPool)"> 
-    	                        		(in {{currency | capitalize}}) 
-    	                        	</span>
-    	                        </span>
+                                  <span v-show="!(currency == 'usdt' && currentPool == 'usdt' || currency == 'pax') 
+                                          && !['susdv2', 'tbtc', 'ren', 'sbtc'].includes(currentPool)"> 
+                                    (in {{currency | capitalize}}) 
+                                  </span>
+                                </span>
     	                        <span v-show='!depositc'>{{currency | capitalize}}
     	                        </span>
                                 <span @click='setMaxBalanceCoin(i)' class='maxBalanceCoin'>
@@ -89,12 +453,16 @@
                 Cannot transfer {{ currentPool == 'susdv2' ? 'sUSD' : 'sBTC' }} during waiting period. {{ (susdWaitingPeriodTime).toFixed(0) }} secs left.
             </div>
             <p style="text-align: center" class='buttons'>
+              slippage: {{ slippage }} {{ slippage < -0.03 }} | 
+              depositingZeroWarning: {{ depositingZeroWarning }} | 
+              isZeroSlippage: {{ isZeroSlippage }} | 
                 <button id="add-liquidity" 
                     :disabled="currentPool == 'susdv2' && slippage < -0.03 || depositingZeroWarning || isZeroSlippage"
                     @click='justDeposit = true; handle_add_liquidity()' 
                     >
                         Deposit <span class='loading line' v-show='loadingAction == 1'></span>
                 </button>
+
                 <button 
                     id='add-liquidity-stake' 
                     v-show="['susdv2', 'sbtc', 'y', 'iearn'].includes(currentPool) && hasRewards" 
@@ -111,7 +479,7 @@
                 </button>
                 <p class='info-message gentle-message' v-show="lpCrvReceived > 0">
                     You'll receive minimum {{ lpCrvReceivedText }} Curve {{currentPool}} LP tokens <sub>{{ ((1 - getMaxSlippage) * 100).toFixed(2)}}% max slippage</sub>
-                    
+
                     <span class='curvelpusd'> 
                         1 Curve {{currentPool}} LP token = {{ (1 * virtual_price).toFixed(6) }} 
                         {{ !['ren', 'sbtc'].includes(currentPool) ? 'USD' : 'BTC' }} 
@@ -165,47 +533,7 @@
                     </div>
 
                 </div>
-                <p class='trade-buttons' v-show="['ren', 'sbtc'].includes(currentPool)">
-                    <a href='https://bridge.renproject.io/'>Mint/redeem renBTC</a>
-                </p>
-                <div id='mintr' v-show="['susdv2', 'sbtc'].includes(currentPool)">
-                    <a href = 'https://mintr.synthetix.io/' target='_blank' rel="noopener noreferrer">Manage staking in Mintr</a>
-                </div>
-                <div id='mintr' v-show="['y', 'iearn'].includes(currentPool)">
-                    <a href = 'https://ygov.finance/' target='_blank' rel="noopener noreferrer">Manage staking in yGov</a>
-                </div>
-                <button id="migrate-new" @click='handle_migrate_new' v-show="currentPool == 'compound' && oldBalance > 0">Migrate from old</button>
-                <div class='info-message gentle-message' v-show='show_loading'>
-                    <span v-html='waitingMessage'></span> <span class='loading line'></span>
-                </div>
-                <div class='info-message gentle-message' v-show='estimateGas'>
-                    Estimated tx cost: {{ (estimateGas * gasPrice / 1e9 * ethPrice).toFixed(2) }}$
-                </div>
-                <!-- <div class='simple-error' v-show="justDeposit && ['susdv2','sbtc','y','iearn'].includes(currentPool)">
-                    Your tokens are being deposited into the {{ ['y', 'iearn'].includes(currentPool) ? 'y' : 'susd'}} pool without staking.
-                    You can do that manually later on here or on 
-                    <a href = 'https://mintr.synthetix.io/' v-show="['susdv2', 'sbtc'].includes(currentPool)" target='_blank' rel="noopener noreferrer"> Mintr. </a> 
-                    <a href = 'https://ygov.finance/' v-show="['y', 'iearn'].includes(currentPool)" target='_blank' rel="noopener noreferrer"> yGov. </a> 
-                </div> -->
-                <div class='simple-error' v-show='errorStaking'>
-                    There was an error in staking your tokens. You can manually stake them on 
-                    <a href = 'https://mintr.synthetix.io/' v-show="['susdv2', 'sbtc'].includes(currentPool)" target='_blank' rel="noopener noreferrer"> Mintr. </a>
-                    <a href = 'https://ygov.finance/' v-show="['y', 'iearn'].includes(currentPool)" target='_blank' rel="noopener noreferrer"> yGov. </a>
-                </div>
-                <div class='simple-error pulse' v-show='compareInputsWarning.length && !max_balances'>
-                    Not enough balance for currencies {{ compareInputsWarning.toString() }}
-                    <p v-show='compareInputsWarning.length == N_COINS - 1'> 
-                        Maybe you forgot to uncheck the first 
-                        "Add all coins in a balanced proportion" checkbox?
-                    </p>
-                </div>
-                <div class='simple-error pulse' v-show='depositingZeroWarning && !max_balances'>
-                    You're depositing 0 coins.
-                    <p>
-                        Maybe you forgot to uncheck the first 
-                        "Add all coins in a balanced proportion" checkbox?
-                    </p>
-                </div>
+
                 <Slippage/>
             </p>
         </div>
@@ -218,21 +546,23 @@
     import * as common from '../../utils/common.js'
     import { getters, contract as currentContract, gas as contractGas } from '../../contract'
     import allabis from '../../allabis'
-    const compound = allabis.compound
+    const susdv2 = allabis.susdv2
     import * as helpers from '../../utils/helpers'
 
     import * as gasPriceStore from '../common/gasPriceStore'
     import GasPrice from '../common/GasPrice.vue'
+    import RootSub from '../root/RootSub.vue'
 
     import * as errorStore from '../common/errorStore'
 
     import BN from 'bignumber.js'
 
     import Slippage from '../common/Slippage.vue'
+    import TextOverlayLoading from '../../components/common/TextOverlayLoading'
 
     export default {
     	components: {
-    		Slippage, GasPrice,
+    		Slippage, GasPrice, TextOverlayLoading, RootSub
     	},
     	data: () => ({
     		disabled: true,
@@ -273,9 +603,10 @@
     		slippagePromise: helpers.makeCancelable(Promise.resolve()),
 
             hasRewards: true,
+
+            maxSlippageMode: 2
     	}),
         async created() {
-
             this.$watch(()=>currentContract.default_account, (val, oldval) => {
                 if(!val || !oldval) return;
                 if(val.toLowerCase() == oldval.toLowerCase()) return;
@@ -304,6 +635,9 @@
         },
         computed: {
           ...getters,
+          totalBalances() {
+            return this.bal_info && this.bal_info.reduce((a, b) => a + b, 0) || null
+          },
           minAmount() {
           	if(['tbtc', 'ren', 'sbtc'].includes(currentContract.currentContract)) return 1e-8
           	return 0.01
@@ -314,6 +648,10 @@
           },
           compareInputsWarning() {
             let currencies = []
+
+console.log('current', this.currentPool, this.currencies)
+
+
             for(let [i, currency] of Object.keys(this.currencies).entries()) {
                 let balance = this.wallet_balances[i]
                 if(this.currentPool == 'susdv2' && i == 3) {
@@ -322,6 +660,7 @@
                 let diff3 = BN(BN(balance).times(this.rates[i])).minus(this.inputs[i])
                 if(diff3.lt(BN(-0.01))) currencies.push(this.depositc ? this.currencies[currency] : currency.toUpperCase())
             }
+console.log('current currencies', currencies)
             return currencies
           },
           depositingZeroWarning() {
@@ -359,6 +698,35 @@
           },
           isZeroSlippage() {
             return this.maxInputSlippage !== '' && (+this.maxInputSlippage == 0 || isNaN(this.maxInputSlippage))
+          },
+
+          showSlippageTooLow() {
+              return this.maxInputSlippage != '' && +this.maxInputSlippage < 0.2
+          },
+          customMaxSlippageInput: {
+            get () {
+              return this.maxInputSlippage
+            },
+            set (val) {
+              this.maxSlippage = this.maxInputSlippage = val
+            }
+          },
+          selectMaxSlippageMode: {
+            get () {
+              return this.maxSlippageMode
+            },
+            set (val) {
+              const { maxInputSlippage } = this
+              const modes = {
+                1: 0.5,
+                2: 1,
+                3: 2,
+                4: maxInputSlippage
+              }
+
+              this.maxSlippageMode = val
+              this.maxSlippage = modes[val]
+            }
           },
         },
         mounted() {
@@ -596,6 +964,7 @@
                 let aggcalls = await currentContract.multicall.methods.aggregate(calls).call()
                 let decoded = aggcalls[1].map(hex=>currentContract.web3.eth.abi.decodeParameter('uint256',hex))
                 decoded.slice(0, decoded.length-endOffset).forEach((balance, i) => {
+                    console.log('currentContract.currentContract', currentContract.currentContract)
                     let abi = allabis[currentContract.currentContract]
                     let precisions = this.depositc ? abi.wrapped_precisions[i] : abi.coin_precisions[i]
                     let bal = BN(balance)
@@ -822,7 +1191,7 @@
 </script>
 
 <style>
-	#add-liquidity {
+	/* #add-liquidity {
 		margin-right: 1em;
 	}
 	#mintr {
@@ -885,5 +1254,5 @@
     }
     #max_slippage {
         margin-top: 0.4em;
-    }
+    } */
 </style>

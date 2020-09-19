@@ -103,6 +103,9 @@ fieldset {
 .line-bottom {
   box-shadow: 0px -1px 0px 0px rgba(0,0,0,0.08) inset; 
 }
+.line-right {
+  box-shadow: -1px 0 0 0 rgba(0,0,0,0.08) inset; 
+}
 
 /* Layout */
 #app {
@@ -125,6 +128,14 @@ fieldset {
 .text-blue-1 {
   color: #1BA57B;
 }
+.text-danger-1 {
+  color: #EB3C00;
+}
+
+/* Size */
+.text-18 {
+  font-size: 18px;
+}
 
 /* Nav */
 .navbar-expand .navbar-nav .nav-link {
@@ -146,6 +157,21 @@ fieldset {
 .icon-w-20 {
   width: 20px;
   height: 20px;
+}
+.icon-w-40 {
+  width: 40px;
+  height: 40px;
+}
+
+/* Box size */
+.box-98 {
+  width: 98px;
+  height: 98px;
+}
+
+/* Width */
+.w-270 {
+  width: 270px;
 }
 
 /* Button */
@@ -341,4 +367,32 @@ input[type="text"]::-moz-placeholder, textarea::-moz-placeholder {
 
 
 
+.lists {
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 2px;
+  padding: 8px 12px;
+}
+.lists-select ul li {
+  font-size: 14px;
+  color: rgba(0,0,0,0.65);
+  line-height: 22px;
+  padding: 4px 0;
+}
 
+
+
+
+.currentInput {
+  background: rgba(255,255,255,0.3);
+  border: 1px solid #dadedf;
+  border-radius: 2px 0px 0px 2px;
+}
+.currentInput .coin {
+  min-width: 104px;
+  border-right: 1px solid #dadedf;
+  padding-left: 12px;
+  padding-right: 12px;
+}
+.currentInput input {
+  border-width: 0;
+}
