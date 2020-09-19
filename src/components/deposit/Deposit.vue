@@ -242,7 +242,7 @@
                       <span v-show='!depositc'>{{currency | capitalize}}</span>
                     </span>
                     <input class="form-control" type="text" :id="'currency_'+i" :disabled='disabled' name="from_cur" value='0.00'
-                      :placeholder="$t('liquidity.depositWrapped')"
+                      :placeholder="$t('liquidity.withdrawAmountPlaceholder')"
                       @input='change_currency(i, true)'
                       v-model = 'inputs[i]'>
                   </div>
