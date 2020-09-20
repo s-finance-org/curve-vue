@@ -179,6 +179,7 @@
                       >{{ $t('global.customize') }}</b-form-radio>
                       <span class="d-flex align-items-center ml-4 mt-1">
                         <b-form-input class="input-append-percentage" id="custom_slippage_input" :disabled="maxSlippageMode != 4" v-model="customMaxSlippageInput" :placeholder="$t('instantSwap.valuePlaceholder')"></b-form-input>
+                        <span class="offset-ml-4 text-black-65">%</span>
                       </span>
                     </li>
                     <li v-show='showSlippageTooLow'>
@@ -345,6 +346,7 @@
                       >{{ $t('global.customize') }}</b-form-radio>
                       <span class="d-flex align-items-center ml-4 mt-1">
                         <b-form-input class="input-append-percentage" id="custom_slippage_input" :disabled="maxSlippageMode != 4" v-model="customMaxSlippageInput" :placeholder="$t('instantSwap.valuePlaceholder')"></b-form-input>
+                        <span class="offset-ml-4 text-black-65">%</span>
                       </span>
                     </li>
                     <li v-show='showSlippageTooLow'>
@@ -405,7 +407,7 @@
     </b-container>
 
     <!-- deposit -->
-		<div class="add-liquidity" v-show=false>
+		<div class="add-liquidity">
             <fieldset class="currencies">
                 <legend>Currencies:</legend>
                 <ul>
@@ -579,7 +581,7 @@
     </div>
 
     <!-- withdraw -->
-    <div class="add-liquidity" v-show=false>
+    <div class="add-liquidity">
         <fieldset class="percentage">
             <legend>
             	Share of liquidity (%)
@@ -1611,11 +1613,11 @@ console.log('current', this.currentPool, this.currencies)
 	            else
 	                Vue.set(this.bgColors, i, 'blue');
 			},
-            async getLPCrvReceived() {
-                let deposit_inputs = this.deposit_inputs.map(v => v || 0)
-                this.lpCrvReceived = (await currentContract.swap.methods
-                    .calc_token_amount(deposit_inputs.map((v, i) => BN(v).div(currentContract.c_rates[i]).toFixed(0,1)), true).call() / 1e18) * this.getMaxSlippage
-            },
+      async getLPCrvReceived() {
+        let deposit_inputs = this.deposit_inputs.map(v => v || 0)
+        this.lpCrvReceived = (await currentContract.swap.methods
+            .calc_token_amount(deposit_inputs.map((v, i) => BN(v).div(currentContract.c_rates[i]).toFixed(0,1)), true).call() / 1e18) * this.getMaxSlippage
+      },
 			async change_currency(i, setInputs = true, event) {
 				if(event) {
 					this.deposit_inputs[i] = event.target.value
@@ -1648,7 +1650,7 @@ console.log('current', this.currentPool, this.currencies)
                         }
                 }
                 await this.getLPCrvReceived()
-	            await this.calcSlippage()
+	              await this.calcSlippage()
 	        },
 	        handle_migrate_new() {
 	        	common.handle_migrate_new('new')

@@ -14,12 +14,40 @@
         <small class="pl-3">{{ $t('dao.describe', [currentPool.name, currentPool.describeTokensCont]) }}</small>
       </h4>
       <div class="box mb-4 px-4 py-3">
+        <div class="row pb-3 mb-3 line-bottom no-gutters">
+          <span class="col">
+            <h6 class="mb-0 text-black-65">{{ $t('dao.totalStaking') }}</h6>
+            <h4 class="mb-0 d-flex">
+              <text-overlay-loading inline :show="currentPool.totalSupplyLoading">
+                {{ currentPool.totalSupplyHandled | formatNumber(2) }}
+                <h6 class="inline-block text-black-65 mb-0">{{ currentPool.name }} LP tokens</h6>
+              </text-overlay-loading>
+            </h4>
+          </span>
+          <span class="col">
+            <h6 class="mb-0 text-black-65">{{ $t('dao.myStaking') }}</h6>
+            <h4 class="mb-0 d-flex">
+              <text-overlay-loading inline :show="currentPool.gaugeBalanceLoading">
+                {{ currentPool.gaugeBalanceHandled | formatNumber(2) }}
+                <h6 class="inline-block text-black-65 mb-0">{{ currentPool.name }} LP tokens</h6>
+              </text-overlay-loading>
+            </h4>
+          </span>
+          <span class="col">
+            <h6 class="mb-0 text-black-65">{{ $t('dao.virtualPrice') }}</h6>
+            <h4 class="mb-0 d-flex">
+              <text-overlay-loading inline :show="loadingAction">
+                1
+                <h6 class="inline-block text-black-65 mb-0">{{ currentPool.name }} LP tokens = </h6>
+                {{ (1 * virtual_price).toFixed(6) }}
+                <h6 class="inline-block text-black-65 mb-0">USD</h6>
+              </text-overlay-loading>
+            </h4>
+          </span>
+        </div>
+
         <b-tabs pills nav-class="tabs-nav" class="mt-1">
           <b-tab :title="$t('dao.staking')" class="pt-3" active>
-            <small class="d-flex mb-3">
-              {{ $t('dao.assetInStaking') }}：
-              <text-overlay-loading :show="loadingAction || currentPool.gaugeBalanceLoading">{{ currentPool.gaugeBalanceCont }} {{ currentPool.name }} LP tokens</text-overlay-loading>
-            </small>
             <label class="text-black-65">{{ $t('dao.staking') }}</label>
             <div class="d-flex">
               <b-form-input class="col mr-4" v-model="depositAmountInput" :placeholder="$t('dao.stakingAmountPlaceholder')"></b-form-input>
@@ -31,10 +59,12 @@
                 button-variant="outline-secondary"
               ></b-form-radio-group>
             </div>
-            <small>{{ $t('dao.stakingBalance') }}： {{ currentPool.balance }} {{ currentPool.name }} LP tokens</small>
+            <small class="d-flex mb-3 align-items-center">
+              {{ $t('dao.stakingBalance') }}： {{ currentPool.balance }} {{ currentPool.name }} LP tokens
+              <b-button class="text-blue-1 ml-2" to="/susdv2/liquidity/" size="xsm" variant="light">{{ $t('dao.stakingConfirmTip') }}</b-button>
+            </small>
             <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('dao.infiniteApproval') }}</b-form-checkbox>
             <div class="d-flex align-items-end mt-5 float-right">
-              <h6 class="text-blue-1 mb-0 mr-4">{{ $t('dao.stakingConfirmTip') }}</h6>
               <text-overlay-loading :show="loadingAction">
                 <b-button size="lg" variant="danger" @click=deposit>
                   {{ $t('dao.stakingConfirm') }}
@@ -103,7 +133,7 @@
                 </div>
                 <div class="d-flex mt-4 justify-content-end">
                   <text-overlay-loading :show="loadingAction">
-                    <b-button variant="danger" @click=currentPool.tokens[token[0]].claimConfirm>
+                    <b-button variant="danger" @click=claimRewards>
                       {{ $t('dao.miningClaimConfirm') }}
                     </b-button>
                   </text-overlay-loading>
@@ -137,7 +167,7 @@
                     </text-overlay-loading>
                   </small>
                   <text-overlay-loading :show="loadingAction">
-                    <b-button variant="danger" @click=currentPool.tokens[token].claimConfirm>
+                    <b-button variant="danger" @click="currentPool.tokens[token].claimConfirm">
                       {{ $t('dao.miningClaimConfirm') }}
                     </b-button>
                   </text-overlay-loading>
@@ -257,7 +287,7 @@
     import * as gasPriceStore from '../common/gasPriceStore'
     import GasPrice from '../common/GasPrice.vue'
     import RootSub from '../root/RootSub.vue'
-    import DaoLiquidityGaugereAbi from './abi'
+    import DaoLiquidityGaugereAbi_susdv2 from './abi/susdv2'
 
     import * as errorStore from '../common/errorStore'
 
@@ -273,7 +303,8 @@
     const __store__ = {
 
       loadingAction: true,
-
+      totalSupplyTether: 0,
+      totalSupplyHandled: 0,
       notationDecimal: 1e18,
 
       gaugeBalanceTether: 0,
@@ -338,6 +369,31 @@
             return __store__.notationDecimal
           },
           typeName: 'Liquidity',
+
+          totalSupplyLoading: true,
+          get totalSupplyTether () {
+            return __store__.totalSupplyTether
+          },
+          set totalSupplyTether (val) {
+            const { notationDecimal } = __store__
+            const { totalSupplyLoading } = this
+            const result = __store__.totalSupplyTether = val
+
+            totalSupplyLoading &&
+              (this.totalSupplyLoading = false)
+
+            this.totalSupplyHandled = result / notationDecimal
+          },
+          get totalSupplyHandled () {
+            return __store__.totalSupplyHandled
+          },
+          set totalSupplyHandled (val) {
+            const { priceDecimal } = this
+            const result = __store__.totalSupplyHandled = val
+
+            this.totalSupplyCont = BN(result).toFixed(priceDecimal)
+          },
+          totalSupplyCont: '0',
 
           balance: 0,
           balanceCont: 0,
@@ -515,6 +571,9 @@
 
         computed: {
           ...getters,
+          virtual_price() {
+            return currentContract.virtual_price
+          },
           gasPrice() {
             console.log('gasPrice', gasPriceStore.state.gasPrice)
             return gasPriceStore.state.gasPrice
@@ -618,7 +677,9 @@
           async mounted() {
             // Set currentPool confirm
             this.currentPool.tokens.sfg.claimConfirm = this.claim
-            this.currentPool.tokens.crv.claimConfirm = this.currentPool.tokens.snx.claimConfirm = this.claimRewards
+            // FIXME: 
+            // this.currentPool.tokens.crv.claimConfirm = this.claimRewards
+            // this.currentPool.tokens.snx.claimConfirm = this.claimRewards
 
             this.currentPool.gauge = process.env.VUE_APP_PSS_GAUGE
 
@@ -661,10 +722,7 @@
             piegauges[highest].selected = true;
 
 
-
-
-
-          this.gaugeContract = new currentContract.web3.eth.Contract(DaoLiquidityGaugereAbi, this.currentPool.gauge)
+          this.gaugeContract = new currentContract.web3.eth.Contract(DaoLiquidityGaugereAbi_susdv2, this.currentPool.gauge)
 
           // balanceOf
           this.currentPool.gaugeBalanceTether = await this.gaugeContract.methods.balanceOf(currentContract.default_account).call()
@@ -681,6 +739,11 @@
           this.currentPool.tokens.snx.pendingRewardTether = await this.gaugeContract.methods.claimable_reward2(currentContract.default_account).call()
 
           // claimed_rewards_for
+          let aaa = await this.gaugeContract.methods.claimed_rewards_for(currentContract.default_account).call()
+          console.log('claimed_rewards_for', aaa)
+
+          // totalSupply 总抵押量
+          this.currentPool.totalSupplyTether = await this.gaugeContract.methods.totalSupply().call()
 
 
 
@@ -776,7 +839,7 @@ console.log( 'balance', balance.dividedBy(1e18).toFixed(0,1) )
             await mint.send({
               from: currentContract.default_account,
               gasPrice: this.gasPriceWei,
-              gas: gas * 1.5 | 0,
+              // gas: gas * 1.5 | 0,
             })
             .once('transactionHash', hash => {
               dismiss()
@@ -792,7 +855,7 @@ console.log( 'balance', balance.dividedBy(1e18).toFixed(0,1) )
             await this.gaugeContract.methods.claim_rewards(currentContract.default_account).send({
               from: currentContract.default_account,
               gasPrice: this.gasPriceWei,
-              gas: gas * 1.2 | 0,
+              // gas: gas * 1.2 | 0,
             })
             .once('transactionHash', hash => {
               dismiss()

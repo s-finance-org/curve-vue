@@ -31,7 +31,7 @@
 // inflation_rate uint256
 // claimed_rewards_for uint256
 
-
+// curve
 export default [
   {
       "name":"Deposit",

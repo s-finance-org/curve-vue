@@ -129,7 +129,7 @@
         <input id='sbtcpool' type='checkbox' value='sbtc' v-model='pools'/>
         <label for='sbtcpool'>sBTC</label>
       </div>
-      <template v-show="showadvancedoptions">
+      <div v-show="showadvancedoptions">
         <div id='max_slippage' class="lists lists-select mt-3 d-flex no-gutters">
           <b-form-group class="mb-0 col">
             <ul>
@@ -161,6 +161,7 @@
                 >{{ $t('global.customize') }}</b-form-radio>
                 <span class="d-flex align-items-center ml-4 mt-1">
                   <b-form-input class="input-append-percentage" id="custom_slippage_input" :disabled="maxSlippageMode != 4" v-model="customMaxSlippageInput" :placeholder="$t('instantSwap.valuePlaceholder')"></b-form-input>
+                  <span class="offset-ml-4 text-black-65">%</span>
                 </span>
               </li>
               <li v-show='showSlippageTooLow'>
@@ -176,7 +177,7 @@
           <div class="col-1"></div>
           <gas-price class="col"></gas-price>
         </div>
-      </template>
+      </div>
       <p class="mt-3" v-for="(item, idx) in messages" :key="idx">
         {{ item.msg }}
       </p>

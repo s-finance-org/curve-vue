@@ -42,10 +42,14 @@ export default {
     followMe: 'Follow me'
   },
   statement: {
-    slogan: 'Statement: S.finance have not issued any tokens currently',
-    cont: 'Token of S.finance will follow the method of 100% contribution based distribution, with neither private placement, no pre-dig, nor team distribution. The official name of the token is still being collected. Information about S.finance on Trx-chain is totally fraud, please log on official website to get the latest news about S.finance!',
+    // slogan: 'Statement: S.finance have not issued any tokens currently',
+    // cont: 'Token of S.finance will follow the method of 100% contribution based distribution, with neither private placement, no pre-dig, nor team distribution. The official name of the token is still being collected. Information about S.finance on Trx-chain is totally fraud, please log on official website to get the latest news about S.finance!',
     more: 'more',
-    ok: 'Ok'
+    ok: 'Ok',
+    coming: '',
+    comingCont1: '',
+    comingCont2: '',
+    comingCont3: ''
   },
   wallet: {
     notConnected: "You haven't connected wallet",
@@ -137,5 +141,8 @@ export default {
     miningPaidReward: 'Paid reward',
     miningTotalReward: 'Total reward',
     miningClaimConfirm: 'Claim',
+    totalStaking: 'Total staking',
+    myStaking: 'My staking',
+    virtualPrice: 'LP tokens 价格',
   }
 }

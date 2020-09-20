@@ -115,6 +115,9 @@ fieldset {
 }
 
 /* Format */
+.inline-block {
+  display: inline-block;
+}
 .text-monospace { font-family: 'SFMono-Regular', Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
 .text-black-65 {
   color: rgba(0, 0, 0, .65);
@@ -135,6 +138,11 @@ fieldset {
 /* Size */
 .text-18 {
   font-size: 18px;
+}
+
+/* Offset */
+.offset-ml-4 {
+  margin-left: -24px;
 }
 
 /* Nav */
@@ -187,6 +195,10 @@ fieldset {
 }
 
 /* Icon */
+.icon-w-8 {
+  width: 8px;
+  height: 8px;
+}
 .icon-w-20 {
   width: 20px;
   height: 20px;
@@ -194,6 +206,14 @@ fieldset {
 .icon-w-40 {
   width: 40px;
   height: 40px;
+}
+.icon-box-20 {
+  width: 20px;
+  height: 20px;
+  background: #ffffff;
+  border: 1px solid #dadedf;
+  border-radius: 2px;
+  padding: 1px;
 }
 
 /* Box size */
@@ -221,6 +241,11 @@ fieldset {
   padding: 12px 24px;
   font-size: 16px;
   line-height: 24px;
+}
+.btn-xsm, .btn-group-sm > .btn {
+  padding: 0px 4px;
+  font-size: 12px;
+  line-height: 18px;
 }
 
 .btn-danger {
@@ -324,37 +349,35 @@ input[type="text"]::-moz-placeholder, textarea::-moz-placeholder {
 }
 
 /* Modal */
-.statement-modal{
-  background-color: #F7CA00;
+.normal-modal {
   margin-right: 100px;
   margin-left: 100px;
   border-width: 0;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.15);
 }
-.statement-modal header {
+.normal-modal header {
   border-bottom-width: 0px;
   padding-top: 20px;
   padding-right: 24px;
   padding-left: 24px;
 }
-.statement-modal header h5{
+.normal-modal header h5{
   font-size: 20px;
   line-height: 28px;
 }
-.statement-modal .modal-body {
+.normal-modal .modal-body {
   padding: 0 24px;
   font-size: 14px;
   color: rgba(0,0,0,0.65);
   line-height: 22px;
 }
-.statement-modal footer {
+.normal-modal footer {
   border-top-width: 0px;
   padding: 20px 24px;
 }
-/* .statement-modal footer button{
-  background: #eb3c00;
-  border-radius: 2px;
-} */
+.statement-modal {
+  background-color: #F7CA00;
+}
 
 
 /* Tab */

@@ -42,10 +42,14 @@ export default {
     followMe: '抢先关注'
   },
   statement: {
-    slogan: '声明：S.finance 目前没有任何代币',
-    cont: 'S.finance 代币遵循100%基于贡献分配，无私募，无预挖，无团队分配的方式，代币名称目前还在征集中。Trx 链上有关于S.finance的合约为诈骗信息，最新消息以官网为准！',
+    // slogan: '声明：S.finance 目前没有任何代币',
+    // cont: 'S.finance 代币遵循100%基于贡献分配，无私募，无预挖，无团队分配的方式，代币名称目前还在征集中。Trx 链上有关于S.finance的合约为诈骗信息，最新消息以官网为准！',
     more: '查看详情',
-    ok: '知道了'
+    ok: '知道了',
+    coming: 'S.Finance 即将开启流动性挖矿',
+    comingCont1: 'S.Finance 将于新加坡时间 2020-09-22 21:00 开启 susd 流动性矿池抵押挖矿。 抵押 susdv2 LP tokens 即可获得 S.Finance 治理代币 SFG、Curve 治理代币 CRV 以及 Synthetix 平台代币 SNX。',
+    comingCont2: 'SFG 总发行量 2100 万，遵循 100%基于贡献分配，无私募，无预挖，无团队份额。每日挖矿产出剩余部分的 0.2%，开启挖矿后的24 小时内产出速率为 10%，即首日挖矿产出 0.02%，24 小时后挖矿速率恢复正常。',
+    comingCont3: 'S.Finance 智能合约已由知道创宇完成安全审计，然而，安全审计并不能完全消除风险，请在能力承受范围内进行投资。',
   },
   wallet: {
     notConnected: '你还没有连接钱包',
@@ -108,7 +112,6 @@ export default {
     depositUseMaximumAvailable: '使用最大数量的硬币',
     depositWrapped: '打包存款',
     depositWrappedPlaceholder: '存入抵押凭据',
-    depositWrapped: '存入抵押凭据',
     willLeastReceive: '你将至少收到',
     willReceive: '你将收到',
     bonus: '额外奖励',
@@ -138,5 +141,8 @@ export default {
     miningPaidReward: '已提取奖励',
     miningTotalReward: '合计奖励',
     miningClaimConfirm: '领取奖励',
+    totalStaking: '总抵押量',
+    myStaking: '我的抵押',
+    virtualPrice: 'LP tokens 价格',
   }
 }

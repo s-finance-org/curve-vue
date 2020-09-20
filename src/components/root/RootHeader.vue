@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="beta-banner py-2">
+    <!-- <div class="beta-banner py-2">
       {{ $t('beta.slogan') }}<br/>{{ $t('beta.followMe') }}:
       <a href="https://twitter.com/SFinanceEx" target="_blank">Twitter</a>
       <a href="https://discord.gg/rc49Dzu" target="_blank">Discord</a>
@@ -10,9 +10,12 @@
       <template v-else>
         <a href="https://t.me/SFinanceEN" target="_blank">Telegram</a>
       </template>
-    </div>
-    <div class="statement-banner py-2">
+    </div> -->
+    <!-- <div class="statement-banner py-2">
       {{ $t('statement.slogan') }} <a @click="onStatement" href="javascript:void(0);">{{ $t('statement.more') }}</a>
+    </div> -->
+    <div class="beta-banner py-2">
+      {{ $t('statement.coming') }} <a @click="onStatement" href="javascript:void(0);">{{ $t('statement.more') }}</a>
     </div>
     <b-container>
       <b-navbar class="no-gutters align-items-center p-0">
@@ -23,7 +26,7 @@
         <b-navbar-nav>
           <b-nav-item :to="{name: 'RootIndex'}" href="###">{{ $t('global.home') }}</b-nav-item>
           <!-- <b-nav-item :to="{name: 'Swap', path: '/susdv2/swap'}">{{ $t('global.swap') }}</b-nav-item> -->
-          <b-nav-item :to="'/susdv2/liquidity/'">{{ $t('global.liquidity') }}</b-nav-item>
+          <b-nav-item to="/susdv2/liquidity/">{{ $t('global.liquidity') }}</b-nav-item>
           <!-- <b-nav-item :to="{name: 'Liquidity', path: '/:pool(susdv2)/liquidity'}">{{ $t('global.liquidity') }}</b-nav-item> -->
           <b-nav-item :to="{name: 'Dao', path: '/dao'}">{{ $t('global.dao') }}</b-nav-item>
           <b-nav-item :to="{name: 'Risks', path: '/risks'}">{{ $t('global.risks') }}</b-nav-item>
@@ -47,15 +50,33 @@
     methods: {
       onStatement () {
         const { $i18n } = this
+        const h = this.$createElement
 
-        this.$bvModal.msgBoxOk($i18n.t('statement.cont'), {
-            title: $i18n.t('statement.slogan'),
+        // this.$bvModal.msgBoxOk($i18n.t('statement.cont'), {
+        //     title: $i18n.t('statement.slogan'),
+        //     hideBackdrop: true,
+        //     size: 'lg',
+        //     okTitle: $i18n.t('statement.ok'),
+        //     okVariant: 'danger',
+        //     buttonSize: 'lg',
+        //     contentClass: 'normal-modal statement-modal',
+        //     centered: true
+        //   })
+
+        const messageVNode = h('div', { class: ['foobar'] }, [
+          h('p', $i18n.t('statement.comingCont1') ),
+          h('p', $i18n.t('statement.comingCont2') ),
+          h('p', $i18n.t('statement.comingCont3') ),
+        ])
+
+        this.$bvModal.msgBoxOk([messageVNode], {
+            titleHtml: $i18n.t('statement.coming'),
             hideBackdrop: true,
             size: 'lg',
             okTitle: $i18n.t('statement.ok'),
             okVariant: 'danger',
             buttonSize: 'lg',
-            contentClass: 'statement-modal',
+            contentClass: 'normal-modal',
             centered: true
           })
       }
