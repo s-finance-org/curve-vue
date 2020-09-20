@@ -6,6 +6,8 @@ import web3Init from './init'
 import { chunkArr } from './utils/helpers'
 import * as common from './utils/common.js'
 
+import { state as errorState } from './components/common/errorStore'
+
 var N_COINS = 2;
 var coin_precisions = [1e18, 1e6];
 var old_swap_address = '0x2e60CF74d81ac34eB21eEff58Db4D385920ef419';
@@ -326,9 +328,9 @@ const state = Vue.observable({
 	},
 	swapbtc: false,
 	adapterContract: null,
-  currentContract: 'susdv2',
+  currentContract: 'compound',
   // FIXME:
-	currencies: currencies.susdv2,
+	currencies: currencies.compound,
 	N_COINS: N_COINS,
 	coin_precisions: coin_precisions,
 	wrapped_precisions: [],
@@ -439,6 +441,12 @@ export const getters = {
   usdStake: () => state.usdStake,
 
   publicPath: () => process.env.BASE_URL,
+
+  // errorMessage
+  txErrorMessage() {
+    setTimeout(() => errorState.txError = null, 2200)
+    return errorState.txError
+  },
 }
 
 

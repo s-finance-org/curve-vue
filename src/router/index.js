@@ -5,6 +5,7 @@ const Swap = () => import('../components/swap/Swap.vue')
 const SwapRouter = () => import('../components/swap/SwapRouter.vue')
 const Deposit = () => import('../components/deposit/Deposit.vue')
 const DepositRouter = () => import('../components/deposit/DepositRouter.vue')
+const Liquidity = () => import('../components/liquidity/index.vue')
 const Dao = () => import('../components/dao/Dao.vue')
 const DepositRen = () => import('../components/ren/Deposit.vue')
 const Withdraw = () => import('../components/withdraw/Withdraw.vue')
@@ -287,7 +288,7 @@ let routes = [
       {
         path: 'liquidity',
         name: 'Liquidity',
-        component: DepositRouter
+        component: Liquidity,
       },
       {
         path: 'deposit',

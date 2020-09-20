@@ -325,7 +325,6 @@
                 this.setInputStyles(false, val, oldval)
                 if(currentContract.initializedContracts) this.mounted();
             })
-
         },
         watch: {
         	to_currency(val) {
@@ -338,12 +337,12 @@
         		if(!val && this.to_currency === null) this.to_currency = 10
         		if(val && this.to_currency !== null) this.to_currency = null
         	},
-            maxSlippage() {
-                this.setSlippage = true
-            },
-            maxInputSlippage(val) {
-                if(val) this.setSlippage = true
-            },
+          maxSlippage() {
+              this.setSlippage = true
+          },
+          maxInputSlippage(val) {
+              if(val) this.setSlippage = true
+          },
         },
         computed: {
 			...getters,
@@ -404,7 +403,7 @@
                 else
                     this.withdrawc = false
             	currentContract.showSlippage = false;
-        		currentContract.slippage = 0;
+        		  currentContract.slippage = 0;
                 let curveRewards = currentContract.curveRewards
                 let allowance = BN(await currentContract.swap_token.methods.allowance(currentContract.default_account || '0x0000000000000000000000000000000000000000', currentContract.deposit_zap._address).call())
                 if(allowance.lte(currentContract.max_allowance.div(BN(2))))

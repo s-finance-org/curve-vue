@@ -25,7 +25,7 @@
               <b-form-input class="col mr-4" v-model="depositAmountInput" :placeholder="$t('dao.stakingAmountPlaceholder')"></b-form-input>
               <b-form-radio-group
                 class
-                v-model="depositSliderSelected"
+                v-model="depositSliderSelectedRadio"
                 :options="depositSliderOptions"
                 buttons
                 button-variant="outline-secondary"
@@ -68,30 +68,42 @@
             </div>
           </b-tab>
           <b-tab :title="$t('dao.miningReward')" class="pt-3">
-            <div class="area" v-for="token in currentPool.tokens" :key="'token-'+token.name">
-              <template v-if="token.child">
+            <div class="area" v-for="(token, idx) in currentPool.mining.relation" :key="'token-'+idx">
+              <template v-if="Array.isArray(token)">
                 <div class="row">
-                  <div class="col" v-for="childToken in token.child" :key="'token-'+childToken.name">
+                  <div class="col" v-for="childToken in token" :key="'token-'+currentPool.tokens[childToken].name">
                     <h5 class="mb-3 d-flex align-items-center">
-                      <img :src="getTokenIcon(childToken.name)" class="mr-2 icon-w-20 icon token-icon" :class="[childToken.name+'-icon']">
-                      {{ childToken.nameCont }}
+                      <img :src="getTokenIcon(currentPool.tokens[childToken].name)" class="mr-2 icon-w-20 icon token-icon" :class="[currentPool.tokens[childToken].name+'-icon']">
+                      {{ currentPool.tokens[childToken].nameCont }}
                     </h5>
                     <h6 class="mb-0 text-black-65">{{ $t('dao.miningPendingReward') }}</h6>
-                    <h4 class="mb-1">{{ childToken.mining.pendingReward }} {{ childToken.nameCont }}</h4>
+                    <h4 class="mb-1">
+                      <text-overlay-loading inline :show="loadingAction || currentPool.tokens[childToken].pendingRewardLoading">
+                        {{ currentPool.tokens[childToken].pendingRewardCont }} {{ currentPool.tokens[childToken].nameCont }}
+                      </text-overlay-loading>
+                    </h4>
                     <div class="d-flex no-gutters align-items-end mt-3">
                       <small class="col">
-                        {{ $t('dao.miningPaidReward') }}：{{ childToken.mining.paidReward }} {{ childToken.nameCont }}
+                        {{ $t('dao.miningPaidReward') }}：
+                        <text-overlay-loading inline :show="loadingAction">
+                          {{ currentPool.tokens[childToken].paidReward }} {{ currentPool.tokens[childToken].nameCont }}
+                        </text-overlay-loading>
                         <em class="px-3 text-black-15">/</em>
-                        {{ $t('dao.miningTotalReward') }}：{{ childToken.mining.totalReward }} {{ childToken.nameCont }}
+                        {{ $t('dao.miningTotalReward') }}：
+                        <text-overlay-loading inline :show="loadingAction">
+                          {{ currentPool.tokens[childToken].totalReward }} {{ currentPool.tokens[childToken].nameCont }}
+                        </text-overlay-loading>
                         <em class="px-3 text-black-15">/</em>
-                        1 {{ childToken.nameCont }} = {{ childToken.rateUsd }} USD
+                        <text-overlay-loading inline :show="loadingAction">
+                          1 {{ currentPool.tokens[childToken].nameCont }} = {{ currentPool.tokens[childToken].rateUsd }} USD
+                        </text-overlay-loading>
                       </small>
                     </div>
                   </div>
                 </div>
                 <div class="d-flex mt-4 justify-content-end">
                   <text-overlay-loading :show="loadingAction">
-                    <b-button variant="danger" @click=token.mining.claimConfirm>
+                    <b-button variant="danger" @click=currentPool.tokens[token[0]].claimConfirm>
                       {{ $t('dao.miningClaimConfirm') }}
                     </b-button>
                   </text-overlay-loading>
@@ -99,21 +111,33 @@
               </template>
               <template v-else>
                 <h5 class="mb-3 d-flex align-items-center">
-                  <img :src="getTokenIcon(token.name)" class="mr-2 icon-w-20 icon token-icon" :class="[token.name+'-icon']">
-                  {{ token.nameCont }}
+                  <img :src="getTokenIcon(currentPool.tokens[token].name)" class="mr-2 icon-w-20 icon token-icon" :class="[currentPool.tokens[token].name+'-icon']">
+                  {{ currentPool.tokens[token].nameCont }}
                 </h5>
                 <h6 class="mb-0 text-black-65">{{ $t('dao.miningPendingReward') }}</h6>
-                <h4 class="mb-1">{{ token.mining.pendingReward }} {{ token.nameCont }}</h4>
+                <h4 class="mb-1">
+                  <text-overlay-loading inline :show="loadingAction || currentPool.tokens[token].pendingRewardLoading">
+                    {{ currentPool.tokens[token].pendingRewardCont }} {{ currentPool.tokens[token].nameCont }}
+                  </text-overlay-loading>
+                </h4>
                 <div class="d-flex no-gutters align-items-end">
                   <small class="col">
-                    {{ $t('dao.miningPaidReward') }}：{{ token.mining.paidReward }} {{ token.nameCont }}
+                    {{ $t('dao.miningPaidReward') }}：
+                    <text-overlay-loading inline :show="loadingAction">
+                      {{ currentPool.tokens[token].paidReward }} {{ currentPool.tokens[token].nameCont }}
+                    </text-overlay-loading>
                     <em class="px-3 text-black-15">/</em>
-                    {{ $t('dao.miningTotalReward') }}：{{ token.mining.totalReward }} {{ token.nameCont }}
+                    {{ $t('dao.miningTotalReward') }}：
+                    <text-overlay-loading inline :show="loadingAction">
+                      {{ currentPool.tokens[token].totalReward }} {{ currentPool.tokens[token].nameCont }}
+                    </text-overlay-loading>
                     <em class="px-3 text-black-15">/</em>
-                    1 {{ token.nameCont }} = {{ token.rateUsd }} USD
+                    <text-overlay-loading inline :show="loadingAction">
+                      1 {{ currentPool.tokens[token].nameCont }} = {{ currentPool.tokens[token].rateUsd }} USD
+                    </text-overlay-loading>
                   </small>
                   <text-overlay-loading :show="loadingAction">
-                    <b-button variant="danger" @click=token.mining.claimConfirm>
+                    <b-button variant="danger" @click=currentPool.tokens[token].claimConfirm>
                       {{ $t('dao.miningClaimConfirm') }}
                     </b-button>
                   </text-overlay-loading>
@@ -164,7 +188,7 @@
 					<div class='poolBalance'>Balance: <span class='hoverpointer'>_{ poolBalanceFormat }}</span> _{ gauge.name }} LP token</div>
 					<div class='input'>
 						<label for='deposit'>Amount:</label>
-						<input id='deposit' type='text' v-model='depositAmount'>
+						<!-- <input id='deposit' type='text' v-model='depositAmount'> -->
 					</div>
 					<div class='range' v-show=false>
 						<div class='label'>
@@ -207,8 +231,8 @@
 				</div>
 				<div class='flex-break'></div>
 
-        SFG claimableTokens: {{ claimableTokens }}
-        <button @click='claim' class='claimtokens'>Claim _{ claimableTokensFormat }} CRV</button>
+        <!-- SFG claimableTokens: {{ currentPool.tokens.sfg.mining.pendingRewardTether }} -->
+        <button @click='claim' class='claimtokens'>Claim </button>
         <div class='flex-break'></div>
 
         CRV claimableReward: {{ claimableReward }}
@@ -233,10 +257,11 @@
     import * as gasPriceStore from '../common/gasPriceStore'
     import GasPrice from '../common/GasPrice.vue'
     import RootSub from '../root/RootSub.vue'
+    import DaoLiquidityGaugereAbi from './abi'
 
     import * as errorStore from '../common/errorStore'
 
-    import TextOverlayLoading from '../../components/common/TextOverlayLoading'
+    import TextOverlayLoading from '../../components/common/TextOverlayLoading.vue'
 
     import BN from 'bignumber.js'
 
@@ -249,8 +274,28 @@
 
       loadingAction: true,
 
+      notationDecimal: 1e18,
+
       gaugeBalanceTether: 0,
-      gaugeBalanceHandled: 0
+      gaugeBalanceHandled: 0,
+
+      tokens: {
+        sfg: {
+          priceDecimal: 2,
+          pendingRewardTether: -1,
+          pendingRewardHandled: -1
+        },
+        crv: {
+          priceDecimal: 4,
+          pendingRewardTether: -1,
+          pendingRewardHandled: -1
+        },
+        snx: {
+          priceDecimal: 4,
+          pendingRewardTether: -1,
+          pendingRewardHandled: -1
+        }
+      }
     }
 
     export default {
@@ -283,15 +328,15 @@
           name: 'susdv2',
           nameCont: 'sUSD',
           /**
-           *  价格精度
            *  @type {number}
            */
           priceDecimal: 2,
           /**
-           *  科学计数法精度
            *  @type {number}
            */
-          notationDecimal: 1e18,
+          get notationDecimal () {
+            return __store__.notationDecimal
+          },
           typeName: 'Liquidity',
 
           balance: 0,
@@ -302,8 +347,12 @@
             return __store__.gaugeBalanceTether
           },
           set gaugeBalanceTether (val) {
-            const { notationDecimal } = this
+            const { notationDecimal } = __store__
+            const { gaugeBalanceLoading } = this
             const result = __store__.gaugeBalanceTether = val
+
+            gaugeBalanceLoading &&
+              (this.gaugeBalanceLoading = false)
 
             this.gaugeBalanceHandled = result / notationDecimal
           },
@@ -333,49 +382,116 @@
             gas: 1000000,
             amount: 0
           },
+          mining: {
+            relation: [
+              'sfg',
+              ['crv', 'snx']
+            ]
+          },
           tokens: {
             sfg: {
               name: 'sfg',
               nameCont: 'SFG',
               rateUsd: -1,
-              priceDecimal: 18,
-              mining: {
-                totalReward: -1,
-                pendingReward: -1,
-                paidReward: -1,
-                claimConfirm: null
-              }
-            },
-            crv_snx: {
-              name: 'crv & snx',
-              nameCont: 'CRV & SNX',
-              child: {
-                crv: {
-                  name: 'crv',
-                  nameCont: 'CRV',
-                  rateUsd: -1,
-                  priceDecimal: 18,
-                  mining: {
-                    totalReward: -1,
-                    pendingReward: -1,
-                    paidReward: -1
-                  }
-                },
-                snx: {
-                  name: 'snx',
-                  nameCont: 'SNX',
-                  rateUsd: -1,
-                  priceDecimal: 18,
-                  mining: {
-                    totalReward: -1,
-                    pendingReward: -1,
-                    paidReward: -1,
-                  }
-                }
+              get priceDecimal () {
+                return __store__.tokens.sfg.priceDecimal
               },
-              mining: {
-                claimConfirm: null
-              }
+              set priceDecimal (val) {
+                __store__.tokens.sfg.priceDecimal = val
+              },
+              totalReward: -1,
+              pendingRewardLoading: true,
+              get pendingRewardTether () {
+                return __store__.tokens.sfg.pendingRewardTether
+              },
+              set pendingRewardTether (val) {
+                const { pendingRewardLoading } = this
+                const { notationDecimal } = __store__
+                const result = __store__.tokens.sfg.pendingRewardTether = val
+
+                pendingRewardLoading &&
+                  (this.pendingRewardLoading = false)
+
+                this.pendingRewardHandled = result / notationDecimal
+              },
+              get pendingRewardHandled () {
+                return __store__.tokens.sfg.pendingRewardHandled
+              },
+              set pendingRewardHandled (val) {
+                const { priceDecimal } = __store__.tokens.sfg
+                const result = __store__.tokens.sfg.pendingRewardHandled = val
+
+                this.pendingRewardCont = BN(result).toFixed(priceDecimal)
+              },
+              pendingRewardCont: '0',
+              paidReward: -1,
+              claimConfirm: null
+            },
+            crv: {
+              name: 'crv',
+              nameCont: 'CRV',
+              rateUsd: -1,
+              priceDecimal: 18,
+              totalReward: -1,
+              pendingRewardLoading: true,
+              get pendingRewardTether () {
+                return __store__.tokens.crv.pendingRewardTether
+              },
+              set pendingRewardTether (val) {
+                const { pendingRewardLoading } = this
+                const { notationDecimal } = __store__
+                const result = __store__.tokens.crv.pendingRewardTether = val
+
+                pendingRewardLoading &&
+                  (this.pendingRewardLoading = false)
+
+                this.pendingRewardHandled = result / notationDecimal
+              },
+              get pendingRewardHandled () {
+                return __store__.tokens.crv.pendingRewardHandled
+              },
+              set pendingRewardHandled (val) {
+                const { priceDecimal } = __store__.tokens.crv
+                const result = __store__.tokens.crv.pendingRewardHandled = val
+
+                this.pendingRewardCont = BN(result).toFixed(priceDecimal)
+              },
+              pendingRewardCont: '0',
+              paidReward: -1,
+              claimConfirm: null
+            },
+            snx: {
+              name: 'snx',
+              nameCont: 'SNX',
+              rateUsd: -1,
+              priceDecimal: 18,
+              totalReward: -1,
+              pendingRewardLoading: true,
+              get pendingRewardTether () {
+                return __store__.tokens.snx.pendingRewardTether
+              },
+              set pendingRewardTether (val) {
+                const { pendingRewardLoading } = this
+                const { notationDecimal } = __store__
+                const result = __store__.tokens.snx.pendingRewardTether = val
+
+                pendingRewardLoading &&
+                  (this.pendingRewardLoading = false)
+
+                this.pendingRewardHandled = result / notationDecimal
+              },
+              get pendingRewardHandled () {
+                return __store__.tokens.snx.pendingRewardHandled
+              },
+              set pendingRewardHandled (val) {
+                const { priceDecimal } = __store__.tokens.snx
+                const result = __store__.tokens.snx.pendingRewardHandled = val
+
+                this.pendingRewardCont = BN(result).toFixed(priceDecimal)
+              },
+              pendingRewardCont: '0',
+              paidReward: -1,
+              claimConfirm: null
             }
           }
         },
@@ -391,37 +507,20 @@
         depositSlider: 100,
         withdrawSlider: 100,
 
-        claimableTokens: 0,
         // FIXME:
         claimableReward: 0,
         gaugeContract: null,
         gauge: '',
-
-
-        // FIXME: test
-        gasPriceStore: {
-          fetched: false,
-          gasPriceInfo: {},
-          gasPrice: 20,
-          gasPriceWei: BN(2).times(1e9).toFixed(0,1),
-          gasPriceInterval: null,
-        }
       }),
-        
+
         computed: {
           ...getters,
-          // FIXME: 
           gasPrice() {
             console.log('gasPrice', gasPriceStore.state.gasPrice)
-            // return this.gasPriceStore.gasPrice
             return gasPriceStore.state.gasPrice
           },
           gasPriceWei() {
-            // return this.gasPriceStore.gasPriceWei
             return gasPriceStore.gasPriceWei
-          },
-          claimableTokensFormat() {
-            return (this.claimableTokens / 1e18).toFixed(2)
           },
           claimableRewardFormat() {
             return this.toFixed(this.claimableReward / 1e18)
@@ -464,8 +563,20 @@
             set (val) {
               const { currentPool: { withdraw }  } = this
 
-              withdraw.amount = val
               this.withdrawSliderSelected = 0
+              withdraw.amount = val
+            }
+          },
+
+          depositSliderSelectedRadio: {
+            get () {
+              return this.depositSliderSelected
+            },
+            set (val) {
+              const { currentPool: { deposit, priceDecimal } } = this
+  // FIXME: 
+              // deposit.amount = BN(val).times(gaugeBalanceHandled).toFixed(priceDecimal)
+              this.depositSliderSelected = val
             }
           },
 
@@ -493,18 +604,25 @@
           loadingAction (val) {
             console.log('watch ---- ', val)
           },
-          depositAmount(val) {
-            // let depositVal = (val * 100 / (this.gauge.balance / 1e18)) || 0
-            // this.depositSlider = (Math.min(depositVal, 100)).toFixed(0)
-          },
+          // depositAmount(val) {
+          //   // let depositVal = (val * 100 / (this.gauge.balance / 1e18)) || 0
+          //   // this.depositSlider = (Math.min(depositVal, 100)).toFixed(0)
+          // },
 
-          withdrawAmount(val) {
-            // let withdrawVal = (val * 100 / (this.gauge.gaugeBalance / 1e18)) || 0
-            // this.withdrawSlider = (Math.min(withdrawVal, 100)).toFixed(0)
-          },
+          // withdrawAmount(val) {
+          //   // let withdrawVal = (val * 100 / (this.gauge.gaugeBalance / 1e18)) || 0
+          //   // this.withdrawSlider = (Math.min(withdrawVal, 100)).toFixed(0)
+          // },
         },
         methods: {
           async mounted() {
+            // Set currentPool confirm
+            this.currentPool.tokens.sfg.claimConfirm = this.claim
+            this.currentPool.tokens.crv.claimConfirm = this.currentPool.tokens.snx.claimConfirm = this.claimRewards
+
+            this.currentPool.gauge = process.env.VUE_APP_PSS_GAUGE
+
+
             await gaugeStore.getState()
 
             this.loadingAction = false
@@ -546,685 +664,31 @@
 
 
 
+          this.gaugeContract = new currentContract.web3.eth.Contract(DaoLiquidityGaugereAbi, this.currentPool.gauge)
 
- // set currentPool confirm
-          this.currentPool.tokens.sfg.mining.claimConfirm = this.claim
-          this.currentPool.tokens.crv_snx.mining.claimConfirm = this.claimRewards
-
-          console.log('o gasPriceWei', gasPriceStore.gasPriceWei)
-          // if(currentContract.initializedContracts) 
-          // if(currentContract.default_account && currentContract.multicall)
-              // this.mounted()
-          /* Function */
-          // user_checkpoint bool
-          // claimable_tokens uint256
-          // claimable_reward uint256
-          // kick 
-          // set_approve_deposit 
-          // deposit 
-          // withdraw
-          // claim_rewards 
-          // integrate_checkpoint uint256
-          // minter address
-          // crv_token address
-          // lp_token address
-          // controller address
-          // voting_escrow address
-          // balanceOf uint256
-          // totalSupply uint256
-          // future_epoch_time uint256
-          // approved_to_deposit bool
-          // working_balances uint256
-          // working_supply uint256
-          // period int128
-          // period_timestamp uint256
-          // integrate_inv_supply uint256
-          // integrate_inv_supply_of uint256
-          // integrate_checkpoint_of uint256
-          // integrate_fraction uint256
-          // inflation_rate uint256
-          // claimed_rewards_for uint256
-          const daoabis_liquiditygaugerewards_abi = [
-        {
-            "name":"Deposit",
-            "inputs":[
-                {
-                    "type":"address",
-                    "name":"provider",
-                    "indexed":true
-                },
-                {
-                    "type":"uint256",
-                    "name":"value",
-                    "indexed":false
-                }
-            ],
-            "anonymous":false,
-            "type":"event",
-            "signature":"0xe1fffcc4923d04b559f4d29a8bfc6cda04eb5b0d3c460751c2402c5c5cc9109c"
-        },
-        {
-            "name":"Withdraw",
-            "inputs":[
-                {
-                    "type":"address",
-                    "name":"provider",
-                    "indexed":true
-                },
-                {
-                    "type":"uint256",
-                    "name":"value",
-                    "indexed":false
-                }
-            ],
-            "anonymous":false,
-            "type":"event",
-            "signature":"0x884e`dad9ce6fa2440d8a54cc123490eb96d2768479d49ff9c7366125a9424364"
-        },
-        {
-            "name":"UpdateLiquidityLimit",
-            "inputs":[
-                {
-                    "type":"address",
-                    "name":"user",
-                    "indexed":false
-                },
-                {
-                    "type":"uint256",
-                    "name":"original_balance",
-                    "indexed":false
-                },
-                {
-                    "type":"uint256",
-                    "name":"original_supply",
-                    "indexed":false
-                },
-                {
-                    "type":"uint256",
-                    "name":"working_balance",
-                    "indexed":false
-                },
-                {
-                    "type":"uint256",
-                    "name":"working_supply",
-                    "indexed":false
-                }
-            ],
-            "anonymous":false,
-            "type":"event",
-            "signature":"0x7ecd84343f76a23d2227290e0288da3251b045541698e575a5515af4f04197a3"
-        },
-        {
-            "outputs":[
-
-            ],
-            "inputs":[
-                {
-                    "type":"address",
-                    "name":"lp_addr"
-                },
-                {
-                    "type":"address",
-                    "name":"_minter"
-                }
-            ],
-            "stateMutability":"nonpayable",
-            "type":"constructor"
-        },
-        {
-            "name":"user_checkpoint",
-            "outputs":[
-                {
-                    "type":"bool",
-                    "name":""
-                }
-            ],
-            "inputs":[
-                {
-                    "type":"address",
-                    "name":"addr"
-                }
-            ],
-            "stateMutability":"nonpayable",
-            "type":"function",
-            "gas":2079152,
-            "signature":"0x4b820093"
-        },
-        {
-            "name":"claimable_tokens",
-            "outputs":[
-                {
-                    "type":"uint256",
-                    "name":""
-                }
-            ],
-            "inputs":[
-                {
-                    "type":"address",
-                    "name":"addr"
-                }
-            ],
-            "stateMutability":"view",
-            "type":"function",
-            "gas":1998318,
-            "constant":true,
-            "signature":"0x33134583"
-        },
-        {
-            "name":"claimable_reward",
-            "outputs":[
-                {
-                    "type":"uint256",
-                    "name":""
-                }
-            ],
-            "inputs":[
-                {
-                    "type":"address",
-                    "name":"addr"
-                }
-            ],
-            "stateMutability":"view",
-            "type":"function",
-            "gas":1998318,
-            "constant":true,
-            "signature":"0xd2797b59"
-        },
-        {
-            "name":"kick",
-            "outputs":[
-
-            ],
-            "inputs":[
-                {
-                    "type":"address",
-                    "name":"addr"
-                }
-            ],
-            "stateMutability":"nonpayable",
-            "type":"function",
-            "gas":2084532,
-            "signature":"0x96c55175"
-        },
-        {
-            "name":"set_approve_deposit",
-            "outputs":[
-
-            ],
-            "inputs":[
-                {
-                    "type":"address",
-                    "name":"addr"
-                },
-                {
-                    "type":"bool",
-                    "name":"can_deposit"
-                }
-            ],
-            "stateMutability":"nonpayable",
-            "type":"function",
-            "gas":35766,
-            "signature":"0x1d2747d4"
-        },
-        {
-            "name":"deposit",
-            "outputs":[
-
-            ],
-            "inputs":[
-                {
-                    "type":"uint256",
-                    "name":"_value"
-                }
-            ],
-            "stateMutability":"nonpayable",
-            "type":"function",
-            "signature":"0xb6b55f25"
-        },
-        {
-            "name":"deposit",
-            "outputs":[
-
-            ],
-            "inputs":[
-                {
-                    "type":"uint256",
-                    "name":"_value"
-                },
-                {
-                    "type":"address",
-                    "name":"addr"
-                }
-            ],
-            "stateMutability":"nonpayable",
-            "type":"function",
-            "signature":"0x6e553f65"
-        },
-        {
-            "name":"withdraw",
-            "outputs":[
-
-            ],
-            "inputs":[
-                {
-                    "type":"uint256",
-                    "name":"_value"
-                }
-            ],
-            "stateMutability":"nonpayable",
-            "type":"function",
-            "gas":2208318,
-            "signature":"0x2e1a7d4d"
-        },
-        {
-            "name":"claim_rewards",
-            "outputs":[
-
-            ],
-            "inputs":[
-                {
-                    "type":"address",
-                    "name":"addr"
-                }
-            ],
-            "stateMutability":"nonpayable",
-            "type":"function",
-            "signature":"0x84e9bd7e"
-        },
-        {
-            "name":"integrate_checkpoint",
-            "outputs":[
-                {
-                    "type":"uint256",
-                    "name":""
-                }
-            ],
-            "inputs":[
-
-            ],
-            "stateMutability":"view",
-            "type":"function",
-            "gas":2297,
-            "constant":true,
-            "signature":"0xd31f3f6d"
-        },
-        {
-            "name":"minter",
-            "outputs":[
-                {
-                    "type":"address",
-                    "name":""
-                }
-            ],
-            "inputs":[
-
-            ],
-            "stateMutability":"view",
-            "type":"function",
-            "gas":1421,
-            "constant":true,
-            "signature":"0x07546172"
-        },
-        {
-            "name":"crv_token",
-            "outputs":[
-                {
-                    "type":"address",
-                    "name":""
-                }
-            ],
-            "inputs":[
-
-            ],
-            "stateMutability":"view",
-            "type":"function",
-            "gas":1451,
-            "constant":true,
-            "signature":"0x76d8b117"
-        },
-        {
-            "name":"lp_token",
-            "outputs":[
-                {
-                    "type":"address",
-                    "name":""
-                }
-            ],
-            "inputs":[
-
-            ],
-            "stateMutability":"view",
-            "type":"function",
-            "gas":1481,
-            "constant":true,
-            "signature":"0x82c63066"
-        },
-        {
-            "name":"controller",
-            "outputs":[
-                {
-                    "type":"address",
-                    "name":""
-                }
-            ],
-            "inputs":[
-
-            ],
-            "stateMutability":"view",
-            "type":"function",
-            "gas":1511,
-            "constant":true,
-            "signature":"0xf77c4791"
-        },
-        {
-            "name":"voting_escrow",
-            "outputs":[
-                {
-                    "type":"address",
-                    "name":""
-                }
-            ],
-            "inputs":[
-
-            ],
-            "stateMutability":"view",
-            "type":"function",
-            "gas":1541,
-            "constant":true,
-            "signature":"0xdfe05031"
-        },
-        {
-            "name":"balanceOf",
-            "outputs":[
-                {
-                    "type":"uint256",
-                    "name":""
-                }
-            ],
-            "inputs":[
-                {
-                    "type":"address",
-                    "name":"arg0"
-                }
-            ],
-            "stateMutability":"view",
-            "type":"function",
-            "gas":1725,
-            "constant":true,
-            "signature":"0x70a08231"
-        },
-        {
-            "name":"totalSupply",
-            "outputs":[
-                {
-                    "type":"uint256",
-                    "name":""
-                }
-            ],
-            "inputs":[
-
-            ],
-            "stateMutability":"view",
-            "type":"function",
-            "gas":1601,
-            "constant":true,
-            "signature":"0x18160ddd"
-        },
-        {
-            "name":"future_epoch_time",
-            "outputs":[
-                {
-                    "type":"uint256",
-                    "name":""
-                }
-            ],
-            "inputs":[
-
-            ],
-            "stateMutability":"view",
-            "type":"function",
-            "gas":1631,
-            "constant":true,
-            "signature":"0xbe5d1be9"
-        },
-        {
-            "name":"approved_to_deposit",
-            "outputs":[
-                {
-                    "type":"bool",
-                    "name":""
-                }
-            ],
-            "inputs":[
-                {
-                    "type":"address",
-                    "name":"arg0"
-                },
-                {
-                    "type":"address",
-                    "name":"arg1"
-                }
-            ],
-            "stateMutability":"view",
-            "type":"function",
-            "gas":1969,
-            "constant":true,
-            "signature":"0xe1522536"
-        },
-        {
-            "name":"working_balances",
-            "outputs":[
-                {
-                    "type":"uint256",
-                    "name":""
-                }
-            ],
-            "inputs":[
-                {
-                    "type":"address",
-                    "name":"arg0"
-                }
-            ],
-            "stateMutability":"view",
-            "type":"function",
-            "gas":1845,
-            "constant":true,
-            "signature":"0x13ecb1ca"
-        },
-        {
-            "name":"working_supply",
-            "outputs":[
-                {
-                    "type":"uint256",
-                    "name":""
-                }
-            ],
-            "inputs":[
-
-            ],
-            "stateMutability":"view",
-            "type":"function",
-            "gas":1721,
-            "constant":true,
-            "signature":"0x17e28089"
-        },
-        {
-            "name":"period",
-            "outputs":[
-                {
-                    "type":"int128",
-                    "name":""
-                }
-            ],
-            "inputs":[
-
-            ],
-            "stateMutability":"view",
-            "type":"function",
-            "gas":1751,
-            "constant":true,
-            "signature":"0xef78d4fd"
-        },
-        {
-            "name":"period_timestamp",
-            "outputs":[
-                {
-                    "type":"uint256",
-                    "name":""
-                }
-            ],
-            "inputs":[
-                {
-                    "type":"uint256",
-                    "name":"arg0"
-                }
-            ],
-            "stateMutability":"view",
-            "type":"function",
-            "gas":1890,
-            "constant":true,
-            "signature":"0x7598108c"
-        },
-        {
-            "name":"integrate_inv_supply",
-            "outputs":[
-                {
-                    "type":"uint256",
-                    "name":""
-                }
-            ],
-            "inputs":[
-                {
-                    "type":"uint256",
-                    "name":"arg0"
-                }
-            ],
-            "stateMutability":"view",
-            "type":"function",
-            "gas":1920,
-            "constant":true,
-            "signature":"0xfec8ee0c"
-        },
-        {
-            "name":"integrate_inv_supply_of",
-            "outputs":[
-                {
-                    "type":"uint256",
-                    "name":""
-                }
-            ],
-            "inputs":[
-                {
-                    "type":"address",
-                    "name":"arg0"
-                }
-            ],
-            "stateMutability":"view",
-            "type":"function",
-            "gas":1995,
-            "constant":true,
-            "signature":"0xde263bfa"
-        },
-        {
-            "name":"integrate_checkpoint_of",
-            "outputs":[
-                {
-                    "type":"uint256",
-                    "name":""
-                }
-            ],
-            "inputs":[
-                {
-                    "type":"address",
-                    "name":"arg0"
-                }
-            ],
-            "stateMutability":"view",
-            "type":"function",
-            "gas":2025,
-            "constant":true,
-            "signature":"0x9bd324f2"
-        },
-        {
-            "name":"integrate_fraction",
-            "outputs":[
-                {
-                    "type":"uint256",
-                    "name":""
-                }
-            ],
-            "inputs":[
-                {
-                    "type":"address",
-                    "name":"arg0"
-                }
-            ],
-            "stateMutability":"view",
-            "type":"function",
-            "gas":2055,
-            "constant":true,
-            "signature":"0x09400707"
-        },
-        {
-            "name":"inflation_rate",
-            "outputs":[
-                {
-                    "type":"uint256",
-                    "name":""
-                }
-            ],
-            "inputs":[
-
-            ],
-            "stateMutability":"view",
-            "type":"function",
-            "gas":1931,
-            "constant":true,
-            "signature":"0x180692d0"
-        },
-        {
-            "name":"claimed_rewards_for",
-            "outputs":[
-                {
-                    "type":"uint256",
-                    "name":""
-                }
-            ],
-            "inputs":[
-                {
-                    "type":"address",
-                    "name":"arg0"
-                }
-            ],
-            "stateMutability":"view",
-            "type":"function",
-            "gas":2355,
-            "constant":true,
-            "signature":"0xfd96044b"
-        }
-    ]
-
-          this.currentPool.gauge = process.env.VUE_APP_PSS_GAUGE
-
-          this.gaugeContract = new currentContract.web3.eth.Contract(daoabis_liquiditygaugerewards_abi, this.currentPool.gauge)
-
-//             let balance = BN(await this.gaugeContract.methods.balanceOf(currentContract.default_account).call())
-// console.log( 'balance', balance.dividedBy(1e18).toFixed(0,1) )
+          // balanceOf
           this.currentPool.gaugeBalanceTether = await this.gaugeContract.methods.balanceOf(currentContract.default_account).call()
-          this.currentPool.gaugeBalanceLoading = false
-console.log('claimableReward before')
-          this.claimableReward = await this.gaugeContract.methods.claimable_reward(currentContract.default_account).call()
-  console.log('claimableReward', this.claimableReward)
-          // 值不准，因此源码也是注释
-          // this.claimableTokens = await this.gaugeContract.methods.claimable_tokens(currentContract.default_account).call()
-          // this.claimableTokens = +this.gauge.claimable_tokens
+
+
+          // claimable_tokens
+          this.currentPool.tokens.sfg.pendingRewardTether = await this.gaugeContract.methods.claimable_tokens(currentContract.default_account).call()
+
+          // claimable_reward
+          // await this.gaugeContract.methods.claimable_reward(currentContract.default_account).call()
+          // console.log('claimableReward', this.claimableReward)
+
+          // claimable_reward2
+          this.currentPool.tokens.snx.pendingRewardTether = await this.gaugeContract.methods.claimable_reward2(currentContract.default_account).call()
+
+          // claimed_rewards_for
+
+
 
 
 console.log('---')
 console.log(this.gaugeContract.methods)
 console.log('default_account', currentContract.default_account)
 
-          this.currentPool.tokens.crv_snx.child.crv.mining.pendingReward = this.claimableReward
 
 
 
@@ -1305,8 +769,8 @@ console.log( 'balance', balance.dividedBy(1e18).toFixed(0,1) )
           async claim () {
             const mint = await gaugeStore.state.minter.methods.mint(this.currentPool.gauge)
 
-            let gas = await  mint.estimateGas()
-console.log('gauge', this.currentPool.gauge, gas)
+            let gas = await mint.estimateGas()
+
             var { dismiss } = notifyNotification(`Please confirm claiming ${this.currentPool.tokens.sfg.name} from ${this.currentPool.name} gauge`)
 
             await mint.send({
@@ -1323,7 +787,7 @@ console.log('gauge', this.currentPool.gauge, gas)
           async claimRewards () {
             let gas = await this.gaugeContract.methods.claim_rewards(currentContract.default_account).estimateGas()
 
-            var { dismiss } = notifyNotification(`Please confirm claiming ${this.currentPool.tokens.crv_snx.name}`)
+            var { dismiss } = notifyNotification(`Please confirm claiming ${this.currentPool.tokens.crv.name + ' ' + this.currentPool.tokens.snx.name}`)
 
             await this.gaugeContract.methods.claim_rewards(currentContract.default_account).send({
               from: currentContract.default_account,

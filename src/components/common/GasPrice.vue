@@ -1,8 +1,5 @@
 <template>
   <div>
-    <p v-show='errorMessage'>
-      {{ errorMessage }}
-    </p>
     <b-form-group class="mb-0 .lists-select">
       <ul v-show='gasPriceMedium'>
         <li>
@@ -77,7 +74,7 @@
 
 <script>
 	import { state } from './gasPriceStore'
-  import { state as errorState } from './errorStore'
+  // import { state as errorState } from './errorStore'
   import { retry } from '../../utils/helpers'
 
   import { setIntervalAsync, clearIntervalAsync } from 'set-interval-async/dynamic'
@@ -143,10 +140,10 @@
           this.gasPrice = val
         }
       },
-      errorMessage() {
-          setTimeout(() => errorState.txError = null, 2200)
-          return errorState.txError
-      },
+      // errorMessage() {
+      //     setTimeout(() => errorState.txError = null, 2200)
+      //     return errorState.txError
+      // },
 		},
 
 		async created() {

@@ -130,7 +130,7 @@
         <label for='sbtcpool'>sBTC</label>
       </div>
       <template v-show="showadvancedoptions">
-        <div id='max_slippage' class="lists lists-select mt-3 d-flex">
+        <div id='max_slippage' class="lists lists-select mt-3 d-flex no-gutters">
           <b-form-group class="mb-0 col">
             <ul>
               <li>
