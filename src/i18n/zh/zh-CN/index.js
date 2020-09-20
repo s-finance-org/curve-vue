@@ -128,7 +128,6 @@ export default {
     staking: '抵押',
     redemption: '赎回',
     miningReward: '挖矿奖励',
-    assetInStaking: '已抵押',
     stakingAmountPlaceholder: '输入抵押数量',
     stakingBalance: '当前可抵押',
     infiniteApproval: '信任此合约使用最佳矿工费，后续将无需再次批准',

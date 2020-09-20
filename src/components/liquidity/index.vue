@@ -105,7 +105,7 @@
                   </label>
                 </div>
                 <label class="d-flex mb-3">
-                  {{ $t('global.maxSlippage') }}<span class="ml-auto">{{ ((1 - getMaxSlippage) * 100).toFixed(2) }}%</span>
+                  {{ $t('global.maxSlippage') }}<span class="ml-auto">{{ ((1 - getDepositMaxSlippage) * 100).toFixed(2) }}%</span>
                 </label>
                 <label class="d-flex mb-3">
                   {{ $t('liquidity.bonus') }}/{{ $t('liquidity.slippage') }}
@@ -209,14 +209,14 @@
                 </b-button>
               </span>
               <text-overlay-loading :show="loadingAction == 1">
-                <b-button size="lg" variant="danger" class="mr-3"
+                <b-button size="lg" variant="danger"
                   id="add-liquidity"
                   @click='justDeposit = true; handle_add_liquidity()'
                   :disabled="currentPool == 'susdv2' && slippage < -0.03 || depositingZeroWarning || isZeroSlippage">
                   {{ $t('global.deposit') }}
                 </b-button>
               </text-overlay-loading>
-              <text-overlay-loading :show="loadingAction == 2">
+              <!-- <text-overlay-loading :show="loadingAction == 2">
                 <b-button size="lg" variant="outline-secondary"
                   id='add-liquidity-stake'
                   @click='justDeposit = false; deposit_stake()'
@@ -224,7 +224,7 @@
                   >
                   {{ $t('liquidity.depositStakeGauge') }}
                 </b-button>
-              </text-overlay-loading>
+              </text-overlay-loading> -->
             </div>
           </b-tab>
           <b-tab :title="$t('global.withdraw')" class="pt-3">
@@ -272,7 +272,7 @@
                   </label>
                 </div>
                 <label class="d-flex mb-3">
-                  {{ $t('global.maxSlippage') }}<span class="ml-auto">{{ ((1 - getMaxSlippage) * 100).toFixed(2) }}%</span>
+                  {{ $t('global.maxSlippage') }}<span class="ml-auto">{{ ((getWithdrawMaxSlippage - 1) * 100).toFixed(2) }}%</span>
                 </label>
                 <label class="d-flex mb-3">
                   {{ $t('liquidity.bonus') }}/{{ $t('liquidity.slippage') }}
@@ -407,7 +407,7 @@
     </b-container>
 
     <!-- deposit -->
-		<div class="add-liquidity">
+		<div class="add-liquidity" v-show=false>
             <fieldset class="currencies">
                 <legend>Currencies:</legend>
                 <ul>
@@ -520,7 +520,7 @@
                     Stake unstaked <span class='loading line' v-show='loadingAction == 3'></span>
                 </button>
                 <p class='info-message gentle-message' v-show="lpCrvReceived > 0">
-                    You'll receive minimum {{ lpCrvReceivedText }} Curve {{currentPool}} LP tokens <sub>{{ ((1 - getMaxSlippage) * 100).toFixed(2)}}% max slippage</sub>
+                    You'll receive minimum {{ lpCrvReceivedText }} Curve {{currentPool}} LP tokens <sub>{{ ((1 - getDepositMaxSlippage) * 100).toFixed(2)}}% max slippage</sub>
 
                     <span class='curvelpusd'> 
                         1 Curve {{currentPool}} LP token = {{ (1 * virtual_price).toFixed(6) }} 
@@ -581,7 +581,7 @@
     </div>
 
     <!-- withdraw -->
-    <div class="add-liquidity">
+    <div class="add-liquidity" v-show=false>
         <fieldset class="percentage">
             <legend>
             	Share of liquidity (%)
@@ -968,8 +968,8 @@
         		//await Promise.all([...Array(currentContract.N_COINS).keys()].map(i=>this.change_currency(i, false)))
         		await this.calcSlippage()
         	},
-          getMaxSlippage() {
-              this.getLPCrvReceived()
+          getDepositMaxSlippage() {
+            this.getLPCrvReceived()
           },
 
           // withdraw
@@ -1045,7 +1045,7 @@ console.log('current', this.currentPool, this.currencies)
           stakePercentageInvalid() {
             return this.stakepercentage < 0 || this.stakepercentage > 100
           },
-          getMaxSlippage() {
+          getDepositMaxSlippage() {
             let maxSlippage = +this.maxSlippage;
             if(this.maxInputSlippage) maxSlippage = +this.maxInputSlippage;
             return (100 - maxSlippage)/100
@@ -1070,7 +1070,7 @@ console.log('current', this.currentPool, this.currencies)
          	nobalance() {
          		return this.staked_balance && this.token_balance.plus(this.staked_balance).eq(BN(0))
          	},
-            getMaxSlippage() {
+            getWithdrawMaxSlippage() {
                 let maxSlippage = +this.maxSlippage;
                 if(this.maxInputSlippage) maxSlippage = +this.maxInputSlippage;
                 return (100 + maxSlippage)/100

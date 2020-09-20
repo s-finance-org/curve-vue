@@ -128,7 +128,6 @@ export default {
     staking: 'Staking',
     redemption: 'Redemption',
     miningReward: 'Mining reward',
-    assetInStaking: 'Asset in staking',
     stakingAmountPlaceholder: 'Amount',
     stakingBalance: 'Balance',
     infiniteApproval: 'Infinite approval',
