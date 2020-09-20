@@ -44,7 +44,7 @@
 
       <div class="box mb-4 px-4 py-3">
         <b-tabs pills nav-class="tabs-nav" class="mt-1">
-          <b-tab :title="$t('global.deposit')" class="pt-3">
+          <b-tab :title="$t('global.deposit')" class="pt-3" active>
             <small class="d-flex mb-3">{{ $t('liquidity.depositTip') }}</small>
 
             <div class="row">
@@ -226,7 +226,7 @@
               </text-overlay-loading>
             </div>
           </b-tab>
-          <b-tab :title="$t('global.withdraw')" class="pt-3" active>
+          <b-tab :title="$t('global.withdraw')" class="pt-3">
             <small class="d-flex mb-3">{{ $t('liquidity.withdrawAvailableAmount') }}：?? susdv2 LP tokens</small>
 
             <div class="row">
