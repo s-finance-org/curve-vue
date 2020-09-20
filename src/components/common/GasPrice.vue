@@ -164,14 +164,14 @@
 
         methods: {
             async getGasPrice() {
-                try {
-                    throw new Error('test')
-                    let gasPriceInfo = await retry(fetch('https://pushservice.curve.fi/gasprice'))
-                    gasPriceInfo = await gasPriceInfo.json()
-                    state.gasPriceInfo = gasPriceInfo
-                    if(state.gasPriceInfo.fast > 1000) throw new Error('too high!')
-                }
-                catch(err) {
+                // try {
+                //     throw new Error('test')
+                //     let gasPriceInfo = await retry(fetch('https://pushservice.curve.fi/gasprice'))
+                //     gasPriceInfo = await gasPriceInfo.json()
+                //     state.gasPriceInfo = gasPriceInfo
+                //     if(state.gasPriceInfo.fast > 1000) throw new Error('too high!')
+                // }
+                // catch(err) {
                     try {
                         let gasPriceInfo = await retry(fetch('https://gasprice.poa.network/'))
                         gasPriceInfo = await gasPriceInfo.json()
@@ -189,7 +189,7 @@
                             instant: gasPrice + 4,
                         }
                     }
-                }
+                // }
                 if(!state.fetched) {
                     state.gasPrice = state.gasPriceInfo.fast
                     state.fetched = true

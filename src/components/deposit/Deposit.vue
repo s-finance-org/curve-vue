@@ -9,21 +9,19 @@
         </div>
         <h3 class="mb-0">{{ currentPool }}<br/>{{ $t('liquidity.name') }}</h3>
         <div class="total-box px-4 py-3 w-270 ml-auto mr-4">
-          <h6 class="text-black-65">{{ $t('global.deposits') }}</h6>
-          <text-overlay-loading>
-            <h4 class="mb-0">?$</h4>
+          <h6 class="text-black-65">{{ $t('global.totalBalances') }}</h6>
+          <text-overlay-loading :show="totalBalances === null">
+            <h4 class="mb-0">${{ totalBalances | formatNumber(2) }}</h4>
           </text-overlay-loading>
         </div>
         <div class="total-box px-4 py-3 w-270">
           <h6 class="text-black-65">{{ $t('global.dailyVol') }}</h6>
-          <text-overlay-loading>
-            <h4 class="mb-0">?$</h4>
+          <text-overlay-loading :show="poolVolumeUSD == -1">
+            <h4 class="mb-0">${{ poolVolumeUSD && poolVolumeUSD | formatNumber(2) }}</h4>
           </text-overlay-loading>
         </div>
       </b-container>
     </div>
-
-
 
     <b-container>
       <root-sub />
@@ -53,7 +51,6 @@
             <div class="row">
               <div class="col pr-4 line-right">
                 <div role="group" class="mb-3" v-for='(currency, i) in Object.keys(currencies)' :key="'icon-'+currency">
-                  <!-- <label :for="'currency_'+i" class="text-black-65">{{ $t('instantSwap.from') }}</label> -->
                   <div class="currentInput d-flex">
                     <span class="coin d-flex align-items-center">
                       <img class="icon-w-20 mr-2"
@@ -68,7 +65,7 @@
                       <span v-show='!depositc'>{{currency | capitalize}}</span>
                     </span>
                     <input class="form-control" type="text" :id="'currency_'+i" :disabled='disabled' name="from_cur" value='0.00'
-                      :placeholder="$t('liquidity.depositWrapped')"
+                      :placeholder="$t('liquidity.depositWrappedPlaceholder')"
                       @input='change_currency(i, true)'
                       v-model = 'inputs[i]'>
                   </div>
@@ -94,22 +91,38 @@
                     </span>
                   </b-form-text>
                 </div>
-                <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('dao.infiniteApproval') }}</b-form-checkbox>
+                <div class="mt-4">
+                  <b-form-checkbox v-model="inf_approval" name="inf-approval">{{ $t('dao.infiniteApproval') }}</b-form-checkbox>
+                  <b-form-checkbox @change='handle_sync_balances_proportion' :disabled='disabledButtons' checked v-model='sync_balances' name="sync-balances">{{ $t('liquidity.depositBalancedProportion') }}</b-form-checkbox>
+                  <b-form-checkbox @change='handle_sync_balances' :disabled='disabledButtons' checked v-model='max_balances' name="max-balances">{{ $t('liquidity.depositUseMaximumAvailable') }}</b-form-checkbox>
+                  <b-form-checkbox v-show = "!['susd','susdv2','tbtc','ren','sbtc'].includes(currentPool)" checked v-model='depositc' name="inf-approval" >{{ $t('liquidity.depositWrapped') }}</b-form-checkbox>
+                </div>
               </div>
+
               <div class="col pl-4 d-flex flex-column text-black-65">
-                <label class="d-flex justify-content-between mb-3">
-                  {{ $t('instantSwap.txCost') }}<span>?? USD</span>
+                <div v-show="estimateGas">
+                  <label class="d-flex mb-3">
+                    {{ $t('instantSwap.txCost') }}<span class="ml-auto">{{ (estimateGas * gasPrice / 1e9 * ethPrice).toFixed(2) }} USD</span>
+                  </label>
+                </div>
+                <label class="d-flex mb-3">
+                  {{ $t('global.maxSlippage') }}<span class="ml-auto">{{ ((1 - getMaxSlippage) * 100).toFixed(2) }}%</span>
                 </label>
-                <label class="d-flex justify-content-between mb-3">
-                  {{ $t('global.maxSlippage') }}<span>??%</span>
+                <label class="d-flex mb-3">
+                  {{ $t('liquidity.bonus') }}/{{ $t('liquidity.slippage') }}
+                  <span class="ml-auto">
+                    <span v-show="showSlippage && slippage <= 0 && slippage >= -0.005">
+                      {{ (-slippage*100).toFixed(3) }}%
+                    </span>
+                    <span v-show="showSlippage && slippage > 0">
+                      {{ (slippage*100).toFixed(3) }}%
+                    </span>
+                  </span>
                 </label>
-                <label class="d-flex justify-content-between mb-3">
-                  {{ $t('liquidity.bonus') }}/{{ $t('liquidity.slippage') }}<span>??%</span>
-                </label>
-                <label class="d-flex justify-content-between mb-3">
+                <label class="d-flex mb-3">
                   <span class="text-danger-1">{{ $t('liquidity.willReceive') }}</span>
-                  <span>
-                    <span class="text-danger-1 text-18">??</span> {{ currentPool }} LP tokens
+                  <span class="ml-auto">
+                    <span class="text-danger-1 text-18">{{ lpCrvReceivedText }}</span> {{ currentPool }} LP tokens
                   </span>
                 </label>
               </div>
@@ -271,18 +284,18 @@
                 <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('dao.infiniteApproval') }}</b-form-checkbox>
               </div>
               <div class="col pl-4 d-flex flex-column text-black-65">
-                <label class="d-flex justify-content-between mb-3">
-                  {{ $t('instantSwap.txCost') }}<span>?? USD</span>
+                <label class="d-flex mb-3">
+                  {{ $t('instantSwap.txCost') }}<span  class="ml-auto">?? USD</span>
                 </label>
-                <label class="d-flex justify-content-between mb-3">
-                  {{ $t('global.maxSlippage') }}<span>??%</span>
+                <label class="d-flex mb-3">
+                  {{ $t('global.maxSlippage') }}<span  class="ml-auto">??%</span>
                 </label>
-                <label class="d-flex justify-content-between mb-3">
-                  {{ $t('liquidity.bonus') }}/{{ $t('liquidity.slippage') }}<span>??%</span>
+                <label class="d-flex mb-3">
+                  {{ $t('liquidity.bonus') }}/{{ $t('liquidity.slippage') }}<span  class="ml-auto">??%</span>
                 </label>
-                <label class="d-flex justify-content-between mb-3">
+                <label class="d-flex mb-3">
                   <span class="text-danger-1">{{ $t('liquidity.willReceive') }}</span>
-                  <span>
+                  <span class="ml-auto">
                     <span class="text-danger-1 text-18">??</span> ??
                   </span>
                 </label>
@@ -349,7 +362,7 @@
                 </b-button>
               </span>
               <text-overlay-loading :show="loadingAction == 1">
-                <b-button size="lg" variant="danger" class="mr-3" @click='justDeposit = true; handle_add_liquidity()'>
+                <b-button size="lg" variant="danger" class="mr-3">
                   {{ $t('global.withdraw') }}
                 </b-button>
               </text-overlay-loading>
@@ -548,6 +561,7 @@
     import allabis from '../../allabis'
     const susdv2 = allabis.susdv2
     import * as helpers from '../../utils/helpers'
+    import * as volumeStore from '../common/volumeStore'
 
     import * as gasPriceStore from '../common/gasPriceStore'
     import GasPrice from '../common/GasPrice.vue'
@@ -607,19 +621,39 @@
             maxSlippageMode: 2
     	}),
         async created() {
-            this.$watch(()=>currentContract.default_account, (val, oldval) => {
-                if(!val || !oldval) return;
-                if(val.toLowerCase() == oldval.toLowerCase()) return;
-                this.mounted();
-            })
-            this.$watch(()=>currentContract.initializedContracts, val => {
-                if(val) this.mounted();
-            })
-            this.$watch(()=>currentContract.currentContract, (val, oldval) => {
-                this.setInputStyles(false, val, oldval)
-                if(currentContract.initializedContracts) this.mounted();
-            })
+          this.$watch(()=>currentContract.default_account, (val, oldval) => {
+              if(!val || !oldval) return;
+              if(val.toLowerCase() == oldval.toLowerCase()) return;
+              this.mounted();
+          })
+          this.$watch(()=>currentContract.initializedContracts, val => {
+              if(val) this.mounted();
+          })
+          this.$watch(()=>currentContract.currentContract, (val, oldval) => {
+              this.setInputStyles(false, val, oldval)
+              if(currentContract.initializedContracts) this.mounted();
+          })
 
+          let key = this.currentPool == 'iearn' ? 'y' : this.currentPool == 'susdv2' ? 'susd' : this.currentPool
+          let volume = volumeStore.state.volumes[key][0] || 0
+          if(this.isBTC) {
+            this.btcPrice = await priceStore.getBTCPrice()
+          }
+          if(volume == -1) {
+            let stats = await fetch(`${window.domain}/raw-stats/apys.json`)
+            stats = await stats.json()
+            for(let [key, value] of Object.entries(volumeStore.state.volumes)) {
+              if(volumeStore.state.volumes[key][0] == -1) {
+                let volume = key == 'ren' ? stats.volume.ren2 : key == 'sbtc' ? stats.volume.rens : stats.volume[key]
+                Vue.set(volumeStore.state.volumes[key], 0,  volume || 0)
+                if(['tbtc', 'ren', 'sbtc'].includes(key)) {
+                  Vue.set(volumeStore.state.volumes[key], 0,  volume * this.btcPrice || 0)
+                  Vue.set(volumeStore.state.volumes[key], 1,  volume || 0)
+                }
+              }
+            }
+          }
+          this.hasLoadedInfo && this.updateShares()
         },
         watch: {
         	async depositc(val, oldval) {
@@ -635,6 +669,10 @@
         },
         computed: {
           ...getters,
+
+          poolVolumeUSD() {
+            return volumeStore.state.volumes[this.currentPool == 'iearn' ? 'y' : this.currentPool == 'susdv2' ? 'susd' : this.currentPool][0]
+          },
           totalBalances() {
             return this.bal_info && this.bal_info.reduce((a, b) => a + b, 0) || null
           },
@@ -648,7 +686,6 @@
           },
           compareInputsWarning() {
             let currencies = []
-
 console.log('current', this.currentPool, this.currencies)
 
 
@@ -660,10 +697,13 @@ console.log('current', this.currentPool, this.currencies)
                 let diff3 = BN(BN(balance).times(this.rates[i])).minus(this.inputs[i])
                 if(diff3.lt(BN(-0.01))) currencies.push(this.depositc ? this.currencies[currency] : currency.toUpperCase())
             }
-console.log('current currencies', currencies)
             return currencies
           },
           depositingZeroWarning() {
+            console.log(this.inputs)
+            console.log(this.inputs.filter(v=>+v==0).length)
+            console.log(this.N_COINS, !this.disabledButtons)
+
             return this.inputs.filter(v=>+v==0).length == this.N_COINS && !this.disabledButtons
           },
           isPlain() {
@@ -857,8 +897,8 @@ console.log('current currencies', currencies)
             async calcSlippage() {
             	try {
 	            	this.slippagePromise.cancel();
-	        		this.slippagePromise = helpers.makeCancelable(common.calc_slippage(this.inputs, true))
-	        		await this.slippagePromise;
+                this.slippagePromise = helpers.makeCancelable(common.calc_slippage(this.inputs, true))
+                await this.slippagePromise;
             	}
             	catch(err) {
             		console.error(err)
@@ -929,38 +969,39 @@ console.log('current currencies', currencies)
 				this.show_loading = true;
 				this.handle_add_liquidity(true)
 			},
-            setLoadingAction(val) {
-                this.loadingAction = val
-                setTimeout(() => this.loadingAction = false, 500)
-            },
-			async handle_add_liquidity(stake = false) {
-                let actionType = stake == false ? 1 : 2;
-                if(this.loadingAction == actionType) return;
-                this.setLoadingAction(actionType)
-                let promises = await Promise.all([helpers.getETHPrice()])
-                this.ethPrice = promises[0]
+      setLoadingAction(val) {
+          this.loadingAction = val
+          setTimeout(() => this.loadingAction = false, 500)
+      },
+      async handle_add_liquidity(stake = false) {
+        let actionType = stake == false ? 1 : 2;
+        if(this.loadingAction == actionType) return;
+        this.setLoadingAction(actionType)
+        let promises = await Promise.all([helpers.getETHPrice()])
+        this.ethPrice = promises[0]
 
-				this.show_loading = true
-                let calls = [...Array(currentContract.N_COINS).keys()].map(i=> {
-                          if(this.currentPool == 'susdv2' && i == 3 || this.currentPool == 'sbtc' && i == 2)
-                            return [this.coins[i]._address, this.coins[i].methods.transferableSynths(currentContract.default_account).encodeABI()]
-                          return [this.coins[i]._address, this.coins[i].methods.balanceOf(currentContract.default_account).encodeABI()]
-                        }
-                    )
-                let endOffset = 1
-                calls.push([currentContract.swap_token._address, currentContract.swap_token.methods.totalSupply().encodeABI()])
-                if(['susdv2', 'sbtc'].includes(this.currentPool)) {
-                    let currencyKey = '0x7355534400000000000000000000000000000000000000000000000000000000'
-                    if(this.currentPool == 'sbtc') 
-                        currencyKey = '0x7342544300000000000000000000000000000000000000000000000000000000'
-                    calls.push([
-                            currentContract.snxExchanger._address, 
-                            currentContract.snxExchanger.methods
-                            .maxSecsLeftInWaitingPeriod(currentContract.default_account, currencyKey)
-                            .encodeABI()
-                        ])
-                    endOffset = 2
-                }
+        this.show_loading = true
+        let calls = [...Array(currentContract.N_COINS).keys()].map(i=> {
+                if(this.currentPool == 'susdv2' && i == 3 || this.currentPool == 'sbtc' && i == 2)
+                  return [this.coins[i]._address, this.coins[i].methods.transferableSynths(currentContract.default_account).encodeABI()]
+                return [this.coins[i]._address, this.coins[i].methods.balanceOf(currentContract.default_account).encodeABI()]
+              }
+          )
+
+        let endOffset = 1
+        calls.push([currentContract.swap_token._address, currentContract.swap_token.methods.totalSupply().encodeABI()])
+        if(['susdv2', 'sbtc'].includes(this.currentPool)) {
+            let currencyKey = '0x7355534400000000000000000000000000000000000000000000000000000000'
+            if(this.currentPool == 'sbtc') 
+                currencyKey = '0x7342544300000000000000000000000000000000000000000000000000000000'
+            calls.push([
+              currentContract.snxExchanger._address, 
+              currentContract.snxExchanger.methods
+              .maxSecsLeftInWaitingPeriod(currentContract.default_account, currencyKey)
+              .encodeABI()
+            ])
+            endOffset = 2
+        }
                 let aggcalls = await currentContract.multicall.methods.aggregate(calls).call()
                 let decoded = aggcalls[1].map(hex=>currentContract.web3.eth.abi.decodeParameter('uint256',hex))
                 decoded.slice(0, decoded.length-endOffset).forEach((balance, i) => {
@@ -985,9 +1026,9 @@ console.log('current currencies', currencies)
                     }
                 })
                 this.amounts = this.amounts.map(v => v || 0)
-				let total_supply = +decoded[decoded.length-endOffset];
-				this.waitingMessage = 'Please approve spending your coins'
-			    let nonZeroInputs = this.inputs.filter(Number).length
+                let total_supply = +decoded[decoded.length-endOffset];
+                this.waitingMessage = 'Please approve spending your coins'
+                let nonZeroInputs = this.inputs.filter(Number).length
                 let amounts = this.inputs.map((v, i)=>{
                     if(!v) return 0
                     let abi = allabis[currentContract.currentContract]
@@ -1006,18 +1047,20 @@ console.log('current currencies', currencies)
                     token_amount = BN(token_amount).times(BN(1).minus(BN(this.calcFee)))
                     token_amount = BN(token_amount).times(BN(this.getMaxSlippage)).toFixed(0,1);
                 }
-				if(this.depositc)
-					this.estimateGas = contractGas.deposit[this.currentPool] / 2
-				else
-					this.estimateGas = (contractGas.depositzap[this.currentPool].deposit(nonZeroInputs) | 0) / 1.5
-			    if (this.inf_approval)
-			        await common.ensure_allowance(this.amounts, !this.depositc, undefined, undefined, true)
-			    else if(this.depositc) {
-			        await common.ensure_allowance(this.amounts, false);
-			    }
-			    else {
-			    	await common.ensure_allowance(amounts, true)
-			    }
+                if(this.depositc)
+                  this.estimateGas = contractGas.deposit[this.currentPool] / 2
+                else
+                  this.estimateGas = (contractGas.depositzap[this.currentPool].deposit(nonZeroInputs) | 0) / 1.5
+
+                if (this.inf_approval)
+                    await common.ensure_allowance(this.amounts, !this.depositc, undefined, undefined, true)
+                else if(this.depositc) {
+                    await common.ensure_allowance(this.amounts, false);
+                }
+                else {
+                  await common.ensure_allowance(amounts, true)
+                }
+
 			    let receipt;
 			    let minted = 0;
 			    if(this.depositc) {
@@ -1048,8 +1091,7 @@ console.log('current currencies', currencies)
 				    		receipt = await add_liquidity
 				    	}
 				    }
-				}
-				else {
+				} else {
 			    	let gas = contractGas.depositzap[this.currentPool].deposit(nonZeroInputs) | 0
 			    	console.warn(this.inputs, 'inputs', amounts, 'uamounts', 
 			    		this.amounts, 'amounts', currentContract.swap._address, 'swap address', currentContract.coin_precisions, 'coin precisions', 
@@ -1125,9 +1167,9 @@ console.log('current currencies', currencies)
                         }
                     }
 				}
-				this.estimateGas = 0 
+				        this.estimateGas = 0 
                 this.justDeposit = false
-
+console.log('9')
 			    await this.handle_sync_balances();
 			    common.update_fee_info();
 			},
