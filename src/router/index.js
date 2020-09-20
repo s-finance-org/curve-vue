@@ -274,8 +274,8 @@ let routes = [
   //   ]
   // },
   {
-    path: '/:pool(compound|usdt|y|iearn|busd|susdv2|pax|tbtc|ren|sbtc)/',
-    // path: '/:pool(susdv2)/',
+    // path: '/:pool(compound|usdt|y|iearn|busd|susdv2|pax|tbtc|ren|sbtc)/',
+    path: '/:pool(susdv2)/',
     name: 'Index',
     // component: PoolApp,
     component: RootDefault,
@@ -323,11 +323,11 @@ let routes = [
       //   name: 'Donate',
       //   component: Donate
       // },
-      // {
-      //   path: 'profit/:address?',
-      //   name: 'Profit',
-      //   component: ProfitRouter
-      // },
+      {
+        path: 'profit/:address?',
+        name: 'Profit',
+        component: ProfitRouter
+      },
       // {
       //   path: 'audits',
       //   name: 'Audits',

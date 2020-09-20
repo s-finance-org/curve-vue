@@ -398,8 +398,13 @@
             </div>
           </b-tab>
           <b-tab :title="$t('global.poolProfit')" class="pt-3">
-            <h6 class="text-black-65 mb-2">{{ $t('dao.staking') }}</h6>
+            <h6 class="text-black-65 mb-2">{{ $t('liquidity.dailyProfit') }}</h6>
             <h4 class="mb-0">?? USD</h4>
+
+            <!-- {{ available != -1 }}
+
+            {{ showProfit }}
+              <span v-show='available != -1 '> {{ toFixed(showProfit) }}</span> -->
           </b-tab>
         </b-tabs>
       </div>
@@ -825,6 +830,7 @@
     import TextOverlayLoading from '../../components/common/TextOverlayLoading'
 
     export default {
+      mixins: [ProfitBaseMixin, ProfitMixin],
     	components: {
     		Slippage, GasPrice, TextOverlayLoading, RootSub
     	},
@@ -973,6 +979,9 @@
           },
 
           // withdraw
+          getDepositMaxSlippage() {
+            this.getLPCrvReceived()
+          },
           to_currency(val) {
         		if(this.share == 0 || this.share == '---') this.share = 100
 	        	this.setInputStyles()
@@ -1473,7 +1482,7 @@ console.log('current', this.currentPool, this.currencies)
                     let token_amounts = this.amounts
                     token_amount = await currentContract.swap.methods.calc_token_amount(token_amounts, true).call();
                     token_amount = BN(token_amount).times(BN(1).minus(BN(this.calcFee)))
-                    token_amount = BN(token_amount).times(BN(this.getMaxSlippage)).toFixed(0,1);
+                    token_amount = BN(token_amount).times(BN(this.getDepositMaxSlippage)).toFixed(0,1);
                 }
                 if(this.depositc)
                   this.estimateGas = contractGas.deposit[this.currentPool] / 2
@@ -1616,7 +1625,7 @@ console.log('current', this.currentPool, this.currencies)
       async getLPCrvReceived() {
         let deposit_inputs = this.deposit_inputs.map(v => v || 0)
         this.lpCrvReceived = (await currentContract.swap.methods
-            .calc_token_amount(deposit_inputs.map((v, i) => BN(v).div(currentContract.c_rates[i]).toFixed(0,1)), true).call() / 1e18) * this.getMaxSlippage
+            .calc_token_amount(deposit_inputs.map((v, i) => BN(v).div(currentContract.c_rates[i]).toFixed(0,1)), true).call() / 1e18) * this.getDepositMaxSlippage
       },
 			async change_currency(i, setInputs = true, event) {
 				if(event) {
@@ -2012,7 +2021,7 @@ console.log('current', this.currentPool, this.currencies)
 						this.show_nobalance_i = this.to_currency;
 			        }
                     token_amount = BN(token_amount).times(BN(1).plus(this.calcFee))
-			        token_amount = BN(Math.floor(token_amount * this.getMaxSlippage).toString()).toFixed(0,1)
+			        token_amount = BN(Math.floor(token_amount * this.getWithdrawMaxSlippage).toString()).toFixed(0,1)
                     if((this.token_balance.lt(BN(token_amount)) || unstake) && ['susdv2', 'sbtc','y','iearn'].includes(this.currentPool)) {
                         let unstakeAmount = BN(token_amount).minus(BN(this.token_balance))
                         if(unstake) unstakeAmount = BN(token_amount) 
@@ -2127,7 +2136,7 @@ console.log('current', this.currentPool, this.currencies)
                         }
                         this.waitingMessage = 'Please confirm withdrawal transaction'
                         var { dismiss } = notifyNotification(this.waitingMessage)
-                        let args = [BN(amount).toFixed(0,1), this.to_currency, BN(min_amount).times(BN(1).div(BN(this.getMaxSlippage))).toFixed(0, 1)]
+                        let args = [BN(amount).toFixed(0,1), this.to_currency, BN(min_amount).times(BN(1).div(BN(this.getWithdrawMaxSlippage))).toFixed(0, 1)]
                         if(!['tbtc','ren','sbtc'].includes(currentContract.currentContract)) args.push(this.donate_dust)
                         await helpers.setTimeoutPromise(100)
 			        	try {
