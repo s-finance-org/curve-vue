@@ -18,8 +18,8 @@
           <span class="col">
             <h6 class="mb-0 text-black-65">{{ $t('dao.totalStaking') }}</h6>
             <h4 class="mb-0 d-flex">
-              <text-overlay-loading inline :show="currentPool.totalSupplyLoading">
-                {{ currentPool.totalSupplyHandled | formatNumber(2) }}
+              <text-overlay-loading inline :show="currentPool.totalSupply.loading">
+                {{ currentPool.totalSupply.cont }}
                 <h6 class="inline-block text-black-65 mb-0">{{ currentPool.name }} LP tokens</h6>
               </text-overlay-loading>
             </h4>
@@ -27,8 +27,8 @@
           <span class="col">
             <h6 class="mb-0 text-black-65">{{ $t('dao.myStaking') }}</h6>
             <h4 class="mb-0 d-flex">
-              <text-overlay-loading inline :show="currentPool.gaugeBalanceLoading">
-                {{ currentPool.gaugeBalanceHandled | formatNumber(2) }}
+              <text-overlay-loading inline :show="currentPool.gaugeBalance.loading">
+                {{ currentPool.gaugeBalance.cont }}
                 <h6 class="inline-block text-black-65 mb-0">{{ currentPool.name }} LP tokens</h6>
               </text-overlay-loading>
             </h4>
@@ -86,7 +86,7 @@
             </div>
             <small class="d-flex">
               {{ $t('dao.redemptionBalance') }}：
-              <text-overlay-loading :show="loadingAction || currentPool.gaugeBalanceLoading">{{ currentPool.gaugeBalanceCont }} {{ currentPool.name }} LP tokens</text-overlay-loading>
+              <text-overlay-loading :show="loadingAction || currentPool.gaugeBalance.loading">{{ currentPool.gaugeBalance.cont }} {{ currentPool.name }} LP tokens</text-overlay-loading>
             </small>
             <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('dao.infiniteApproval') }}</b-form-checkbox>
             <div class="d-flex align-items-end mt-5 float-right">
@@ -115,18 +115,18 @@
                     <div class="d-flex no-gutters align-items-end mt-3">
                       <small class="col">
                         {{ $t('dao.miningPaidReward') }}：
-                        <text-overlay-loading inline :show="loadingAction">
-                          {{ currentPool.tokens[childToken].paidReward }} {{ currentPool.tokens[childToken].nameCont }}
+                        <text-overlay-loading inline :show="currentPool.tokens[childToken].paidReward.loading">
+                          {{ currentPool.tokens[childToken].paidReward.cont }} {{ currentPool.tokens[childToken].nameCont }}
                         </text-overlay-loading>
                         <em class="px-3 text-black-15">/</em>
                         {{ $t('dao.miningTotalReward') }}：
-                        <text-overlay-loading inline :show="loadingAction">
-                          {{ currentPool.tokens[childToken].totalReward }} {{ currentPool.tokens[childToken].nameCont }}
-                        </text-overlay-loading>
-                        <em class="px-3 text-black-15">/</em>
+                        <!-- <text-overlay-loading inline :show="currentPool.tokens[token].totalReward.loading">
+                          {{ currentPool.tokens[childToken].totalReward.cont }} {{ currentPool.tokens[childToken].nameCont }}
+                        </text-overlay-loading> -->
+                        <!-- <em class="px-3 text-black-15">/</em>
                         <text-overlay-loading inline :show="loadingAction">
                           1 {{ currentPool.tokens[childToken].nameCont }} = {{ currentPool.tokens[childToken].rateUsd }} USD
-                        </text-overlay-loading>
+                        </text-overlay-loading> -->
                       </small>
                     </div>
                   </div>
@@ -146,25 +146,25 @@
                 </h5>
                 <h6 class="mb-0 text-black-65">{{ $t('dao.miningPendingReward') }}</h6>
                 <h4 class="mb-1">
-                  <text-overlay-loading inline :show="loadingAction || currentPool.tokens[token].pendingRewardLoading">
-                    {{ currentPool.tokens[token].pendingRewardCont }} {{ currentPool.tokens[token].nameCont }}
+                  <text-overlay-loading inline :show="currentPool.tokens[token].pendingReward.loading">
+                    {{ currentPool.tokens[token].pendingReward.cont }} {{ currentPool.tokens[token].nameCont }}
                   </text-overlay-loading>
                 </h4>
                 <div class="d-flex no-gutters align-items-end">
                   <small class="col">
                     {{ $t('dao.miningPaidReward') }}：
-                    <text-overlay-loading inline :show="loadingAction">
-                      {{ currentPool.tokens[token].paidReward }} {{ currentPool.tokens[token].nameCont }}
+                    <text-overlay-loading inline :show="currentPool.tokens[token].paidReward.loading">
+                      {{ currentPool.tokens[token].paidReward.cont }} {{ currentPool.tokens[token].nameCont }}
                     </text-overlay-loading>
                     <em class="px-3 text-black-15">/</em>
                     {{ $t('dao.miningTotalReward') }}：
-                    <text-overlay-loading inline :show="loadingAction">
-                      {{ currentPool.tokens[token].totalReward }} {{ currentPool.tokens[token].nameCont }}
+                    <text-overlay-loading inline :show="currentPool.tokens[token].totalReward.loading">
+                      {{ currentPool.tokens[token].totalReward.cont }} {{ currentPool.tokens[token].nameCont }}
                     </text-overlay-loading>
-                    <em class="px-3 text-black-15">/</em>
+                    <!-- <em class="px-3 text-black-15">/</em>
                     <text-overlay-loading inline :show="loadingAction">
                       1 {{ currentPool.tokens[token].nameCont }} = {{ currentPool.tokens[token].rateUsd }} USD
-                    </text-overlay-loading>
+                    </text-overlay-loading> -->
                   </small>
                   <text-overlay-loading :show="loadingAction">
                     <b-button variant="danger" @click="currentPool.tokens[token].claimConfirm">
@@ -244,7 +244,7 @@
         LPT withdraw:<br/>
 
 				<div class='gauge'>
-					<div class='gaugeBalance'>Balance: <span class='hoverpointer'>{{ currentPool.gaugeBalanceCont }}</span> in gauge</div>
+					<div class='gaugeBalance'>Balance: <span class='hoverpointer'>{{ currentPool.gaugeBalance.cont }}</span> in gauge</div>
 					<div class='input'>
 						<label for='withdraw'>Amount:</label>
 						<input id='withdraw' type='text' v-model='currentPool.withdraw.amount'>
@@ -303,28 +303,78 @@
     const __store__ = {
 
       loadingAction: true,
-      totalSupplyTether: 0,
-      totalSupplyHandled: 0,
       notationDecimal: 1e18,
-
-      gaugeBalanceTether: 0,
-      gaugeBalanceHandled: 0,
 
       tokens: {
         sfg: {
           priceDecimal: 2,
-          pendingRewardTether: -1,
-          pendingRewardHandled: -1
         },
         crv: {
           priceDecimal: 4,
-          pendingRewardTether: -1,
-          pendingRewardHandled: -1
         },
         snx: {
           priceDecimal: 4,
-          pendingRewardTether: -1,
-          pendingRewardHandled: -1
+        }
+      }
+    }
+
+    const valueModelStore = {
+      create () {
+        return {
+          loading: true,
+          tether: 0,
+          handled: 0,
+          cont: 0,
+        }
+      }
+    }
+
+    const valueModel = {
+      create (name = '') {
+        const __store__ = valueModelStore.create()
+        // TODO:
+        const keys = {
+          loading: name + 'loading',
+          tether: name + 'tether',
+          handled: name + 'handled',
+          cont: name + 'cont',
+        }
+
+        return {
+          // TODO:
+          priceDecimal: 4,
+
+          get [keys.loading] () {
+            return __store__.loading
+          },
+          set [keys.loading] (val) {
+            __store__.loading = val
+          },
+
+          get [keys.tether] () {
+            return __store__.tether
+          },
+          set [keys.tether] (val) {
+            const result = __store__.tether = val
+
+            this[keys.loading] &&
+              (this[keys.loading] = false)
+
+            this[keys.handled] = result / 1e18
+          },
+
+          get [keys.handled] () {
+            return __store__.handled
+          },
+          set [keys.handled] (val) {
+            // TODO:
+            const { priceDecimal } = this
+            const result = __store__.handled = val
+
+            this[keys.cont] = helpers.formatNumber(result, priceDecimal)
+          },
+
+          [keys.cont]: '-',
         }
       }
     }
@@ -370,58 +420,13 @@
           },
           typeName: 'Liquidity',
 
-          totalSupplyLoading: true,
-          get totalSupplyTether () {
-            return __store__.totalSupplyTether
-          },
-          set totalSupplyTether (val) {
-            const { notationDecimal } = __store__
-            const { totalSupplyLoading } = this
-            const result = __store__.totalSupplyTether = val
-
-            totalSupplyLoading &&
-              (this.totalSupplyLoading = false)
-
-            this.totalSupplyHandled = result / notationDecimal
-          },
-          get totalSupplyHandled () {
-            return __store__.totalSupplyHandled
-          },
-          set totalSupplyHandled (val) {
-            const { priceDecimal } = this
-            const result = __store__.totalSupplyHandled = val
-
-            this.totalSupplyCont = BN(result).toFixed(priceDecimal)
-          },
-          totalSupplyCont: '0',
+          totalSupply: valueModel.create(),
 
           balance: 0,
           balanceCont: 0,
           gauge: '',
-          gaugeBalanceLoading: true,
-          get gaugeBalanceTether () {
-            return __store__.gaugeBalanceTether
-          },
-          set gaugeBalanceTether (val) {
-            const { notationDecimal } = __store__
-            const { gaugeBalanceLoading } = this
-            const result = __store__.gaugeBalanceTether = val
 
-            gaugeBalanceLoading &&
-              (this.gaugeBalanceLoading = false)
-
-            this.gaugeBalanceHandled = result / notationDecimal
-          },
-          get gaugeBalanceHandled () {
-            return __store__.gaugeBalanceHandled
-          },
-          set gaugeBalanceHandled (val) {
-            const { priceDecimal } = this
-            const result = __store__.gaugeBalanceHandled = val
-
-            this.gaugeBalanceCont = BN(result).toFixed(priceDecimal)
-          },
-          gaugeBalanceCont: '0',
+          gaugeBalance: valueModel.create(),
           swap: '',
           swap_token: '',
           type: 0,
@@ -455,32 +460,9 @@
               set priceDecimal (val) {
                 __store__.tokens.sfg.priceDecimal = val
               },
-              totalReward: -1,
-              pendingRewardLoading: true,
-              get pendingRewardTether () {
-                return __store__.tokens.sfg.pendingRewardTether
-              },
-              set pendingRewardTether (val) {
-                const { pendingRewardLoading } = this
-                const { notationDecimal } = __store__
-                const result = __store__.tokens.sfg.pendingRewardTether = val
-
-                pendingRewardLoading &&
-                  (this.pendingRewardLoading = false)
-
-                this.pendingRewardHandled = result / notationDecimal
-              },
-              get pendingRewardHandled () {
-                return __store__.tokens.sfg.pendingRewardHandled
-              },
-              set pendingRewardHandled (val) {
-                const { priceDecimal } = __store__.tokens.sfg
-                const result = __store__.tokens.sfg.pendingRewardHandled = val
-
-                this.pendingRewardCont = BN(result).toFixed(priceDecimal)
-              },
-              pendingRewardCont: '0',
-              paidReward: -1,
+              pendingReward: valueModel.create(),
+              paidReward: valueModel.create(),
+              totalReward: valueModel.create(),
               claimConfirm: null
             },
             crv: {
@@ -488,32 +470,9 @@
               nameCont: 'CRV',
               rateUsd: -1,
               priceDecimal: 18,
-              totalReward: -1,
-              pendingRewardLoading: true,
-              get pendingRewardTether () {
-                return __store__.tokens.crv.pendingRewardTether
-              },
-              set pendingRewardTether (val) {
-                const { pendingRewardLoading } = this
-                const { notationDecimal } = __store__
-                const result = __store__.tokens.crv.pendingRewardTether = val
-
-                pendingRewardLoading &&
-                  (this.pendingRewardLoading = false)
-
-                this.pendingRewardHandled = result / notationDecimal
-              },
-              get pendingRewardHandled () {
-                return __store__.tokens.crv.pendingRewardHandled
-              },
-              set pendingRewardHandled (val) {
-                const { priceDecimal } = __store__.tokens.crv
-                const result = __store__.tokens.crv.pendingRewardHandled = val
-
-                this.pendingRewardCont = BN(result).toFixed(priceDecimal)
-              },
-              pendingRewardCont: '0',
-              paidReward: -1,
+              pendingReward: valueModel.create(),
+              paidReward: valueModel.create(),
+              totalReward: valueModel.create(),
               claimConfirm: null
             },
             snx: {
@@ -521,39 +480,15 @@
               nameCont: 'SNX',
               rateUsd: -1,
               priceDecimal: 18,
-              totalReward: -1,
-              pendingRewardLoading: true,
-              get pendingRewardTether () {
-                return __store__.tokens.snx.pendingRewardTether
-              },
-              set pendingRewardTether (val) {
-                const { pendingRewardLoading } = this
-                const { notationDecimal } = __store__
-                const result = __store__.tokens.snx.pendingRewardTether = val
-
-                pendingRewardLoading &&
-                  (this.pendingRewardLoading = false)
-
-                this.pendingRewardHandled = result / notationDecimal
-              },
-              get pendingRewardHandled () {
-                return __store__.tokens.snx.pendingRewardHandled
-              },
-              set pendingRewardHandled (val) {
-                const { priceDecimal } = __store__.tokens.snx
-                const result = __store__.tokens.snx.pendingRewardHandled = val
-
-                this.pendingRewardCont = BN(result).toFixed(priceDecimal)
-              },
-              pendingRewardCont: '0',
-              paidReward: -1,
+              pendingReward: valueModel.create(),
+              paidReward: valueModel.create(),
+              totalReward: valueModel.create(),
               claimConfirm: null
             }
           }
         },
         pools: [],
         mypools: [],
-
         claimFromGauges: [],
 
         inf_approval: true,
@@ -632,9 +567,9 @@
               return this.depositSliderSelected
             },
             set (val) {
-              const { currentPool: { deposit, priceDecimal } } = this
+              const { currentPool: { deposit, priceDecimal, gaugeBalance } } = this
   // FIXME: 
-              // deposit.amount = BN(val).times(gaugeBalanceHandled).toFixed(priceDecimal)
+              // deposit.amount = BN(val).times(gaugeBalance.handled).toFixed(priceDecimal)
               this.depositSliderSelected = val
             }
           },
@@ -644,9 +579,9 @@
               return this.withdrawSliderSelected
             },
             set (val) {
-              const { currentPool: { withdraw, priceDecimal, gaugeBalanceHandled } } = this
+              const { currentPool: { withdraw, priceDecimal, gaugeBalance } } = this
 
-              withdraw.amount = BN(val).times(gaugeBalanceHandled).toFixed(priceDecimal)
+              withdraw.amount = BN(val).times(gaugeBalance.handled).toFixed(priceDecimal)
               this.withdrawSliderSelected = val
             }
           }
@@ -725,27 +660,31 @@
           this.gaugeContract = new currentContract.web3.eth.Contract(DaoLiquidityGaugereAbi_susdv2, this.currentPool.gauge)
 
           // balanceOf
-          this.currentPool.gaugeBalanceTether = await this.gaugeContract.methods.balanceOf(currentContract.default_account).call()
-
+          this.currentPool.gaugeBalance.tether = await this.gaugeContract.methods.balanceOf(currentContract.default_account).call()
 
           // claimable_tokens
-          this.currentPool.tokens.sfg.pendingRewardTether = await this.gaugeContract.methods.claimable_tokens(currentContract.default_account).call()
+          this.currentPool.tokens.sfg.pendingReward.tether = await this.gaugeContract.methods.claimable_tokens(currentContract.default_account).call()
 
-          // claimable_reward
-          // await this.gaugeContract.methods.claimable_reward(currentContract.default_account).call()
-          // console.log('claimableReward', this.claimableReward)
+          // integrate_fraction ???
+          this.currentPool.tokens.sfg.paidReward.tether = await this.gaugeContract.methods.integrate_fraction(currentContract.default_account).call()
+
+          this.currentPool.tokens.sfg.totalReward.tether = BN(this.currentPool.tokens.sfg.pendingReward.tether).plus(this.currentPool.tokens.sfg.paidReward.tether).toString()
+
+          try {
+            // claimable_reward
+            this.currentPool.tokens.crv.pendingReward.tether = await this.gaugeContract.methods.claimable_reward(currentContract.default_account).call()
+          } catch (e) { console.log(e) }
 
           // claimable_reward2
-          this.currentPool.tokens.snx.pendingRewardTether = await this.gaugeContract.methods.claimable_reward2(currentContract.default_account).call()
+          this.currentPool.tokens.snx.pendingReward.tether = await this.gaugeContract.methods.claimable_reward2(currentContract.default_account).call()
 
           // claimed_rewards_for
-          let aaa = await this.gaugeContract.methods.claimed_rewards_for(currentContract.default_account).call()
-          console.log('claimed_rewards_for', aaa)
+          this.currentPool.tokens.crv.paidReward.tether = await this.gaugeContract.methods.claimed_rewards_for(currentContract.default_account).call()
 
-          // totalSupply 总抵押量
-          this.currentPool.totalSupplyTether = await this.gaugeContract.methods.totalSupply().call()
+          // totalSupply
+          this.currentPool.totalSupply.tether = await this.gaugeContract.methods.totalSupply().call()
 
-
+          // this.gaugeContract.mounted
 
 
 console.log('---')
@@ -801,7 +740,7 @@ console.log('default_account', currentContract.default_account)
           async withdraw () {
             let withdraw = BN(this.currentPool.withdraw.amount).times(1e18)
             let balance = BN(await this.gaugeContract.methods.balanceOf(currentContract.default_account).call())
-console.log( 'balance', balance.dividedBy(1e18).toFixed(0,1) )
+
             console.log('withdraw', withdraw, 'balance', balance)
 
             if(withdraw.gt(balance))

@@ -830,7 +830,6 @@
     import TextOverlayLoading from '../../components/common/TextOverlayLoading'
 
     export default {
-      mixins: [ProfitBaseMixin, ProfitMixin],
     	components: {
     		Slippage, GasPrice, TextOverlayLoading, RootSub
     	},
