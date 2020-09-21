@@ -54,7 +54,7 @@
                     </span>:
                 </b>
             	<span :class="{'loading line': available == -1}">
-            		<span v-show='available != -1 '> {{toFixed(showProfit)}}</span>
+            		<span v-show='available != -1 '> {{toFixed(showProfit)}}  | {{ showProfit }}</span>
             	</span>
             </li>
             <br>
@@ -112,6 +112,11 @@
                     :</b> 
                     <span :class="{'loading line': available == -1}"> 
                         <span v-show='available != -1'>
+                        showProfit: {{ showProfit }}<br/>
+                        showEarnedSNXUSD: {{ showEarnedSNXUSD }}<br/>
+                        showEarnedRENUSD: {{ showEarnedRENUSD }}<br/>
+                        showRewardsSNXUSD: {{ showRewardsSNXUSD }}<br/>
+                        showRewardsRENUSD: {{ showRewardsSNXUSD }}<br/>
                             {{ toFixed(+showProfit + +showEarnedSNXUSD + +showEarnedRENUSD + +showRewardsSNXUSD + +showRewardsRENUSD) }} {{+showinUSD == 1 ? 'USD' : '' }}
                         </span>
                     </span>

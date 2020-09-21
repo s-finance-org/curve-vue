@@ -1,37 +1,3 @@
-/* Function */
-// user_checkpoint bool
-
-// claimable_tokens uint256
-// claimable_reward uint256
-// claimable_reward2 uint256
-
-// kick 
-// set_approve_deposit 
-// deposit 
-// withdraw
-// claim_rewards 
-// integrate_checkpoint uint256
-// minter address
-// crv_token address
-// lp_token address
-// controller address
-// voting_escrow address
-// balanceOf uint256
-// totalSupply uint256 // 总抵押量
-// future_epoch_time uint256
-// approved_to_deposit bool
-// working_balances uint256
-// working_supply uint256
-// period int128
-// period_timestamp uint256
-// integrate_inv_supply uint256
-// integrate_inv_supply_of uint256
-// integrate_checkpoint_of uint256
-// integrate_fraction uint256
-// inflation_rate uint256
-// claimed_rewards_for uint256
-
-// curve
 export default [
   {
       "name":"Deposit",
@@ -669,5 +635,25 @@ export default [
       "gas":2355,
       "constant":true,
       "signature":"0xfd96044b"
-  }
+  },
+  {
+    "name":"claimed_rewards_for2",
+    "outputs":[
+        {
+            "type":"uint256",
+            "name":""
+        }
+    ],
+    "inputs":[
+        {
+            "type":"address",
+            "name":"arg0"
+        }
+    ],
+    "stateMutability":"view",
+    "type":"function",
+    "gas":2355,
+    "constant":true,
+    "signature":"0xfd96044b"
+}
 ]

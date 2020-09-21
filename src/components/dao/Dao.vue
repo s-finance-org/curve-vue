@@ -60,7 +60,8 @@
               ></b-form-radio-group>
             </div>
             <small class="d-flex mb-3 align-items-center">
-              {{ $t('dao.stakingBalance') }}： {{ currentPool.balance }} {{ currentPool.name }} LP tokens
+              {{ $t('dao.stakingBalance') }}： 
+              <text-overlay-loading :show="currentPool.balanceOf.loading">{{ currentPool.balanceOf.cont }} {{ currentPool.name }} LP tokens</text-overlay-loading>
               <b-button class="text-blue-1 ml-2" to="/susdv2/liquidity/" size="xsm" variant="light">{{ $t('dao.stakingConfirmTip') }}</b-button>
             </small>
             <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('dao.infiniteApproval') }}</b-form-checkbox>
@@ -86,7 +87,7 @@
             </div>
             <small class="d-flex">
               {{ $t('dao.redemptionBalance') }}：
-              <text-overlay-loading :show="loadingAction || currentPool.gaugeBalance.loading">{{ currentPool.gaugeBalance.cont }} {{ currentPool.name }} LP tokens</text-overlay-loading>
+              <text-overlay-loading :show="currentPool.gaugeBalance.loading">{{ currentPool.gaugeBalance.cont }} {{ currentPool.name }} LP tokens</text-overlay-loading>
             </small>
             <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('dao.infiniteApproval') }}</b-form-checkbox>
             <div class="d-flex align-items-end mt-5 float-right">
@@ -108,8 +109,8 @@
                     </h5>
                     <h6 class="mb-0 text-black-65">{{ $t('dao.miningPendingReward') }}</h6>
                     <h4 class="mb-1">
-                      <text-overlay-loading inline :show="loadingAction || currentPool.tokens[childToken].pendingRewardLoading">
-                        {{ currentPool.tokens[childToken].pendingRewardCont }} {{ currentPool.tokens[childToken].nameCont }}
+                      <text-overlay-loading inline :show="currentPool.tokens[childToken].pendingReward.loading">
+                        {{ currentPool.tokens[childToken].pendingReward.cont }} {{ currentPool.tokens[childToken].nameCont }}
                       </text-overlay-loading>
                     </h4>
                     <div class="d-flex no-gutters align-items-end mt-3">
@@ -120,9 +121,9 @@
                         </text-overlay-loading>
                         <em class="px-3 text-black-15">/</em>
                         {{ $t('dao.miningTotalReward') }}：
-                        <!-- <text-overlay-loading inline :show="currentPool.tokens[token].totalReward.loading">
+                        <text-overlay-loading inline :show="currentPool.tokens[childToken].totalReward.loading">
                           {{ currentPool.tokens[childToken].totalReward.cont }} {{ currentPool.tokens[childToken].nameCont }}
-                        </text-overlay-loading> -->
+                        </text-overlay-loading>
                         <!-- <em class="px-3 text-black-15">/</em>
                         <text-overlay-loading inline :show="loadingAction">
                           1 {{ currentPool.tokens[childToken].nameCont }} = {{ currentPool.tokens[childToken].rateUsd }} USD
@@ -224,9 +225,6 @@
 						<div class='label'>
 							<label for='zoom'>{{ depositSlider }}%</label>
 						</div>
-						<div>
-							<input type='range' min='0' max='100' step='1' id='zoom' :value='depositSlider' @input='onDepositSlider'/>
-						</div>
 					</div>
 					<div>
 						<p>
@@ -253,9 +251,7 @@
 						<div class='label'>
 							<label for='zoom'>{{ withdrawSlider }}%</label>
 						</div>
-						<div>
-							<input type='range' min='0' max='100' step='1' id='zoom' :value='withdrawSlider' @input='onWithdrawSlider'/>
-						</div>
+
 					</div>
 					<button @click='withdraw'>Withdraw</button>
 				</div>
@@ -267,7 +263,7 @@
 
         CRV claimableReward: {{ claimableReward }}
         <button @click='claimRewards' class='claimrewards'>
-          Claim {{ claimableRewardFormat }}
+          Claim {{ this.claimableReward / 1e18 }}
           <span>SNX</span>
         </button>
 			</div>
@@ -280,7 +276,7 @@
     import { notify, notifyHandler, notifyNotification } from '../../init'
     import * as common from '../../utils/common.js'
     import { getters, contract as currentContract, gas as contractGas } from '../../contract'
-    import allabis, { ERC20_abi } from '../../allabis'
+    import allabis, { ERC20_abi, balancer_ABI, balancer_address } from '../../allabis'
     const compound = allabis.compound
     import * as helpers from '../../utils/helpers'
 
@@ -288,6 +284,7 @@
     import GasPrice from '../common/GasPrice.vue'
     import RootSub from '../root/RootSub.vue'
     import DaoLiquidityGaugereAbi_susdv2 from './abi/susdv2'
+    import DaoLiquidityGaugereAbi_snx from './abi/snx'
 
     import * as errorStore from '../common/errorStore'
 
@@ -299,6 +296,8 @@
     import * as gaugeStore from './gaugeStore'
 
     import { getBTCPrice } from '../common/priceStore'
+
+    import store from '../../store'
 
     const __store__ = {
 
@@ -322,9 +321,9 @@
       create () {
         return {
           loading: true,
-          tether: 0,
-          handled: 0,
-          cont: 0,
+          tether: -1,
+          handled: -1,
+          cont: -1,
         }
       }
     }
@@ -422,11 +421,9 @@
 
           totalSupply: valueModel.create(),
 
-          balance: 0,
-          balanceCont: 0,
           gauge: '',
-
           gaugeBalance: valueModel.create(),
+          balanceOf: valueModel.create(),
           swap: '',
           swap_token: '',
           type: 0,
@@ -437,7 +434,8 @@
             balance: -1
           },
           deposit: {
-            gas: 750000
+            gas: 750000,
+            amount: 0
           },
           withdraw: {
             gas: 1000000,
@@ -493,7 +491,6 @@
 
         inf_approval: true,
 
-        depositAmount: 0,
         gaugeContract: null,
         depositSlider: 100,
         withdrawSlider: 100,
@@ -510,14 +507,10 @@
             return currentContract.virtual_price
           },
           gasPrice() {
-            console.log('gasPrice', gasPriceStore.state.gasPrice)
             return gasPriceStore.state.gasPrice
           },
           gasPriceWei() {
             return gasPriceStore.gasPriceWei
-          },
-          claimableRewardFormat() {
-            return this.toFixed(this.claimableReward / 1e18)
           },
           loadingAction: {
             get () {
@@ -567,9 +560,11 @@
               return this.depositSliderSelected
             },
             set (val) {
-              const { currentPool: { deposit, priceDecimal, gaugeBalance } } = this
-  // FIXME: 
-              // deposit.amount = BN(val).times(gaugeBalance.handled).toFixed(priceDecimal)
+              const { currentPool: { deposit, priceDecimal, balanceOf } } = this
+
+              deposit.amount = +balanceOf.handled > 0
+                ? BN(val).times(balanceOf.handled).toFixed(priceDecimal)
+                : 0
               this.depositSliderSelected = val
             }
           },
@@ -581,7 +576,9 @@
             set (val) {
               const { currentPool: { withdraw, priceDecimal, gaugeBalance } } = this
 
-              withdraw.amount = BN(val).times(gaugeBalance.handled).toFixed(priceDecimal)
+              withdraw.amount = +gaugeBalance.handled > 0
+                ? BN(val).times(gaugeBalance.handled).toFixed(priceDecimal)
+                : 0
               this.withdrawSliderSelected = val
             }
           }
@@ -610,11 +607,13 @@
         },
         methods: {
           async mounted() {
+
+
             // Set currentPool confirm
             this.currentPool.tokens.sfg.claimConfirm = this.claim
             // FIXME: 
-            // this.currentPool.tokens.crv.claimConfirm = this.claimRewards
-            // this.currentPool.tokens.snx.claimConfirm = this.claimRewards
+            this.currentPool.tokens.crv.claimConfirm = this.claimRewards
+            this.currentPool.tokens.snx.claimConfirm = this.claimRewards
 
             this.currentPool.gauge = process.env.VUE_APP_PSS_GAUGE
 
@@ -624,9 +623,7 @@
             this.loadingAction = false
 
             this.pools = gaugeStore.state.pools
-
             this.mypools = gaugeStore.state.mypools
-
             this.claimFromGauges = this.myGauges
 
             let btcPrice = await getBTCPrice()
@@ -642,7 +639,7 @@
               let balance = pool.gaugeBalance
               if(['ren','sbtc'].includes(pool.name))
                 balance = pool.gaugeBalance * btcPrice
-              return { 
+              return {
                 name: pool.name,
                 y: total == 0 ? 0 : balance / total
               }
@@ -656,44 +653,32 @@
             piegauges[highest].sliced = true;
             piegauges[highest].selected = true;
 
+            store.tokens.susdv2LpToken.getBalanceOf(this.currentPool.balanceOf, currentContract.default_account)
 
-          this.gaugeContract = new currentContract.web3.eth.Contract(DaoLiquidityGaugereAbi_susdv2, this.currentPool.gauge)
+            const { crv, snx, sfg } = this.currentPool.tokens
+            // TODO: temp
+            this.gaugeContract = store.gauges.susdv2.contract
 
-          // balanceOf
-          this.currentPool.gaugeBalance.tether = await this.gaugeContract.methods.balanceOf(currentContract.default_account).call()
+            store.gauges.susdv2.getTotalSupply(this.currentPool.totalSupply)
+            store.gauges.susdv2.getBalanceOf(this.currentPool.gaugeBalance, currentContract.default_account)
 
-          // claimable_tokens
-          this.currentPool.tokens.sfg.pendingReward.tether = await this.gaugeContract.methods.claimable_tokens(currentContract.default_account).call()
+            store.gauges.susdv2.getSfgTotalReward(
+              sfg.totalReward,
+              store.gauges.susdv2.getSfgPendingReward(sfg.pendingReward, currentContract.default_account),
+              store.gauges.susdv2.getSfgPaidReward(sfg.paidReward, currentContract.default_account)
+            )
 
-          // integrate_fraction ???
-          this.currentPool.tokens.sfg.paidReward.tether = await this.gaugeContract.methods.integrate_fraction(currentContract.default_account).call()
+            store.gauges.susdv2.getCrvTotalReward(
+              crv.totalReward,
+              store.gauges.susdv2.getCrvPendingReward(crv.pendingReward, currentContract.default_account),
+              store.gauges.susdv2.getCrvPaidReward(crv.paidReward, currentContract.default_account)
+            )
 
-          this.currentPool.tokens.sfg.totalReward.tether = BN(this.currentPool.tokens.sfg.pendingReward.tether).plus(this.currentPool.tokens.sfg.paidReward.tether).toString()
-
-          // try {
-          //   // claimable_reward
-          //   this.currentPool.tokens.crv.pendingReward.tether = await this.gaugeContract.methods.claimable_reward(currentContract.default_account).call()
-          // } catch (e) { console.log(e) }
-
-          // claimable_reward2
-          this.currentPool.tokens.snx.pendingReward.tether = await this.gaugeContract.methods.claimable_reward2(currentContract.default_account).call()
-
-          // claimed_rewards_for
-          this.currentPool.tokens.crv.paidReward.tether = await this.gaugeContract.methods.claimed_rewards_for(currentContract.default_account).call()
-
-          // totalSupply
-          this.currentPool.totalSupply.tether = await this.gaugeContract.methods.totalSupply().call()
-
-          // this.gaugeContract.mounted
-
-
-console.log('---')
-console.log(this.gaugeContract.methods)
-console.log('default_account', currentContract.default_account)
-
-
-
-
+            store.gauges.susdv2.getSnxTotalReward(
+              snx.totalReward,
+              store.gauges.susdv2.getSnxPendingReward(snx.pendingReward, currentContract.default_account),
+              store.gauges.susdv2.getSnxPaidReward(snx.paidReward, currentContract.default_account)
+            )
           },
         	getTokenIcon(token) {
             return helpers.getTokenIcon(token, false, '')
@@ -703,25 +688,11 @@ console.log('default_account', currentContract.default_account)
             if(!BN.isBigNumber(num)) num = +num
             return num.toFixed(2)
           },
-          onDepositSlider(event) {
-            let val = event.target.value
-            this.depositSlider = val
-            // FIXME:
-            // this.depositAmount = this.toFixed((this.gauge.balance / 1e18) * val/100)
-          },
-          onWithdrawSlider(event) {
-            let val = event.target.value
-            this.withdrawSlider = val
-            // FIXME:
-            // this.withdrawAmount = this.toFixed((this.gauge.gaugeBalance / 1e18) * val/100)
-          },
 
           async deposit () {
-            let deposit = BN(this.depositAmount).times(1e18)
-            const gauge_swap_token = process.env.VUE_APP_LPT
-            const swap_token = new currentContract.web3.eth.Contract(ERC20_abi, gauge_swap_token)
+            let deposit = BN(this.currentPool.deposit.amount).times(1e18)
 
-            await common.approveAmount(swap_token, deposit, currentContract.default_account, this.currentPool.gauge, this.inf_approval)
+            await common.approveAmount(store.tokens.susdv2LpToken.contract, deposit, currentContract.default_account, this.currentPool.gauge, this.inf_approval)
 
             var { dismiss } = notifyNotification(`Please confirm depositing into ${this.currentPool.name} gauge`)
 
@@ -734,7 +705,6 @@ console.log('default_account', currentContract.default_account)
               dismiss()
               notifyHandler(hash)
             })
-
           },
 
           async withdraw () {
@@ -770,7 +740,6 @@ console.log('default_account', currentContract.default_account)
 
           async claim () {
             const mint = await gaugeStore.state.minter.methods.mint(this.currentPool.gauge)
-
             let gas = await mint.estimateGas()
 
             var { dismiss } = notifyNotification(`Please confirm claiming ${this.currentPool.tokens.sfg.name} from ${this.currentPool.name} gauge`)

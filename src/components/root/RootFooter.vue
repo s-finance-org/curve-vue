@@ -15,7 +15,7 @@
           { cont: 'Telegram', href: 'https://t.me/SFinanceEN' },
           { cont: 'Telegram CN', href: 'https://t.me/SFinanceCN' },
           { cont: 'Discord', href: 'https://discord.gg/rc49Dzu' },
-          { cont: 'Mdeium', href: 'https://medium.com/s-finance' },
+          { cont: 'Medium', href: 'https://medium.com/s-finance' },
           { cont: 'git', href: 'https://github.com/s-finance-org/curve-vue' },
         ]
       }

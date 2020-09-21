@@ -17,6 +17,10 @@ const __store__ = {
   }
 }
 
+import abiSNX from '../components/dao/abi/snx'
+import abiCRV from '../components/dao/abi/crv'
+import abiSUSDv2 from '../components/dao/abi/susdv2'
+import { ERC20_abi as abiSusdv2LpToken } from '../allabis'
 
 const store = {
   metaInfo: {
@@ -39,6 +43,112 @@ const store = {
     },
     getData() {
       return this.template
+    }
+  },
+  gauges: {
+    susdv2: {
+      address: process.env.VUE_APP_PSS_GAUGE,
+      abi: abiSUSDv2,
+      __contract: null,
+      get contract () {
+        const { abi, address } = this
+        if (!this.__contract) {
+          this.__contract = new web3.eth.Contract(abi, address)
+        }
+
+        return this.__contract
+      },
+      async getBalanceOf (target, accountAddress) {
+        const { contract } = this
+
+        target.tether = await contract.methods.balanceOf(accountAddress).call()
+      },
+
+      async getTotalSupply (target) {
+        const { contract } = this
+
+        target.tether = await contract.methods.totalSupply().call()
+      },
+
+      async getSfgPendingReward (target, accountAddress) {
+        const { contract } = this
+
+        return target.tether = await contract.methods.claimable_tokens(accountAddress).call()
+      },
+      async getSfgPaidReward (target, accountAddress) {
+        const { contract } = this
+
+        return target.tether = await contract.methods.integrate_fraction(accountAddress).call()
+      },
+      async getSfgTotalReward (target, pendingReward, paidReward) {
+        return target.tether = BN(await pendingReward).plus(await paidReward).toString()
+      },
+
+      async getCrvPendingReward (target, accountAddress) {
+        const { contract } = this
+
+        return target.tether = await contract.methods.claimable_reward(accountAddress).call()
+      },
+      async getCrvPaidReward (target, accountAddress) {
+        const { contract } = this
+
+        return target.tether = await contract.methods.claimed_rewards_for(accountAddress).call()
+      },
+      async getCrvTotalReward (target, pendingReward, paidReward) {
+        return target.tether = BN(await pendingReward).plus(await paidReward).toString()
+      },
+
+      async getSnxPendingReward (target, accountAddress) {
+        const { contract } = this
+
+        return target.tether = await contract.methods.claimable_reward2(accountAddress).call()
+      },
+      async getSnxPaidReward (target, accountAddress) {
+        const { contract } = this
+
+        return target.tether = await contract.methods.claimed_rewards_for2(accountAddress).call()
+      },
+      async getSnxTotalReward (target, pendingReward, paidReward) {
+        return target.tether = BN(await pendingReward).plus(await paidReward).toString()
+      }
+    }
+  },
+  tokens: {
+    susdv2LpToken: {
+      address: process.env.VUE_APP_LPT,
+      abi: abiSusdv2LpToken,
+      __contract: null,
+      get contract () {
+        const { abi, address } = this
+        if (!this.__contract) {
+          this.__contract = new web3.eth.Contract(abi, address)
+        }
+
+        return this.__contract
+      },
+      async getBalanceOf (target, accountAddress) {
+        const { contract } = this
+
+        return target.tether = await contract.methods.balanceOf(accountAddress).call()
+      },
+    },
+    snx: {
+      address: '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f',
+      abi: abiSNX,
+      __contract: null,
+      get contract () {
+        const { abi, address } = this
+        if (!this.__contract) {
+          this.__contract = new web3.eth.Contract(abi, address)
+        }
+
+        return this.__contract
+      }
+    },
+    crv: {
+      address: '0xd533a949740bb3306d119cc777fa900ba034cd52',
+      abi: abiCRV,
+      contract: null
     }
   },
   i18n: {

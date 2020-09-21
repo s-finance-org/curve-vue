@@ -1463,7 +1463,7 @@ console.log('current', this.currentPool, this.currencies)
                 })
                 this.amounts = this.amounts.map(v => v || 0)
                 let total_supply = +decoded[decoded.length-endOffset];
-                this.waitingMessage = 'Please approve spending your coins'
+                this.waitingMessage = this.$i18n.t('tipMsg.approveSpending')
                 let nonZeroInputs = this.deposit_inputs.filter(Number).length
                 let amounts = this.deposit_inputs.map((v, i)=>{
                     if(!v) return 0
@@ -1500,9 +1500,11 @@ console.log('current', this.currentPool, this.currencies)
 			    let receipt;
 			    let minted = 0;
 			    if(this.depositc) {
-                    this.waitingMessage = 'Please confirm deposit transaction'
-                    var { dismiss } = notifyNotification(this.waitingMessage)
-                    await helpers.setTimeoutPromise(100)
+            console.log(this.$i18n.locale)
+            this.waitingMessage = this.$i18n.t('tipMsg.confirmDepositTransaction')
+            console.log(this.waitingMessage)
+            var { dismiss } = notifyNotification(this.waitingMessage)
+            await helpers.setTimeoutPromise(100)
 			    	let add_liquidity = currentContract.swap.methods.add_liquidity(this.amounts, token_amount).send({
 				        from: currentContract.default_account,
                         gasPrice: this.gasPriceWei,
@@ -1534,7 +1536,7 @@ console.log('current', this.currentPool, this.currencies)
 			    		currentContract.c_rates, 'c rates',
 			    		currentContract.coins.map(c=>c._address), 'coins', currentContract.underlying_coins.map(uc=>uc._address), 'underlying_coins',
 			    		currentContract.virtual_price, 'virtual_price', token_amount, 'token_amount', Date.now())
-                    this.waitingMessage = 'Please confirm deposit transaction'
+                    this.waitingMessage = this.$i18n.t('tipMsg.confirmDepositTransaction')
                     await helpers.setTimeoutPromise(100)
 					let add_liquidity = currentContract.deposit_zap.methods.add_liquidity(amounts, token_amount).send({
 						from: currentContract.default_account,
@@ -1603,7 +1605,7 @@ console.log('current', this.currentPool, this.currencies)
                         }
                     }
 				}
-				        this.estimateGas = 0 
+				        this.estimateGas = 0
                 this.justDeposit = false
 
 			    await this.handle_sync_balances();
@@ -2329,7 +2331,7 @@ console.log('current', this.currentPool, this.currencies)
           await init(currentContract.contracts.pax)
 
           amounts = amounts.map((v, i)=>BN(v).times(allabis.pax.coin_precisions[i]).toFixed(0))
-          this.waitingMessage = 'Please approve spending your coins'
+          this.waitingMessage = this.$i18n.t('tipMsg.approveSpending')
           var { dismiss } = notifyNotification(this.waitingMessage)
           await common.ensure_allowance(amounts, true, 'pax', 3)
           dismiss()
