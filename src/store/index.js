@@ -5,6 +5,19 @@
 
 import Vue from 'vue'
 
+import I18nLanguages from '../i18n/languages'
+
+const __store__ = {
+  create () {
+    return {
+      i18n: {
+        locale: ''
+      }
+    }
+  }
+}
+
+
 const store = {
   metaInfo: {
     template: {
@@ -27,6 +40,32 @@ const store = {
     getData() {
       return this.template
     }
+  },
+  i18n: {
+    $i18n: null,
+
+    cacheKeyLocaleCacheKey: '__Global_I18n_locale',
+    get defaultLocale () {
+      const { cacheKeyLocaleCacheKey } = this
+
+      return localStorage.getItem(cacheKeyLocaleCacheKey) || process.env.VUE_APP_I18N_LOCALE
+    },
+
+    // TODO:
+    // get locale () {
+    //   return this.$i18n.locale
+    // },
+    set locale (val) {
+      const { cacheKeyLocaleCacheKey } = this
+
+      localStorage.setItem(cacheKeyLocaleCacheKey, val)
+    },
+
+    supportLanguage: ['zh-CN', 'en-US'],
+    // TODO:
+    // isSupportLanguage () {
+    // },
+    languages: I18nLanguages
   }
 }
 

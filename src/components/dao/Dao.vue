@@ -670,10 +670,10 @@
 
           this.currentPool.tokens.sfg.totalReward.tether = BN(this.currentPool.tokens.sfg.pendingReward.tether).plus(this.currentPool.tokens.sfg.paidReward.tether).toString()
 
-          try {
-            // claimable_reward
-            this.currentPool.tokens.crv.pendingReward.tether = await this.gaugeContract.methods.claimable_reward(currentContract.default_account).call()
-          } catch (e) { console.log(e) }
+          // try {
+          //   // claimable_reward
+          //   this.currentPool.tokens.crv.pendingReward.tether = await this.gaugeContract.methods.claimable_reward(currentContract.default_account).call()
+          // } catch (e) { console.log(e) }
 
           // claimable_reward2
           this.currentPool.tokens.snx.pendingReward.tether = await this.gaugeContract.methods.claimable_reward2(currentContract.default_account).call()

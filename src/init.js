@@ -42,8 +42,8 @@ let wallets = [
   { walletName: "metamask" },
   {
     walletName: "trezor",
-    appUrl: "https://curve.fi",
-    email: "info@curve.fi",
+    appUrl: "https://s.finance",
+    // email: "info@s.finance",
     rpcUrl: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`
   },
   {
