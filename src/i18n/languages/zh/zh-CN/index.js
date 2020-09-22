@@ -48,7 +48,7 @@ export default {
     more: '查看详情',
     ok: '知道了',
     coming: 'S.Finance 即将开启流动性挖矿',
-    comingCont1: 'S.Finance 将于新加坡时间 2020-09-22 22:22:22 开启 susd 流动性矿池抵押挖矿。 抵押 susdv2 LP tokens 即可获得 S.Finance 治理代币 SFG、Curve 治理代币 CRV 以及 Synthetix 平台代币 SNX。',
+    comingCont1: 'S.Finance 将于新加坡时间 2020-09-23 00:00:00 开启 susd 流动性矿池抵押挖矿。 抵押 susdv2 LP tokens 即可获得 S.Finance 治理代币 SFG、Curve 治理代币 CRV 以及 Synthetix 平台代币 SNX。',
     comingCont2: 'SFG 总发行量 2100 万，遵循 100%基于贡献分配，无私募，无预挖。每日挖矿产出剩余部分的 0.2%，开启挖矿后的24 小时内 SFG 产出速率为 10%，即首日挖矿产出 0.02%，24 小时后挖矿速率恢复正常（CRV 和 SNX 的挖矿速率不受影响）。挖矿开启后的第三日将上线 SFG 流动性矿池，届时SFG 流动性矿池挖矿奖励权重将为稳定币矿池权重三倍。',
     comingCont3: 'S.Finance 智能合约已由知道创宇完成安全审计，然而，安全审计并不能完全消除风险，请在能力承受范围内谨慎操作，SFG 有可能一文不值。',
   },

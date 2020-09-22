@@ -47,7 +47,7 @@ export default {
     more: 'more',
     ok: 'Ok',
     coming: 'S.Finance liquidity pool is coming ！',
-    comingCont1: 'S.Finance liquidity pool is going to start at 22:22:22 (SGT) 22th September, 2020. Staking susdv2 LP tokens could get 3 kinds of token for reward，including SFG (governance token of S.finance) 、CRV （governance token of Curve) and SNX (governance token of Synthetix). ',
+    comingCont1: 'S.Finance liquidity pool is going to start at 00:00:00 (SGT) 23th September, 2020. Staking susdv2 LP tokens could get 3 kinds of token for reward，including SFG (governance token of S.finance) 、CRV （governance token of Curve) and SNX (governance token of Synthetix). ',
     comingCont2: 'Total amount of SFG is 21 million, with 100% contribution-based distribution, no private placement, no pre-dig. Minted SFG per day is 0.2% of the remaining, and the output rate of SFG is 10% in the first 24 hours (0.02% minted SFG on the first day, while the rate of minted CRV and SNX is unaffected), and the mining rate will return to normal 24 hours later. SFG liquidity pool will start on the third day after the opening of S.Finance, and the rewarding weight of SFG liquidity pool will be three times that of the stable coin pool.',
     comingCont3: 'The S.finance smart contract has been scrutinized by KNOWNSEC. However, it cannot completely eliminate the risk, the price of SFG possibly get 0. Please invest within your capacity.'
   },
