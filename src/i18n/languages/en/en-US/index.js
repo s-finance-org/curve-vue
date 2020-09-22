@@ -158,5 +158,6 @@ export default {
     wechat: 'WeChat',
     tutorial: 'Tutorial',
     communitySupport: 'Community support',
-  }
+  },
+  temp: '* If you only want to withdraw individual currencies, you can change the number of other currencies to 0. One-click access to split currencies is currently not supported'
 }
