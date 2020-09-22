@@ -94,7 +94,7 @@ export default {
   risk: {
     title: '使用 S.Finance 的风险',
     auditTitle: '审计',
-    auditContHtml: 'S.finance 智能合约通过了KNOWNSEC审计。<a href="https://etherscan.io/token/0x9f843d9ba2a386bda2845507450fd47934fb3d03" target="_blank">合约地址<a><br/>然而，安全审计并不能完全消除风险。请在能力承受范围内投资，不要盲目投入全部资产，尤其是在提供流动性交易时。<br/>使用S.finance 做兑换交易时风险会相对降低，但这只是建议。',
+    auditContHtml: `S.finance 智能合约通过了KNOWNSEC审计。<a href="https://etherscan.io/token/${process.env.VUE_APP_SFG_TOKEN}" target="_blank">合约地址<a><br/>然而，安全审计并不能完全消除风险。请在能力承受范围内投资，不要盲目投入全部资产，尤其是在提供流动性交易时。<br/>使用S.finance 做兑换交易时风险会相对降低，但这只是建议。`,
     adminKeyTitle: '管理密钥',
     adminKeyContHtml: '管理密钥在紧急情况下允许暂停合约，但仅可在最初2个月使用。它还允许改变放大系数(S.Finance参数)，管理费用(不超过流动性凭证花费的一半)和费用。所有的变更将在提交额外申请之前的1天内进行。<br/>S.Finance将向去中心化的DAO过渡。',
     lossTitle: '资产损失',
