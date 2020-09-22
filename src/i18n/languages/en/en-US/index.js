@@ -149,4 +149,14 @@ export default {
     approveSpending: 'Please approve spending your coins',
     confirmDepositTransaction: 'Pleaes confirm deposit transaction'
   },
+  social: {
+    twitter: 'Twitter',
+    telegram: 'Telegram',
+    discord: 'Discord',
+    medium: 'Medium',
+    github: 'Github',
+    wechat: 'WeChat',
+    tutorial: 'Tutorial',
+    communitySupport: 'Community support',
+  }
 }

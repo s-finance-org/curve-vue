@@ -148,4 +148,14 @@ export default {
     approveSpending: '请授权钱包进行扣款',
     confirmDepositTransaction: '请在钱包中确认存款转账'
   },
+  social: {
+    twitter: '推特',
+    telegram: '电报',
+    discord: 'Discord',
+    medium: 'Medium',
+    github: 'Github',
+    wechat: '微信',
+    tutorial: '挖矿教程',
+    communitySupport: '社区支持',
+  }
 }

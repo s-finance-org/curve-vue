@@ -519,7 +519,7 @@
 
               if (val === 0) return false
 
-              +gaugeBalance.handled > 0
+              withdraw.amount = +gaugeBalance.handled > 0
                 ? Math.floor(+BN(val).times(gaugeBalance.handled).toString() * priceDecimal * 10) / (priceDecimal * 10)
                 : 0
               this.withdrawSliderSelected = val
@@ -533,6 +533,11 @@
           })
         },
         async mounted() {
+          // Set currentPool confirm
+          this.currentPool.tokens.sfg.claimConfirm = this.claim
+          // FIXME: 
+          this.currentPool.tokens.crv.claimConfirm = this.claimRewards
+          this.currentPool.tokens.snx.claimConfirm = this.claimRewards
         },
         watch: {
           loadingAction (val) {
@@ -550,14 +555,6 @@
         },
         methods: {
           async mounted() {
-
-
-            // Set currentPool confirm
-            this.currentPool.tokens.sfg.claimConfirm = this.claim
-            // FIXME: 
-            this.currentPool.tokens.crv.claimConfirm = this.claimRewards
-            this.currentPool.tokens.snx.claimConfirm = this.claimRewards
-
             this.currentPool.gauge = process.env.VUE_APP_PSS_GAUGE
 
 
@@ -683,7 +680,7 @@
 
           async claim () {
             const mint = await gaugeStore.state.minter.methods.mint(this.currentPool.gauge)
-            let gas = await mint.estimateGas()
+            // let gas = await mint.estimateGas()
 
             var { dismiss } = notifyNotification(`Please confirm claiming ${this.currentPool.tokens.sfg.name} from ${this.currentPool.name} gauge`)
 
@@ -699,14 +696,14 @@
           },
 
           async claimRewards () {
-            let gas = await this.gaugeContract.methods.claim_rewards(currentContract.default_account).estimateGas()
+            // let gas = await this.gaugeContract.methods.claim_rewards(currentContract.default_account).estimateGas()
 
             var { dismiss } = notifyNotification(`Please confirm claiming ${this.currentPool.tokens.crv.name + ' ' + this.currentPool.tokens.snx.name}`)
 
             await this.gaugeContract.methods.claim_rewards(currentContract.default_account).send({
               from: currentContract.default_account,
               gasPrice: this.gasPriceWei,
-              // gas: gas * 1.2 | 0,
+              // gas: gas * 1.5 | 0,
             })
             .once('transactionHash', hash => {
               dismiss()
