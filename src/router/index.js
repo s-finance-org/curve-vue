@@ -183,11 +183,11 @@ let routes = [
         name: 'Risks',
         component: Risks,
       },
-      // {
-      //   path: '/dao',
-      //   name: 'Dao',
-      //   component: Dao
-      // },
+      {
+        path: '/dao',
+        name: 'Dao',
+        component: Dao
+      },
     ]
   },
   // {

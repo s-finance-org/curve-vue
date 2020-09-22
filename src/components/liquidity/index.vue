@@ -237,43 +237,46 @@
 
 
 
-
-            <!-- <div role="group" class="mb-3" v-for='(currency, i) in Object.keys(currencies)' :key="'icon-'+currency">
-                  <div class="currentInput d-flex">
-                    <span class="coin d-flex align-items-center">
+<!-- 
+            <div role="group" class="mb-3">
+              <div class="currentInput d-flex">
+                <span class="coin d-flex align-items-center">
+                  <b-dropdown variant="light">
+                    <template v-slot:button-content>
+                      <img class="icon-w-20 mr-2"
+                        :class="{'token-icon': true, [currencies[to_currency]+'-icon']: true, 'y': depositc && !isPlain}" 
+                        :src='getTokenIcon(currencies[to_currency])'>
+                      <span v-show='!withdrawc'>{{ currencies[to_currency] | capitalize }}</span>
+                      <span v-show='withdrawc'>{{ currencies[currencies[to_currency]] }}</span>
+                      {{ to_currency }}
+                    </template>
+                    <b-dropdown-item v-for='(currency, i) in Object.keys(currencies)' :key="'icon-'+currency" :id="'to_cur_'+i" name="to_cur" @click='handleCheck(i)'>
                       <img class="icon-w-20 mr-2"
                         :class="{'token-icon': true, [currency+'-icon']: true, 'y': depositc && !isPlain}" 
                         :src='getTokenIcon(currency)'>
-                      <span v-show='withdrawc'>{{currencies[currency]}}
-                        <span v-show="!(currency == 'usdt' && currentPool == 'usdt') && !['susdv2', 'ren', 'sbtc'].includes(currentPool)">(in {{currency | capitalize}})</span>
-                      </span>
-                      <span v-show="!withdrawc && !['susdv2', 'tbtc', 'ren', 'sbtc'].includes(currentPool)">{{currency | capitalize}}</span>
-                      <span v-show="!withdrawc && ['susdv2', 'tbtc', 'ren', 'sbtc'].includes(currentPool)">{{currencies[currency]}}</span>
-                    </span>
-                    <input class="form-control" type="text"
-                      :id="'currency_'+i"
-                      name="from_cur"
-                      v-model = 'withdraw_inputs[i]'
-                      :disabled = "currentPool == 'susd'"
-                      :ref="`withdraw_inputs${i}`"
-                      @input='handle_change_amounts(i)'
-                      @focus='handle_change_amounts(i)'
-                      >
-                  </div>
-                </div>
+                      <span v-show='!withdrawc'>{{ currency | capitalize }}</span>
+                      <span v-show='withdrawc'>{{ currencies[currency] }}</span>
+                    </b-dropdown-item>
+                  </b-dropdown>
+                </span>
+                <input class="form-control" type="text"
+                  :id="'currency_'+i"
+                  name="from_cur"
+                  v-model = 'withdraw_inputs[i]'
+                  :disabled = "currentPool == 'susd'"
+                  :ref="`withdraw_inputs${i}`"
+                  @input='handle_change_amounts(i)'
+                  @focus='handle_change_amounts(i)'
+                  >
+              </div>
+            </div>
 
 
 
-            <b-dropdown variant="light">
-              <template v-slot:button-content>
-                Custom <strong>Content</strong> with <em>HTML</em> via Slot
-              </template>
-              <b-dropdown-item href="#">An item</b-dropdown-item>
-              <b-dropdown-item href="#">Another item</b-dropdown-item>
-            </b-dropdown>
 
+ -->
 
-            <ul>
+            <!-- <ul>
               <li v-for='(currency, i) in Object.keys(currencies)'>
                 <input type="radio" :id="'to_cur_'+i" name="to_cur" :value='i' :checked='to_currency === i' @click='handleCheck(i)'>
                 <label :for="'to_cur_'+i">
@@ -291,27 +294,30 @@
               <div class="col pr-4 line-right">
                 <small class="mb-2">{{ $t('temp') }}</small>
                 <div role="group" class="mb-3" v-for='(currency, i) in Object.keys(currencies)' :key="'icon-'+currency">
-                  <div class="currentInput d-flex">
-                    <span class="coin d-flex align-items-center">
-                      <img class="icon-w-20 mr-2"
-                        :class="{'token-icon': true, [currency+'-icon']: true, 'y': depositc && !isPlain}" 
-                        :src='getTokenIcon(currency)'>
-                      <span v-show='withdrawc'>{{currencies[currency]}}
-                        <span v-show="!(currency == 'usdt' && currentPool == 'usdt') && !['susdv2', 'ren', 'sbtc'].includes(currentPool)">(in {{currency | capitalize}})</span>
+                    <div class="currentInput d-flex">
+                      <span class="coin d-flex align-items-center" @click='handleCheck(i)'>
+                        <input class="mr-2" type="radio" :id="'to_cur_'+i" name="to_cur" :value='i' :checked='to_currency === i'>
+                        <!-- <b-form-radio :id="'to_cur_'+i" name="withdraw_all" :value='i' @click='handleCheck(i)'> -->
+                          <img class="icon-w-20 mr-2"
+                            :class="{'token-icon': true, [currency+'-icon']: true, 'y': depositc && !isPlain}" 
+                            :src='getTokenIcon(currency)'>
+                          <span v-show='withdrawc'>{{currencies[currency]}}
+                            <span v-show="!(currency == 'usdt' && currentPool == 'usdt') && !['susdv2', 'ren', 'sbtc'].includes(currentPool)">(in {{currency | capitalize}})</span>
+                          </span>
+                          <span v-show="!withdrawc && !['susdv2', 'tbtc', 'ren', 'sbtc'].includes(currentPool)">{{currency | capitalize}}</span>
+                          <span v-show="!withdrawc && ['susdv2', 'tbtc', 'ren', 'sbtc'].includes(currentPool)">{{currencies[currency]}}</span>
+                        <!-- </b-form-radio> -->
                       </span>
-                      <span v-show="!withdrawc && !['susdv2', 'tbtc', 'ren', 'sbtc'].includes(currentPool)">{{currency | capitalize}}</span>
-                      <span v-show="!withdrawc && ['susdv2', 'tbtc', 'ren', 'sbtc'].includes(currentPool)">{{currencies[currency]}}</span>
-                    </span>
-                    <input class="form-control" type="text"
-                      :id="'currency_'+i"
-                      name="from_cur"
-                      v-model = 'withdraw_inputs[i]'
-                      :disabled = "currentPool == 'susd'"
-                      :ref="`withdraw_inputs${i}`"
-                      @input='handle_change_amounts(i)'
-                      @focus='handle_change_amounts(i)'
-                      >
-                  </div>
+                      <input class="form-control" type="text"
+                        :id="'currency_'+i"
+                        name="from_cur"
+                        v-model = 'withdraw_inputs[i]'
+                        :disabled = "currentPool == 'susd'"
+                        :ref="`withdraw_inputs${i}`"
+                        @input='handle_change_amounts(i)'
+                        @focus='handle_change_amounts(i)'
+                        >
+                    </div>
                   <!-- <b-form-text class="text-black-65 mt-0">
                     {{ $t('instantSwap.max') }}: {{ withdraw_maxs[i] }}
                   </b-form-text> -->
@@ -1177,9 +1183,7 @@ console.log('current', this.currentPool, this.currencies)
                   return true
               }
           },
-          
-          
-          
+
 
           customMaxSlippageInput: {
             get () {
@@ -1294,9 +1298,9 @@ console.log('current', this.currentPool, this.currencies)
 
                 // withdraw
                 if(['susdv2', 'tbtc', 'ren', 'sbtc'].includes(this.currentPool)) {
-            		this.withdrawc = true;
-            		this.to_currency = null
-            	}
+                  this.withdrawc = true;
+                  this.to_currency = null
+                }
                 else
                     this.withdrawc = false
             	currentContract.showSlippage = false;
@@ -1730,10 +1734,10 @@ console.log('current', this.currentPool, this.currencies)
 	        handle_migrate_new() {
 	        	common.handle_migrate_new('new')
           },
-          
 
           // withdraw
           handleCheck(val) {
+            console.log(val)
             if(val === this.to_currency) {
               if(this.withdrawc == false) this.withdrawc = true
               this.to_currency = null
@@ -2430,6 +2434,9 @@ console.log('current', this.currentPool, this.currencies)
 </script>
 
 <style>
+  .currentInput .coin {
+    min-width: 124px;
+  }
 	/* #add-liquidity {
 		margin-right: 1em;
 	}
