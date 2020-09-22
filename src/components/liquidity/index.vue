@@ -235,6 +235,28 @@
               </text-overlay-loading>
             </small>
 
+
+          <!-- <ul>
+				    <li v-for='(currency, i) in Object.keys(currencies)' class='withdrawin'>
+              <input type="radio" :id="'to_cur_'+i" name="to_cur" :value='i' :checked='to_currency === i' @click='handleCheck(i)'>
+              <label :for="'to_cur_'+i">
+                <img 
+                    :class="{'token-icon': true, [currency+'-icon']: true, 'y': withdrawc, [currentPool]: true}" 
+                    :src='getTokenIcon(currency)'> 
+                <span v-show='!withdrawc'> {{ currency | capitalize }} </span>
+                <span v-show='withdrawc'> {{ currencies[currency] }} </span>
+              </label>
+            </li>
+        	</ul> -->
+
+
+          <b-dropdown text="Left align" variant="primary" class="m-2">
+            <b-dropdown-item href="#">Action</b-dropdown-item>
+            <b-dropdown-item href="#">Another action</b-dropdown-item>
+            <b-dropdown-item href="#">Something else here</b-dropdown-item>
+          </b-dropdown>
+
+
             <div class="row">
               <div class="col pr-4 line-right">
                 <div role="group" class="mb-3" v-for='(currency, i) in Object.keys(currencies)' :key="'icon-'+currency">
@@ -595,7 +617,7 @@
     </div>
 
     <!-- withdraw -->
-    <div class="add-liquidity" v-show=false>
+    <div class="add-liquidity">
         <fieldset class="percentage">
             <legend>
             	Share of liquidity (%)
@@ -666,7 +688,7 @@
                         </span>
                     </label>
         		</li>
-				<li v-for='(currency, i) in Object.keys(currencies)' class='withdrawin'>
+				    <li v-for='(currency, i) in Object.keys(currencies)' class='withdrawin'>
 	                <input type="radio" :id="'to_cur_'+i" name="to_cur" :value='i' :checked='to_currency === i' @click='handleCheck(i)'>
 	                <label :for="'to_cur_'+i">
                         <img 
