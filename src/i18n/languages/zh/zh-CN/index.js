@@ -7,7 +7,7 @@ export default {
     sFinance: 'S.Finance',
     home: '首页',
     swap: '兑换',
-    liquidity: '抵押',
+    liquidity: '存取款',
     stats: '统计',
     operating: '操作',
     deposits: '资金',
@@ -35,19 +35,20 @@ export default {
     deposit: '存款',
     withdraw: '取款',
     all: '全部',
-    poolProfit: '流动性奖励'
+    poolProfit: '流动性奖励',
+    totalPoolsDeposits: '兑换池资金'
   },
   beta: {
     slogan: '项目还在测试阶段，请注意风险，更多功能敬请期待~',
     followMe: '抢先关注'
   },
   statement: {
-    // slogan: '声明：S.finance 目前没有任何代币',
-    // cont: 'S.finance 代币遵循100%基于贡献分配，无私募，无预挖，无团队分配的方式，代币名称目前还在征集中。Trx 链上有关于S.finance的合约为诈骗信息，最新消息以官网为准！',
+    slogan: '声明：S.finance 目前没有任何代币',
+    cont: 'S.finance 代币遵循100%基于贡献分配，无私募，无预挖，无团队分配的方式，代币名称目前还在征集中。Trx 链上有关于S.finance的合约为诈骗信息，最新消息以官网为准！',
     more: '查看详情',
     ok: '知道了',
     coming: 'S.Finance 即将开启流动性挖矿',
-    comingCont1: 'S.Finance 将于新加坡时间 2020-09-22 21:00 开启 susd 流动性矿池抵押挖矿。 抵押 susdv2 LP tokens 即可获得 S.Finance 治理代币 SFG、Curve 治理代币 CRV 以及 Synthetix 平台代币 SNX。',
+    comingCont1: 'S.Finance 将于新加坡时间 2020-09-22 22:22:22 开启 susd 流动性矿池抵押挖矿。 抵押 susdv2 LP tokens 即可获得 S.Finance 治理代币 SFG、Curve 治理代币 CRV 以及 Synthetix 平台代币 SNX。',
     comingCont2: 'SFG 总发行量 2100 万，遵循 100%基于贡献分配，无私募，无预挖，无团队份额。每日挖矿产出剩余部分的 0.2%，开启挖矿后的24 小时内产出速率为 10%，即首日挖矿产出 0.02%，24 小时后挖矿速率恢复正常。',
     comingCont3: 'S.Finance 智能合约已由知道创宇完成安全审计，然而，安全审计并不能完全消除风险，请在能力承受范围内进行投资。',
   },
@@ -55,9 +56,7 @@ export default {
     notConnected: '你还没有连接钱包',
     connect: '连接钱包'
   },
-  total: {
-    deposits: '兑换池资金'
-  },
+  
   stablePools: {
     name: 'Stable 兑换池'
   },
@@ -96,11 +95,11 @@ export default {
   risk: {
     title: '使用 S.Finance 的风险',
     auditTitle: '审计',
-    auditContHtml: 'S.finance 智能合约通过了Trail of Bits审计。<br/>然而，安全审计并不能完全消除风险。请在能力承受范围内投资，不要盲目投入全部资产，尤其是在提供流动性交易时。<br/>使用S.finance 做兑换交易时风险会相对降低，但这只是建议。',
+    auditContHtml: 'S.finance 智能合约通过了KNOWNSEC审计。<br/>然而，安全审计并不能完全消除风险。请在能力承受范围内投资，不要盲目投入全部资产，尤其是在提供流动性交易时。<br/>使用S.finance 做兑换交易时风险会相对降低，但这只是建议。',
     adminKeyTitle: '管理密钥',
     adminKeyContHtml: '管理密钥在紧急情况下允许暂停合约，但仅可在最初2个月使用。它还允许改变放大系数(S.Finance参数)，管理费用(不超过流动性凭证花费的一半)和费用。所有的变更将在提交额外申请之前的3天内进行。<br/>S.Finance将向去中心化的DAO过渡。',
     lossTitle: '资产损失',
-    lossContHtml: 'S.finance 智能合约通过了Trail of Bits审计。然而，安全审计并不能完全消除风险。请在能力承受范围内投资，不要盲目投入全部资产，尤其是在提供流动性时。<br/>使用S.finance作兑换交易时风险会相对降低，但这只是建议。',
+    lossContHtml: 'S.finance 智能合约通过了知道创宇审计。然而，安全审计并不能完全消除风险。请在能力承受范围内投资，不要盲目投入全部资产，尤其是在提供流动性时。<br/>使用S.finance作兑换交易时风险会相对降低，但这只是建议。',
     stakingTitle: '抵押风险',
     stakingContHtml: '当使用抵押功能时，每一种智能合约都有他们相应的风险。',
   },
@@ -116,11 +115,12 @@ export default {
     willReceive: '你将收到',
     bonus: '额外奖励',
     slippage: '额外成本',
+    highSlippage: '警告!高滑点',
     depositStakeGauge: '存款并抵押挖矿',
     withdrawAvailableAmount: '可取款数量',
     withdrawAmountPlaceholder: '输入取出数量',
     withdrawRedemptionTip: '赎回挖矿中的 LP token',
-    dailyProfit: '今日收益'
+    dailyProfit: '今日存款收益'
   },
   dao: {
     title: '{0} 流动性矿池',
@@ -143,5 +143,9 @@ export default {
     totalStaking: '总抵押量',
     myStaking: '我的抵押',
     virtualPrice: 'LP tokens 价格',
-  }
+  },
+  notice: {
+    approveSpending: '请授权钱包进行扣款',
+    confirmDepositTransaction: '请在钱包中确认存款转账'
+  },
 }

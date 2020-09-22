@@ -99,28 +99,29 @@
               </div>
 
               <div class="col pl-4 d-flex flex-column text-black-65">
-                <div v-show="estimateGas">
-                  <label class="d-flex mb-3">
-                    {{ $t('instantSwap.txCost') }}<span class="ml-auto">{{ (estimateGas * gasPrice / 1e9 * ethPrice).toFixed(2) }} USD</span>
-                  </label>
-                </div>
-                <label class="d-flex mb-3">
-                  {{ $t('global.maxSlippage') }}<span class="ml-auto">{{ ((1 - getDepositMaxSlippage) * 100).toFixed(2) }}%</span>
+                <label class="mb-3" v-show="estimateGas">
+                  {{ $t('instantSwap.txCost') }}
+                  <span class="ml-auto">{{ (estimateGas * gasPrice / 1e9 * ethPrice).toFixed(2) }} USD</span>
                 </label>
-                <label class="d-flex mb-3">
-                  {{ $t('liquidity.bonus') }}/{{ $t('liquidity.slippage') }}
-                  <span class="ml-auto">
-                    <span v-show="showSlippage && slippage <= 0 && slippage >= -0.005">
-                      {{ (-slippage*100).toFixed(3) }}%
-                    </span>
-                    <span v-show="showSlippage && slippage > 0">
-                      {{ (slippage*100).toFixed(3) }}%
-                    </span>
-                  </span>
+                <label class="mb-3">
+                  {{ $t('global.maxSlippage') }}
+                  <span class="float-right">{{ ((1 - getDepositMaxSlippage) * 100).toFixed(2) }}%</span>
                 </label>
-                <label class="d-flex mb-3">
+                <label class="mb-3" v-show='showSlippage && slippage < -0.005'>
+                  {{ $t('liquidity.highSlippage') }}
+                  <span class="float-right">{{ (-slippage*100).toFixed(3) }}%</span>
+                </label>
+                <label class="mb-3" v-show='showSlippage && slippage <= 0 && slippage >= -0.005'>
+                  {{ $t('liquidity.slippage') }}
+                  <span class="float-right">{{ (-slippage*100).toFixed(3) }}%</span>
+                </label>
+                <label class="mb-3" v-show='showSlippage && slippage > 0'>
+                  {{ $t('liquidity.bonus') }}
+                  <span class="float-right">{{ (slippage*100).toFixed(3) }}%</span>
+                </label>
+                <label class="mb-3">
                   <span class="text-danger-1">{{ $t('liquidity.willLeastReceive') }}</span>
-                  <span class="ml-auto">
+                  <span class="float-right">
                     <span class="text-danger-1 text-18">{{ lpCrvReceivedText }}</span> {{ currentPool }} LP tokens
                   </span>
                 </label>
@@ -228,7 +229,11 @@
             </div>
           </b-tab>
           <b-tab :title="$t('global.withdraw')" class="pt-3">
-            <small class="d-flex mb-3">{{ $t('liquidity.withdrawAvailableAmount') }}：?? susdv2 LP tokens</small>
+            <small class="d-flex mb-3">{{ $t('liquidity.withdrawAvailableAmount') }}：
+              <text-overlay-loading :show="gauges.balanceOf.loading">
+                {{ gauges.balanceOf.cont }} {{ currentPool }} LP tokens
+              </text-overlay-loading>
+            </small>
 
             <div class="row">
               <div class="col pr-4 line-right">
@@ -254,9 +259,9 @@
                       @focus='handle_change_amounts(i)'
                       >
                   </div>
-                  <b-form-text class="text-black-65 mt-0">
+                  <!-- <b-form-text class="text-black-65 mt-0">
                     {{ $t('instantSwap.max') }}: {{ withdraw_maxs[i] }}
-                  </b-form-text>
+                  </b-form-text> -->
                 </div>
 
                 <li v-show = "!['susd','susdv2','tbtc','ren', 'sbtc'].includes(currentPool)">
@@ -266,28 +271,29 @@
               </div>
 
               <div class="col pl-4 d-flex flex-column text-black-65">
-                <div v-show="estimateGas">
-                  <label class="d-flex mb-3">
-                    {{ $t('instantSwap.txCost') }}<span class="ml-auto">{{ (estimateGas * gasPrice / 1e9 * ethPrice).toFixed(2) }} USD</span>
-                  </label>
-                </div>
-                <label class="d-flex mb-3">
-                  {{ $t('global.maxSlippage') }}<span class="ml-auto">{{ ((getWithdrawMaxSlippage - 1) * 100).toFixed(2) }}%</span>
+                <label class="mb-3" v-show="estimateGas">
+                  {{ $t('instantSwap.txCost') }}
+                  <span class="float-right">{{ (estimateGas * gasPrice / 1e9 * ethPrice).toFixed(2) }} USD</span>
                 </label>
-                <label class="d-flex mb-3">
-                  {{ $t('liquidity.bonus') }}/{{ $t('liquidity.slippage') }}
-                  <span class="ml-auto">
-                    <span v-show="showSlippage && slippage <= 0 && slippage >= -0.005">
-                      {{ (-slippage*100).toFixed(3) }}%
-                    </span>
-                    <span v-show="showSlippage && slippage > 0">
-                      {{ (slippage*100).toFixed(3) }}%
-                    </span>
-                  </span>
+                <label class="mb-3">
+                  {{ $t('global.maxSlippage') }}
+                  <span class="float-right">{{ ((getWithdrawMaxSlippage - 1) * 100).toFixed(2) }}%</span>
                 </label>
-                <!-- <label class="d-flex mb-3">
+                <label class="mb-3" v-show='showSlippage && slippage < -0.005'>
+                  {{ $t('liquidity.highSlippage') }}
+                  <span class="float-right">{{ (-slippage*100).toFixed(3) }}%</span>
+                </label>
+                <label class="mb-3" v-show='showSlippage && slippage <= 0 && slippage >= -0.005'>
+                  {{ $t('liquidity.slippage') }}
+                  <span class="float-right">{{ (-slippage*100).toFixed(3) }}%</span>
+                </label>
+                <label class="mb-3" v-show='showSlippage && slippage > 0'>
+                  {{ $t('liquidity.bonus') }}
+                  <span class="float-right">{{ (slippage*100).toFixed(3) }}%</span>
+                </label>
+                <!-- <label class="mb-3">
                   <span class="text-danger-1">{{ $t('liquidity.willReceive') }}</span>
-                  <span class="ml-auto">
+                  <span class="float-right">
                     <span class="text-danger-1 text-18">{{ lpCrvReceivedText }}</span>
                   </span>
                 </label> -->
@@ -825,6 +831,8 @@
     import * as errorStore from '../common/errorStore'
 
     import BN from 'bignumber.js'
+    import store from '../../store'
+    import { valueModel } from '../../model'
 
     import Slippage from '../common/Slippage.vue'
     import TextOverlayLoading from '../../components/common/TextOverlayLoading'
@@ -834,6 +842,10 @@
     		Slippage, GasPrice, TextOverlayLoading, RootSub
     	},
     	data: () => ({
+        gauges: {
+          balanceOf: valueModel.create()
+        },
+
     		disabled: true,
     		disabledButtons: true,
     		sync_balances: false,
@@ -875,7 +887,6 @@
 
         hasRewards: true,
 
-        
         // withdraw
         share: '100.00',
     		shareStyles: {
@@ -1018,7 +1029,6 @@
             let currencies = []
 console.log('current', this.currentPool, this.currencies)
 
-
             for(let [i, currency] of Object.keys(this.currencies).entries()) {
                 let balance = this.wallet_balances[i]
                 if(this.currentPool == 'susdv2' && i == 3) {
@@ -1078,44 +1088,42 @@ console.log('current', this.currentPool, this.currencies)
          	nobalance() {
          		return this.staked_balance && this.token_balance.plus(this.staked_balance).eq(BN(0))
          	},
-            getWithdrawMaxSlippage() {
-                let maxSlippage = +this.maxSlippage;
-                if(this.maxInputSlippage) maxSlippage = +this.maxInputSlippage;
-                return (100 + maxSlippage)/100
-            },
-            minAmount() {
-            if(['tbtc', 'ren', 'sbtc'].includes(currentContract.currentContract)) return 1e-8
-                return 0.01
-            },
-            calcFee() {
-                let N_COINS = allabis[currentContract.currentContract].N_COINS
-                return this.fee / 100 * N_COINS / (4 * (N_COINS -1))
-            },
-            gasPrice() {
-                return gasPriceStore.state.gasPrice
-            },
-            gasPriceWei() {
-                return gasPriceStore.state.gasPriceWei
-            },
-            unstakePercentageInvalid() {
-                return BN(this.unstakepercentage).times(1e18).gt(BN(this.staked_balance).times(1.01))
-            },
-            unstakeAmount() {
-                return this.toFixed(BN(this.unstakepercentage / 100).times(this.staked_balance / 1e18))
-            },
-            showInfApprovalZap() {
-                if(!this.withdrawc && this.currentPool != 'susdv2')
-                    return true
-                if(this.share != '---' && ((this.to_currency !== null && this.to_currency < 10) || this.to_currency == 10)) {
-                    return true
-                }
-            },
+          getWithdrawMaxSlippage() {
+              let maxSlippage = +this.maxSlippage;
+              if(this.maxInputSlippage) maxSlippage = +this.maxInputSlippage;
+              return (100 + maxSlippage)/100
+          },
+          minAmount() {
+          if(['tbtc', 'ren', 'sbtc'].includes(currentContract.currentContract)) return 1e-8
+              return 0.01
+          },
+          calcFee() {
+              let N_COINS = allabis[currentContract.currentContract].N_COINS
+              return this.fee / 100 * N_COINS / (4 * (N_COINS -1))
+          },
+          gasPrice() {
+              return gasPriceStore.state.gasPrice
+          },
+          gasPriceWei() {
+              return gasPriceStore.state.gasPriceWei
+          },
+          unstakePercentageInvalid() {
+              return BN(this.unstakepercentage).times(1e18).gt(BN(this.staked_balance).times(1.01))
+          },
+          unstakeAmount() {
+              return this.toFixed(BN(this.unstakepercentage / 100).times(this.staked_balance / 1e18))
+          },
+          showInfApprovalZap() {
+              if(!this.withdrawc && this.currentPool != 'susdv2')
+                  return true
+              if(this.share != '---' && ((this.to_currency !== null && this.to_currency < 10) || this.to_currency == 10)) {
+                  return true
+              }
+          },
           
           
           
-          
-          
-          
+
           customMaxSlippageInput: {
             get () {
               return this.maxInputSlippage
@@ -1196,6 +1204,7 @@ console.log('current', this.currentPool, this.currencies)
 			},
 
             async mounted(oldContract) {
+              store.tokens.susdv2LpToken.getBalanceOf(this.gauges.balanceOf, currentContract.default_account)
 
             	if(['susd', 'susdv2', 'tbtc', 'ren', 'sbtc'].includes(currentContract.currentContract)) this.depositc = true;
                 else this.depositc = false;
@@ -1463,7 +1472,7 @@ console.log('current', this.currentPool, this.currencies)
                 })
                 this.amounts = this.amounts.map(v => v || 0)
                 let total_supply = +decoded[decoded.length-endOffset];
-                this.waitingMessage = this.$i18n.t('tipMsg.approveSpending')
+                this.waitingMessage = this.$i18n.t('notice.approveSpending')
                 let nonZeroInputs = this.deposit_inputs.filter(Number).length
                 let amounts = this.deposit_inputs.map((v, i)=>{
                     if(!v) return 0
@@ -1500,8 +1509,7 @@ console.log('current', this.currentPool, this.currencies)
 			    let receipt;
 			    let minted = 0;
 			    if(this.depositc) {
-            console.log(this.$i18n.locale)
-            this.waitingMessage = this.$i18n.t('tipMsg.confirmDepositTransaction')
+            this.waitingMessage = this.$i18n.t('notice.confirmDepositTransaction')
             console.log(this.waitingMessage)
             var { dismiss } = notifyNotification(this.waitingMessage)
             await helpers.setTimeoutPromise(100)
@@ -1536,7 +1544,7 @@ console.log('current', this.currentPool, this.currencies)
 			    		currentContract.c_rates, 'c rates',
 			    		currentContract.coins.map(c=>c._address), 'coins', currentContract.underlying_coins.map(uc=>uc._address), 'underlying_coins',
 			    		currentContract.virtual_price, 'virtual_price', token_amount, 'token_amount', Date.now())
-                    this.waitingMessage = this.$i18n.t('tipMsg.confirmDepositTransaction')
+                    this.waitingMessage = this.$i18n.t('notice.confirmDepositTransaction')
                     await helpers.setTimeoutPromise(100)
 					let add_liquidity = currentContract.deposit_zap.methods.add_liquidity(amounts, token_amount).send({
 						from: currentContract.default_account,
@@ -2331,7 +2339,7 @@ console.log('current', this.currentPool, this.currencies)
           await init(currentContract.contracts.pax)
 
           amounts = amounts.map((v, i)=>BN(v).times(allabis.pax.coin_precisions[i]).toFixed(0))
-          this.waitingMessage = this.$i18n.t('tipMsg.approveSpending')
+          this.waitingMessage = this.$i18n.t('notice.approveSpending')
           var { dismiss } = notifyNotification(this.waitingMessage)
           await common.ensure_allowance(amounts, true, 'pax', 3)
           dismiss()

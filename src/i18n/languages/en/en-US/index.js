@@ -37,21 +37,17 @@ export default {
     all: 'All',
     poolProfit: 'Pool profit',
   },
-  tipMsg: {
-    approveSpending: 'Please approve spending your coins',
-    confirmDepositTransaction: 'Pleaes confirm deposit transaction'
-  },
   beta: {
     slogan: 'The project is still in testing stage, please pay attention to the risks and stay tuned for more functions~',
     followMe: 'Follow me'
   },
   statement: {
-    // slogan: 'Statement: S.finance have not issued any tokens currently',
-    // cont: 'Token of S.finance will follow the method of 100% contribution based distribution, with neither private placement, no pre-dig, nor team distribution. The official name of the token is still being collected. Information about S.finance on Trx-chain is totally fraud, please log on official website to get the latest news about S.finance!',
+    slogan: 'Statement: S.finance have not issued any tokens currently',
+    cont: 'Token of S.finance will follow the method of 100% contribution based distribution, with neither private placement, no pre-dig, nor team distribution. The official name of the token is still being collected. Information about S.finance on Trx-chain is totally fraud, please log on official website to get the latest news about S.finance!',
     more: 'more',
     ok: 'Ok',
     coming: 'S.Finance liquidity pool is coming ！',
-    comingCont1: 'S.Finance liquidity pool is going to start at 22:22:22 (SGT) 22th September, 2020. Staking susdv2 LP tokens could get 3 kinds of token for reward，including SFG (governance token of S.finance) 、CRV （governance token of Curve) and SNX (governance token of Synthetix. ',
+    comingCont1: 'S.Finance liquidity pool is going to start at 22:22:22 (SGT) 22th September, 2020. Staking susdv2 LP tokens could get 3 kinds of token for reward，including SFG (governance token of S.finance) 、CRV （governance token of Curve) and SNX (governance token of Synthetix). ',
     comingCont2: 'Total amount of SFG is 21 million, with 100% contribution-based distribution, no private placement, no pre-dig, no team share. Minted SFG per day is 0.2% of the remaining, and the output rate is 10% in the first 24 hours (0.02% minted SFG on the first day) , and the mining rate returns to normal 24 hours later.',
     comingCont3: 'The S.finance smart contract has been scrutinized by KNOWNSEC. However, it cannot completely eliminate the risk. Please invest within your capacity.'
   },
@@ -67,7 +63,7 @@ export default {
   },
   instantSwap: {
     name: 'Instant swap ',
-    tip: 'Swap using all Curve pools',
+    tip: 'Swap using all Stable pools',
     from: 'From',
     to: 'To',
     valuePlaceholder: 'Value',
@@ -100,11 +96,11 @@ export default {
   risk: {
     title: 'Risks Warning',
     auditTitle: 'Audits',
-    auditContHtml: 'S.Finance smart contracts were Audited by Trail of Bits.<br/>However, security audits don\'t eliminate risks completely. Please don’t supply your life savings, or assets you can’t afford to lose, to S.Finance, especially as a liquidity provider.<br/>Using S.Finance as an exchange user should be significantly less risky, but this is not advice.',
+    auditContHtml: 'S.Finance smart contracts were Audited by KNOWNSEC.<br/>However, security audits don\'t eliminate risks completely. Please don’t supply your life savings, or assets you can’t afford to lose, to S.Finance, especially as a liquidity provider.<br/>Using S.Finance as an exchange user should be significantly less risky, but this is not advice.',
     adminKeyTitle: 'Admin keys',
     adminKeyContHtml: 'Admin key allows to pause the contract in an emergency, but only during first 2 months in existence. Also it allows to change amplification coefficient (S.Finance parameter), admin fee (not more than half of fee which LPs take) and the fee. All the changes are timelocked for 3 days before being applied for enough notice.<br/>S.Finance will be transitioning to a DAO to be fully decentralized.',
     lossTitle: 'Permanent loss of a peg',
-    lossContHtml: 'S.Finance smart contracts were Audited by KNOWNSEC<br/>However, security audits don\'t eliminate risks completely. Please don\’t supply your life savings, or assets you can\’t afford to lose, to S.Finance, especially as a liquidity provider.<br/>Using S.Finance as an exchange user should be significantly less risky, but this is not advice.',
+    lossContHtml: 'S.Finance smart contracts were Audited by KNOWNSEC<br/>However, security audits don\'t eliminate risks completely. Please don\’t supply your life savings, or assets you can’t afford to lose, to S.Finance, especially as a liquidity provider.<br/>Using S.Finance as an exchange user should be significantly less risky, but this is not advice.',
     stakingTitle: 'Staking risks',
     stakingContHtml: 'When staking you use multiple smart contract products each of which has its own risks',
   },
@@ -120,6 +116,7 @@ export default {
     willReceive: 'You will receive',
     bonus: 'Bonus(plus pricing)',
     slippage: 'Slippage(plus pricing)',
+    highSlippage: 'Warning! High slippage(plus pricing)',
     depositStakeGauge: 'Deposit & stake in gauge',
     withdrawAvailableAmount: 'available amount',
     withdrawAmountPlaceholder: 'amount',
@@ -146,6 +143,10 @@ export default {
     miningClaimConfirm: 'Claim',
     totalStaking: 'Total staking',
     myStaking: 'My staking',
-    virtualPrice: 'LP tokens 价格',
-  }
+    virtualPrice: 'Virtual price',
+  },
+  notice: {
+    approveSpending: 'Please approve spending your coins',
+    confirmDepositTransaction: 'Pleaes confirm deposit transaction'
+  },
 }

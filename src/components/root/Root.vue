@@ -56,7 +56,7 @@
         </template>
         <template v-slot:cell(operating)="data">
           <!-- <b-button size="sm" variant="danger" class="mr-2">{{ $t('global.swap') }}</b-button> -->
-          <b-button to="/susdv2/liquidity/" size="sm" variant="outline-secondary">{{ $t('global.liquidity') }}</b-button>
+          <b-button to="/susdv2/liquidity/" size="sm" variant="outline-secondary">{{ $t('global.deposit') }}</b-button>
         </template>
       </b-table>
     </div>
@@ -437,8 +437,9 @@
 			sbtcRewards: null,
 			yfiRewards: null,
 			balRewards: null,
-			btcPrice: null,
-
+      btcPrice: null,
+      // FIXME: ???
+      depositc: '',
       CRVAPYs: {},
 
 		}),

@@ -3,7 +3,7 @@
     <b-container class="d-flex py-4 total-cont justify-content-center">
       <img class="logo_orgin" :src="publicPath + 'res/icons/logo/logo_orgin.svg'">
       <!-- <div class="total-box px-4 py-3 w-270 mr-4 ml-auto">
-        <h6 class="text-black-65">{{ $t('total.deposits') }}</h6>
+        <h6 class="text-black-65">{{ $t('global.totalPoolsDeposits') }}</h6>
         <text-overlay-loading :show="!(totalBalances1 || total)">
           <h4 class="mb-0">{{totalBalances1 || total | formatNumber}}$</h4>
         </text-overlay-loading>
