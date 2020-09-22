@@ -156,5 +156,6 @@ export default {
     wechat: '微信',
     tutorial: '挖矿教程',
     communitySupport: '社区支持',
-  }
+  },
+  temp: '* 如果只想取单个币种可将其他币种数量修改为0，暂不支持一键取单个币种'
 }

@@ -236,29 +236,60 @@
             </small>
 
 
-          <!-- <ul>
-				    <li v-for='(currency, i) in Object.keys(currencies)' class='withdrawin'>
-              <input type="radio" :id="'to_cur_'+i" name="to_cur" :value='i' :checked='to_currency === i' @click='handleCheck(i)'>
-              <label :for="'to_cur_'+i">
-                <img 
-                    :class="{'token-icon': true, [currency+'-icon']: true, 'y': withdrawc, [currentPool]: true}" 
-                    :src='getTokenIcon(currency)'> 
-                <span v-show='!withdrawc'> {{ currency | capitalize }} </span>
-                <span v-show='withdrawc'> {{ currencies[currency] }} </span>
-              </label>
-            </li>
-        	</ul> -->
 
 
-          <b-dropdown text="Left align" variant="primary" class="m-2">
-            <b-dropdown-item href="#">Action</b-dropdown-item>
-            <b-dropdown-item href="#">Another action</b-dropdown-item>
-            <b-dropdown-item href="#">Something else here</b-dropdown-item>
-          </b-dropdown>
+            <!-- <div role="group" class="mb-3" v-for='(currency, i) in Object.keys(currencies)' :key="'icon-'+currency">
+                  <div class="currentInput d-flex">
+                    <span class="coin d-flex align-items-center">
+                      <img class="icon-w-20 mr-2"
+                        :class="{'token-icon': true, [currency+'-icon']: true, 'y': depositc && !isPlain}" 
+                        :src='getTokenIcon(currency)'>
+                      <span v-show='withdrawc'>{{currencies[currency]}}
+                        <span v-show="!(currency == 'usdt' && currentPool == 'usdt') && !['susdv2', 'ren', 'sbtc'].includes(currentPool)">(in {{currency | capitalize}})</span>
+                      </span>
+                      <span v-show="!withdrawc && !['susdv2', 'tbtc', 'ren', 'sbtc'].includes(currentPool)">{{currency | capitalize}}</span>
+                      <span v-show="!withdrawc && ['susdv2', 'tbtc', 'ren', 'sbtc'].includes(currentPool)">{{currencies[currency]}}</span>
+                    </span>
+                    <input class="form-control" type="text"
+                      :id="'currency_'+i"
+                      name="from_cur"
+                      v-model = 'withdraw_inputs[i]'
+                      :disabled = "currentPool == 'susd'"
+                      :ref="`withdraw_inputs${i}`"
+                      @input='handle_change_amounts(i)'
+                      @focus='handle_change_amounts(i)'
+                      >
+                  </div>
+                </div>
+
+
+
+            <b-dropdown variant="light">
+              <template v-slot:button-content>
+                Custom <strong>Content</strong> with <em>HTML</em> via Slot
+              </template>
+              <b-dropdown-item href="#">An item</b-dropdown-item>
+              <b-dropdown-item href="#">Another item</b-dropdown-item>
+            </b-dropdown>
+
+
+            <ul>
+              <li v-for='(currency, i) in Object.keys(currencies)'>
+                <input type="radio" :id="'to_cur_'+i" name="to_cur" :value='i' :checked='to_currency === i' @click='handleCheck(i)'>
+                <label :for="'to_cur_'+i">
+                  <img 
+                      :class="{'token-icon': true, [currency+'-icon']: true, 'y': withdrawc, [currentPool]: true}" 
+                      :src='getTokenIcon(currency)'>
+                  <span v-show='!withdrawc'> {{ currency | capitalize }} </span>
+                  <span v-show='withdrawc'> {{ currencies[currency] }} </span>
+                </label>
+              </li>
+            </ul> -->
 
 
             <div class="row">
               <div class="col pr-4 line-right">
+                <small class="mb-2">{{ $t('temp') }}</small>
                 <div role="group" class="mb-3" v-for='(currency, i) in Object.keys(currencies)' :key="'icon-'+currency">
                   <div class="currentInput d-flex">
                     <span class="coin d-flex align-items-center">
@@ -617,7 +648,7 @@
     </div>
 
     <!-- withdraw -->
-    <div class="add-liquidity">
+    <div class="add-liquidity" v-show=false>
         <fieldset class="percentage">
             <legend>
             	Share of liquidity (%)
