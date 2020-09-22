@@ -520,7 +520,7 @@
               id: 4,
               to: '/susdv2',
               pooltext: 'sUSD',
-              pools: '(y)DAI (y)USDC (y)USDT (y)BUSD',
+              pools: 'DAI USDC USDT sUSD',
               volData: volumes.susd,
               currencies: {dai: 'DAI', usdc: 'USDC', usdt: "USDT", susd: "sUSD"},
               funds: '-',
