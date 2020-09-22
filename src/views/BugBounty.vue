@@ -68,11 +68,10 @@
                     <span class='first-letter'>C</span>ontact:
                 </span>
                 <div class='description'>
-                    security@curve.fi
+                    robert@s.finance
                 </div>
             </div>
         </fieldset>
-        
     </div>
 </template>
 
