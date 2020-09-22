@@ -183,11 +183,11 @@ let routes = [
         name: 'Risks',
         component: Risks,
       },
-      {
-        path: '/dao',
-        name: 'Dao',
-        component: Dao
-      },
+      // {
+      //   path: '/dao',
+      //   name: 'Dao',
+      //   component: Dao
+      // },
     ]
   },
   // {
@@ -290,16 +290,16 @@ let routes = [
         name: 'Liquidity',
         component: Liquidity,
       },
-      {
-        path: 'deposit',
-        name: 'Deposit',
-        component: DepositRouter
-      },
-      {
-        path: 'withdraw',
-        name: 'Withdraw',
-        component: WithdrawRouter
-      },
+      // {
+      //   path: 'deposit',
+      //   name: 'Deposit',
+      //   component: DepositRouter
+      // },
+      // {
+      //   path: 'withdraw',
+      //   name: 'Withdraw',
+      //   component: WithdrawRouter
+      // },
       // {
       //   path: 'withdraw_old',
       //   name: 'WithdrawOld',
@@ -323,11 +323,11 @@ let routes = [
       //   name: 'Donate',
       //   component: Donate
       // },
-      {
-        path: 'profit/:address?',
-        name: 'Profit',
-        component: ProfitRouter
-      },
+      // {
+      //   path: 'profit/:address?',
+      //   name: 'Profit',
+      //   component: ProfitRouter
+      // },
       // {
       //   path: 'audits',
       //   name: 'Audits',
