@@ -1,6 +1,7 @@
 <template>
 	<div>
 		<div class="add-liquidity">
+      {{ disabled }}
             <fieldset class="currencies">
                 <legend>Currencies:</legend>
                 <ul>
@@ -297,9 +298,9 @@
         		//await Promise.all([...Array(currentContract.N_COINS).keys()].map(i=>this.change_currency(i, false)))
         		await this.calcSlippage()
         	},
-            getMaxSlippage() {
-                this.getLPCrvReceived()
-            },
+          getMaxSlippage() {
+              this.getLPCrvReceived()
+          },
         },
         computed: {
           ...getters,
@@ -469,21 +470,21 @@
             	}
             },
             setInputStyles(newInputs = false, newContract, oldContract) {
-				if(oldContract) {
-					for(let i = 0; i < allabis[newContract].N_COINS - allabis[oldContract].N_COINS; i++) {
-						this.inputs.push('0.00')
-					}
-					if(allabis[oldContract].N_COINS - allabis[newContract].N_COINS > 0) {
-						this.inputs = this.inputs.filter((_, i) => i < allabis[newContract].N_COINS)
-					}
-				}
-				else if(newInputs) {
-					this.inputs = new Array(Object.keys(this.currencies).length).fill('0.00')
-				}
-	        	this.bgColors = Array(currentContract.N_COINS).fill({
-	        		backgroundColor: '#707070',
-	        		color: '#d0d0d0',
-	        	})
+              if(oldContract) {
+                for(let i = 0; i < allabis[newContract].N_COINS - allabis[oldContract].N_COINS; i++) {
+                  this.inputs.push('0.00')
+                }
+                if(allabis[oldContract].N_COINS - allabis[newContract].N_COINS > 0) {
+                  this.inputs = this.inputs.filter((_, i) => i < allabis[newContract].N_COINS)
+                }
+              }
+              else if(newInputs) {
+                this.inputs = new Array(Object.keys(this.currencies).length).fill('0.00')
+              }
+              this.bgColors = Array(currentContract.N_COINS).fill({
+                backgroundColor: '#707070',
+                color: '#d0d0d0',
+              })
             },
             async calcSlippage() {
             	try {
@@ -527,6 +528,7 @@
                     this.susdWaitingPeriod = (+decoded[decoded.length - 1] != 0)
                     this.susdWaitingPeriodTime = +decoded[decoded.length - 1]
                 }
+
 			    if (this.max_balances) {
 			        this.disabled = true;
 			        for (let i = 0; i < currentContract.N_COINS; i++) {
@@ -545,7 +547,11 @@
 			        }
 			    }
 			    else
-			        this.disabled = false;
+              this.disabled = false;
+              
+
+          // FIXME: temp
+          this.disabled = false;
 			},
 			async handle_sync_balances_proportion() {
 				await this.handle_sync_balances();
@@ -565,7 +571,7 @@
                 this.setLoadingAction(actionType)
                 let promises = await Promise.all([helpers.getETHPrice()])
                 this.ethPrice = promises[0]
-                
+
 				this.show_loading = true
                 let calls = [...Array(currentContract.N_COINS).keys()].map(i=> {
                           if(this.currentPool == 'susdv2' && i == 3 || this.currentPool == 'sbtc' && i == 2)

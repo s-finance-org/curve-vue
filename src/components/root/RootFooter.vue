@@ -1,7 +1,17 @@
 <template>
   <b-container>
     <footer>
-      <a :href=item.href v-for="(item, idx) in footer_nav" :key="`footer_nav_${ idx }`">{{ item.cont }}</a>
+      <a href="https://twitter.com/SFinanceEx" target="_blank">Twitter</a>
+      <template v-if="$i18n.locale === 'zh-CN'">
+        <a href="https://t.me/SFinanceCN" target="_blank">Telegram</a>
+        <a href="https://www.yuque.com/mudui/sfin" target="_blank">社区支持</a>
+      </template>
+      <template v-else>
+        <a href="https://t.me/SFinanceEN" target="_blank">Telegram</a>
+      </template>
+      <a href="https://discord.gg/rc49Dzu" target="_blank">Discord</a>
+      <a href="https://medium.com/s-finance" target="_blank">Medium</a>
+      <a href="https://github.com/s-finance-org/curve-vue" target="_blank">git</a>
     </footer>
   </b-container>
 </template>
@@ -9,16 +19,6 @@
 <script>
   export default {
     computed: {
-      footer_nav () {
-        return [
-          { cont: 'Twitter', href: 'https://twitter.com/SFinanceEx' },
-          { cont: 'Telegram', href: 'https://t.me/SFinanceEN' },
-          { cont: 'Telegram CN', href: 'https://t.me/SFinanceCN' },
-          { cont: 'Discord', href: 'https://discord.gg/rc49Dzu' },
-          { cont: 'Mdeium', href: 'https://medium.com/s-finance' },
-          { cont: 'git', href: 'https://github.com/s-finance-org/curve-vue' },
-        ]
-      }
     }
   }
 </script>

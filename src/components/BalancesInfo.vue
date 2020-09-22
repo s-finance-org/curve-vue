@@ -3,7 +3,7 @@
 
     <b-container>
       <h4 class="mt-4 mb-2">{{ $t('balancesInfo.name') }}</h4>
-      <div class="box mb-3">
+      <div class="box mb-4">
         <div class="px-4 py-3 line-bottom">
           <h6 class="text-black-65 mb-3">{{ $t('balancesInfo.assetDistribution') }}</h6>
           <div class="row">
@@ -407,7 +407,7 @@
   .tooltip {
     margin-left: 0;
   }
-  
+
   .tooltip .tooltiptext {
     font-weight: normal;
     background-color: #aaaaaa;

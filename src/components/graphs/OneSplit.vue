@@ -45,7 +45,7 @@
               </span>
             </b-form-text>
           </div>
-          <div class="lists">
+          <div class="lists lists-select">
             <ul>
               <li class="d-flex align-items-center" :class="{'coins': true, [currency]: true}" v-for='(currency, i) in Object.keys(currencies)'>
                 <b-form-radio class="radio-danger" v-model="from_currency" :id="'from_cur_'+i"  name="from_cur" :value='i'></b-form-radio>
@@ -92,7 +92,7 @@
               {{ $t('instantSwap.max') }}: -
             </b-form-text>
           </div>
-          <div class="lists">
+          <div class="lists lists-select">
             <ul>
               <li class="d-flex align-items-center" :class="{'coins': true, [currency]: true}" v-for='(currency, i) in Object.keys(currencies)'>
                 <b-form-radio class="radio-danger" v-model="to_currency" :id="'to_cur_'+i"  name="to_cur" :value='i'></b-form-radio>
@@ -106,30 +106,31 @@
           </div>
         </div>
       </div>
-      <div v-show='showadvancedoptions' class="lists mt-3">
-        <div id='poolselect' v-show=false>
-          <input id='compoundpool1' type='checkbox' value='compound' v-model='pools'/>
-          <label for='compoundpool1'>Compound</label>
 
-          <input id='ypool1' type='checkbox' value='y' v-model='pools'/>
-          <label for='ypool1'>Y</label>
+      <div id='poolselect' v-show=false>
+        <input id='compoundpool1' type='checkbox' value='compound' v-model='pools'/>
+        <label for='compoundpool1'>Compound</label>
 
-          <input id='busdpool1' type='checkbox' value='busd' v-model='pools'/>
-          <label for='busdpool1'>bUSD</label>
+        <input id='ypool1' type='checkbox' value='y' v-model='pools'/>
+        <label for='ypool1'>Y</label>
 
-          <input id='susdpool1' type='checkbox' value='susdv2' v-model='pools'/>
-          <label for='susdpool1'>sUSD</label>
+        <input id='busdpool1' type='checkbox' value='busd' v-model='pools'/>
+        <label for='busdpool1'>bUSD</label>
 
-          <input id='paxpool1' type='checkbox' value='pax' v-model='pools'/>
-          <label for='paxpool1'>PAX</label>
+        <input id='susdpool1' type='checkbox' value='susdv2' v-model='pools'/>
+        <label for='susdpool1'>sUSD</label>
 
-          <input id='renpool1' type='checkbox' value='ren' v-model='pools'/>
-          <label for='renpool1'>ren</label>
+        <input id='paxpool1' type='checkbox' value='pax' v-model='pools'/>
+        <label for='paxpool1'>PAX</label>
 
-          <input id='sbtcpool' type='checkbox' value='sbtc' v-model='pools'/>
-          <label for='sbtcpool'>sBTC</label>
-        </div>
-        <div v-show='fromInput > 0' id='max_slippage' class="row">
+        <input id='renpool1' type='checkbox' value='ren' v-model='pools'/>
+        <label for='renpool1'>ren</label>
+
+        <input id='sbtcpool' type='checkbox' value='sbtc' v-model='pools'/>
+        <label for='sbtcpool'>sBTC</label>
+      </div>
+      <div v-show="showadvancedoptions">
+        <div id='max_slippage' class="lists lists-select mt-3 d-flex no-gutters">
           <b-form-group class="mb-0 col">
             <ul>
               <li>
@@ -160,6 +161,7 @@
                 >{{ $t('global.customize') }}</b-form-radio>
                 <span class="d-flex align-items-center ml-4 mt-1">
                   <b-form-input class="input-append-percentage" id="custom_slippage_input" :disabled="maxSlippageMode != 4" v-model="customMaxSlippageInput" :placeholder="$t('instantSwap.valuePlaceholder')"></b-form-input>
+                  <span class="offset-ml-4 text-black-65">%</span>
                 </span>
               </li>
               <li v-show='showSlippageTooLow'>
@@ -1448,32 +1450,9 @@
     cursor: pointer;
     line-height: 20px;
   }
-  .currentInput {
-    background: rgba(255,255,255,0.3);
-    border: 1px solid #dadedf;
-    border-radius: 2px 0px 0px 2px;
-  }
-  .currentInput .coin {
-    min-width: 104px;
-    border-right: 1px solid #dadedf;
-    padding-left: 12px;
-    padding-right: 12px;
-  }
-  .currentInput input {
-    border-width: 0;
-  }
+  
 
-  .lists {
-    border: 1px solid rgba(0,0,0,0.08);
-    border-radius: 2px;
-    padding: 8px 12px;
-  }
-  .lists ul li {
-    font-size: 14px;
-    color: rgba(0,0,0,0.65);
-    line-height: 22px;
-    padding: 4px 0;
-  }
+  
    /* #poolselect {
         margin-bottom: 1em;
     }

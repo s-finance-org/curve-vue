@@ -9,10 +9,10 @@ let firebaseApp = null
 let firestore = null
 
 const blocknative = new BlocknativeSdk({
-	dappId: 'c68d8ec3-9b9a-4ba5-a3eb-6232eff79030',       // [String] The API key created by step one above
-	networkId: 1,
+	dappId: process.env.VUE_APP_BLOCKNATIVE_KEY,       // [String] The API key created by step one above
+	networkId: +process.env.VUE_APP_BLOCKNATIVE_NETWORK_ID,
 })
-const sdk = new RenSDK('mainnet', {
+const sdk = new RenSDK(process.env.VUE_APP_RENSDK_NETWORK, {
 	//logLevel: 'trace'
 })
 let Box

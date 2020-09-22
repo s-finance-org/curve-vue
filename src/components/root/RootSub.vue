@@ -1,25 +1,13 @@
 <template>
   <div>
-    <!-- <div :class="'blue window ' + $route.name">
-        <h1><img :src="logoSrc" alt="🌀 Curve"></h1>
-    </div> -->
-    <div class="error window half-width info" id="error-window" v-show='error'>
-      {{ error }}
+    <div class="error window half-width info" id="error-window" v-if='errMsg'>
+      {{ errMsg }}
     </div>
-    <b-container class="mt-4">
-      <div class='info-message gentle-message window half-width gentle-message' v-if='hasConnectedWallet'>
+    <b-container>
+      <div class='info-message gentle-message window half-width gentle-message mt-4' v-if='hasConnectedWallet'>
         {{ $t('wallet.notConnected') }}<button class="ml-2" @click='changeWallets'>{{ $t('wallet.connect') }}</button>
       </div>
     </b-container>
-    <!-- <div class='info-message gentle-message window half-width gentle-message CRV'>
-      <div>
-        <a href='https://etherscan.io/address/0xD533a949740bb3306d119CC777fa900bA034cd52'>CRV: 0xD533a949740bb3306d119CC777fa900bA034cd52</a>
-      </div>
-    </div>
-    <div class='simple-error window' v-show='plsReturn'>
-      Your recent withdrawal from Curve resulted in getting 1000 more USDT because of another user mistakenly transferring funds to the contract.
-      If you wish to return them - please contact us on <a href='https://twitter.com/CurveFinance'>Twitter</a>/<a href='https://t.me/curvefi'>Telegram</a>/<a href="https://discord.gg/9uEHakc" rel='noopener noreferrer'>@Discord</a>. Thank you! 
-    </div> -->
   </div>
 </template>
 
@@ -27,11 +15,13 @@
   import { getters, contract as currentContract, changeContract, poolMenu } from '../../contract'
   import init, { onboard, changeWallets } from '../../init'
   import * as volumeStore from '@/components/common/volumeStore'
-  import constantPlatform from '../../constant/platform'
 
   export default {
     props: {
-      error: String
+      errMsg: {
+        type: String,
+        default: ''
+      }
     },
     methods: {
       async changeWallets() {

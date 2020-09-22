@@ -4,9 +4,16 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "build": "vue-cli-service build --mode development",
+    "prod": "vue-cli-service build"
   },
   "dependencies": {
+    "@aragon/connect": "0.4.2",
+    "@aragon/connect-core": "0.4.2",
+    "@aragon/connect-ethereum": "0.4.2",
+    "@aragon/connect-thegraph": "0.4.2",
+    "@aragon/connect-thegraph-tokens": "^0.4.2",
+    "@aragon/connect-thegraph-voting": "0.4.2",
     "@biconomy/mexa": "^1.5.12",
     "@chenfengyuan/vue-qrcode": "^1.0.2",
     "@ledgerhq/hw-transport-webusb": "^5.19.1",
@@ -14,6 +21,7 @@
     "@sentry/browser": "git+https://github.com/pengiundev/sentry-browser.git",
     "@sentry/integrations": "^5.15.0",
     "bignumber.js": "^9.0.0",
+    "graphql-tag": "^2.10.3",
     "bitcoin-address-validation": "^1.0.2",
     "bnc-notify": "^1.2.2",
     "bnc-onboard": "^1.11.0",

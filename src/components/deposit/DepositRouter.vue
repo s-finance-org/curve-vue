@@ -22,14 +22,12 @@
 <script>
     import { getters, contract as currentContract, gas as contractGas} from '../../contract'
     import * as shiftState from '../ren/shiftState'
-	import Deposit from './Deposit.vue'
+	  import Deposit from './Deposit.vue'
 
     const DepositNative = () => ({
-        component: import('../ren/Deposit.vue'),
-
-        loading: Deposit,
-
-        delay: 0,
+      component: import('../ren/Deposit.vue'),
+      loading: Deposit,
+      delay: 0,
     })
 
 	export default {

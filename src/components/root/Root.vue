@@ -3,15 +3,20 @@
     <basic-trade class="mt-4 mb-3" />
 
     <h4 class="mt-4 mb-2">{{ $t('stablePools.name') }}</h4>
-    <div class="box mb-3">
+    <div class="box mb-4">
       <b-table @row-clicked=stablePoolsRowClicked class="mb-0 text-right" hover :items="stablePools.items" :fields="stablePools.fields">
         <template v-slot:head(name)>
           {{ $t('global.poolName')}}
         </template>
         <template v-slot:cell(name)="data">
-          <span class="d-flex icon-n icon-w-16 align-items-center">
+          <div class="d-flex">
+            <div class="icon-box-20 d-flex flex-wrap mr-3">
+              <img v-for='(currency, i) in Object.keys(data.item.currencies)' :key="'icon-'+currency" class="icon-w-8"
+                :class="{'token-icon': true, [currency+'-icon']: true, 'y': depositc && !isPlain}" 
+                :src='getTokenIcon(currency)'>
+            </div>
             <span>{{ data.item.pooltext }}</span>
-          </span>
+          </div>
         </template>
         <template v-slot:head(pools)>
           {{ $t('global.assests') }}
@@ -23,7 +28,7 @@
           {{ $t('global.deposits') }}
         </template>
         <template v-slot:cell(funds)="data">
-          {{ data.item.funds }}
+          {{ data.item.funds | formatNumber(0) }}
         </template>
         <template v-slot:head(volume)>
           {{ $t('global.dailyVol') }}
@@ -50,8 +55,8 @@
           {{ $t('global.operating') }}
         </template>
         <template v-slot:cell(operating)="data">
-          <b-button size="sm" variant="danger" class="mr-2">{{ $t('global.swap') }}</b-button>
-          <b-button size="sm" variant="outline-secondary">{{ $t('global.liquidity') }}</b-button>
+          <b-button to="/susdv2/liquidity" size="sm" variant="danger" class="mr-2">{{ $t('global.deposit') }}</b-button>
+          <b-button to="/dao" size="sm" variant="outline-secondary">{{ $t('global.dao') }}</b-button>
         </template>
       </b-table>
     </div>
@@ -432,8 +437,9 @@
 			sbtcRewards: null,
 			yfiRewards: null,
 			balRewards: null,
-			btcPrice: null,
-
+      btcPrice: null,
+      // FIXME: ???
+      depositc: '',
       CRVAPYs: {},
 
 		}),
@@ -474,69 +480,70 @@
         return {
           fields: ['name', 'pools', 'funds', 'volume', 'apr', 'operating' ],
           items: [
-            {
-              id: 0,
-              to: '/compound',
-              pooltext: 'Compound',
-              pools: '(c)DAI (c)USDC',
-              volData: volumes.compound,
-              funds: '-',
-              link: '/compound'
-            },
-            {
-              id: 5,
-              to: '/pax',
-              pooltext: 'PAX',
-              pools: '(yc)DAI (yc)USDC (yc)USDT PAX',
-              volData: volumes.pax,
-              funds: '-',
-              link: '/pax'
-            },
-            {
-              id: 2,
-              to: '/y',
-              pooltext: 'Y',
-              pools: '(y)DAI (y)USDC (y)USDT (y)TUSD',
-              volData: volumes.y,
-              funds: '-',
-              link: '/y'
-            },
-            {
-              id: 2,
-              to: '/busd',
-              pooltext: 'BUSD',
-              pools: '(y)DAI (y)USDC (y)USDT (y)BUSD',
-              volData: volumes.busd,
-              funds: '-',
-              link: '/busd'
-            },
+            // {
+            //   id: 0,
+            //   to: '/compound',
+            //   pooltext: 'Compound',
+            //   pools: '(c)DAI (c)USDC',
+            //   volData: volumes.compound,
+            //   funds: '-',
+            //   link: '/compound'
+            // },
+            // {
+            //   id: 5,
+            //   to: '/pax',
+            //   pooltext: 'PAX',
+            //   pools: '(yc)DAI (yc)USDC (yc)USDT PAX',
+            //   volData: volumes.pax,
+            //   funds: '-',
+            //   link: '/pax'
+            // },
+            // {
+            //   id: 2,
+            //   to: '/y',
+            //   pooltext: 'Y',
+            //   pools: '(y)DAI (y)USDC (y)USDT (y)TUSD',
+            //   volData: volumes.y,
+            //   funds: '-',
+            //   link: '/y'
+            // },
+            // {
+            //   id: 2,
+            //   to: '/busd',
+            //   pooltext: 'BUSD',
+            //   pools: '(y)DAI (y)USDC (y)USDT (y)BUSD',
+            //   volData: volumes.busd,
+            //   funds: '-',
+            //   link: '/busd'
+            // },
             {
               id: 4,
               to: '/susdv2',
               pooltext: 'sUSD',
               pools: '(y)DAI (y)USDC (y)USDT (y)BUSD',
               volData: volumes.susd,
+              currencies: {dai: 'DAI', usdc: 'USDC', usdt: "USDT", susd: "sUSD"},
               funds: '-',
               link: '/susdv2'
             },
-            {
-              id: 7,
-              to: '/ren',
-              pooltext: 'REN',
-              pools: 'renBTC wBTC',
-              volData: volumes.ren,
-              funds: '-',
-              link: '/ren'
-            },
-            {
-              id: 7,
-              to: '/sbtc',
-              pooltext: 'sBTC',
-              pools: 'renBTC wBTC sBTC',
-              volData: volumes.sbtc,
-              funds: '-',
-              link: '/sbtc'
-            },
+            // {
+            //   id: 7,
+            //   to: '/ren',
+            //   pooltext: 'REN',
+            //   pools: 'renBTC wBTC',
+            //   volData: volumes.ren,
+            //   funds: '-',
+            //   link: '/ren'
+            // },
+            // {
+            //   id: 7,
+            //   to: '/sbtc',
+            //   pooltext: 'sBTC',
+            //   pools: 'renBTC wBTC sBTC',
+            //   volData: volumes.sbtc,
+            //   funds: '-',
+            //   link: '/sbtc'
+            // },
           ]
         }
       }
@@ -719,7 +726,9 @@
 	                this.apy.push((apy*100).toFixed(2))
 	            }
 			},
-
+      getTokenIcon(token) {
+          return helpers.getTokenIcon(token, this.depositc, this.currentPool)
+      },
 			async getCRVAPY() {
 
 				console.log("GET CRV APY")
@@ -729,7 +738,7 @@
 						swap: '0xA2B47E3D5c44877cca798226B7B8118F9BFb7A56',
 						swap_token: '0x845838DF265Dcd2c412A1Dc9e959c7d08537f8a2',
 						name: 'compound',
-            gauge: '0x7ca5b0a2910B33e9759DC7dDB0413949071D7575',
+            gauge: process.env.VUE_APP_COMPOUND_GAUGE,
 					},
 					usdt: {
 						swap: '0x52EA46506B9CC5Ef470C5bf89f17Dc28bB35D85C',
@@ -753,7 +762,7 @@
 						swap: '0xA5407eAE9Ba41422680e2e00537571bcC53efBfD',
 						swap_token: '0xC25a3A3b969415c80451098fa907EC722572917F',
 						name: 'susdv2',
-            gauge: '0xA90996896660DEcC6E997655E065b23788857849',
+            gauge: process.env.VUE_APP_PSS_GAUGE,
 					},
 					pax: {
 						swap: '0x06364f10B501e868329afBc005b3492902d6C763',
@@ -776,13 +785,13 @@
 				}
 
 				let decodedGauges = [
-				  "0x7ca5b0a2910B33e9759DC7dDB0413949071D7575",
+				  process.env.VUE_APP_COMPOUND_GAUGE,
 				  "0xBC89cd85491d81C6AD2954E6d0362Ee29fCa8F53",
 				  "0xFA712EE4788C042e2B7BB55E6cb8ec569C4530c1",
 				  "0x69Fb7c45726cfE2baDeE8317005d3F94bE838840",
 				  "0x64E3C23bfc40722d3B649844055F1D51c1ac041d",
 				  "0xB1F2cdeC61db658F091671F5f199635aEF202CAC",
-				  "0xA90996896660DEcC6E997655E065b23788857849",
+				  process.env.VUE_APP_PSS_GAUGE,
 				  "0x705350c4BcD35c9441419DdD5d2f097d7a55410F"
 				]
 

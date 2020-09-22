@@ -89,6 +89,13 @@ fieldset {
   min-width: 0;
 }
 
+
+
+/* b-overlay */
+.b-overlay {
+  z-index: 0 !important;
+}
+
 /* Shadow */
 .box {
   overflow: hidden;
@@ -101,6 +108,9 @@ fieldset {
 .line-bottom {
   box-shadow: 0px -1px 0px 0px rgba(0,0,0,0.08) inset; 
 }
+.line-right {
+  box-shadow: -1px 0 0 0 rgba(0,0,0,0.08) inset; 
+}
 
 /* Layout */
 #app {
@@ -110,9 +120,34 @@ fieldset {
 }
 
 /* Format */
+.inline-block {
+  display: inline-block;
+}
 .text-monospace { font-family: 'SFMono-Regular', Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
 .text-black-65 {
   color: rgba(0, 0, 0, .65);
+}
+.text-black-45 {
+  color: rgba(0, 0, 0, .45);
+}
+.text-black-15 {
+  color: rgba(0,0,0,0.15);
+}
+.text-blue-1 {
+  color: #1BA57B;
+}
+.text-danger-1 {
+  color: #EB3C00;
+}
+
+/* Size */
+.text-18 {
+  font-size: 18px;
+}
+
+/* Offset */
+.offset-ml-4 {
+  margin-left: -24px;
 }
 
 /* Nav */
@@ -131,25 +166,91 @@ fieldset {
   box-shadow: inset 0 -2px 0px 0px #eb3c00;
 }
 
+/* Alert */
+.alert {
+  border-radius: 2px;
+  font-size: 12px;
+  line-height: 16px;
+  padding: 8px 12px;
+  border-width: 0;
+}
+.alert-dark {
+  background: #dadedf;
+  color: #000000;
+}
+.alert-error {
+  background: #ff4d7c;
+  color: #ffffff;
+}
+.alert-error::before {
+  content: "×";
+  width: 16px;
+  height: 16px;
+  font-size: 20px;
+  display: inline-block;
+  background: #ffffff;
+  color: #ff4d7c;
+  line-height: 15px;
+  border-radius: 50%;
+  padding-left: 1px;
+  text-align: center;
+  overflow: hidden;
+  vertical-align: bottom;
+  margin-right: 12px;
+}
+
 /* Icon */
+.icon-w-8 {
+  width: 8px;
+  height: 8px;
+}
 .icon-w-20 {
   width: 20px;
   height: 20px;
 }
+.icon-w-40 {
+  width: 40px;
+  height: 40px;
+}
+.icon-box-20 {
+  width: 20px;
+  height: 20px;
+  background: #ffffff;
+  border: 1px solid #dadedf;
+  border-radius: 2px;
+  padding: 1px;
+}
+
+/* Box size */
+.box-98 {
+  width: 98px;
+  height: 98px;
+}
+
+/* Width */
+.w-270 {
+  width: 270px;
+}
 
 /* Button */
-.btn-sm, .btn-group-sm > .btn {
-  padding: 0px 8px;
+.btn, .btn-group > .btn {
+  padding: 7px 16px;
   font-size: 14px;
   line-height: 22px;
   border-radius: 2px;
 }
-
+.btn-sm, .btn-group-sm > .btn {
+  padding: 0px 8px;
+}
 .btn-lg, .btn-group-lg > .btn {
   padding: 12px 24px;
   font-size: 16px;
   line-height: 24px;
-  border-radius: 2px;
+}
+.btn-xsm, .btn-group-sm > .btn {
+  padding: 0px 4px;
+  font-size: 12px;
+  line-height: 18px;
 }
 
 .btn-danger {
@@ -181,6 +282,22 @@ fieldset {
   text-align: left;
 }
 
+/* Input Textarea */
+input[type="text"] {
+  font-size: 14px;
+}
+input[type="text"]::-webkit-input-placeholder, textarea::-webkit-input-placeholder {
+  color: rgba(0,0,0,0.45);
+  font-size: 14px;
+}
+input[type="text"]::-moz-placeholder, textarea::-moz-placeholder {
+  color: rgba(0,0,0,0.45);
+  font-size: 14px;
+}
+input[type="text"]::-moz-placeholder, textarea::-moz-placeholder {
+  color: rgba(0,0,0,0.45);
+  font-size: 14px;
+}
 
 /* Radio */
 .custom-control {
@@ -224,41 +341,119 @@ fieldset {
 	animation: mymove .5s 1
 }
 
+/* Checkbox */
+.custom-checkbox {
+  font-size: 14px;
+  color: rgba(0,0,0,0.65);
+  line-height: 24px;
+}
+
 /* Input group */
 .input-append-percentage::before {
   content: "%";
 }
 
-
 /* Modal */
-.statement-modal{
-  background-color: #F7CA00;
+.normal-modal {
   margin-right: 100px;
   margin-left: 100px;
   border-width: 0;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.15);
 }
-.statement-modal header {
+.normal-modal header {
   border-bottom-width: 0px;
   padding-top: 20px;
   padding-right: 24px;
   padding-left: 24px;
 }
-.statement-modal header h5{
+.normal-modal header h5{
   font-size: 20px;
   line-height: 28px;
 }
-.statement-modal .modal-body {
+.normal-modal .modal-body {
   padding: 0 24px;
   font-size: 14px;
   color: rgba(0,0,0,0.65);
   line-height: 22px;
 }
-.statement-modal footer {
+.normal-modal footer {
   border-top-width: 0px;
   padding: 20px 24px;
 }
-/* .statement-modal footer button{
-  background: #eb3c00;
+.statement-modal {
+  background-color: #F7CA00;
+}
+
+
+/* Tab */
+.tabs-nav .nav-link {
+  font-size: 14px;
+  color: rgba(0,0,0,0.85);
+  line-height: 22px;
+  font-weight: 400;
+  border: 1px solid rgba(0,0,0,0.25);
   border-radius: 2px;
-} */
+  padding: 6px 16px;
+  margin-left: 8px;
+}
+.tabs-nav li:first-child .nav-link {
+  margin-left: 0px;
+}
+.tabs-nav .nav-link.active, .tabs-nav .nav-link:hover {
+  background-color: #fff;
+  border-color: #eb3c00;
+  color: #eb3c00;
+}
+.tabs-nav .nav-link:active, .tabs-nav .nav-link:focus {
+  outline-color: #eb3c00;
+}
+
+/*  */
+.btn-group-toggle label.btn {
+  margin-right: 8px;
+  border-radius: 2px;
+  padding-right: 16px;
+  padding-left: 16px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 22px;
+}
+.btn-group-toggle label.btn:last-child {
+  margin-right: 0px;
+}
+
+
+
+
+
+
+
+.lists {
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 2px;
+  padding: 8px 12px;
+}
+.lists-select ul li {
+  font-size: 14px;
+  color: rgba(0,0,0,0.65);
+  line-height: 22px;
+  padding: 4px 0;
+}
+
+
+
+
+.currentInput {
+  background: rgba(255,255,255,0.3);
+  border: 1px solid #dadedf;
+  border-radius: 2px 0px 0px 2px;
+}
+.currentInput .coin {
+  min-width: 104px;
+  border-right: 1px solid #dadedf;
+  padding-left: 12px;
+  padding-right: 12px;
+}
+.currentInput input {
+  border-width: 0;
+}

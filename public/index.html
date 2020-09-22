@@ -11,12 +11,78 @@
     <link rel="icon" type="image/png" sizes="16x16" href="<%= BASE_URL %>res/icons/logo/logo.png">
     <link rel="icon" type="image/png" sizes="32x32" href="<%= BASE_URL %>res/icons/logo/logo.png">
     <link rel="icon" type="image/png" sizes="48x48" href="<%= BASE_URL %>res/icons/logo/logo.png">
+    <style>
+      html, body {
+        padding: 0;
+        margin: 0;
+      }
+      .initLoading {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        justify-content: center;
+        align-items: center;
+        background-color: #f7f5ec;
+      }
+      .che_guevara {
+        width: 290px;
+        height: 290px;
+        background: url(/res/che_guevara.png) no-repeat center center;
+        background-size: cover;
+      }
+      .initLoading span {
+        font-size: 14px;
+        font-weight: 400;
+        color: rgba(0,0,0,0.65);
+        line-height: 22px;
+        padding-top: 40px;
+        padding-bottom: 40px;
+      }
+      .initLoading progress {
+        width: 240px;
+        height: 8px;
+        background: #dadedf;
+        border-radius: 2px;
+        -webkit-appearance: none;
+      }
+      .initLoading progress::-ms-fill{
+        background:#eb3c00;
+      }
+      .initLoading progress::-moz-progress-bar{
+        background:#eb3c00;
+      }
+      .initLoading progress::-webkit-progress-bar{
+        background: #dadedf;
+      }
+      .initLoading progress::-webkit-progress-value{
+        background: #eb3c00;
+      }
+    </style>
+    <script>
+        window.onload = () => {
+          const $el = document.getElementById('initLoading_progress')
+
+          // function func(){
+          //   console.log(123123123)
+          //   // $el.value += 2
+          //   setTimeout("func()", 120);
+          // }
+          // func()
+        }
+    </script>
   </head>
   <body class="skin-beige">
     <noscript>
       <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
-    <div id="app"></div>
+
+    <div id="app">
+      <div class="initLoading">
+        <div class="che_guevara"></div>
+        <span>Entering S.Finance ...</span>
+        <!-- <progress id="initLoading_progress" value='0' max='100'></progress> -->
+      </div>
+    </div>
     <!-- built files will be auto injected -->
   </body>
 </html>

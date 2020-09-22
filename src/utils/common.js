@@ -141,6 +141,7 @@ export async function ensure_underlying_allowance(i, _amount, underlying_coins =
 }
 
 export async function approveAmount(contract, amount, account, toContract, infinite = false) {
+console.log(await contract.methods.allowance(account, toContract).call())
     let current_allowance = cBN(await contract.methods.allowance(account, toContract).call())
     console.log(currentContract.max_allowance)
     console.log(current_allowance.toString(), amount.toString(), current_allowance.lt(amount))

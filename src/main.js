@@ -11,9 +11,7 @@ import { CaptureConsole, InboundFilters, Vue as VueIntegration } from '@sentry/i
 import * as subscriptionStore from './components/common/subscriptionStore'
 import * as helpers from './utils/helpers'
 
-import i18nLanguages from './i18n'
-
-import store from './store/index'
+import store from './store'
 
 /**
  *  Vue uses
@@ -28,10 +26,12 @@ Vue.use(BootstrapVue)
 
 // Vue-i18n
 Vue.use(VueI18n)
+
 const i18n = new VueI18n({
-  locale: 'en-US',
-  messages: i18nLanguages
+  locale: store.i18n.defaultLocale,
+  messages: store.i18n.languages
 })
+store.i18n.$i18n = i18n
 
 /**
  *  Replace Vuex
@@ -45,7 +45,7 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 import '../public/tvisionbase.css'
-// import '../public/tvision.css'
+import '../public/tvision.css'
 
 import './registerServiceWorker'
 

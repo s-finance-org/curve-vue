@@ -5,7 +5,8 @@ import allabis, { ERC20_abi, cERC20_abi, yERC20_abi, synthERC20_abi, synthetixEx
 import web3Init from './init'
 import { chunkArr } from './utils/helpers'
 import * as common from './utils/common.js'
-import * as specs from './constant/specs'
+
+import { state as errorState } from './components/common/errorStore'
 
 var N_COINS = 2;
 var coin_precisions = [1e18, 1e6];
@@ -18,7 +19,7 @@ export const LENDING_PRECISION = 1e18;
 export const PRECISION = 1e18;
 
 var migration_address = '0x54Ee22d5593FC76fB20EafAb66C45aAb3268B800';
-export const infura_url = specs.infura_url;
+export const infura_url = `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`;
 
 const currencies = {
 	compound: {
@@ -327,7 +328,8 @@ const state = Vue.observable({
 	},
 	swapbtc: false,
 	adapterContract: null,
-	currentContract: 'compound',
+  currentContract: 'compound',
+  // FIXME:
 	currencies: currencies.compound,
 	N_COINS: N_COINS,
 	coin_precisions: coin_precisions,
@@ -436,7 +438,15 @@ export const getters = {
 	totalStake: () => state.totalStake,
 
 	usdShare: () => state.usdShare,
-	usdStake: () => state.usdStake,
+  usdStake: () => state.usdStake,
+
+  publicPath: () => process.env.BASE_URL,
+
+  // errorMessage
+  txErrorMessage() {
+    setTimeout(() => errorState.txError = null, 2200)
+    return errorState.txError
+  },
 }
 
 

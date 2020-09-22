@@ -1,10 +1,7 @@
 <template>
   <div>
-    <p v-show='errorMessage'>
-      {{ errorMessage }}
-    </p>
-    <b-form-group class="mb-0">
-      <ul class="list" v-show='gasPriceMedium'>
+    <b-form-group class="mb-0 .lists-select">
+      <ul v-show='gasPriceMedium'>
         <li>
           <h6 class="text-black-65 mb-0">{{ $t('global.gasPrice') }}</h6>
         </li>
@@ -77,7 +74,7 @@
 
 <script>
 	import { state } from './gasPriceStore'
-  import { state as errorState } from './errorStore'
+  // import { state as errorState } from './errorStore'
   import { retry } from '../../utils/helpers'
 
   import { setIntervalAsync, clearIntervalAsync } from 'set-interval-async/dynamic'
@@ -143,10 +140,10 @@
           this.gasPrice = val
         }
       },
-      errorMessage() {
-          setTimeout(() => errorState.txError = null, 2200)
-          return errorState.txError
-      },
+      // errorMessage() {
+      //     setTimeout(() => errorState.txError = null, 2200)
+      //     return errorState.txError
+      // },
 		},
 
 		async created() {
@@ -164,14 +161,14 @@
 
         methods: {
             async getGasPrice() {
-                try {
-                    throw new Error('test')
-                    let gasPriceInfo = await retry(fetch('https://pushservice.curve.fi/gasprice'))
-                    gasPriceInfo = await gasPriceInfo.json()
-                    state.gasPriceInfo = gasPriceInfo
-                    if(state.gasPriceInfo.fast > 1000) throw new Error('too high!')
-                }
-                catch(err) {
+                // try {
+                //     throw new Error('test')
+                //     let gasPriceInfo = await retry(fetch('https://pushservice.curve.fi/gasprice'))
+                //     gasPriceInfo = await gasPriceInfo.json()
+                //     state.gasPriceInfo = gasPriceInfo
+                //     if(state.gasPriceInfo.fast > 1000) throw new Error('too high!')
+                // }
+                // catch(err) {
                     try {
                         let gasPriceInfo = await retry(fetch('https://gasprice.poa.network/'))
                         gasPriceInfo = await gasPriceInfo.json()
@@ -189,7 +186,7 @@
                             instant: gasPrice + 4,
                         }
                     }
-                }
+                // }
                 if(!state.fetched) {
                     state.gasPrice = state.gasPriceInfo.fast
                     state.fetched = true
@@ -208,12 +205,6 @@
 </script>
 
 <style scoped>
-  ul.list li {
-    font-size: 14px;
-    color: rgba(0,0,0,0.65);
-    line-height: 22px;
-    padding: 4px 0;
-  }
     /* .pulse {
         animation: pulse 1s 3;
         margin-bottom: 8px;
