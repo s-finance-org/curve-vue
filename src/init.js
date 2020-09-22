@@ -43,7 +43,7 @@ let wallets = [
   {
     walletName: "trezor",
     appUrl: "https://s.finance",
-    // email: "info@s.finance",
+    email: "robert@s.finance",
     rpcUrl: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`
   },
   {

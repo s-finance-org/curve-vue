@@ -291,20 +291,20 @@ export async function useFirestore() {
 	state.aes_key = aes_key
 
 	try {
-		let user = await firebaseApp.auth().createUserWithEmailAndPassword(`${contract.default_account}@curve.fi`, password)
+		let user = await firebaseApp.auth().createUserWithEmailAndPassword(`${contract.default_account}@s.finance`, password)
 	}
 	catch(err) {
 		console.error(err)
 		console.log("SIGN IN INSTEAD", password)
 		try {
-			let user = await firebaseApp.auth().signInWithEmailAndPassword(`${contract.default_account}@curve.fi`, password)
+			let user = await firebaseApp.auth().signInWithEmailAndPassword(`${contract.default_account}@s.finance`, password)
 		}
 		catch(err) {
 			console.error(err)
 		}
 		console.log(err.code, "ERR CODE")
 		// if(err.code == 'auth/email-already-in-use') {
-		// 	let user = firebaseApp.auth().signInWithEmailAndPassword(`${contract.default_account}@curve.fi`, password)
+		// 	let user = firebaseApp.auth().signInWithEmailAndPassword(`${contract.default_account}@s.finance`, password)
 		// }
 	}
 	firebaseApp.auth().onAuthStateChanged(user => {

@@ -478,7 +478,14 @@
         const { volumes } = this
 
         return {
-          fields: ['name', 'pools', 'funds', 'volume', 'apr', 'operating' ],
+          fields: [
+            'name',
+            'pools',
+            // 'funds',
+            'volume',
+            'apr',
+            'operating'
+          ],
           items: [
             // {
             //   id: 0,

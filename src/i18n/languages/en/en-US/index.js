@@ -96,7 +96,7 @@ export default {
   risk: {
     title: 'Risks Warning',
     auditTitle: 'Audits',
-    auditContHtml: 'S.Finance smart contracts were Audited by KNOWNSEC.<a href="https://etherscan.io/token/0x9f843d9ba2a386bda2845507450fd47934fb3d03" target="_blank">Swap Address<a><br/>However, security audits don\'t eliminate risks completely. Please don’t supply your life savings, or assets you can’t afford to lose, to S.Finance, especially as a liquidity provider.<br/>Using S.Finance as an exchange user should be significantly less risky, but this is not advice.',
+    auditContHtml: `S.Finance smart contracts were Audited by KNOWNSEC.<a href="https://etherscan.io/token/0x9f843d9ba2a386bda2845507450fd47934fb3d03" target="_blank">Contract Address<a>.<br/>However, security audits don't eliminate risks completely. Please don’t supply your life savings, or assets you can’t afford to lose, to S.Finance, especially as a liquidity provider.<br/>Using S.Finance as an exchange user should be significantly less risky, but this is not advice.`,
     adminKeyTitle: 'Admin keys',
     adminKeyContHtml: 'Admin key allows to pause the contract in an emergency, but only during first 2 months in existence. Also it allows to change amplification coefficient (S.Finance parameter), admin fee (not more than half of fee which LPs take) and the fee. All the changes are timelocked for 1 days before being applied for enough notice.<br/>S.Finance will be transitioning to a DAO to be fully decentralized.',
     lossTitle: 'Permanent loss of a peg',
