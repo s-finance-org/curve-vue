@@ -159,5 +159,5 @@ export default {
     tutorial: 'Tutorial',
     communitySupport: 'Community support',
   },
-  temp: '* If you only want to withdraw individual currencies, you can change the number of other currencies to 0. One-click access to split currencies is currently not supported'
+  temp: '* If you only want to withdraw a single currency, you can modify the number of other currencies to 0'
 }
