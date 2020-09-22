@@ -89,7 +89,12 @@ fieldset {
   min-width: 0;
 }
 
-/* Text Color */
+
+
+/* b-overlay */
+.b-overlay {
+  z-index: 0 !important;
+}
 
 /* Shadow */
 .box {

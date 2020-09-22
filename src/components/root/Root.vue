@@ -55,8 +55,8 @@
           {{ $t('global.operating') }}
         </template>
         <template v-slot:cell(operating)="data">
-          <!-- <b-button size="sm" variant="danger" class="mr-2">{{ $t('global.swap') }}</b-button> -->
-          <b-button to="/susdv2/liquidity/" size="sm" variant="outline-secondary">{{ $t('global.deposit') }}</b-button>
+          <b-button to="/susdv2/liquidity" size="sm" variant="danger" class="mr-2">{{ $t('global.deposit') }}</b-button>
+          <b-button to="/dao" size="sm" variant="outline-secondary">{{ $t('global.dao') }}</b-button>
         </template>
       </b-table>
     </div>

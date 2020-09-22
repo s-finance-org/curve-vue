@@ -48,7 +48,7 @@ export default {
     ok: 'Ok',
     coming: 'S.Finance liquidity pool is coming ！',
     comingCont1: 'S.Finance liquidity pool is going to start at 22:22:22 (SGT) 22th September, 2020. Staking susdv2 LP tokens could get 3 kinds of token for reward，including SFG (governance token of S.finance) 、CRV （governance token of Curve) and SNX (governance token of Synthetix). ',
-    comingCont2: 'Total amount of SFG is 21 million, with 100% contribution-based distribution, no private placement, no pre-dig, no team share. Minted SFG per day is 0.2% of the remaining, and the output rate is 10% in the first 24 hours (0.02% minted SFG on the first day) , and the mining rate returns to normal 24 hours later.',
+    comingCont2: 'Total amount of SFG is 21 million, with 100% contribution-based distribution, no private placement, no pre-dig, no team share. Minted SFG per day is 0.2% of the remaining, and the output rate of SFG is 10% in the first 24 hours (0.02% minted SFG on the first day, while the rate of minted CRV and SNX is unaffected), and the mining rate will return to normal 24 hours later. SFG liquidity pool will start on the third day after the opening of S.Finance, and the rewarding weight of SFG liquidity pool will be three times that of the stable coin pool.',
     comingCont3: 'The S.finance smart contract has been scrutinized by KNOWNSEC. However, it cannot completely eliminate the risk. Please invest within your capacity.'
   },
   wallet: {
@@ -100,7 +100,7 @@ export default {
     adminKeyTitle: 'Admin keys',
     adminKeyContHtml: 'Admin key allows to pause the contract in an emergency, but only during first 2 months in existence. Also it allows to change amplification coefficient (S.Finance parameter), admin fee (not more than half of fee which LPs take) and the fee. All the changes are timelocked for 3 days before being applied for enough notice.<br/>S.Finance will be transitioning to a DAO to be fully decentralized.',
     lossTitle: 'Permanent loss of a peg',
-    lossContHtml: 'S.Finance smart contracts were Audited by KNOWNSEC<br/>However, security audits don\'t eliminate risks completely. Please don\’t supply your life savings, or assets you can’t afford to lose, to S.Finance, especially as a liquidity provider.<br/>Using S.Finance as an exchange user should be significantly less risky, but this is not advice.',
+    lossContHtml: 'If one of the stablecoins in the pool goes significantly down below the peg of 1.0 and never returns to the peg, it\'ll effectively mean that pool liquidity providers hold almost all their liquidity in that currency.',
     stakingTitle: 'Staking risks',
     stakingContHtml: 'When staking you use multiple smart contract products each of which has its own risks',
   },

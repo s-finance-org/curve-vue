@@ -501,8 +501,10 @@
             set (val) {
               const { currentPool: { deposit, priceDecimal, balanceOf } } = this
 
+              if (val === 0) return false
+
               deposit.amount = +balanceOf.handled > 0
-                ? BN(val).times(balanceOf.handled).toFixed(priceDecimal)
+                ? Math.floor(+BN(val).times(balanceOf.handled).toString() * priceDecimal * 10) / (priceDecimal * 10)
                 : 0
               this.depositSliderSelected = val
             }
@@ -515,8 +517,10 @@
             set (val) {
               const { currentPool: { withdraw, priceDecimal, gaugeBalance } } = this
 
-              withdraw.amount = +gaugeBalance.handled > 0
-                ? BN(val).times(gaugeBalance.handled).toFixed(priceDecimal)
+              if (val === 0) return false
+
+              +gaugeBalance.handled > 0
+                ? Math.floor(+BN(val).times(gaugeBalance.handled).toString() * priceDecimal * 10) / (priceDecimal * 10)
                 : 0
               this.withdrawSliderSelected = val
             }

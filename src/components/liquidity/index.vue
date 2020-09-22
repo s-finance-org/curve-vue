@@ -403,15 +403,18 @@
               </text-overlay-loading>
             </div>
           </b-tab>
-          <b-tab :title="$t('global.poolProfit')" class="pt-3">
+          <!-- <b-tab :title="$t('global.poolProfit')" class="pt-3">
             <h6 class="text-black-65 mb-2">{{ $t('liquidity.dailyProfit') }}</h6>
             <h4 class="mb-0">?? USD</h4>
 
-            <!-- {{ available != -1 }}
+             {{ available != -1 }}
 
             {{ showProfit }}
-              <span v-show='available != -1 '> {{ toFixed(showProfit) }}</span> -->
-          </b-tab>
+              <span v-show='available != -1 '> {{ toFixed(showProfit) }}</span>
+
+            <h4 class="mb-0" v-show='available != -1 '> {{ toFixed(showProfit) }} USD</h4>
+
+          </b-tab> -->
         </b-tabs>
       </div>
 
@@ -850,8 +853,10 @@
     		disabledButtons: true,
     		sync_balances: false,
     		max_balances: true,
-    		inf_approval: true,
+        inf_approval: true,
+        // 
     		wallet_balances: [],
+    		wallet_balances_withdraw: [],
         transferableBalance: null,
         susdWaitingPeriod: false,
         susdWaitingPeriodTime: 0,
@@ -894,7 +899,6 @@
     			color: '#d0d0d0',
     		},
     		inputStyles: [],
-    		wallet_balances: [],
     		calc_balances: [],
     		balances: [],
     		staked_balance: null,
@@ -1293,7 +1297,7 @@ console.log('current', this.currentPool, this.currencies)
                 return isNaN(rounded) ? '0.00' : rounded
             },
             maxBalanceCoin(i) {
-                return this.toFixed(this.wallet_balances[i] * this.rates[i])
+              return this.toFixed(this.wallet_balances[i] * this.rates[i])
             },
             setMaxBalanceCoin(i) {
                 Vue.set(this.deposit_inputs, i, this.maxBalanceCoin(i))
@@ -1367,15 +1371,15 @@ console.log('current', this.currentPool, this.currencies)
                         .maxSecsLeftInWaitingPeriod(currentContract.default_account, currencyKey)
                         .encodeABI()])
                 }
-			    let aggcalls = await currentContract.multicall.methods.aggregate(calls).call()
-			    let decoded = aggcalls[1].map(hex => currentContract.web3.eth.abi.decodeParameter('uint256', hex))
-                let balances = decoded
-                if(this.currentPool == 'susdv2' || this.currentPool == 'sbtc') balances = decoded.slice(0, -2)
-			    helpers.chunkArr(balances, 2).map((v, i) => {
-			    	Vue.set(this.wallet_balances, i, v[0])
-			    	if(!currentContract.default_account) Vue.set(this.wallet_balances, i, 0)
-			    	Vue.set(this.balances, i, +v[1])
-			    })
+                let aggcalls = await currentContract.multicall.methods.aggregate(calls).call()
+                let decoded = aggcalls[1].map(hex => currentContract.web3.eth.abi.decodeParameter('uint256', hex))
+                      let balances = decoded
+                      if(this.currentPool == 'susdv2' || this.currentPool == 'sbtc') balances = decoded.slice(0, -2)
+                helpers.chunkArr(balances, 2).map((v, i) => {
+                  Vue.set(this.wallet_balances, i, v[0])
+                  if(!currentContract.default_account) Vue.set(this.wallet_balances, i, 0)
+                  Vue.set(this.balances, i, +v[1])
+                })
                 if(this.currentPool == 'susdv2' || this.currentPool == 'sbtc') {
                     this.transferableBalance = decoded[decoded.length - 2]
                     this.susdWaitingPeriod = (+decoded[decoded.length - 1] != 0)
@@ -1716,7 +1720,7 @@ console.log('current', this.currentPool, this.currencies)
           let decoded = aggcalls[1].map(hex => currentContract.web3.eth.abi.decodeParameter('uint256', hex))
           if(currentContract.default_account) {
             decoded.slice(0, currentContract.N_COINS).map((v, i) => {
-              Vue.set(this.wallet_balances, i, +v / allabis[this.currentPool].coin_precisions[i])
+              Vue.set(this.wallet_balances_withdraw, i, +v / allabis[this.currentPool].coin_precisions[i])
             })
             this.token_balance = BN(decoded[currentContract.N_COINS])
             decoded = decoded.slice(currentContract.N_COINS+1)			
