@@ -47,27 +47,28 @@ const store = {
   },
   gauges: {
     susdv2: {
+      code: 'susdv2',
+      name: 'sUSD',
+
       address: process.env.VUE_APP_PSS_GAUGE,
       abi: abiSUSDv2,
       __contract: null,
       get contract () {
-        const { abi, address } = this
-        if (!this.__contract) {
-          this.__contract = new web3.eth.Contract(abi, address)
-        }
+        const { __contract, abi, address } = this
 
-        return this.__contract
+        return __contract ||
+          (this.__contract = new web3.eth.Contract(abi, address))
       },
       async getBalanceOf (target, accountAddress) {
         const { contract } = this
 
-        target.tether = await contract.methods.balanceOf(accountAddress).call()
+        return target.tether = await this.contract.methods.balanceOf(accountAddress).call()
       },
 
       async getTotalSupply (target) {
         const { contract } = this
 
-        target.tether = await contract.methods.totalSupply().call()
+        return target.tether = await contract.methods.totalSupply().call()
       },
 
       async getSfgPendingReward (target, accountAddress) {
@@ -119,12 +120,10 @@ const store = {
       abi: abiSusdv2LpToken,
       __contract: null,
       get contract () {
-        const { abi, address } = this
-        if (!this.__contract) {
-          this.__contract = new web3.eth.Contract(abi, address)
-        }
+        const { __contract, abi, address } = this
 
-        return this.__contract
+        return __contract ||
+          (this.__contract = new web3.eth.Contract(abi, address))
       },
       async getBalanceOf (target, accountAddress) {
         const { contract } = this
@@ -137,13 +136,11 @@ const store = {
       abi: abiSNX,
       __contract: null,
       get contract () {
-        const { abi, address } = this
-        if (!this.__contract) {
-          this.__contract = new web3.eth.Contract(abi, address)
-        }
+        const { __contract, abi, address } = this
 
-        return this.__contract
-      }
+        return __contract ||
+          (this.__contract = new web3.eth.Contract(abi, address))
+      },
     },
     crv: {
       address: '0xd533a949740bb3306d119cc777fa900ba034cd52',

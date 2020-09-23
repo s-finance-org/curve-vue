@@ -400,7 +400,7 @@ input[type="text"]::-moz-placeholder, textarea::-moz-placeholder {
   margin-left: 0px;
 }
 .tabs-nav .nav-link.active, .tabs-nav .nav-link:hover {
-  background-color: #fff;
+  background-color: transparent;
   border-color: #eb3c00;
   color: #eb3c00;
 }

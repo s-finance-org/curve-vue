@@ -122,7 +122,8 @@ export default {
     dailyProfit: '今日存款收益'
   },
   dao: {
-    title: '{0} 流动性矿池',
+    standTitle: '稳定币流动性矿池',
+    tokenTitle: '{0} 流动性矿池',
     describe: '抵押 {0} LP tokens 挖矿奖励 {1}',
     staking: '抵押',
     redemption: '赎回',

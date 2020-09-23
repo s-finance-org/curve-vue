@@ -9,184 +9,185 @@
 
     <b-container>
       <root-sub />
-      <h4 class="mt-4 mb-2">
-        {{ $t('dao.title', [currentPool.nameCont]) }}
-        <small class="pl-3">{{ $t('dao.describe', [currentPool.name, currentPool.describeTokensCont]) }}</small>
-      </h4>
-      <div class="box mb-4 px-4 py-3">
-        <div class="row pb-3 mb-3 line-bottom no-gutters">
-          <span class="col">
-            <h6 class="mb-0 text-black-65">{{ $t('dao.totalStaking') }}</h6>
-            <h4 class="mb-0 d-flex">
-              <text-overlay-loading inline :show="currentPool.totalSupply.loading">
-                {{ currentPool.totalSupply.cont }}
-                <h6 class="inline-block text-black-65 mb-0">{{ currentPool.name }} LP tokens</h6>
-              </text-overlay-loading>
-            </h4>
-          </span>
-          <span class="col">
-            <h6 class="mb-0 text-black-65">{{ $t('dao.myStaking') }}</h6>
-            <h4 class="mb-0 d-flex">
-              <text-overlay-loading inline :show="currentPool.gaugeBalance.loading">
-                {{ currentPool.gaugeBalance.cont }}
-                <h6 class="inline-block text-black-65 mb-0">{{ currentPool.name }} LP tokens</h6>
-              </text-overlay-loading>
-            </h4>
-          </span>
-          <span class="col">
-            <h6 class="mb-0 text-black-65">{{ $t('dao.virtualPrice') }}</h6>
-            <h4 class="mb-0 d-flex">
-              <text-overlay-loading inline :show="loadingAction">
-                1
-                <h6 class="inline-block text-black-65 mb-0">{{ currentPool.name }} LP tokens = </h6>
-                {{ (1 * virtual_price).toFixed(6) }}
-                <h6 class="inline-block text-black-65 mb-0">USD</h6>
-              </text-overlay-loading>
-            </h4>
-          </span>
-        </div>
 
-        <b-tabs pills nav-class="tabs-nav" class="mt-1">
-          <b-tab :title="$t('dao.staking')" class="pt-3" active>
-            <label class="text-black-65">{{ $t('dao.staking') }}</label>
-            <div class="d-flex">
-              <b-form-input class="col mr-4" v-model="depositAmountInput" :placeholder="$t('dao.stakingAmountPlaceholder')"></b-form-input>
-              <b-form-radio-group
-                class
-                v-model="depositSliderSelectedRadio"
-                :options="depositSliderOptions"
-                buttons
-                button-variant="outline-secondary"
-              ></b-form-radio-group>
+      <b-tabs pills nav-class="tabs-nav" class="mt-4">
+        <b-tab :title="$t('dao.standTitle')" class="pt-3" active>
+
+          <h4 class="mb-2">
+            <span class="mr-3">{{ $t('dao.tokenTitle', [currentPool.nameCont]) }}</span>
+            <small>{{ $t('dao.describe', [currentPool.name, currentPool.describeTokensCont]) }}</small>
+          </h4>
+          <div class="box mb-4 px-4 py-3">
+            <div class="row mb-3 line-bottom no-gutters">
+              <span class="col-12 col-lg-4 pb-3">
+                <h6 class="mb-0 text-black-65">{{ $t('dao.totalStaking') }}</h6>
+                <text-overlay-loading inline :show="currentPool.totalSupply.loading">
+                  <span class="h4 mr-2">{{ currentPool.totalSupply.cont }}</span>
+                  <span class="text-black-65">{{ currentPool.name }} LP tokens</span>
+                </text-overlay-loading>
+              </span>
+              <span class="col-12 col-lg-4 pb-3">
+                <h6 class="mb-0 text-black-65">{{ $t('dao.myStaking') }}</h6>
+                <text-overlay-loading inline :show="currentPool.gaugeBalance.loading">
+                  <span class="h4 mr-2">{{ currentPool.gaugeBalance.cont }}</span>
+                  <span class="text-black-65">{{ currentPool.name }} LP tokens</span>
+                </text-overlay-loading>
+              </span>
+              <span class="col-12 col-lg-4 pb-3">
+                <h6 class="mb-0 text-black-65">{{ $t('dao.virtualPrice') }}</h6>
+                <text-overlay-loading inline :show="loadingAction">
+                  <span class="h4">
+                  1
+                  <span class="h6 text-black-65">{{ currentPool.name }} LP tokens = </span>
+                  {{ (1 * virtual_price).toFixed(6) }}
+                  <span class="text-black-65 h6">USD</span>
+                  </span>
+                </text-overlay-loading>
+              </span>
             </div>
-            <small class="d-flex mb-3 align-items-center">
-              {{ $t('dao.stakingBalance') }}： 
-              <text-overlay-loading :show="currentPool.balanceOf.loading">{{ currentPool.balanceOf.cont }} {{ currentPool.name }} LP tokens</text-overlay-loading>
-              <b-button class="text-blue-1 ml-2" to="/susdv2/liquidity/" size="xsm" variant="light">{{ $t('dao.stakingConfirmTip') }}</b-button>
-            </small>
-            <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('dao.infiniteApproval') }}</b-form-checkbox>
-            <div class="d-flex align-items-end mt-5 float-right">
-              <text-overlay-loading :show="loadingAction">
-                <b-button size="lg" variant="danger" @click=deposit>
-                  {{ $t('dao.stakingConfirm') }}
-                </b-button>
-              </text-overlay-loading>
-            </div>
-          </b-tab>
-          <b-tab :title="$t('dao.redemption')" class="pt-3">
-            <label class="text-black-65">{{ $t('dao.redemption') }}</label>
-            <div class="d-flex">
-              <b-form-input class="col mr-4" v-model="withdrawAmountInput" :placeholder="$t('dao.redemptionAmountPlaceholder')"></b-form-input>
-              <b-form-radio-group
-                class
-                v-model="withdrawSliderSelectedRadio"
-                :options="withdrawSliderOptions"
-                buttons
-                button-variant="outline-secondary"
-              ></b-form-radio-group>
-            </div>
-            <small class="d-flex">
-              {{ $t('dao.redemptionBalance') }}：
-              <text-overlay-loading :show="currentPool.gaugeBalance.loading">{{ currentPool.gaugeBalance.cont }} {{ currentPool.name }} LP tokens</text-overlay-loading>
-            </small>
-            <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('dao.infiniteApproval') }}</b-form-checkbox>
-            <div class="d-flex align-items-end mt-5 float-right">
-              <text-overlay-loading :show="loadingAction">
-                <b-button size="lg" variant="danger" @click=withdraw>
-                  {{ $t('dao.redemptionConfirm') }}
-                </b-button>
-              </text-overlay-loading>
-            </div>
-          </b-tab>
-          <b-tab :title="$t('dao.miningReward')" class="pt-3">
-            <div class="area" v-for="(token, idx) in currentPool.mining.relation" :key="'token-'+idx">
-              <template v-if="Array.isArray(token)">
-                <div class="row">
-                  <div class="col" v-for="childToken in token" :key="'token-'+currentPool.tokens[childToken].name">
+
+            <b-tabs pills nav-class="tabs-nav" class="mt-1">
+              <b-tab :title="$t('dao.staking')" class="pt-3" active>
+                <label class="text-black-65">{{ $t('dao.staking') }}</label>
+                <div class="d-flex">
+                  <b-form-input class="col mr-4" v-model="depositAmountInput" :placeholder="$t('dao.stakingAmountPlaceholder')"></b-form-input>
+                  <b-form-radio-group
+                    class
+                    v-model="depositSliderSelectedRadio"
+                    :options="depositSliderOptions"
+                    buttons
+                    button-variant="outline-secondary"
+                  ></b-form-radio-group>
+                </div>
+                <small class="d-flex mb-3 align-items-center">
+                  {{ $t('dao.stakingBalance') }}： 
+                  <text-overlay-loading :show="currentPool.balanceOf.loading">{{ currentPool.balanceOf.cont }} {{ currentPool.name }} LP tokens</text-overlay-loading>
+                  <b-button class="text-blue-1 ml-2" to="/susdv2/liquidity/" size="xsm" variant="light">{{ $t('dao.stakingConfirmTip') }}</b-button>
+                </small>
+                <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('dao.infiniteApproval') }}</b-form-checkbox>
+                <div class="d-flex align-items-end mt-5 float-right">
+                  <text-overlay-loading :show="loadingAction">
+                    <b-button size="lg" variant="danger" @click=deposit>
+                      {{ $t('dao.stakingConfirm') }}
+                    </b-button>
+                  </text-overlay-loading>
+                </div>
+              </b-tab>
+              <b-tab :title="$t('dao.redemption')" class="pt-3">
+                <label class="text-black-65">{{ $t('dao.redemption') }}</label>
+                <div class="d-flex">
+                  <b-form-input class="col mr-4" v-model="withdrawAmountInput" :placeholder="$t('dao.redemptionAmountPlaceholder')"></b-form-input>
+                  <b-form-radio-group
+                    class
+                    v-model="withdrawSliderSelectedRadio"
+                    :options="withdrawSliderOptions"
+                    buttons
+                    button-variant="outline-secondary"
+                  ></b-form-radio-group>
+                </div>
+                <small class="d-flex">
+                  {{ $t('dao.redemptionBalance') }}：
+                  <text-overlay-loading :show="currentPool.gaugeBalance.loading">{{ currentPool.gaugeBalance.cont }} {{ currentPool.name }} LP tokens</text-overlay-loading>
+                </small>
+                <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('dao.infiniteApproval') }}</b-form-checkbox>
+                <div class="d-flex align-items-end mt-5 float-right">
+                  <text-overlay-loading :show="loadingAction">
+                    <b-button size="lg" variant="danger" @click=withdraw>
+                      {{ $t('dao.redemptionConfirm') }}
+                    </b-button>
+                  </text-overlay-loading>
+                </div>
+              </b-tab>
+              <b-tab :title="$t('dao.miningReward')" class="pt-3">
+                <div class="area" v-for="(token, idx) in currentPool.mining.relation" :key="'token-'+idx">
+                  <template v-if="Array.isArray(token)">
+                    <div class="row">
+                      <div class="col" v-for="childToken in token" :key="'token-'+currentPool.tokens[childToken].name">
+                        <h5 class="mb-3 d-flex align-items-center">
+                          <img :src="getTokenIcon(currentPool.tokens[childToken].name)" class="mr-2 icon-w-20 icon token-icon" :class="[currentPool.tokens[childToken].name+'-icon']">
+                          {{ currentPool.tokens[childToken].nameCont }}
+                        </h5>
+                        <h6 class="mb-0 text-black-65">{{ $t('dao.miningPendingReward') }}</h6>
+                        <h4 class="mb-1">
+                          <text-overlay-loading inline :show="currentPool.tokens[childToken].pendingReward.loading">
+                            {{ currentPool.tokens[childToken].pendingReward.cont }} {{ currentPool.tokens[childToken].nameCont }}
+                          </text-overlay-loading>
+                        </h4>
+                        <div class="d-flex no-gutters align-items-end mt-3">
+                          <small class="col">
+                            {{ $t('dao.miningPaidReward') }}：
+                            <text-overlay-loading inline :show="currentPool.tokens[childToken].paidReward.loading">
+                              {{ currentPool.tokens[childToken].paidReward.cont }} {{ currentPool.tokens[childToken].nameCont }}
+                            </text-overlay-loading>
+                            <em class="px-3 text-black-15">/</em>
+                            {{ $t('dao.miningTotalReward') }}：
+                            <text-overlay-loading inline :show="currentPool.tokens[childToken].totalReward.loading">
+                              {{ currentPool.tokens[childToken].totalReward.cont }} {{ currentPool.tokens[childToken].nameCont }}
+                            </text-overlay-loading>
+                            <!-- <em class="px-3 text-black-15">/</em>
+                            <text-overlay-loading inline :show="loadingAction">
+                              1 {{ currentPool.tokens[childToken].nameCont }} = {{ currentPool.tokens[childToken].rateUsd }} USD
+                            </text-overlay-loading> -->
+                          </small>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="d-flex mt-4 justify-content-end">
+                      <text-overlay-loading :show="loadingAction">
+                        <b-button variant="danger" @click=claimRewards>
+                          {{ $t('dao.miningClaimConfirm') }}
+                        </b-button>
+                      </text-overlay-loading>
+                    </div>
+                  </template>
+                  <template v-else>
                     <h5 class="mb-3 d-flex align-items-center">
-                      <img :src="getTokenIcon(currentPool.tokens[childToken].name)" class="mr-2 icon-w-20 icon token-icon" :class="[currentPool.tokens[childToken].name+'-icon']">
-                      {{ currentPool.tokens[childToken].nameCont }}
+                      <img :src="getTokenIcon(currentPool.tokens[token].name)" class="mr-2 icon-w-20 icon token-icon" :class="[currentPool.tokens[token].name+'-icon']">
+                      {{ currentPool.tokens[token].nameCont }}
                     </h5>
                     <h6 class="mb-0 text-black-65">{{ $t('dao.miningPendingReward') }}</h6>
                     <h4 class="mb-1">
-                      <text-overlay-loading inline :show="currentPool.tokens[childToken].pendingReward.loading">
-                        {{ currentPool.tokens[childToken].pendingReward.cont }} {{ currentPool.tokens[childToken].nameCont }}
+                      <text-overlay-loading inline :show="currentPool.tokens[token].pendingReward.loading">
+                        {{ currentPool.tokens[token].pendingReward.cont }} {{ currentPool.tokens[token].nameCont }}
                       </text-overlay-loading>
                     </h4>
-                    <div class="d-flex no-gutters align-items-end mt-3">
+                    <div class="d-flex no-gutters align-items-end">
                       <small class="col">
                         {{ $t('dao.miningPaidReward') }}：
-                        <text-overlay-loading inline :show="currentPool.tokens[childToken].paidReward.loading">
-                          {{ currentPool.tokens[childToken].paidReward.cont }} {{ currentPool.tokens[childToken].nameCont }}
+                        <text-overlay-loading inline :show="currentPool.tokens[token].paidReward.loading">
+                          {{ currentPool.tokens[token].paidReward.cont }} {{ currentPool.tokens[token].nameCont }}
                         </text-overlay-loading>
                         <em class="px-3 text-black-15">/</em>
                         {{ $t('dao.miningTotalReward') }}：
-                        <text-overlay-loading inline :show="currentPool.tokens[childToken].totalReward.loading">
-                          {{ currentPool.tokens[childToken].totalReward.cont }} {{ currentPool.tokens[childToken].nameCont }}
+                        <text-overlay-loading inline :show="currentPool.tokens[token].totalReward.loading">
+                          {{ currentPool.tokens[token].totalReward.cont }} {{ currentPool.tokens[token].nameCont }}
                         </text-overlay-loading>
                         <!-- <em class="px-3 text-black-15">/</em>
                         <text-overlay-loading inline :show="loadingAction">
-                          1 {{ currentPool.tokens[childToken].nameCont }} = {{ currentPool.tokens[childToken].rateUsd }} USD
+                          1 {{ currentPool.tokens[token].nameCont }} = {{ currentPool.tokens[token].rateUsd }} USD
                         </text-overlay-loading> -->
                       </small>
+                      <text-overlay-loading :show="loadingAction">
+                        <b-button variant="danger" @click="currentPool.tokens[token].claimConfirm">
+                          {{ $t('dao.miningClaimConfirm') }}
+                        </b-button>
+                      </text-overlay-loading>
                     </div>
-                  </div>
+                  </template>
                 </div>
-                <div class="d-flex mt-4 justify-content-end">
-                  <text-overlay-loading :show="loadingAction">
-                    <b-button variant="danger" @click=claimRewards>
-                      {{ $t('dao.miningClaimConfirm') }}
-                    </b-button>
-                  </text-overlay-loading>
-                </div>
-              </template>
-              <template v-else>
-                <h5 class="mb-3 d-flex align-items-center">
-                  <img :src="getTokenIcon(currentPool.tokens[token].name)" class="mr-2 icon-w-20 icon token-icon" :class="[currentPool.tokens[token].name+'-icon']">
-                  {{ currentPool.tokens[token].nameCont }}
-                </h5>
-                <h6 class="mb-0 text-black-65">{{ $t('dao.miningPendingReward') }}</h6>
-                <h4 class="mb-1">
-                  <text-overlay-loading inline :show="currentPool.tokens[token].pendingReward.loading">
-                    {{ currentPool.tokens[token].pendingReward.cont }} {{ currentPool.tokens[token].nameCont }}
-                  </text-overlay-loading>
-                </h4>
-                <div class="d-flex no-gutters align-items-end">
-                  <small class="col">
-                    {{ $t('dao.miningPaidReward') }}：
-                    <text-overlay-loading inline :show="currentPool.tokens[token].paidReward.loading">
-                      {{ currentPool.tokens[token].paidReward.cont }} {{ currentPool.tokens[token].nameCont }}
-                    </text-overlay-loading>
-                    <em class="px-3 text-black-15">/</em>
-                    {{ $t('dao.miningTotalReward') }}：
-                    <text-overlay-loading inline :show="currentPool.tokens[token].totalReward.loading">
-                      {{ currentPool.tokens[token].totalReward.cont }} {{ currentPool.tokens[token].nameCont }}
-                    </text-overlay-loading>
-                    <!-- <em class="px-3 text-black-15">/</em>
-                    <text-overlay-loading inline :show="loadingAction">
-                      1 {{ currentPool.tokens[token].nameCont }} = {{ currentPool.tokens[token].rateUsd }} USD
-                    </text-overlay-loading> -->
-                  </small>
-                  <text-overlay-loading :show="loadingAction">
-                    <b-button variant="danger" @click="currentPool.tokens[token].claimConfirm">
-                      {{ $t('dao.miningClaimConfirm') }}
-                    </b-button>
-                  </text-overlay-loading>
-                </div>
-              </template>
-            </div>
-          </b-tab>
-        </b-tabs>
-      </div>
+              </b-tab>
+            </b-tabs>
+          </div>
+
+        </b-tab>
+        <!-- <b-tab :title="$t('dao.tokenTitle', ['SFG'])" class="pt-3">
+          2
+        </b-tab> -->
+      </b-tabs>
     </b-container>
 
 
     <fieldset v-if=false>
-      loading: {{ loadingAction }}
-			<legend>
-				_{ gauge.name }} _{ gauge.typeName }} gauge
-				<b>CRV APY:</b> _{ CRVAPY.toFixed(2) }}%
-			</legend>
 			<!-- <div class='pool-info'>
 				<button @click='applyBoost' class='applyBoost' v-show='canApplyBoost && claimableTokens == 0'>Apply boost</button>
 				<span class='greentext' v-show='canApplyBoost && claimableTokens > 0'>You can apply boost by claiming CRV</span>
@@ -299,6 +300,7 @@
 
     import store from '../../store'
     import { valueModel } from '../../model'
+    import { floor } from '../../utils/math/round'
 
     const __store__ = {
       loadingAction: true,
@@ -338,6 +340,10 @@
           { text: '50%', value: 0.5 },
           { text: '75%', value: 0.75 },
           { text: '100%', value: 1 }
+        ],
+
+        supportGauges: [
+          ''
         ],
 
         currentPool: {
@@ -504,7 +510,7 @@
               if (val === 0) return false
 
               deposit.amount = +balanceOf.handled > 0
-                ? Math.floor(+BN(val).times(balanceOf.handled).toString() * priceDecimal * 10) / (priceDecimal * 10)
+                ? floor(BN(val).times(balanceOf.handled).toString(), priceDecimal)
                 : 0
               this.depositSliderSelected = val
             }
@@ -520,7 +526,7 @@
               if (val === 0) return false
 
               withdraw.amount = +gaugeBalance.handled > 0
-                ? Math.floor(+BN(val).times(gaugeBalance.handled).toString() * priceDecimal * 10) / (priceDecimal * 10)
+                ? floor(BN(val).times(gaugeBalance.handled).toString(), priceDecimal)
                 : 0
               this.withdrawSliderSelected = val
             }

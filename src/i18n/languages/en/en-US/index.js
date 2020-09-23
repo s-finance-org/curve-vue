@@ -124,7 +124,8 @@ export default {
     dailyProfit: 'Daily profit'
   },
   dao: {
-    title: '{0} Liquidity gauge',
+    standTitle: 'Stablecoin liquidity pool',
+    tokenTitle: '{0} Liquidity gauge',
     describe: 'Staking {0} LP tokens Reward {1}',
     staking: 'Deposit',
     redemption: 'Withdraw',

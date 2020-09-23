@@ -1,0 +1,1 @@
+export const toInteger = val => parseInt( val, 10 )
