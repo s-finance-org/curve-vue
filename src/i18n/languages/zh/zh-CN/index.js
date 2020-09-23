@@ -137,7 +137,7 @@ export default {
     redemptionAmountPlaceholder: '输入赎回数量',
     redemptionConfirm: '确认赎回',
     miningPendingReward: '未提取奖励',
-    miningPaidReward: '已提取奖励',
+    miningPaidReward: '已结算奖励',
     miningTotalReward: '合计奖励',
     miningClaimConfirm: '领取奖励',
     totalStaking: '总抵押量',
