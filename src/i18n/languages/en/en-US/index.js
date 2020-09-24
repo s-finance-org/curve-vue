@@ -98,7 +98,7 @@ export default {
     auditTitle: 'Audits',
     auditContHtml: `S.Finance smart contracts were Audited by KNOWNSEC.<a href="https://etherscan.io/token/${process.env.VUE_APP_SFG_TOKEN}" target="_blank">Contract Address<a>.<br/>However, security audits don't eliminate risks completely. Please don’t supply your life savings, or assets you can’t afford to lose, to S.Finance, especially as a liquidity provider.<br/>Using S.Finance as an exchange user should be significantly less risky, but this is not advice.`,
     adminKeyTitle: 'Admin keys',
-    adminKeyContHtml: 'Admin key allows to pause the contract in an emergency, but only during first 2 months in existence. Also it allows to change amplification coefficient (S.Finance parameter), admin fee (not more than half of fee which LPs take) and the fee. All the changes are timelocked for 1 days before being applied for enough notice.<br/>S.Finance will be transitioning to a DAO to be fully decentralized.',
+    adminKeyContHtml: `Admin key allows to pause the contract in an emergency, but only during first 2 months in existence. Also it allows to change amplification coefficient (S.Finance parameter), admin fee (not more than half of fee which LPs take) and the fee. The function of timelock will be launched after 1 week stable running of the project.<br/>S.Finance will be transitioning to a DAO to be fully decentralized.`,
     lossTitle: 'Permanent loss of a peg',
     lossContHtml: 'If one of the stablecoins in the pool goes significantly down below the peg of 1.0 and never returns to the peg, it\'ll effectively mean that pool liquidity providers hold almost all their liquidity in that currency.',
     stakingTitle: 'Staking risks',
