@@ -372,7 +372,7 @@
 
         waitingMessage: '',
         waitingMessageTargetId: '',
-        dismissSecs: 4,
+        dismissSecs: 10,
         dismissCountDown: 0,
 
         currentPool: {

@@ -41,6 +41,10 @@ export function notifyNotification(message, type = 'pending') {
 let wallets = [
   { walletName: "metamask" },
   {
+    walletName: "walletConnect",
+    infuraKey: "c334bb4b45a444979057f0fb8a0c9d1b"
+  },
+  {
     walletName: "trezor",
     appUrl: "https://s.finance",
     email: "robert@s.finance",
@@ -51,34 +55,30 @@ let wallets = [
     rpcUrl: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`,
     //LedgerTransport: TransportWebUSB,
   },
-  { walletName: "dapper" },
-  { walletName: "coinbase" },
-  { walletName: "status" },
-  { walletName: "fortmatic", apiKey: "pk_live_190B10CE18F47DCD" },
-  { walletName: "authereum", apiKey: "_BTsipRcEmPeuVteLOGdoh1CXt733YLZ7u3ipbe_dAk" },
-  { 
-    walletName: "trust",
-    rpcUrl: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`
-  },
-  {
-    walletName: "walletConnect",
-    infuraKey: "c334bb4b45a444979057f0fb8a0c9d1b"
-  },
-  { 
-    walletName: "walletLink",
-    appName: 'Curve Finance',
-    appLogoUrl: 'https://s.finance/logo.png',
-    rpcUrl: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`
-  },
-  {
-    walletName: "portis",
-    apiKey: "a3bb2525-5101-4a9c-b300-febc6319c3b4"
-  },
-  { walletName: "torus" },
-  { walletName: "squarelink", apiKey: "db2074f87c34f247593c" },
-  { walletName: "opera" },
-  { walletName: "operaTouch" },
-  { walletName: "unilogin" },
+  // { walletName: "dapper" },
+  // { walletName: "coinbase" },
+  // { walletName: "status" },
+  // { walletName: "fortmatic", apiKey: "pk_live_190B10CE18F47DCD" },
+  // { walletName: "authereum", apiKey: "_BTsipRcEmPeuVteLOGdoh1CXt733YLZ7u3ipbe_dAk" },
+  // {
+  //   walletName: "trust",
+  //   rpcUrl: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`
+  // },
+  // {
+  //   walletName: "walletLink",
+  //   appName: 'Curve Finance',
+  //   appLogoUrl: 'https://s.finance/logo.png',
+  //   rpcUrl: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`
+  // },
+  // {
+  //   walletName: "portis",
+  //   apiKey: "a3bb2525-5101-4a9c-b300-febc6319c3b4"
+  // },
+  // { walletName: "torus" },
+  // { walletName: "squarelink", apiKey: "db2074f87c34f247593c" },
+  // { walletName: "opera" },
+  // { walletName: "operaTouch" },
+  // { walletName: "unilogin" },
   { walletName: "imToken", rpcUrl: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}` },
   { walletName: "meetone" },
 ]
