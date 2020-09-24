@@ -148,7 +148,8 @@ export default {
   },
   notice: {
     approveSpending: 'Please approve spending your coins',
-    confirmDepositTransaction: 'Pleaes confirm deposit transaction'
+    confirmDepositTransaction: 'Pleaes confirm deposit transaction',
+    syntetixAnomalous: 'Withdrawals may be temporarily disabled due to Syntetix contract upgrades. Will be enabled back shortly.'
   },
   social: {
     twitter: 'Twitter',

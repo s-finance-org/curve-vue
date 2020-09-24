@@ -18,19 +18,19 @@
             <small>{{ $t('dao.describe', [currentPool.name, currentPool.describeTokensCont]) }}</small>
           </h4>
           <div class="box mb-4 px-4 py-3">
-            <div class="row mb-3 line-bottom no-gutters">
+            <div class="row mb-3 line-bottom">
               <span class="col-12 col-lg-4 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.totalStaking') }}</h6>
                 <text-overlay-loading inline :show="currentPool.totalSupply.loading">
                   <span class="h4 mr-2">{{ currentPool.totalSupply.cont }}</span>
-                  <span class="text-black-65">{{ currentPool.name }} LP tokens</span>
+                  <span class="inline-block text-black-65">{{ currentPool.name }} LP tokens</span>
                 </text-overlay-loading>
               </span>
               <span class="col-12 col-lg-4 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.myStaking') }}</h6>
                 <text-overlay-loading inline :show="currentPool.gaugeBalance.loading">
                   <span class="h4 mr-2">{{ currentPool.gaugeBalance.cont }}</span>
-                  <span class="text-black-65">{{ currentPool.name }} LP tokens</span>
+                  <span class="inline-block text-black-65">{{ currentPool.name }} LP tokens</span>
                 </text-overlay-loading>
               </span>
               <span class="col-12 col-lg-4 pb-3">
@@ -38,7 +38,7 @@
                 <text-overlay-loading inline :show="loadingAction">
                   <span class="h4">
                   1
-                  <span class="h6 text-black-65">{{ currentPool.name }} LP tokens = </span>
+                  <span class="h6 text-black-65 inline-block ">{{ currentPool.name }} LP tokens = </span>
                   {{ (1 * virtual_price).toFixed(6) }}
                   <span class="text-black-65 h6">USD</span>
                   </span>
@@ -48,23 +48,30 @@
 
             <b-tabs pills nav-class="tabs-nav" class="mt-1">
               <b-tab :title="$t('dao.staking')" class="pt-3" active>
-                <label class="text-black-65">{{ $t('dao.staking') }}</label>
-                <div class="d-flex">
-                  <b-form-input class="col mr-4" v-model="depositAmountInput" :placeholder="$t('dao.stakingAmountPlaceholder')"></b-form-input>
+                <label class="text-black-65 mb-0">{{ $t('dao.staking') }}</label>
+                <div class="row flex-wrap">
+                  <div class="col-12 col-lg mt-2">
+                    <b-form-input class="h-38" v-model="depositAmountInput" :placeholder="$t('dao.stakingAmountPlaceholder')"></b-form-input>
+                  </div>
                   <b-form-radio-group
-                    class
+                    class="mt-2 col"
                     v-model="depositSliderSelectedRadio"
                     :options="depositSliderOptions"
                     buttons
                     button-variant="outline-secondary"
                   ></b-form-radio-group>
                 </div>
-                <small class="d-flex mb-3 align-items-center">
+                <small class="d-flex mt-1">
                   {{ $t('dao.stakingBalance') }}： 
                   <text-overlay-loading :show="currentPool.balanceOf.loading">{{ currentPool.balanceOf.cont }} {{ currentPool.name }} LP tokens</text-overlay-loading>
                   <b-button class="text-blue-1 ml-2" to="/susdv2/liquidity/" size="xsm" variant="light">{{ $t('dao.stakingConfirmTip') }}</b-button>
                 </small>
                 <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('dao.infiniteApproval') }}</b-form-checkbox>
+                <b-alert class="mt-3" :show="dismissCountDown" variant="dark" dismissible fade
+                  @dismissed="dismissCountDown=0"
+                  @dismiss-count-down="countDownChanged"
+                  v-html='waitingMessage'>
+                </b-alert>
                 <div class="d-flex align-items-end mt-5 float-right">
                   <text-overlay-loading :show="loadingAction">
                     <b-button size="lg" variant="danger" @click=deposit>
@@ -74,22 +81,29 @@
                 </div>
               </b-tab>
               <b-tab :title="$t('dao.redemption')" class="pt-3">
-                <label class="text-black-65">{{ $t('dao.redemption') }}</label>
-                <div class="d-flex">
-                  <b-form-input class="col mr-4" v-model="withdrawAmountInput" :placeholder="$t('dao.redemptionAmountPlaceholder')"></b-form-input>
+                <label class="text-black-65 mb-0">{{ $t('dao.redemption') }}</label>
+                <div class="row flex-wrap">
+                  <div class="col-12 col-lg mt-2">
+                    <b-form-input class="h-38" v-model="withdrawAmountInput" :placeholder="$t('dao.redemptionAmountPlaceholder')"></b-form-input>
+                  </div>
                   <b-form-radio-group
-                    class
+                    class="mt-2 col"
                     v-model="withdrawSliderSelectedRadio"
                     :options="withdrawSliderOptions"
                     buttons
                     button-variant="outline-secondary"
                   ></b-form-radio-group>
                 </div>
-                <small class="d-flex">
+                <small class="d-flex mt-1">
                   {{ $t('dao.redemptionBalance') }}：
                   <text-overlay-loading :show="currentPool.gaugeBalance.loading">{{ currentPool.gaugeBalance.cont }} {{ currentPool.name }} LP tokens</text-overlay-loading>
                 </small>
                 <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('dao.infiniteApproval') }}</b-form-checkbox>
+                <b-alert class="mt-3" :show="dismissCountDown && waitingMessageTargetId === 'withdraw'" variant="dark" dismissible fade
+                  @dismissed="dismissCountDown=0"
+                  @dismiss-count-down="countDownChanged"
+                  v-html='waitingMessage'>
+                </b-alert>
                 <div class="d-flex align-items-end mt-5 float-right">
                   <text-overlay-loading :show="loadingAction">
                     <b-button size="lg" variant="danger" @click=withdraw>
@@ -132,6 +146,11 @@
                         </div>
                       </div>
                     </div>
+                    <b-alert class="mt-3" :show="dismissCountDown && waitingMessageTargetId === 'claimRewards'" variant="dark" dismissible fade
+                      @dismissed="dismissCountDown=0"
+                      @dismiss-count-down="countDownChanged"
+                      v-html='waitingMessage'>
+                    </b-alert>
                     <div class="d-flex mt-4 justify-content-end">
                       <text-overlay-loading :show="loadingAction">
                         <b-button variant="danger" @click=claimRewards>
@@ -173,6 +192,11 @@
                         </b-button>
                       </text-overlay-loading>
                     </div>
+                    <b-alert class="mt-3" :show="dismissCountDown && waitingMessageTargetId === 'claim'" variant="dark" dismissible fade
+                      @dismissed="dismissCountDown=0"
+                      @dismiss-count-down="countDownChanged"
+                      v-html='waitingMessage'>
+                    </b-alert>
                   </template>
                 </div>
               </b-tab>
@@ -345,6 +369,11 @@
         supportGauges: [
           ''
         ],
+
+        waitingMessage: '',
+        waitingMessageTargetId: '',
+        dismissSecs: 4,
+        dismissCountDown: 0,
 
         currentPool: {
           swap: '',
@@ -626,7 +655,15 @@
               store.gauges.susdv2.getSnxPaidReward(snx.paidReward, currentContract.default_account)
             )
           },
-        	getTokenIcon(token) {
+          countDownChanged(val) {
+            this.dismissCountDown = val
+          },
+          alert(msg = '', targetId = '') {
+            this.dismissCountDown = this.dismissSecs
+            this.waitingMessage = this.$i18n.t(msg)
+            this.waitingMessageTargetId = targetId
+          },
+          getTokenIcon(token) {
             return helpers.getTokenIcon(token, false, '')
           },
           toFixed(num) {
@@ -654,6 +691,8 @@
           },
 
           async withdraw () {
+            this.alert('notice.syntetixAnomalous', 'withdraw')
+
             let withdraw = BN(this.currentPool.withdraw.amount).times(1e18)
             let balance = BN(await this.gaugeContract.methods.balanceOf(currentContract.default_account).call())
 
@@ -685,6 +724,8 @@
           },
 
           async claim () {
+            this.alert('notice.syntetixAnomalous' , 'claim')
+
             const mint = await gaugeStore.state.minter.methods.mint(this.currentPool.gauge)
             // let gas = await mint.estimateGas()
 
@@ -702,6 +743,8 @@
           },
 
           async claimRewards () {
+            this.alert('notice.syntetixAnomalous', 'claimRewards')
+
             // let gas = await this.gaugeContract.methods.claim_rewards(currentContract.default_account).estimateGas()
 
             var { dismiss } = notifyNotification(`Please confirm claiming ${this.currentPool.tokens.crv.name + ' ' + this.currentPool.tokens.snx.name}`)

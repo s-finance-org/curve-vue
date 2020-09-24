@@ -48,7 +48,7 @@
         </template>
         <template v-slot:cell(apr)="data">
           <text-overlay-loading :show="!daily_apy[data.item.id]">
-            {{daily_apy[data.item.id]}}
+            {{daily_apy[data.item.id]}}%
           </text-overlay-loading>
         </template>
         <template v-slot:head(operating)>

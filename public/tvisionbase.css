@@ -90,7 +90,6 @@ fieldset {
 }
 
 
-
 /* b-overlay */
 .b-overlay {
   z-index: 0 !important;
@@ -143,6 +142,9 @@ fieldset {
 /* Size */
 .text-18 {
   font-size: 18px;
+}
+.h-38 {
+  height: 38px;
 }
 
 /* Offset */
