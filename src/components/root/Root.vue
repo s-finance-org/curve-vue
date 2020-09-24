@@ -4,7 +4,7 @@
 
     <h4 class="mt-4 mb-2">{{ $t('stablePools.name') }}</h4>
     <div class="box mb-4">
-      <b-table @row-clicked=stablePoolsRowClicked class="mb-0 text-right" hover :items="stablePools.items" :fields="stablePools.fields">
+      <b-table responsive @row-clicked=stablePoolsRowClicked class="mb-0 text-right" hover :items="stablePools.items" :fields="stablePools.fields">
         <template v-slot:head(name)>
           {{ $t('global.poolName')}}
         </template>
@@ -55,8 +55,8 @@
           {{ $t('global.operating') }}
         </template>
         <template v-slot:cell(operating)="data">
-          <b-button to="/susdv2/liquidity" size="sm" variant="danger" class="mr-2">{{ $t('global.deposit') }}</b-button>
-          <b-button to="/dao" size="sm" variant="outline-secondary">{{ $t('global.dao') }}</b-button>
+          <b-button to="/susdv2/liquidity" size="sm" variant="danger">{{ $t('global.deposit') }}</b-button>
+          <b-button to="/dao" class="ml-2" size="sm" variant="outline-secondary">{{ $t('global.dao') }}</b-button>
         </template>
       </b-table>
     </div>
@@ -479,7 +479,7 @@
 
         return {
           fields: [
-            'name',
+            { key: 'name', stickyColumn: true, isRowHeader: true },
             'pools',
             // 'funds',
             'volume',

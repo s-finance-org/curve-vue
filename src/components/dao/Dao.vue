@@ -1,7 +1,7 @@
 <template>
 	<div>
     <div class="total-bg">
-      <b-container class="d-flex py-4 total-cont align-items-center">
+      <b-container class="py-4 pl-5 d-flex align-items-center">
         <img class="logo_lg mr-4" :src="publicPath + 'res/icons/logo/logo_sm.svg'">
         <h3 class="mb-0">{{ $t('global.sFinance') }}<br/>{{ $t('global.dao') }}</h3>
       </b-container>
@@ -61,10 +61,10 @@
                     button-variant="outline-secondary"
                   ></b-form-radio-group>
                 </div>
-                <small class="d-flex mt-1">
-                  {{ $t('dao.stakingBalance') }}： 
-                  <text-overlay-loading :show="currentPool.balanceOf.loading">{{ currentPool.balanceOf.cont }} {{ currentPool.name }} LP tokens</text-overlay-loading>
-                  <b-button class="text-blue-1 ml-2" to="/susdv2/liquidity/" size="xsm" variant="light">{{ $t('dao.stakingConfirmTip') }}</b-button>
+                <small class="d-flex mt-1 flex-wrap">
+                  {{ $t('dao.stakingBalance') }}：
+                  <text-overlay-loading class="mr-2" :show="currentPool.balanceOf.loading">{{ currentPool.balanceOf.cont }} {{ currentPool.name }} LP tokens</text-overlay-loading>
+                  <b-button class="text-blue-1" to="/susdv2/liquidity/" size="xsm" variant="light">{{ $t('dao.stakingConfirmTip') }}</b-button>
                 </small>
                 <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('dao.infiniteApproval') }}</b-form-checkbox>
                 <b-alert class="mt-3" :show="dismissCountDown" variant="dark" dismissible fade
@@ -691,7 +691,7 @@
           },
 
           async withdraw () {
-            this.alert('notice.syntetixAnomalous', 'withdraw')
+            // this.alert('notice.syntetixAnomalous', 'withdraw')
 
             let withdraw = BN(this.currentPool.withdraw.amount).times(1e18)
             let balance = BN(await this.gaugeContract.methods.balanceOf(currentContract.default_account).call())
@@ -724,7 +724,7 @@
           },
 
           async claim () {
-            this.alert('notice.syntetixAnomalous' , 'claim')
+            // this.alert('notice.syntetixAnomalous' , 'claim')
 
             const mint = await gaugeStore.state.minter.methods.mint(this.currentPool.gauge)
             // let gas = await mint.estimateGas()
@@ -743,7 +743,7 @@
           },
 
           async claimRewards () {
-            this.alert('notice.syntetixAnomalous', 'claimRewards')
+            // this.alert('notice.syntetixAnomalous', 'claimRewards')
 
             // let gas = await this.gaugeContract.methods.claim_rewards(currentContract.default_account).estimateGas()
 
