@@ -52,8 +52,8 @@ export default {
     *兑换地址：<a href="https://legacy.balancer.exchange/#/swap/0x8a6ACA71A218301c7081d4e96D64292D3B275ce0" target="_blank">https://legacy.balancer.exchange/#/swap/0x8a6ACA71A218301c7081d4e96D64292D3B275ce0</a><br/>
     *流动性地址：<a href="https://pools.balancer.exchange/#/pool/0x2f49eea1efc1b04e9ecd3b81321060e29db26a19/" target="_blank">https://pools.balancer.exchange/#/pool/0x2f49eea1efc1b04e9ecd3b81321060e29db26a19/</a><br/>
     *SFG 合约（谨防假币）: <a href="https://etherscan.io/token/0x8a6ACA71A218301c7081d4e96D64292D3B275ce0" target="_blank">https://etherscan.io/token/0x8a6ACA71A218301c7081d4e96D64292D3B275ce0</a><br/>
-    SFG 流动性挖矿开启后，SFG 流动性矿池区奖励权重当前为 30%。<br/>
-    S.Finance 流动性挖矿已开启 3 日，按照 SFG 挖矿释放规则，目前流通中的 SFG 数量不足 80,000。鉴于目前流通数量较少，通常价格波动比较剧烈，请谨慎操作注意风险。<br/>
+    SFG 流动性挖矿开启后，SFG 流动性矿池区奖励当前权重为 30%。<br/>
+    S.Finance 流动性挖矿已开启 3 日，按照 SFG 挖矿释放规则，目前流通数量较少，通常价格波动比较剧烈，请谨慎操作注意风险。<br/>
     S.Finance 即将在稳定币流动性矿池区上线 Y （yfi）流动性矿池，抵押 iearn LP tokens  挖矿可获得 SFG 和 CRV 奖励。<br/>
     S.Finance 即将在稳定币流动性矿池区上线 iusd（yfii）流动性矿池，抵押 iearn LP tokens  挖矿可获得 SFG 和 iusd 奖励。`,
   },
