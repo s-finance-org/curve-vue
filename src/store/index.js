@@ -304,6 +304,13 @@ store.gauges = {
       return target.tether = await contract.methods.totalSupply().call()
     },
 
+    dailyYield: valueModel.create(),
+    async dailyYield () {
+      const { contract, dailyYield } = this
+
+      return dailyYield.tether = await contract.methods.balanceOf(process.env.VUE_APP_PS_MINTER).call()
+    },
+
     async getBalanceOf (target, accountAddress) {
       const { contract } = this
 

@@ -193,7 +193,7 @@
                         </text-overlay-loading>
                       </small>
                       <text-overlay-loading :show="loadingAction">
-                        <b-button varia`nt="danger" @click="currentPool.tokens[token].claimConfirm">
+                        <b-button variant="danger" @click="currentPool.tokens[token].claimConfirm">
                           {{ $t('dao.miningClaimConfirm') }}
                         </b-button>
                       </text-overlay-loading>
@@ -215,6 +215,7 @@
           <h4 class="mb-2">
             <span class="mr-3">{{ $t('dao.tokenTitle', [store.gauges.bpt.propagateMark]) }}</span>
             <small>{{ $t('dao.describe', [store.gauges.bpt.mortgagesUnit, store.gauges.bpt.rewardsUnit.join(' ')]) }}</small>
+            <!-- {{ store.gauges.bpt.dailyAPY.cont }} -->
           </h4>
           <div class="box mb-4 px-4 py-3">
             <div class="row mb-3 line-bottom">
@@ -735,6 +736,9 @@
           // FIXME: 
           this.currentPool.tokens.crv.claimConfirm = this.claimRewards
           this.currentPool.tokens.snx.claimConfirm = this.claimRewards
+
+
+          
         },
         watch: {
           loadingAction (val) {
@@ -834,6 +838,9 @@
 
             // BPT
             const { bpt } = store.gauges
+
+            store.gauges.bpt.getDailyYield()
+
             store.tokens.bpt.getBalanceOf(bpt.mortgages.bpt.userBalanceOf, currentContract.default_account)
 
             bpt.getTotalStaking(bpt.mortgages.bpt.totalStaking)
