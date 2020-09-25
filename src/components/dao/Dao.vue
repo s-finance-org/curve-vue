@@ -211,8 +211,7 @@
 
         </b-tab>
 
-        <b-tab :title="$t('dao.tokenTitle', [store.gauges.bpt.propagateMark])" class="pt-3">
-
+        <b-tab :title="$t('dao.tokenTitle', [store.gauges.bpt.propagateMark])" class="pt-3" v-if=false>
           <h4 class="mb-2">
             <span class="mr-3">{{ $t('dao.tokenTitle', [store.gauges.bpt.propagateMark]) }}</span>
             <small>{{ $t('dao.describe', [store.gauges.bpt.mortgageUnit, store.gauges.bpt.rewardsUnit.join(' ')]) }}</small>
