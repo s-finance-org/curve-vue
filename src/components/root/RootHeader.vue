@@ -63,7 +63,7 @@
         //     centered: true
         //   })
 
-        const messageVNode = h('div', [
+        const messageVNode = h('div', { class: ['text-break'] }, [
           h('p', { domProps: { innerHTML: $i18n.t('statement.comingCont') } }),
         ])
 

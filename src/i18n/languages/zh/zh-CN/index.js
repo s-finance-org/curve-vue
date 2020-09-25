@@ -106,6 +106,7 @@ export default {
     lossContHtml: '如果池子里的某个稳定币大幅低于1.0的固定汇率，并且再也不回到这个汇率，比如说某一稳定币归 0就可能造成流动性提供者将损失所有的流动性，但这件事发生的概率非常低。',
     stakingTitle: '抵押风险',
     stakingContHtml: '当使用抵押功能时，每一种智能合约都有他们相应的风险。',
+    inform: '社区将提取 5% 生态基金及开发基金，提供项目初始流动性及未来发展。初始流动性中的 DAI 由社区的早期志愿者 DAO 提供。',
   },
   liquidity: {
     name: '流动性矿池',
@@ -129,6 +130,7 @@ export default {
   dao: {
     standTitle: '稳定币流动性矿池',
     tokenTitle: '{0} 流动性矿池',
+    rewardWeight: '{0} 奖励权重',
     describe: '抵押 {0} 挖矿奖励 {1}',
     staking: '抵押',
     redemption: '赎回',

@@ -41,6 +41,7 @@
         <h4 class="my-3">{{ $t('risk.stakingTitle') }}</h4>
         <p class="text-black-65" v-html="$t('risk.stakingContHtml')"></p>
       </div>
+      <small class="text-black-25 mb-2">{{ $t('risk.inform') }}</small>
     </b-container>
   </div>
 </template>

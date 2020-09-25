@@ -19,21 +19,21 @@
           </h4>
           <div class="box mb-4 px-4 py-3">
             <div class="row mb-3 line-bottom">
-              <span class="col-12 col-lg-4 pb-3">
+              <span class="col-12 col-lg pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.totalStaking') }}</h6>
                 <text-overlay-loading inline :show="currentPool.totalSupply.loading">
                   <span class="h4 mr-2">{{ currentPool.totalSupply.cont }}</span>
                   <span class="inline-block text-black-65">{{ currentPool.name }} LP tokens</span>
                 </text-overlay-loading>
               </span>
-              <span class="col-12 col-lg-4 pb-3">
+              <span class="col-12 col-lg pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.myStaking') }}</h6>
                 <text-overlay-loading inline :show="currentPool.gaugeBalance.loading">
                   <span class="h4 mr-2">{{ currentPool.gaugeBalance.cont }}</span>
                   <span class="inline-block text-black-65">{{ currentPool.name }} LP tokens</span>
                 </text-overlay-loading>
               </span>
-              <span class="col-12 col-lg-4 pb-3">
+              <span class="col-12 col-lg pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.virtualPrice') }}</h6>
                 <text-overlay-loading inline :show="loadingAction">
                   <span class="h4">
@@ -43,6 +43,12 @@
                   <span class="text-black-65 h6">USD</span>
                   </span>
                 </text-overlay-loading>
+              </span>
+              <span class="col-12 col-lg pb-3">
+                <h6 class="mb-0 text-black-65">{{ $t('dao.rewardWeight', ['SFG']) }}</h6>
+                <!-- <text-overlay-loading inline :show="store.gauges.bpt.rewards.sfg.userPaidReward.loading"> -->
+                  <span class="h4">70%</span>
+                <!-- </text-overlay-loading> -->
               </span>
             </div>
 
@@ -213,28 +219,34 @@
           </h4>
           <div class="box mb-4 px-4 py-3">
             <div class="row mb-3 line-bottom">
-              <span class="col-12 col-lg-4 pb-3">
+              <span class="col-12 col-lg pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.totalStaking') }}</h6>
                 <text-overlay-loading inline :show="store.gauges.bpt.mortgages.bpt.totalStaking.loading">
                   <span class="h4 mr-2">{{ store.gauges.bpt.mortgages.bpt.totalStaking.cont }}</span>
                   <span class="inline-block text-black-65">{{ store.gauges.bpt.mortgagesUnit }}</span>
                 </text-overlay-loading>
               </span>
-              <span class="col-12 col-lg-4 pb-3">
+              <span class="col-12 col-lg pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.myStaking') }}</h6>
                 <text-overlay-loading inline :show="store.gauges.bpt.mortgages.bpt.userStaking.loading">
                   <span class="h4 mr-2">{{ store.gauges.bpt.mortgages.bpt.userStaking.cont }}</span>
                   <span class="inline-block text-black-65">{{ store.gauges.bpt.mortgagesUnit }}</span>
                 </text-overlay-loading>
               </span>
-              <span class="col-12 col-lg-4 pb-3">
+              <span class="col-12 col-lg pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.miningPaidReward') }}</h6>
                 <text-overlay-loading inline :show="store.gauges.bpt.rewards.sfg.userPaidReward.loading">
                   <span class="h4 mr-2">{{ store.gauges.bpt.rewards.sfg.userPaidReward.cont }}</span>
                   <span class="inline-block text-black-65">{{ store.gauges.bpt.rewards.sfg.name }}</span>
                 </text-overlay-loading>
               </span>
-              <!-- <span class="col-12 col-lg-4 pb-3">
+              <span class="col-12 col-lg pb-3">
+                <h6 class="mb-0 text-black-65">{{ $t('dao.rewardWeight', ['SFG']) }}</h6>
+                <!-- <text-overlay-loading inline :show="store.gauges.bpt.rewards.sfg.userPaidReward.loading"> -->
+                  <span class="h4">30%</span>
+                <!-- </text-overlay-loading> -->
+              </span>
+              <!-- <span class="col-12 col-lg pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.virtualPrice') }}</h6>
                 <text-overlay-loading inline :show="loadingAction">
                   <span class="h4">
@@ -290,7 +302,7 @@
                   </div>
                   <b-form-radio-group
                     class="mt-2 col"
-                    v-model="store.gauges.bpt.mortgages.bpt.redemptionSliderSelected"
+                    v-model="store.gauges.bpt.mortgages.bpt.redemptionSliderSelectedRadio"
                     :options="store.gauges.bpt.mortgages.bpt.redemptionSliderOptions"
                     buttons
                     button-variant="outline-secondary"

@@ -9,6 +9,7 @@ import { notifyHandler, notifyNotification } from '../init'
 import * as common from '../utils/common.js'
 import * as gaugeStore from '../components/dao/gaugeStore'
 import daoabis from '../components/dao/allabis'
+import * as gasPriceStore from '../components/common/gasPriceStore'
 
 import I18nLanguages from '../i18n/languages'
 import { valueModel } from '../model'
@@ -162,7 +163,7 @@ store.gauges = {
         code: 'bpt',
         name: 'BPT',
         priceDecimal: 4,
-        gainUrl: 'https://legacy.balancer.exchange/#/swap/0x8a6ACA71A218301c7081d4e96D64292D3B275ce0',
+        gainUrl: 'https://pools.balancer.exchange/#/pool/0x2f49eea1efc1b04e9ecd3b81321060e29db26a19/',
 
         totalStaking: valueModel.create(),
         userStaking: valueModel.create(),
@@ -290,7 +291,7 @@ store.gauges = {
 
       await contract.methods.deposit(deposit.toFixed(0,1)).send({
         from: accountAddress,
-        // gasPrice: this.gasPriceWei,
+        gasPrice: gasPriceStore.gasPriceWei,
         // gas: this.currentPool.deposit.gas,
       })
       .once('transactionHash', hash => {
@@ -323,7 +324,7 @@ store.gauges = {
 
       await withdrawMethod.send({
         from: accountAddress,
-        // gasPrice: this.gasPriceWei,
+        gasPrice: gasPriceStore.gasPriceWei,
         // gas: gas * 1.5 | 0,
       })
       .once('transactionHash', hash => {
@@ -343,7 +344,7 @@ store.gauges = {
 
       await mint.send({
         from: accountAddress,
-        // gasPrice: this.gasPriceWei,
+        // gasPrice: gasPriceStore.gasPriceWei,
         // gas: gas * 1.5 | 0,
       })
       .once('transactionHash', hash => {
