@@ -270,25 +270,7 @@
                   >
               </div>
             </div>
-
-
-
-
  -->
-
-            <!-- <ul>
-              <li v-for='(currency, i) in Object.keys(currencies)'>
-                <input type="radio" :id="'to_cur_'+i" name="to_cur" :value='i' :checked='to_currency === i' @click='handleCheck(i)'>
-                <label :for="'to_cur_'+i">
-                  <img 
-                      :class="{'token-icon': true, [currency+'-icon']: true, 'y': withdrawc, [currentPool]: true}" 
-                      :src='getTokenIcon(currency)'>
-                  <span v-show='!withdrawc'> {{ currency | capitalize }} </span>
-                  <span v-show='withdrawc'> {{ currencies[currency] }} </span>
-                </label>
-              </li>
-            </ul> -->
-
 
             <div class="row">
               <div class="col pr-4 line-right">
@@ -350,12 +332,12 @@
                   {{ $t('liquidity.bonus') }}
                   <span class="float-right">{{ (slippage*100).toFixed(3) }}%</span>
                 </label>
-                <!-- <label class="mb-3">
+                <label class="mb-3">
                   <span class="text-danger-1">{{ $t('liquidity.willReceive') }}</span>
                   <span class="float-right">
                     <span class="text-danger-1 text-18">{{ lpCrvReceivedText }}</span>
                   </span>
-                </label> -->
+                </label>
               </div>
             </div>
 

@@ -30,7 +30,6 @@ import abiSNX from '../components/dao/abi/snx'
 import abiCRV from '../components/dao/abi/crv'
 import abiSUSDv2 from '../components/dao/abi/susdv2'
 import abiBpt from '../components/dao/abi/bpt'
-import abiBptGauge from '../components/dao/abi/bptGauge'
 import { ERC20_abi as abiSusdv2LpToken } from '../allabis'
 
 const store = {
@@ -96,7 +95,8 @@ const store = {
       },
     },
     bpt: {
-      address: '0x5F6eF509e65676134BD73baf85E0cf2744D8e254',
+      // address: '0x5F6eF509e65676134BD73baf85E0cf2744D8e254', // test
+      address: '0x2f49EeA1EfC1B04e9EcD3b81321060e29Db26A19',
       abi: abiBpt,
       __contract: null,
       get contract () {
@@ -146,10 +146,9 @@ store.gauges = {
     name: 'BPT',
     propagateMark: 'SFG',
     mortgagesUnit: 'BPT',
-
-    address: '0xf9417badb0692bdedad616058619201fcd292532',
+    // address: '0xf9417badb0692bdedad616058619201fcd292532', // test
+    address: '0x318b2456A711c5f35E9eAa2B9EE5734A3635FE96',
     abi: abiSUSDv2,
-    // abi: abiBptGauge,
     __contract: null,
     get contract () {
       const { __contract, abi, address } = this
