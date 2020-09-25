@@ -156,7 +156,8 @@ export default {
   notice: {
     approveSpending: 'Please approve spending your coins',
     confirmDepositTransaction: 'Pleaes confirm deposit transaction',
-    // syntetixAnomalous: 'Withdrawals may be temporarily disabled due to Syntetix contract upgrades. Will be enabled back shortly.'
+    // syntetixAnomalous: 'Withdrawals may be temporarily disabled due to Syntetix contract upgrades. Will be enabled back shortly.',
+    approveOperationWarning: 'If you encounter a gas fee exceeding 0.2 ETH during mortgage, please click Reject and wait for a while and try again'
   },
   social: {
     twitter: 'Twitter',

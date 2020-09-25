@@ -80,7 +80,7 @@
                   <b-button class="text-blue-1" to="/susdv2/liquidity/" size="xsm" variant="light">{{ $t('dao.stakingConfirmTip', ['LP tokens']) }}</b-button>
                 </small>
                 <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('dao.infiniteApproval') }}</b-form-checkbox>
-                <b-alert class="mt-3" :show="dismissCountDown" variant="dark" dismissible fade
+                <b-alert class="mt-3" :show="dismissCountDown && waitingMessageTargetId === 'deposit'" variant="dark" dismissible fade
                   @dismissed="dismissCountDown=0"
                   @dismiss-count-down="countDownChanged"
                   v-html='waitingMessage'>
@@ -293,7 +293,7 @@
                 </small>
                 <!-- FIXME: inf_approval -->
                 <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('dao.infiniteApproval') }}</b-form-checkbox>
-                <b-alert class="mt-3" :show="dismissCountDown" variant="dark" dismissible fade
+                <b-alert class="mt-3" :show="dismissCountDown && waitingMessageTargetId === 'stake'" variant="dark" dismissible fade
                   @dismissed="dismissCountDown=0"
                   @dismiss-count-down="countDownChanged"
                   v-html='waitingMessage'>
@@ -749,9 +749,6 @@
           // FIXME: 
           this.currentPool.tokens.crv.claimConfirm = this.claimRewards
           this.currentPool.tokens.snx.claimConfirm = this.claimRewards
-
-
-          
         },
         watch: {
           loadingAction (val) {
@@ -770,6 +767,8 @@
         methods: {
           // FIXME:
           async onStake () {
+            this.alert('notice.approveOperationWarning', 'stake')
+
             store.gauges.bpt.onStake(currentContract.default_account, this.inf_approval)
           },
           async onRedemption () {

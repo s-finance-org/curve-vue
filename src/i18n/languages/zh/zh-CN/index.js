@@ -155,6 +155,7 @@ export default {
     approveSpending: '请授权钱包进行扣款',
     confirmDepositTransaction: '请在钱包中确认存款转账',
     // syntetixAnomalous: '由于Syntetix合约升级操作可能会失败，为避免矿工费损失可稍后再试。',
+    approveOperationWarning: '抵押时如遇到 gas 费用超过 0.2ETH，请先点击拒绝等待一段时间后再试'
   },
   social: {
     twitter: '推特',
@@ -166,5 +167,5 @@ export default {
     tutorial: '挖矿教程',
     communitySupport: '社区支持',
   },
-  temp: '* 如果只想取单个币种可将其他币种数量修改为0'
+  temp: '* 如果只想取单个币种可将其他币种数量修改为0',
 }
