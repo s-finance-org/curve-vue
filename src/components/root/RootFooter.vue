@@ -8,7 +8,7 @@
           <img class="qrcode" src="/qrcode_wechat@2x.png" />
         </b-popover>
         <a href="https://t.me/SFinanceCN" target="_blank">{{ $t('social.telegram') }}</a>
-        <a href="https://www.yuque.com/mudui/sfin/sbiy00" target="_blank">{{ $t('social.tutorial') }}</a>
+        <a href="https://www.yuque.com/mudui/sfin/swrcks" target="_blank">{{ $t('social.tutorial') }}</a>
         <a href="https://www.yuque.com/mudui/sfin" target="_blank">{{ $t('social.communitySupport') }}</a>
       </template>
       <template v-else>
