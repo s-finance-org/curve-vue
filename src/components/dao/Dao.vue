@@ -293,7 +293,7 @@
                 </small>
                 <!-- FIXME: inf_approval -->
                 <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('dao.infiniteApproval') }}</b-form-checkbox>
-                <b-alert class="mt-3" :show="dismissCountDown && waitingMessageTargetId === 'stake'" variant="dark" dismissible fade
+                <b-alert class="mt-3" :show="dismissCountDown" variant="dark" dismissible fade
                   @dismissed="dismissCountDown=0"
                   @dismiss-count-down="countDownChanged"
                   v-html='waitingMessage'>
