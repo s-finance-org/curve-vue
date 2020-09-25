@@ -47,9 +47,14 @@ export default {
     more: 'more',
     ok: 'Ok',
     coming: 'S. Finance has started liquidity mining！',
-    comingCont1: 'S. Finance has started sUSD liquidity mining pool mortgage mining at 00:00:00 (SGT) 23th September, 2020. Staking susdv2 LP tokens could get 3 kinds of token for reward，including SFG (governance token of S.finance) 、CRV （governance token of Curve) and SNX (governance token of Synthetix). ',
-    comingCont2: 'Total amount of SFG is 21 million, with 100% contribution-based distribution, no private placement, no pre-dig. Minted SFG per day is 0.2% of the remaining, and the output rate of SFG is 10% in the first 24 hours (0.02% minted SFG on the first day, while the rate of minted CRV and SNX is unaffected), and the mining rate will return to normal 24 hours later. SFG liquidity pool will start on the third day after the opening of S.Finance, and the rewarding weight of SFG liquidity pool will be three times that of the stable coin pool.',
-    comingCont3: 'The S.finance smart contract has been scrutinized by KNOWNSEC. However, it cannot completely eliminate the risk, the price of SFG possibly get 0. Please invest within your capacity.'
+    comingCont1: `S.fintance will open the SFG liquidity pool at 2020-09-25 18:00 Singapore time. Mortgaging BPT will obtain the S.Finance governance token SFG award. SFG exchange and deposit/withdrawal services are provided by Balancer:<br/>
+    * Exchange Address: https://legacy.balancer.exchange/#/swap/0x8a6ACA71A218301c7081d4e96D64292D3B275ce0<br/>
+    * Liquidity Pool Address：https://pools.balancer.exchange/#/pool/0x2f49eea1efc1b04e9ecd3b81321060e29db26a19/<br/>
+    * SFG smart contract （please make sure the contract address is right before trading）：https://etherscan.io/token/0x8a6ACA71A218301c7081d4e96D64292D3B275ce0`,
+    comingCont2: `After SFG liquidity pool opening, the reward weight of SFG liquidity pool is 30% on the first day.<br/>
+    S. Finance has been opened for 3 days. According to the SFG mint rules, the number of SFG in circulation is less than 80,000. In view of the small amount of current circulation, the price fluctuation could be quite violent, please pay attention to the risks.`,
+    comingCont3: `S.Finance will soon launch Y (YFI) liquidity pool in the stable currency liquidity pool area, users could obtain SFG and CRV rewards by mining iearn LP tokens.<br/>
+    S. Finance will soon launch iusd (YFII) liquidity pool in the stable currency liquidity pool area, users could obtain SFG and iusd rewards for mining iearn LP tokens.`
   },
   wallet: {
     notConnected: "You haven't connected wallet",
@@ -126,14 +131,14 @@ export default {
   dao: {
     standTitle: 'Stablecoin liquidity pool',
     tokenTitle: '{0} Liquidity gauge',
-    describe: 'Staking {0} LP tokens Reward {1}',
+    describe: 'Staking {0} Reward {1}',
     staking: 'Deposit',
     redemption: 'Withdraw',
     miningReward: 'Minted',
     stakingAmountPlaceholder: 'Amount',
     stakingBalance: 'Available',
     infiniteApproval: 'Infinite approval',
-    stakingConfirmTip: 'Deposit to get LP tokens',
+    stakingConfirmTip: 'Deposit to get {0}',
     stakingConfirm: 'Deposit',
     redemptionBalance: 'Available',
     redemptionAmountPlaceholder: 'Amount',

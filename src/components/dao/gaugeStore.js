@@ -15,6 +15,7 @@ import * as volumeStore from '../common/volumeStore'
 import * as helpers from '../../utils/helpers'
 
 import * as gasPriceStore from '../common/gasPriceStore'
+import store from '../../store'
 
 export let state = Vue.observable({
 	gaugeController: null,

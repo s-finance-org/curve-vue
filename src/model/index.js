@@ -6,7 +6,7 @@ const valueModelStore = {
     return {
       loading: true,
       tether: -1,
-      revised: '',
+      revised: 0,
       defaultRevised: '',
       handled: -1,
       cont: -1,

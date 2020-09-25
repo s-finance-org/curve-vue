@@ -47,10 +47,16 @@ export default {
     cont: 'S.finance 代币遵循100%基于贡献分配，无私募，无预挖，无团队分配的方式，代币名称目前还在征集中。Trx 链上有关于S.finance的合约为诈骗信息，最新消息以官网为准！',
     more: '查看详情',
     ok: '知道了',
-    coming: 'S.Finance 已开启流动性挖矿',
-    comingCont1: 'S.Finance 已于新加坡时间 2020-09-23 00:00:00 开启 susd 流动性矿池抵押挖矿。 抵押 susdv2 LP tokens 即可获得 S.Finance 治理代币 SFG、Curve 治理代币 CRV 以及 Synthetix 平台代币 SNX。',
-    comingCont2: 'SFG 总发行量 2100 万，遵循 100%基于贡献分配，无私募，无预挖。每日挖矿产出剩余部分的 0.2%，开启挖矿后的24 小时内 SFG 产出速率为 10%，即首日挖矿产出 0.02%，24 小时后挖矿速率恢复正常（CRV 和 SNX 的挖矿速率不受影响）。挖矿开启后的第三日将上线 SFG 流动性矿池，届时SFG 流动性矿池挖矿奖励权重将为稳定币矿池权重三倍。',
-    comingCont3: 'S.Finance 智能合约已由知道创宇完成安全审计，然而，安全审计并不能完全消除风险，请在能力承受范围内谨慎操作，SFG 有可能一文不值。',
+    coming: 'S.Finance 即将开启 SFG 流动性挖矿',
+    comingCont1: `S.Finance 将于新加坡时间 2020-09-25 18:00 开启 SFG 流动性矿池抵押挖矿，抵押 BPT 即可获得 S.Finance 治理代币 SFG 奖励。SFG 兑换以及存取款服务由 Balancer 提供，其中：<br/>
+    *兑换地址：<a href="https://legacy.balancer.exchange/#/swap/0x8a6ACA71A218301c7081d4e96D64292D3B275ce0">https://legacy.balancer.exchange/#/swap/0x8a6ACA71A218301c7081d4e96D64292D3B275ce0</a><br/>
+    *流动性地址：https://pools.balancer.exchange/#/pool/0x2f49eea1efc1b04e9ecd3b81321060e29db26a19/<br/>
+    *SFG 合约（谨防假币）: https://etherscan.io/token/0x8a6ACA71A218301c7081d4e96D64292D3B275ce0`,
+    comingCont2: `SFG 流动性挖矿开启后，SFG 流动性矿池区奖励权重首日为 30%。<br/>
+    S.Finance 流动性挖矿已开启 3 日，按照 SFG 挖矿释放规则，目前流通中的 SFG 数量不足 80,000。鉴于目前流通数量较少，通常价格波动比较剧烈，请谨慎操作注意风险。<br/>
+    S.Finance 即将在稳定币流动性矿池区上线 Y （yfi）流动性矿池，抵押 iearn LP tokens  挖矿可获得 SFG 和 CRV 奖励。<br/>
+    S.Finance 即将在稳定币流动性矿池区上线 iusd（yfii）流动性矿池，抵押 iearn LP tokens  挖矿可获得 SFG 和 iusd 奖励。`,
+    comingCont3: ''
   },
   wallet: {
     notConnected: '你还没有连接钱包',
@@ -96,7 +102,7 @@ export default {
     auditTitle: '审计',
     auditContHtml: `S.finance 智能合约通过了KNOWNSEC审计。<a href="https://etherscan.io/token/${process.env.VUE_APP_SFG_TOKEN}" target="_blank">合约地址<a><br/>然而，安全审计并不能完全消除风险。请在能力承受范围内投资，不要盲目投入全部资产，尤其是在提供流动性交易时。<br/>使用S.finance 做兑换交易时风险会相对降低，但这只是建议。`,
     adminKeyTitle: '管理密钥',
-    adminKeyContHtml: '管理密钥在紧急情况下允许暂停合约，但仅可在最初2个月使用。它还允许改变放大系数(S.Finance参数)，管理费用(不超过流动性凭证花费的一半)和费用。所有的变更将在提交额外申请之前的1天内进行。<br/>S.Finance将向去中心化的DAO过渡。',
+    adminKeyContHtml: '管理密钥在紧急情况下允许暂停合约，但仅在项目初期升级调整时使用。它还允许改变放大系数(S.Finance参数)，管理费用(不超过流动性凭证花费的一半)和费用，管理密钥将在近期项目稳定后加上 timelock 或多签机制。<br/>S.Finance将向去中心化的DAO过渡。',
     lossTitle: '资产损失',
     lossContHtml: '如果池子里的某个稳定币大幅低于1.0的固定汇率，并且再也不回到这个汇率，比如说某一稳定币归 0就可能造成流动性提供者将损失所有的流动性，但这件事发生的概率非常低。',
     stakingTitle: '抵押风险',
@@ -124,14 +130,14 @@ export default {
   dao: {
     standTitle: '稳定币流动性矿池',
     tokenTitle: '{0} 流动性矿池',
-    describe: '抵押 {0} LP tokens 挖矿奖励 {1}',
+    describe: '抵押 {0} 挖矿奖励 {1}',
     staking: '抵押',
     redemption: '赎回',
     miningReward: '挖矿奖励',
     stakingAmountPlaceholder: '输入抵押数量',
     stakingBalance: '当前可抵押',
     infiniteApproval: '信任此合约使用最佳矿工费，后续将无需再次批准',
-    stakingConfirmTip: '存款获得 LP tokens',
+    stakingConfirmTip: '存款获得 {0}',
     stakingConfirm: '确认抵押',
     redemptionBalance: '可赎回数量',
     redemptionAmountPlaceholder: '输入赎回数量',

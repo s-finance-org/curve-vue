@@ -15,7 +15,7 @@
 
           <h4 class="mb-2">
             <span class="mr-3">{{ $t('dao.tokenTitle', [currentPool.nameCont]) }}</span>
-            <small>{{ $t('dao.describe', [currentPool.name, currentPool.describeTokensCont]) }}</small>
+            <small>{{ $t('dao.describe', [currentPool.name + ' LP tokens', currentPool.describeTokensCont]) }}</small>
           </h4>
           <div class="box mb-4 px-4 py-3">
             <div class="row mb-3 line-bottom">
@@ -61,10 +61,10 @@
                     button-variant="outline-secondary"
                   ></b-form-radio-group>
                 </div>
-                <small class="d-flex mt-1">
-                  {{ $t('dao.stakingBalance') }}： 
-                  <text-overlay-loading :show="currentPool.balanceOf.loading">{{ currentPool.balanceOf.cont }} {{ currentPool.name }} LP tokens</text-overlay-loading>
-                  <b-button class="text-blue-1 ml-2" to="/susdv2/liquidity/" size="xsm" variant="light">{{ $t('dao.stakingConfirmTip') }}</b-button>
+                <small class="d-flex mt-1 flex-wrap">
+                  {{ $t('dao.stakingBalance') }}：
+                  <text-overlay-loading class="mr-2" :show="currentPool.balanceOf.loading">{{ currentPool.balanceOf.cont }} {{ currentPool.name }} LP tokens</text-overlay-loading>
+                  <b-button class="text-blue-1" to="/susdv2/liquidity/" size="xsm" variant="light">{{ $t('dao.stakingConfirmTip', ['LP tokens']) }}</b-button>
                 </small>
                 <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('dao.infiniteApproval') }}</b-form-checkbox>
                 <b-alert class="mt-3" :show="dismissCountDown" variant="dark" dismissible fade
@@ -204,9 +204,156 @@
           </div>
 
         </b-tab>
-        <!-- <b-tab :title="$t('dao.tokenTitle', ['SFG'])" class="pt-3">
-          2
-        </b-tab> -->
+
+        <b-tab :title="$t('dao.tokenTitle', [store.gauges.bpt.propagateMark])" class="pt-3">
+
+          <h4 class="mb-2">
+            <span class="mr-3">{{ $t('dao.tokenTitle', [store.gauges.bpt.propagateMark]) }}</span>
+            <small>{{ $t('dao.describe', [store.gauges.bpt.mortgageUnit, store.gauges.bpt.rewardsUnit.join(' ')]) }}</small>
+          </h4>
+          <div class="box mb-4 px-4 py-3">
+            <div class="row mb-3 line-bottom">
+              <span class="col-12 col-lg-4 pb-3">
+                <h6 class="mb-0 text-black-65">{{ $t('dao.totalStaking') }}</h6>
+                <text-overlay-loading inline :show="store.gauges.bpt.mortgages.bpt.totalStaking.loading">
+                  <span class="h4 mr-2">{{ store.gauges.bpt.mortgages.bpt.totalStaking.cont }}</span>
+                  <span class="inline-block text-black-65">{{ store.gauges.bpt.mortgagesUnit }}</span>
+                </text-overlay-loading>
+              </span>
+              <span class="col-12 col-lg-4 pb-3">
+                <h6 class="mb-0 text-black-65">{{ $t('dao.myStaking') }}</h6>
+                <text-overlay-loading inline :show="store.gauges.bpt.mortgages.bpt.userStaking.loading">
+                  <span class="h4 mr-2">{{ store.gauges.bpt.mortgages.bpt.userStaking.cont }}</span>
+                  <span class="inline-block text-black-65">{{ store.gauges.bpt.mortgagesUnit }}</span>
+                </text-overlay-loading>
+              </span>
+              <span class="col-12 col-lg-4 pb-3">
+                <h6 class="mb-0 text-black-65">{{ $t('dao.miningPaidReward') }}</h6>
+                <text-overlay-loading inline :show="store.gauges.bpt.rewards.sfg.userPaidReward.loading">
+                  <span class="h4 mr-2">{{ store.gauges.bpt.rewards.sfg.userPaidReward.cont }}</span>
+                  <span class="inline-block text-black-65">{{ store.gauges.bpt.rewards.sfg.name }}</span>
+                </text-overlay-loading>
+              </span>
+              <!-- <span class="col-12 col-lg-4 pb-3">
+                <h6 class="mb-0 text-black-65">{{ $t('dao.virtualPrice') }}</h6>
+                <text-overlay-loading inline :show="loadingAction">
+                  <span class="h4">
+                  1
+                  <span class="h6 text-black-65 inline-block ">{{ currentPool.name }} LP tokens = </span>
+                  {{ (1 * virtual_price).toFixed(6) }}
+                  <span class="text-black-65 h6">USD</span>
+                  </span>
+                </text-overlay-loading>
+              </span> -->
+            </div>
+
+            <b-tabs pills nav-class="tabs-nav" class="mt-1">
+              <b-tab :title="$t('dao.staking')" class="pt-3" active>
+                <label class="text-black-65 mb-0">{{ $t('dao.staking') }}</label>
+                <div class="row flex-wrap">
+                  <div class="col-12 col-lg mt-2">
+                    <b-form-input class="h-38" v-model="store.gauges.bpt.mortgages.bpt.stakeAmountInput" :placeholder="$t('dao.stakingAmountPlaceholder')"></b-form-input>
+                  </div>
+                  <b-form-radio-group
+                    class="mt-2 col"
+                    v-model="store.gauges.bpt.mortgages.bpt.stakeSliderSelectedRadio"
+                    :options="store.gauges.bpt.mortgages.bpt.stakeSliderOptions"
+                    buttons
+                    button-variant="outline-secondary"
+                  ></b-form-radio-group>
+                </div>
+                <small class="d-flex mt-1 flex-wrap">
+                  {{ $t('dao.stakingBalance') }}：
+                  <text-overlay-loading class="mr-2" :show="store.gauges.bpt.mortgages.bpt.userBalanceOf.loading">{{ store.gauges.bpt.mortgages.bpt.userBalanceOf.cont }} {{ store.gauges.bpt.mortgages.bpt.name }}</text-overlay-loading>
+                  <b-button class="text-blue-1" :to=store.gauges.bpt.mortgages.bpt.gainUrl size="xsm" variant="light">{{ $t('dao.stakingConfirmTip', [store.gauges.bpt.mortgages.bpt.name]) }}</b-button>
+                </small>
+                <!-- FIXME: inf_approval -->
+                <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('dao.infiniteApproval') }}</b-form-checkbox>
+                <b-alert class="mt-3" :show="dismissCountDown" variant="dark" dismissible fade
+                  @dismissed="dismissCountDown=0"
+                  @dismiss-count-down="countDownChanged"
+                  v-html='waitingMessage'>
+                </b-alert>
+                <div class="d-flex align-items-end mt-5 float-right">
+                  <text-overlay-loading :show="loadingAction">
+                    <b-button size="lg" variant="danger" @click=onStake>
+                      {{ $t('dao.stakingConfirm') }}
+                    </b-button>
+                  </text-overlay-loading>
+                </div>
+              </b-tab>
+              <b-tab :title="$t('dao.redemption')" class="pt-3">
+                <label class="text-black-65 mb-0">{{ $t('dao.redemption') }}</label>
+                <div class="row flex-wrap">
+                  <div class="col-12 col-lg mt-2">
+                    <b-form-input class="h-38" v-model="store.gauges.bpt.mortgages.bpt.redemptionAmountInput" :placeholder="$t('dao.redemptionAmountPlaceholder')"></b-form-input>
+                  </div>
+                  <b-form-radio-group
+                    class="mt-2 col"
+                    v-model="store.gauges.bpt.mortgages.bpt.redemptionSliderSelected"
+                    :options="store.gauges.bpt.mortgages.bpt.redemptionSliderOptions"
+                    buttons
+                    button-variant="outline-secondary"
+                  ></b-form-radio-group>
+                </div>
+                <small class="d-flex mt-1">
+                  {{ $t('dao.redemptionBalance') }}：
+                  <text-overlay-loading :show="store.gauges.bpt.mortgages.bpt.userStaking.loading">{{ store.gauges.bpt.mortgages.bpt.userStaking.cont }} {{ store.gauges.bpt.mortgages.bpt.name }}</text-overlay-loading>
+                </small>
+                <!-- FIXME: inf_approval -->
+                <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('dao.infiniteApproval') }}</b-form-checkbox>
+                <b-alert class="mt-3" :show="dismissCountDown && waitingMessageTargetId === 'withdraw'" variant="dark" dismissible fade
+                  @dismissed="dismissCountDown=0"
+                  @dismiss-count-down="countDownChanged"
+                  v-html='waitingMessage'>
+                </b-alert>
+                <div class="d-flex align-items-end mt-5 float-right">
+                  <text-overlay-loading :show="loadingAction">
+                    <b-button size="lg" variant="danger" @click=onRedemption>
+                      {{ $t('dao.redemptionConfirm') }}
+                    </b-button>
+                  </text-overlay-loading>
+                </div>
+              </b-tab>
+              <b-tab :title="$t('dao.miningReward')" class="pt-3">
+                <div class="area">
+                  <h5 class="mb-3 d-flex align-items-center">
+                    <img :src="getTokenIcon(store.gauges.bpt.rewards.sfg.code)" class="mr-2 icon-w-20 icon token-icon" :class="[store.gauges.bpt.rewards.sfg.code+'-icon']">
+                    {{ store.gauges.bpt.rewards.sfg.name }}
+                  </h5>
+                  <h6 class="mb-0 text-black-65">{{ $t('dao.miningPendingReward') }}</h6>
+                  <h4 class="mb-1">
+                    <text-overlay-loading inline :show="store.gauges.bpt.rewards.sfg.userPendingReward.loading">
+                      {{ store.gauges.bpt.rewards.sfg.userPendingReward.cont }} {{ store.gauges.bpt.rewards.sfg.name }}
+                    </text-overlay-loading>
+                  </h4>
+                  <div class="d-flex no-gutters align-items-end">
+                    <small class="col">
+                      {{ $t('dao.miningPaidReward') }}：
+                      <text-overlay-loading inline :show="store.gauges.bpt.rewards.sfg.userPaidReward.loading">
+                        {{ store.gauges.bpt.rewards.sfg.userPaidReward.cont }} {{ store.gauges.bpt.rewards.sfg.name }}
+                      </text-overlay-loading>
+                      <em class="px-3 text-black-15">/</em>
+                      {{ $t('dao.miningTotalReward') }}：
+                      <text-overlay-loading inline :show="store.gauges.bpt.rewards.sfg.userTotalReward.loading">
+                        {{ store.gauges.bpt.rewards.sfg.userTotalReward.cont }} {{ store.gauges.bpt.rewards.sfg.name }}
+                      </text-overlay-loading>
+                      <!-- <em class="px-3 text-black-15">/</em>
+                      <text-overlay-loading inline :show="loadingAction">
+                        1 {{ currentPool.tokens[token].nameCont }} = {{ currentPool.tokens[token].rateUsd }} USD
+                      </text-overlay-loading> -->
+                    </small>
+                    <text-overlay-loading :show="loadingAction">
+                      <b-button variant="danger" @click="onHarvest">
+                        {{ $t('dao.miningClaimConfirm') }}
+                      </b-button>
+                    </text-overlay-loading>
+                  </div>
+                </div>
+              </b-tab>
+            </b-tabs>
+          </div>
+        </b-tab>
       </b-tabs>
     </b-container>
 
@@ -351,6 +498,8 @@
         RootSub
     	},
     	data: () => ({
+        store,
+
         depositSliderSelected: 0,
         depositSliderOptions: [
           { text: '25%', value: 0.25 },
@@ -369,6 +518,8 @@
         supportGauges: [
           ''
         ],
+
+
 
         waitingMessage: '',
         waitingMessageTargetId: '',
@@ -559,7 +710,7 @@
                 : 0
               this.withdrawSliderSelected = val
             }
-          }
+          },
         },
         created() {
           // FIXME: ?
@@ -573,6 +724,8 @@
           // FIXME: 
           this.currentPool.tokens.crv.claimConfirm = this.claimRewards
           this.currentPool.tokens.snx.claimConfirm = this.claimRewards
+
+
         },
         watch: {
           loadingAction (val) {
@@ -589,6 +742,17 @@
           // },
         },
         methods: {
+          // FIXME:
+          async onStake () {
+            store.gauges.bpt.onStake(currentContract.default_account, this.inf_approval)
+          },
+          async onRedemption () {
+            store.gauges.bpt.onRedemption(currentContract.default_account, this.inf_approval)
+          },
+          async onHarvest () {
+            store.gauges.bpt.onHarvest(currentContract.default_account)
+          },
+
           async mounted() {
             this.currentPool.gauge = process.env.VUE_APP_PSS_GAUGE
 
@@ -628,6 +792,7 @@
             piegauges[highest].sliced = true;
             piegauges[highest].selected = true;
 
+            // susdv2
             store.tokens.susdv2LpToken.getBalanceOf(this.currentPool.balanceOf, currentContract.default_account)
 
             const { crv, snx, sfg } = this.currentPool.tokens
@@ -653,6 +818,19 @@
               snx.totalReward,
               store.gauges.susdv2.getSnxPendingReward(snx.pendingReward, currentContract.default_account),
               store.gauges.susdv2.getSnxPaidReward(snx.paidReward, currentContract.default_account)
+            )
+
+            // BPT
+            const { bpt } = store.gauges
+            store.tokens.bpt.getBalanceOf(bpt.mortgages.bpt.userBalanceOf, currentContract.default_account)
+
+            bpt.getTotalStaking(bpt.mortgages.bpt.totalStaking)
+            bpt.getBalanceOf(bpt.mortgages.bpt.userStaking, currentContract.default_account)
+
+            bpt.getUserTotalReward_SFG(
+              bpt.rewards.sfg.userTotalReward,
+              bpt.getUserPendingReward_SFG(bpt.rewards.sfg.userPendingReward, currentContract.default_account),
+              bpt.getUserPaidReward_SFG(bpt.rewards.sfg.userPaidReward, currentContract.default_account)
             )
           },
           countDownChanged(val) {
