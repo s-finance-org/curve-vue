@@ -31,6 +31,7 @@ import abiCRV from '../components/dao/abi/crv'
 import abiSUSDv2 from '../components/dao/abi/susdv2'
 import abiBpt from '../components/dao/abi/bpt'
 import BALANCER_POOL_ABI from '../components/dao/abi/BALANCER_POOL_ABI'
+import abiSFG from '../components/dao/abi/sfg'
 import { ERC20_abi as abiSusdv2LpToken } from '../allabis'
 
 const store = {
@@ -76,10 +77,17 @@ store.price = {
 }
 
 store.tokens ={
+  dai: {
+    // TEMP: 
+    price: {
+      handled: 1.02
+    }
+  },
   sfg: {
     name: 'SFG',
 
     address: '0x8a6ACA71A218301c7081d4e96D64292D3B275ce0',
+    abi: abiSFG,
     __contract: null,
     get contract () {
       const { __contract, abi, address } = this
@@ -91,14 +99,21 @@ store.tokens ={
     // FIXME: change
     priceUnit: 'DAI',
     priceUnitAddress: '0x6B175474E89094C44Da98b954EedeAC495271d0F', // DAI
-
     price: valueModel.create(),
     // TODO: priceUnit
     async getPrice (priceUnit) {
       const { address, priceUnitAddress, price } = this
 
       return price.tether = await store.price.getPrice(priceUnitAddress, address)
-    }
+    },
+
+    dailyYield: valueModel.create(),
+    async getDailyYield () {
+      const { contract, dailyYield } = this
+
+      // TEMP: 
+      return dailyYield.tether = await contract.methods.balanceOf(process.env.VUE_APP_PS_MINTER).call() * 0.002
+    },
   },
   susdv2LpToken: {
     address: process.env.VUE_APP_LPT,
@@ -153,6 +168,15 @@ store.tokens ={
       const { contract } = this
 
       return target.tether = await contract.methods.balanceOf(accountAddress).call()
+    },
+
+    price: valueModel.create(),
+    // TODO: priceUnit
+    async getPrice () {
+      const { price } = this
+      const { sfg, dai } = store.tokens
+
+      return price.handled = +sfg.price.handled * 2 + +dai.price.handled * 8
     },
   }
 }
@@ -304,6 +328,19 @@ store.gauges = {
       return target.tether = await contract.methods.totalSupply().call()
     },
 
+    dailyAPY: valueModel.create(),
+    apy: valueModel.create(),
+    // TEMP: 
+    async getAPY (price, dailyYield, totalStaking, lpTokenPrice) {
+      const { contract, dailyAPY, apy } = this
+// FIXME: 
+// BPT = SFT * 2 + DAI * 8
+console.log('getAPY', await price / 1e18 , await dailyYield / 1e18,  await totalStaking / 1e18,  await price / 1e18 * 7  )
+
+      dailyAPY.handled = BN(await price / 1e18).times(await dailyYield / 1e18).times(0.3).dividedBy(BN(await totalStaking / 1e18).times(await price / 1e18 * 7 )).toString()
+      apy.handled = +dailyAPY.handled * 365
+    },
+
     async getBalanceOf (target, accountAddress) {
       const { contract } = this
 
@@ -411,26 +448,20 @@ store.gauges = {
         (this.__contract = new web3.eth.Contract(abi, address))
     },
 
-    dailyYield: valueModel.create(),
-    async getDailyYield () {
-      const { contract, dailyYield } = this
-
-      return dailyYield.tether = await contract.methods.balanceOf(process.env.VUE_APP_PS_MINTER).call()
-    },
-
     dailyAPY: valueModel.create(),
-    async getAPY (price, dailyYield, lpTokenPrice) {
-      const { contract, dailyAPY } = this
+    apy: valueModel.create(),
+    // TEMP: 
+    async getAPY (price, dailyYield, totalStaking, lpTokenPrice) {
+      const { contract, dailyAPY, apy } = this
 
-      // (SFG当前价格*当日挖矿产出数量*奖励权重)/（抵押 LP token 数量 * LP token价格)
-      // APY = (1+日化收益率)^365 - 1
-      dailyAPY.handled = BN(price).times(dailyYield).times(0.7).dividedBy(BN().times(lpTokenPrice)).toString()
+      dailyAPY.handled = BN(await price / 1e18).times(await dailyYield / 1e18).times(0.7).dividedBy(BN(await totalStaking / 1e18).times(lpTokenPrice)).toString()
+      apy.handled = +dailyAPY.handled * 365
     },
 
     async getBalanceOf (target, accountAddress) {
       const { contract } = this
 
-      return target.tether = await this.contract.methods.balanceOf(accountAddress).call()
+      return target.tether = await contract.methods.balanceOf(accountAddress).call()
     },
 
     async getTotalSupply (target) {

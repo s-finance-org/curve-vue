@@ -9,13 +9,20 @@
 
     <b-container>
       <root-sub />
-<!-- {{ store.gauges.susdv2.dailyAPY}} -->
+
       <b-tabs pills nav-class="tabs-nav" class="mt-4">
         <b-tab :title="$t('dao.standTitle')" class="pt-3" active>
 
-          <h4 class="mb-2">
+          <h4 class="mb-2 d-flex flex-wrap align-items-end">
             <span class="mr-3">{{ $t('dao.tokenTitle', [currentPool.nameCont]) }}</span>
-            <small>{{ $t('dao.describe', [currentPool.name + ' LP tokens', currentPool.describeTokensCont]) }}</small>
+            <small class="mr-auto">{{ $t('dao.describe', [currentPool.name + ' LP tokens', currentPool.describeTokensCont]) }}</small>
+            <text-overlay-loading inline :show="store.gauges.susdv2.apy.loading">
+              <span class="h5 text-danger-1">
+                <small class="text-blank-45">{{ $t('global.apr') }}</small>
+                <!-- FIXME: 0.11 -->
+                {{ (store.gauges.susdv2.apy.handled + 0.11) * 100 | formatNumber(2) }}%
+              </span>
+            </text-overlay-loading>
           </h4>
           <div class="box mb-4 px-4 py-3">
             <div class="row mb-3 line-bottom">
@@ -212,9 +219,15 @@
         </b-tab>
 
         <b-tab :title="$t('dao.tokenTitle', [store.gauges.bpt.propagateMark])" class="pt-3">
-          <h4 class="mb-2">
+          <h4 class="mb-2 d-flex flex-wrap align-items-end">
             <span class="mr-3">{{ $t('dao.tokenTitle', [store.gauges.bpt.propagateMark]) }}</span>
-            <small>{{ $t('dao.describe', [store.gauges.bpt.mortgagesUnit, store.gauges.bpt.rewardsUnit.join(' ')]) }}</small>
+            <small class="mr-auto">{{ $t('dao.describe', [store.gauges.bpt.mortgagesUnit, store.gauges.bpt.rewardsUnit.join(' ')]) }}</small>
+            <text-overlay-loading inline :show="store.gauges.susdv2.apy.loading">
+              <span class="h5 text-danger-1">
+                <small class="text-blank-45">{{ $t('global.apr') }}</small>
+                {{ store.gauges.bpt.apy.handled * 100 | formatNumber(2) }}%
+              </span>
+            </text-overlay-loading>
           </h4>
           <div class="box mb-4 px-4 py-3">
             <div class="row mb-3 line-bottom">
@@ -483,6 +496,7 @@
     import store from '../../store'
     import { valueModel } from '../../model'
     import { floor } from '../../utils/math/round'
+  	import * as volumeStore from '@/components/common/volumeStore'
 
     const __store__ = {
       loadingAction: true,
@@ -805,7 +819,6 @@
             piegauges[highest].selected = true;
 
 
-            
 
             // susdv2
             store.tokens.susdv2LpToken.getBalanceOf(this.currentPool.balanceOf, currentContract.default_account)
@@ -815,12 +828,13 @@
             // TODO: temp
             this.gaugeContract = store.gauges.susdv2.contract
 
-            // store.gauges.sfg.getAPY(
+            store.gauges.susdv2.getAPY(
               store.tokens.sfg.getPrice(),
-              // store.gauges.susdv2.getDailyYield(),
+              store.tokens.sfg.getDailyYield(),
               store.gauges.susdv2.getTotalSupply(this.currentPool.totalSupply),
-              // currentContract.virtual_price
-            // )
+              currentContract.virtual_price
+            )
+
             store.gauges.susdv2.getBalanceOf(this.currentPool.gaugeBalance, currentContract.default_account)
 
             store.gauges.susdv2.getSfgTotalReward(
@@ -844,9 +858,16 @@
             // BPT
             const { bpt } = store.gauges
 
+            store.gauges.bpt.getAPY(
+              store.tokens.sfg.getPrice(),
+              store.tokens.sfg.getDailyYield(),
+              bpt.getTotalStaking(bpt.mortgages.bpt.totalStaking),
+              store.tokens.sfg.getPrice()
+              // store.tokens.bpt.getPrice(),
+            )
+
             store.tokens.bpt.getBalanceOf(bpt.mortgages.bpt.userBalanceOf, currentContract.default_account)
 
-            bpt.getTotalStaking(bpt.mortgages.bpt.totalStaking)
             bpt.getBalanceOf(bpt.mortgages.bpt.userStaking, currentContract.default_account)
 
             bpt.getUserTotalReward_SFG(

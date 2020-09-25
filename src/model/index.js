@@ -62,9 +62,6 @@ export const valueModel = {
       set [keys.tether] (val) {
         const result = __store__.tether = val
 
-        this[keys.loading] &&
-          (this[keys.loading] = false)
-
         this[keys.handled] = result / notationDecimal
       },
 
@@ -87,6 +84,9 @@ export const valueModel = {
       },
       set [keys.handled] (val) {
         __store__.handled = val
+
+        this[keys.loading] &&
+          (this[keys.loading] = false)
       },
 
       /**
