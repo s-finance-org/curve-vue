@@ -63,10 +63,8 @@
         //     centered: true
         //   })
 
-        const messageVNode = h('div', { class: ['foobar'] }, [
-          h('p', $i18n.t('statement.comingCont1') ),
-          h('p', $i18n.t('statement.comingCont2') ),
-          h('p', $i18n.t('statement.comingCont3') ),
+        const messageVNode = h('div', [
+          h('p', { domProps: { innerHTML: $i18n.t('statement.comingCont') } }),
         ])
 
         this.$bvModal.msgBoxOk([messageVNode], {
