@@ -97,7 +97,9 @@ export const valueModel = {
         const { priceDecimal } = this
 
         // TODO: formatNumber toFixed -> round()
-        return helpers.formatNumber(contMethod(handled, priceDecimal), priceDecimal)
+        return handled >= 0
+          ? helpers.formatNumber(contMethod(handled, priceDecimal), priceDecimal)
+          : '-'
       }
     }
   }

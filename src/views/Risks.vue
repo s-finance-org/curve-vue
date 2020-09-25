@@ -8,6 +8,8 @@
     </div>
 
     <b-container>
+      <root-sub />
+
       <h2 class="mt-5 mb-5">{{ $t('risk.title') }}</h2>
       <div class="box mb-4 px-4">
         <h4 class="my-3">{{ $t('risk.auditTitle') }}</h4>
@@ -45,8 +47,12 @@
 
 <script>
   import { getters } from '../contract'
+  import RootSub from '../components/root/RootSub.vue'
 
   export default {
+    components: {
+      RootSub
+    },
     computed: {
       ...getters,
     },
@@ -54,26 +60,4 @@
 </script>
 
 <style scoped>
-    h2 {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-    }
-
-    h2 img {
-        margin-left: 0.7em;
-        margin-right: 0.3em;
-    }
-
-    @media only screen and (max-device-width: 470px) {
-        h2 img {
-            margin-left: 0;
-        }
-    }
-    .window.white a {
-        border-bottom: 1px dashed gray;
-    }
-    .window.white a:hover {
-        border-bottom: none;
-    }
 </style>

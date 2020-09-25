@@ -142,7 +142,7 @@ export default {
     redemptionBalance: '可赎回数量',
     redemptionAmountPlaceholder: '输入赎回数量',
     redemptionConfirm: '确认赎回',
-    miningPendingReward: '未提取奖励',
+    miningPendingReward: '未结算奖励',
     miningPaidReward: '已结算奖励',
     miningTotalReward: '合计奖励',
     miningClaimConfirm: '领取奖励',
@@ -153,7 +153,7 @@ export default {
   notice: {
     approveSpending: '请授权钱包进行扣款',
     confirmDepositTransaction: '请在钱包中确认存款转账',
-    syntetixAnomalous: '由于Syntetix合约升级操作可能会失败，为避免矿工费损失可稍后再试。',
+    // syntetixAnomalous: '由于Syntetix合约升级操作可能会失败，为避免矿工费损失可稍后再试。',
   },
   social: {
     twitter: '推特',

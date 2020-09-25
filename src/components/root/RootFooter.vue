@@ -1,6 +1,6 @@
 <template>
   <b-container>
-    <footer>
+    <footer class="my-2">
       <a href="https://twitter.com/SFinanceEx" target="_blank">{{ $t('social.twitter') }}</a>
       <template v-if="$i18n.locale === 'zh-CN'">
         <a id="popover-qrcode" href="javascript:void(0);">{{ $t('social.wechat') }}</a>
@@ -34,7 +34,7 @@
     color: rgba(0,0,0,0.45);
     line-height: 22px;
     display: inline-block;
-    margin: 20px 48px 20px 0;
+    margin: 4px 48px 4px 0;
   }
   footer a:hover {
     color: rgba(0,0,0,0.45);

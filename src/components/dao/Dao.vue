@@ -1,7 +1,7 @@
 <template>
 	<div>
     <div class="total-bg">
-      <b-container class="d-flex py-4 total-cont align-items-center">
+      <b-container class="py-4 pl-5 d-flex align-items-center">
         <img class="logo_lg mr-4" :src="publicPath + 'res/icons/logo/logo_sm.svg'">
         <h3 class="mb-0">{{ $t('global.sFinance') }}<br/>{{ $t('global.dao') }}</h3>
       </b-container>
@@ -869,7 +869,7 @@
           },
 
           async withdraw () {
-            this.alert('notice.syntetixAnomalous', 'withdraw')
+            // this.alert('notice.syntetixAnomalous', 'withdraw')
 
             let withdraw = BN(this.currentPool.withdraw.amount).times(1e18)
             let balance = BN(await this.gaugeContract.methods.balanceOf(currentContract.default_account).call())
@@ -902,7 +902,7 @@
           },
 
           async claim () {
-            this.alert('notice.syntetixAnomalous' , 'claim')
+            // this.alert('notice.syntetixAnomalous' , 'claim')
 
             const mint = await gaugeStore.state.minter.methods.mint(this.currentPool.gauge)
             // let gas = await mint.estimateGas()
@@ -921,7 +921,7 @@
           },
 
           async claimRewards () {
-            this.alert('notice.syntetixAnomalous', 'claimRewards')
+            // this.alert('notice.syntetixAnomalous', 'claimRewards')
 
             // let gas = await this.gaugeContract.methods.claim_rewards(currentContract.default_account).estimateGas()
 
