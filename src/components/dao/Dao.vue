@@ -265,7 +265,7 @@
                 <small class="d-flex mt-1 flex-wrap">
                   {{ $t('dao.stakingBalance') }}：
                   <text-overlay-loading class="mr-2" :show="store.gauges.bpt.mortgages.bpt.userBalanceOf.loading">{{ store.gauges.bpt.mortgages.bpt.userBalanceOf.cont }} {{ store.gauges.bpt.mortgages.bpt.name }}</text-overlay-loading>
-                  <b-button class="text-blue-1" :to=store.gauges.bpt.mortgages.bpt.gainUrl size="xsm" variant="light">{{ $t('dao.stakingConfirmTip', [store.gauges.bpt.mortgages.bpt.name]) }}</b-button>
+                  <b-button class="text-blue-1" target="_blank" :href=store.gauges.bpt.mortgages.bpt.gainUrl size="xsm" variant="light">{{ $t('dao.stakingConfirmTip', [store.gauges.bpt.mortgages.bpt.name]) }}</b-button>
                 </small>
                 <!-- FIXME: inf_approval -->
                 <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('dao.infiniteApproval') }}</b-form-checkbox>
