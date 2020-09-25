@@ -36,11 +36,11 @@
               <span class="col-12 col-lg pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.virtualPrice') }}</h6>
                 <text-overlay-loading inline :show="loadingAction">
-                  <span class="h4">
-                  1
-                  <span class="h6 text-black-65 inline-block ">{{ currentPool.name }} LP tokens = </span>
-                  {{ (1 * virtual_price).toFixed(6) }}
-                  <span class="text-black-65 h6">USD</span>
+                  <span class="h4 mb-0">
+                    1 <span class="h6 text-black-65">{{ currentPool.name }} LP tokens = </span>
+                  </span>
+                  <span class="h4 mb-0">
+                    {{ (1 * virtual_price).toFixed(6) }}<span class="text-black-65 h6">USD</span>
                   </span>
                 </text-overlay-loading>
               </span>
@@ -211,7 +211,7 @@
 
         </b-tab>
 
-        <b-tab :title="$t('dao.tokenTitle', [store.gauges.bpt.propagateMark])" class="pt-3" v-if=false>
+        <b-tab :title="$t('dao.tokenTitle', [store.gauges.bpt.propagateMark])" class="pt-3">
           <h4 class="mb-2">
             <span class="mr-3">{{ $t('dao.tokenTitle', [store.gauges.bpt.propagateMark]) }}</span>
             <small>{{ $t('dao.describe', [store.gauges.bpt.mortgageUnit, store.gauges.bpt.rewardsUnit.join(' ')]) }}</small>
