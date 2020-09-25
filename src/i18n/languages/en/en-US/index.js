@@ -51,7 +51,7 @@ export default {
     * Exchange Address: <a href="https://legacy.balancer.exchange/#/swap/0x8a6ACA71A218301c7081d4e96D64292D3B275ce0" target="_blank">https://legacy.balancer.exchange/#/swap/0x8a6ACA71A218301c7081d4e96D64292D3B275ce0</a><br/>
     * Liquidity Pool Address：<a href="https://pools.balancer.exchange/#/pool/0x2f49eea1efc1b04e9ecd3b81321060e29db26a19/" target="_blank">https://pools.balancer.exchange/#/pool/0x2f49eea1efc1b04e9ecd3b81321060e29db26a19/</a><br/>
     * SFG smart contract （please make sure the contract address is right before trading）：<a href="https://etherscan.io/token/0x8a6ACA71A218301c7081d4e96D64292D3B275ce0" target="_blank">https://etherscan.io/token/0x8a6ACA71A218301c7081d4e96D64292D3B275ce0</a><br/>
-    After SFG liquidity pool opening, the reward weight of SFG liquidity pool is 30% on the first day.<br/>
+    After SFG liquidity pool opening, the reward weight of SFG liquidity pool is 30% .<br/>
     S. Finance has been opened for 3 days. According to the SFG mint rules, the number of SFG in circulation is less than 80,000. In view of the small amount of current circulation, the price fluctuation could be quite violent, please pay attention to the risks.<br/>
     S.Finance will soon launch Y (YFI) liquidity pool in the stable currency liquidity pool area, users could obtain SFG and CRV rewards by mining iearn LP tokens.<br/>
     S. Finance will soon launch iusd (YFII) liquidity pool in the stable currency liquidity pool area, users could obtain SFG and iusd rewards for mining iearn LP tokens.`
