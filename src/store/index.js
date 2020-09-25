@@ -98,12 +98,6 @@ store.tokens ={
       const { address, priceUnitAddress, price } = this
 
       return price.tether = await store.price.getPrice(priceUnitAddress, address)
-    },
-
-    async dailyYield () {
-      const { contract } = this
-
-      return await contract.methods.balanceOf(accountAddress).call()
     }
   },
   susdv2LpToken: {
@@ -309,6 +303,7 @@ store.gauges = {
 
       return target.tether = await contract.methods.totalSupply().call()
     },
+
     async getBalanceOf (target, accountAddress) {
       const { contract } = this
 
@@ -384,7 +379,7 @@ store.gauges = {
 
     async onHarvest (accountAddress) {
       const { name, address, contract, mortgages, rewards } = this
-// let minter = new web3.eth.Contract(daoabis.minter_abi, process.env.VUE_APP_PS_MINTER)
+      // let minter = new web3.eth.Contract(daoabis.minter_abi, process.env.VUE_APP_PS_MINTER)
 
       const mint = await gaugeStore.state.minter.methods.mint(address)
       // let gas = await mint.estimateGas()

@@ -189,11 +189,11 @@
                         </text-overlay-loading>
                         <em class="px-3 text-black-15">/</em>
                         <text-overlay-loading inline :show="store.tokens[token].price.loading">
-                          {{ store.tokens[token].price.cont }} {{ store.tokens[token].priceUnit }} = 1 {{ store.tokens[token].name }}
+                          1 {{ store.tokens[token].name }} = {{ store.tokens[token].price.cont }} {{ store.tokens[token].priceUnit }}
                         </text-overlay-loading>
                       </small>
                       <text-overlay-loading :show="loadingAction">
-                        <b-button variant="danger" @click="currentPool.tokens[token].claimConfirm">
+                        <b-button varia`nt="danger" @click="currentPool.tokens[token].claimConfirm">
                           {{ $t('dao.miningClaimConfirm') }}
                         </b-button>
                       </text-overlay-loading>
@@ -351,7 +351,7 @@
                       </text-overlay-loading>
                       <em class="px-3 text-black-15">/</em>
                       <text-overlay-loading inline :show="store.tokens.sfg.price.loading">
-                        {{ store.tokens.sfg.price.cont }} {{ store.tokens.sfg.priceUnit }} = 1 {{ store.tokens.sfg.name }}
+                        1 {{ store.tokens.sfg.name }} = {{ store.tokens.sfg.price.cont }} {{ store.tokens.sfg.priceUnit }}
                       </text-overlay-loading>
                     </small>
                     <text-overlay-loading :show="loadingAction">
@@ -873,6 +873,7 @@
               from: currentContract.default_account,
               // gasPrice: this.gasPriceWei,
               // gas: this.currentPool.deposit.gas,
+              gas: 1200000
             })
             .once('transactionHash', hash => {
               dismiss()
@@ -906,6 +907,7 @@
               from: currentContract.default_account,
               // gasPrice: this.gasPriceWei,
               // gas: gas * 1.5 | 0,
+              gas: 1200000
             })
             .once('transactionHash', hash => {
               dismiss()
@@ -925,6 +927,7 @@
               from: currentContract.default_account,
               // gasPrice: this.gasPriceWei,
               // gas: gas * 1.5 | 0,
+              gas: 1200000
             })
             .once('transactionHash', hash => {
               dismiss()
@@ -943,6 +946,7 @@
               from: currentContract.default_account,
               // gasPrice: this.gasPriceWei,
               // gas: gas * 1.5 | 0,
+              gas: 1200000
             })
             .once('transactionHash', hash => {
               dismiss()
