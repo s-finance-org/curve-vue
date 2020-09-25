@@ -304,13 +304,6 @@ store.gauges = {
       return target.tether = await contract.methods.totalSupply().call()
     },
 
-    dailyYield: valueModel.create(),
-    async dailyYield () {
-      const { contract, dailyYield } = this
-
-      return dailyYield.tether = await contract.methods.balanceOf(process.env.VUE_APP_PS_MINTER).call()
-    },
-
     async getBalanceOf (target, accountAddress) {
       const { contract } = this
 
@@ -417,6 +410,23 @@ store.gauges = {
       return __contract ||
         (this.__contract = new web3.eth.Contract(abi, address))
     },
+
+    dailyYield: valueModel.create(),
+    async getDailyYield () {
+      const { contract, dailyYield } = this
+
+      return dailyYield.tether = await contract.methods.balanceOf(process.env.VUE_APP_PS_MINTER).call()
+    },
+
+    dailyAPY: valueModel.create(),
+    async getAPY (price, dailyYield, lpTokenPrice) {
+      const { contract, dailyAPY } = this
+
+      // (SFG当前价格*当日挖矿产出数量*奖励权重)/（抵押 LP token 数量 * LP token价格)
+      // APY = (1+日化收益率)^365 - 1
+      dailyAPY.handled = BN(price).times(dailyYield).times(0.7).dividedBy(BN().times(lpTokenPrice)).toString()
+    },
+
     async getBalanceOf (target, accountAddress) {
       const { contract } = this
 

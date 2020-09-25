@@ -9,7 +9,7 @@
 
     <b-container>
       <root-sub />
-
+<!-- {{ store.gauges.susdv2.dailyAPY}} -->
       <b-tabs pills nav-class="tabs-nav" class="mt-4">
         <b-tab :title="$t('dao.standTitle')" class="pt-3" active>
 
@@ -215,7 +215,6 @@
           <h4 class="mb-2">
             <span class="mr-3">{{ $t('dao.tokenTitle', [store.gauges.bpt.propagateMark]) }}</span>
             <small>{{ $t('dao.describe', [store.gauges.bpt.mortgagesUnit, store.gauges.bpt.rewardsUnit.join(' ')]) }}</small>
-            <!-- {{ store.gauges.bpt.dailyAPY.cont }} -->
           </h4>
           <div class="box mb-4 px-4 py-3">
             <div class="row mb-3 line-bottom">
@@ -806,16 +805,22 @@
             piegauges[highest].selected = true;
 
 
-            store.tokens.sfg.getPrice()
+            
 
             // susdv2
             store.tokens.susdv2LpToken.getBalanceOf(this.currentPool.balanceOf, currentContract.default_account)
 
             const { crv, snx, sfg } = this.currentPool.tokens
+
             // TODO: temp
             this.gaugeContract = store.gauges.susdv2.contract
 
-            store.gauges.susdv2.getTotalSupply(this.currentPool.totalSupply)
+            // store.gauges.sfg.getAPY(
+              store.tokens.sfg.getPrice(),
+              // store.gauges.susdv2.getDailyYield(),
+              store.gauges.susdv2.getTotalSupply(this.currentPool.totalSupply),
+              // currentContract.virtual_price
+            // )
             store.gauges.susdv2.getBalanceOf(this.currentPool.gaugeBalance, currentContract.default_account)
 
             store.gauges.susdv2.getSfgTotalReward(
@@ -838,8 +843,6 @@
 
             // BPT
             const { bpt } = store.gauges
-
-            store.gauges.bpt.getDailyYield()
 
             store.tokens.bpt.getBalanceOf(bpt.mortgages.bpt.userBalanceOf, currentContract.default_account)
 
