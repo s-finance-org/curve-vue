@@ -332,12 +332,12 @@
                   {{ $t('liquidity.bonus') }}
                   <span class="float-right">{{ (slippage*100).toFixed(3) }}%</span>
                 </label>
-                <label class="mb-3">
+                <!-- <label class="mb-3">
                   <span class="text-danger-1">{{ $t('liquidity.willReceive') }}</span>
                   <span class="float-right">
                     <span class="text-danger-1 text-18">{{ lpCrvReceivedText }}</span>
                   </span>
-                </label>
+                </label> -->
               </div>
             </div>
 
