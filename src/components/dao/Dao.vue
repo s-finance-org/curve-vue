@@ -145,8 +145,8 @@
                               {{ currentPool.tokens[childToken].totalReward.cont }} {{ currentPool.tokens[childToken].nameCont }}
                             </text-overlay-loading>
                             <!-- <em class="px-3 text-black-15">/</em>
-                            <text-overlay-loading inline :show="loadingAction">
-                              1 {{ currentPool.tokens[childToken].nameCont }} = {{ currentPool.tokens[childToken].rateUsd }} USD
+                            <text-overlay-loading inline :show="store.tokens[childToken].price.loading">
+                              {{ store.tokens[childToken].price.cont }} {{ store.tokens[childToken].priceUnit }} = 1 {{ store.tokens[childToken].name }}
                             </text-overlay-loading> -->
                           </small>
                         </div>
@@ -187,10 +187,10 @@
                         <text-overlay-loading inline :show="currentPool.tokens[token].totalReward.loading">
                           {{ currentPool.tokens[token].totalReward.cont }} {{ currentPool.tokens[token].nameCont }}
                         </text-overlay-loading>
-                        <!-- <em class="px-3 text-black-15">/</em>
-                        <text-overlay-loading inline :show="loadingAction">
-                          1 {{ currentPool.tokens[token].nameCont }} = {{ currentPool.tokens[token].rateUsd }} USD
-                        </text-overlay-loading> -->
+                        <em class="px-3 text-black-15">/</em>
+                        <text-overlay-loading inline :show="store.tokens[token].price.loading">
+                          {{ store.tokens[token].price.cont }} {{ store.tokens[token].priceUnit }} = 1 {{ store.tokens[token].name }}
+                        </text-overlay-loading>
                       </small>
                       <text-overlay-loading :show="loadingAction">
                         <b-button variant="danger" @click="currentPool.tokens[token].claimConfirm">
@@ -349,10 +349,10 @@
                       <text-overlay-loading inline :show="store.gauges.bpt.rewards.sfg.userTotalReward.loading">
                         {{ store.gauges.bpt.rewards.sfg.userTotalReward.cont }} {{ store.gauges.bpt.rewards.sfg.name }}
                       </text-overlay-loading>
-                      <!-- <em class="px-3 text-black-15">/</em>
-                      <text-overlay-loading inline :show="loadingAction">
-                        1 {{ currentPool.tokens[token].nameCont }} = {{ currentPool.tokens[token].rateUsd }} USD
-                      </text-overlay-loading> -->
+                      <em class="px-3 text-black-15">/</em>
+                      <text-overlay-loading inline :show="store.tokens.sfg.price.loading">
+                        {{ store.tokens.sfg.price.cont }} {{ store.tokens.sfg.priceUnit }} = 1 {{ store.tokens.sfg.name }}
+                      </text-overlay-loading>
                     </small>
                     <text-overlay-loading :show="loadingAction">
                       <b-button variant="danger" @click="onHarvest">
@@ -735,8 +735,6 @@
           // FIXME: 
           this.currentPool.tokens.crv.claimConfirm = this.claimRewards
           this.currentPool.tokens.snx.claimConfirm = this.claimRewards
-
-
         },
         watch: {
           loadingAction (val) {
@@ -802,6 +800,9 @@
             let highest = piegauges.map(data=>data.y).indexOf(Math.max(...piegauges.map(data => data.y)))
             piegauges[highest].sliced = true;
             piegauges[highest].selected = true;
+
+
+            store.tokens.sfg.getPrice()
 
             // susdv2
             store.tokens.susdv2LpToken.getBalanceOf(this.currentPool.balanceOf, currentContract.default_account)
@@ -870,8 +871,8 @@
 
             await this.gaugeContract.methods.deposit(deposit.toFixed(0,1)).send({
               from: currentContract.default_account,
-              gasPrice: this.gasPriceWei,
-              gas: this.currentPool.deposit.gas,
+              // gasPrice: this.gasPriceWei,
+              // gas: this.currentPool.deposit.gas,
             })
             .once('transactionHash', hash => {
               dismiss()
@@ -903,8 +904,8 @@
 
             await withdrawMethod.send({
               from: currentContract.default_account,
-              gasPrice: this.gasPriceWei,
-              gas: gas * 1.5 | 0,
+              // gasPrice: this.gasPriceWei,
+              // gas: gas * 1.5 | 0,
             })
             .once('transactionHash', hash => {
               dismiss()
@@ -922,7 +923,7 @@
 
             await mint.send({
               from: currentContract.default_account,
-              gasPrice: this.gasPriceWei,
+              // gasPrice: this.gasPriceWei,
               // gas: gas * 1.5 | 0,
             })
             .once('transactionHash', hash => {
@@ -940,7 +941,7 @@
 
             await this.gaugeContract.methods.claim_rewards(currentContract.default_account).send({
               from: currentContract.default_account,
-              gasPrice: this.gasPriceWei,
+              // gasPrice: this.gasPriceWei,
               // gas: gas * 1.5 | 0,
             })
             .once('transactionHash', hash => {

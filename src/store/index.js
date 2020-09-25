@@ -30,6 +30,7 @@ import abiSNX from '../components/dao/abi/snx'
 import abiCRV from '../components/dao/abi/crv'
 import abiSUSDv2 from '../components/dao/abi/susdv2'
 import abiBpt from '../components/dao/abi/bpt'
+import BALANCER_POOL_ABI from '../components/dao/abi/BALANCER_POOL_ABI'
 import { ERC20_abi as abiSusdv2LpToken } from '../allabis'
 
 const store = {
@@ -54,90 +55,139 @@ const store = {
     getData() {
       return this.template
     }
+  }
+}
+
+store.price = {
+  address: '0x2f49eea1efc1b04e9ecd3b81321060e29db26a19',
+  abi: BALANCER_POOL_ABI,
+  __contract: null,
+  get contract () {
+    const { __contract, abi, address } = this
+
+    return __contract ||
+      (this.__contract = new web3.eth.Contract(abi, address))
   },
-  tokens: {
-    susdv2LpToken: {
-      address: process.env.VUE_APP_LPT,
-      abi: abiSusdv2LpToken,
-      __contract: null,
-      get contract () {
-        const { __contract, abi, address } = this
+  async getPrice (UnitAddress, targetAddress) {
+    const { contract } = this
 
-        return __contract ||
-          (this.__contract = new web3.eth.Contract(abi, address))
-      },
-      async getBalanceOf (target, accountAddress) {
-        const { contract } = this
+      return await contract.methods.getSpotPrice(UnitAddress, targetAddress).call()
+  }
+}
 
-        return target.tether = await contract.methods.balanceOf(accountAddress).call()
-      },
+store.tokens ={
+  sfg: {
+    name: 'SFG',
+
+    address: '0x8a6ACA71A218301c7081d4e96D64292D3B275ce0',
+    __contract: null,
+    get contract () {
+      const { __contract, abi, address } = this
+
+      return __contract ||
+        (this.__contract = new web3.eth.Contract(abi, address))
     },
-    snx: {
-      address: '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f',
-      abi: abiSNX,
-      __contract: null,
-      get contract () {
-        const { __contract, abi, address } = this
 
-        return __contract ||
-          (this.__contract = new web3.eth.Contract(abi, address))
-      },
+    // FIXME: change
+    priceUnit: 'DAI',
+    priceUnitAddress: '0x6B175474E89094C44Da98b954EedeAC495271d0F', // DAI
+
+    price: valueModel.create(),
+    // TODO: priceUnit
+    async getPrice (priceUnit) {
+      const { address, priceUnitAddress, price } = this
+
+      return price.tether = await store.price.getPrice(priceUnitAddress, address)
     },
-    crv: {
-      address: '0xd533a949740bb3306d119cc777fa900ba034cd52',
-      abi: abiCRV,
-      __contract: null,
-      get contract () {
-        const { __contract, abi, address } = this
 
-        return __contract ||
-          (this.__contract = new web3.eth.Contract(abi, address))
-      },
-    },
-    bpt: {
-      // address: '0x5F6eF509e65676134BD73baf85E0cf2744D8e254', // test
-      address: '0x2f49EeA1EfC1B04e9EcD3b81321060e29Db26A19',
-      abi: abiBpt,
-      __contract: null,
-      get contract () {
-        const { __contract, abi, address } = this
+    async dailyYield () {
+      const { contract } = this
 
-        return __contract ||
-          (this.__contract = new web3.eth.Contract(abi, address))
-      },
-      async getBalanceOf (target, accountAddress) {
-        const { contract } = this
-
-        return target.tether = await contract.methods.balanceOf(accountAddress).call()
-      },
+      return await contract.methods.balanceOf(accountAddress).call()
     }
   },
-  i18n: {
-    $i18n: null,
+  susdv2LpToken: {
+    address: process.env.VUE_APP_LPT,
+    abi: abiSusdv2LpToken,
+    __contract: null,
+    get contract () {
+      const { __contract, abi, address } = this
 
-    cacheKeyLocaleCacheKey: '__Global_I18n_locale',
-    get defaultLocale () {
-      const { cacheKeyLocaleCacheKey } = this
-
-      return localStorage.getItem(cacheKeyLocaleCacheKey) || process.env.VUE_APP_I18N_LOCALE
+      return __contract ||
+        (this.__contract = new web3.eth.Contract(abi, address))
     },
+    async getBalanceOf (target, accountAddress) {
+      const { contract } = this
 
-    // TODO:
-    // get locale () {
-    //   return this.$i18n.locale
-    // },
-    set locale (val) {
-      const { cacheKeyLocaleCacheKey } = this
-
-      localStorage.setItem(cacheKeyLocaleCacheKey, val)
+      return target.tether = await contract.methods.balanceOf(accountAddress).call()
     },
+  },
+  snx: {
+    address: '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f',
+    abi: abiSNX,
+    __contract: null,
+    get contract () {
+      const { __contract, abi, address } = this
 
-    supportLanguage: ['zh-CN', 'en-US'],
-    // TODO:
-    // isSupportLanguage () {
-    // },
-    languages: I18nLanguages
+      return __contract ||
+        (this.__contract = new web3.eth.Contract(abi, address))
+    },
+  },
+  crv: {
+    address: '0xd533a949740bb3306d119cc777fa900ba034cd52',
+    abi: abiCRV,
+    __contract: null,
+    get contract () {
+      const { __contract, abi, address } = this
+
+      return __contract ||
+        (this.__contract = new web3.eth.Contract(abi, address))
+    },
+  },
+  bpt: {
+    // address: '0x5F6eF509e65676134BD73baf85E0cf2744D8e254', // test
+    address: '0x2f49EeA1EfC1B04e9EcD3b81321060e29Db26A19',
+    abi: abiBpt,
+    __contract: null,
+    get contract () {
+      const { __contract, abi, address } = this
+
+      return __contract ||
+        (this.__contract = new web3.eth.Contract(abi, address))
+    },
+    async getBalanceOf (target, accountAddress) {
+      const { contract } = this
+
+      return target.tether = await contract.methods.balanceOf(accountAddress).call()
+    },
   }
+}
+
+store.i18n = {
+  $i18n: null,
+
+  cacheKeyLocaleCacheKey: '__Global_I18n_locale',
+  get defaultLocale () {
+    const { cacheKeyLocaleCacheKey } = this
+
+    return localStorage.getItem(cacheKeyLocaleCacheKey) || process.env.VUE_APP_I18N_LOCALE
+  },
+
+  // TODO:
+  // get locale () {
+  //   return this.$i18n.locale
+  // },
+  set locale (val) {
+    const { cacheKeyLocaleCacheKey } = this
+
+    localStorage.setItem(cacheKeyLocaleCacheKey, val)
+  },
+
+  supportLanguage: ['zh-CN', 'en-US'],
+  // TODO:
+  // isSupportLanguage () {
+  // },
+  languages: I18nLanguages
 }
 
 store.gauges = {
@@ -290,7 +340,7 @@ store.gauges = {
 
       await contract.methods.deposit(deposit.toFixed(0,1)).send({
         from: accountAddress,
-        gasPrice: gasPriceStore.gasPriceWei,
+        // gasPrice: gasPriceStore.gasPriceWei,
         // gas: this.currentPool.deposit.gas,
       })
       .once('transactionHash', hash => {
@@ -323,7 +373,7 @@ store.gauges = {
 
       await withdrawMethod.send({
         from: accountAddress,
-        gasPrice: gasPriceStore.gasPriceWei,
+        // gasPrice: gasPriceStore.gasPriceWei,
         // gas: gas * 1.5 | 0,
       })
       .once('transactionHash', hash => {
