@@ -10,21 +10,12 @@ import * as common from '../utils/common.js'
 import * as gaugeStore from '../components/dao/gaugeStore'
 import daoabis from '../components/dao/allabis'
 import * as gasPriceStore from '../components/common/gasPriceStore'
+import BN from 'bignumber.js'
+import * as errorStore from '../components/common/errorStore'
 
 import I18nLanguages from '../i18n/languages'
 import { valueModel } from '../model'
 import { floor } from '../utils/math/round'
-
-// FIXME: temp
-const __store__ = {
-  create () {
-    return {
-      i18n: {
-        locale: ''
-      }
-    }
-  }
-}
 
 import abiSNX from '../components/dao/abi/snx'
 import abiCRV from '../components/dao/abi/crv'
@@ -34,12 +25,85 @@ import BALANCER_POOL_ABI from '../components/dao/abi/BALANCER_POOL_ABI'
 import abiSFG from '../components/dao/abi/sfg'
 import { ERC20_abi as abiSusdv2LpToken } from '../allabis'
 
+// FIXME: 
+const approve = (contract, amount, account, toContract) => {
+  // if(!toContract) toContract = currentContract.swap_address
+  return new Promise((resolve, reject) => {
+      contract.methods.approve(toContract, BN(amount).toFixed(0,1))
+      .send({
+          from: account,
+          // gasPrice: gasPriceStore.state.gasPriceWei,
+          // gas: 100000,
+      })
+      .once('transactionHash', hash => {
+        notifyHandler(hash)
+        resolve(true)
+      })
+      .on('error', err => {
+        errorStore.handleError(err)
+        reject(err)
+      })
+      .catch(err => {
+        errorStore.handleError(err)
+        reject(err)
+      });
+    })
+}
+
+const errorModelStore = {
+  create () {
+    return {
+      message: '',
+      dismissCountDown: 0
+    }
+  }
+}
+
+const errorModel = {
+  create () {
+    const __store__ = errorModelStore.create()
+
+    return {
+      // get hasMessage () {
+      //   const { message } = this
+
+      //   return !!message
+      // },
+
+      get message () {
+        return __store__.message
+      },
+      set message (val) {
+        const { dismissSecs } = this
+
+        this.dismissCountDown = dismissSecs
+        __store__.message = val
+      },
+
+      dismissSecs: 10,
+      get dismissCountDown () {
+        return __store__.dismissCountDown
+      },
+      set dismissCountDown (val) {
+        const result = __store__.dismissCountDown = val
+
+        if (result === 0) {
+          __store__.message = ''
+        }
+      }
+      // countDownChanged (val) {
+      //   __store__.dismissCountDown = val
+      // },
+    }
+  }
+}
+
 const store = {
   metaInfo: {
     template: {
       title: 'S.finance',
       meta: [
-        {'property': 'og:title', 'content': 's.finance'},
+        { 'property': 'og:title', 'content': 's.finance' },
         {'property': 'og:url', 'content': 'https://s.finance'},
         {'property': 'og:type', 'content': 'website'},
         {'property': 'og:description', 'content': ''},
@@ -53,7 +117,7 @@ const store = {
         {'name': 'twitter:image', 'content': '/sfinance.png'},
       ]
     },
-    getData() {
+    getData () {
       return this.template
     }
   }
@@ -72,11 +136,22 @@ store.price = {
   async getPrice (UnitAddress, targetAddress) {
     const { contract } = this
 
-      return await contract.methods.getSpotPrice(UnitAddress, targetAddress).call()
+    return await contract.methods.getSpotPrice(UnitAddress, targetAddress).call()
   }
 }
 
-store.tokens ={
+// TODO: defaultAccount
+// store.account = {
+//   __address: undefined,
+//   get address () {
+//     const { __address } = this
+
+//     return __address ||
+//       (this.__address = new web3.eth.defaultAccount) 
+//   }
+// }
+
+store.tokens = {
   dai: {
     // TEMP: 
     price: {
@@ -103,8 +178,11 @@ store.tokens ={
     // TODO: priceUnit
     async getPrice (priceUnit) {
       const { address, priceUnitAddress, price } = this
+      const result = await store.price.getPrice(priceUnitAddress, address)
 
-      return price.tether = await store.price.getPrice(priceUnitAddress, address)
+      price.tether = result
+
+      return result
     },
 
     dailyYield: valueModel.create(),
@@ -127,8 +205,11 @@ store.tokens ={
     },
     async getBalanceOf (target, accountAddress) {
       const { contract } = this
+      const result = await contract.methods.balanceOf(accountAddress).call()
 
-      return target.tether = await contract.methods.balanceOf(accountAddress).call()
+      target.tether = result
+
+      return result
     },
   },
   snx: {
@@ -154,8 +235,8 @@ store.tokens ={
     },
   },
   bpt: {
-    // address: '0x5F6eF509e65676134BD73baf85E0cf2744D8e254', // test
-    address: '0x2f49EeA1EfC1B04e9EcD3b81321060e29Db26A19',
+    address: '0x5F6eF509e65676134BD73baf85E0cf2744D8e254', // test
+    // address: '0x2f49EeA1EfC1B04e9EcD3b81321060e29Db26A19',
     abi: abiBpt,
     __contract: null,
     get contract () {
@@ -164,10 +245,75 @@ store.tokens ={
       return __contract ||
         (this.__contract = new web3.eth.Contract(abi, address))
     },
-    async getBalanceOf (target, accountAddress) {
-      const { contract } = this
 
-      return target.tether = await contract.methods.balanceOf(accountAddress).call()
+    userBalanceOf: valueModel.create(),
+    async getBalanceOf (target, accountAddress) {
+      const { contract, userBalanceOf } = this
+      const result = await contract.methods.balanceOf(accountAddress).call()
+
+      userBalanceOf.tether = target.tether = result
+
+      return result
+    },
+
+    error: errorModel.create(),
+
+    // amount: 0,
+    // approveAmount: 0,
+    // TODO: common & format type
+    minAllowance: BN(1).dividedBy(1e18),
+    maxAllowance: BN(2).pow(256).minus(1),
+    async hasValidAmount (val) {
+      const { minAllowance, maxAllowance, error } = this
+      const _val = BN(val)
+      // FIXME: balance Of
+      const result = _val.gte(minAllowance) &&
+        // TODO: div(2) why?
+        _val.lte(maxAllowance.div(2))
+
+      if (!result) {
+        error.message = store.i18n.$i18n.t('model.valueOutValidRange')
+      }
+
+      return result
+    },
+    async hasApprove (amount, accountAddress, toContract) {
+      const { contract, error } = this
+      // FIXME:
+      const allowance = BN(await contract.methods.allowance(accountAddress, toContract).call())
+
+      // allowance >= amount && amount > 0
+      const result = allowance.gte(amount) && BN(amount).gt(0)
+
+      if (!result) {
+        error.message = store.i18n.$i18n.t('model.approveOperation')
+      }
+
+      return result
+    },
+    async onApproveAmount (amount, accountAddress, toContract, infinite = false) {
+      const { contract, maxAllowance } = this
+      // FIXME:
+      const allowance = BN(await contract.methods.allowance(accountAddress, toContract).call())
+
+      if (infinite) {
+        // allowance < maxAllowance / 2 && amount > 0
+        // TODO: div(2) why?
+        if (allowance.lt(maxAllowance.div(2)) && BN(amount).gt(0)) {
+          // TODO: ?
+          // if (allowance.gt(0) && requiresResetAllowance.includes(contract._address))
+          //   await approve(contract, 0, account, toContract)
+          await approve(contract, maxAllowance, accountAddress, toContract)
+        }
+      } else {
+        // allowance < amount && amount > 0
+        if (allowance.lt(amount) && BN(amount).gt(0)) {
+          // TODO: ?
+          // if (allowance.gt(0) && requiresResetAllowance.includes(contract._address))
+          //   await approve(contract, 0, account, toContract)
+          await approve(contract, amount, accountAddress, toContract)
+        }
+      }
     },
 
     price: valueModel.create(),
@@ -214,8 +360,8 @@ store.gauges = {
     name: 'BPT',
     propagateMark: 'SFG',
     mortgagesUnit: 'BPT',
-    // address: '0xf9417badb0692bdedad616058619201fcd292532', // test
-    address: '0x318b2456A711c5f35E9eAa2B9EE5734A3635FE96',
+    address: '0xf9417badb0692bdedad616058619201fcd292532', // test
+    // address: '0x318b2456A711c5f35E9eAa2B9EE5734A3635FE96',
     abi: abiSUSDv2,
     __contract: null,
     get contract () {
@@ -333,9 +479,8 @@ store.gauges = {
     // TEMP: 
     async getAPY (price, dailyYield, totalStaking, lpTokenPrice) {
       const { contract, dailyAPY, apy } = this
-// FIXME: 
-// BPT = SFT * 2 + DAI * 8
-console.log('getAPY', await price / 1e18 , await dailyYield / 1e18,  await totalStaking / 1e18,  await price / 1e18 * 7  )
+      // FIXME: 
+      // console.log('getAPY', await price / 1e18 , await dailyYield / 1e18,  await totalStaking / 1e18,  await price / 1e18 * 7  )
 
       dailyAPY.handled = BN(await price / 1e18).times(await dailyYield / 1e18).times(0.3).dividedBy(BN(await totalStaking / 1e18).times(await price / 1e18 * 7 )).toString()
       apy.handled = +dailyAPY.handled * 365
@@ -343,8 +488,10 @@ console.log('getAPY', await price / 1e18 , await dailyYield / 1e18,  await total
 
     async getBalanceOf (target, accountAddress) {
       const { contract } = this
+      const result = await contract.methods.balanceOf(accountAddress).call()
 
-      return target.tether = await this.contract.methods.balanceOf(accountAddress).call()
+      target.tether = result
+      return result
     },
     async getUserPendingReward_SFG (target, accountAddress) {
       const { contract } = this
@@ -364,9 +511,9 @@ console.log('getAPY', await price / 1e18 , await dailyYield / 1e18,  await total
       const { tokens } = store
       const { name, address, contract, mortgages } = this
 
-      let deposit = BN(mortgages.bpt.userStake.revised).times(1e18)
+      const deposit = BN(mortgages.bpt.userStake.revised).times(1e18)
 
-      await common.approveAmount(tokens.bpt.contract, deposit, accountAddress, address, infApproval)
+      // await common.approveAmount(tokens.bpt.contract, deposit, accountAddress, address, infApproval)
 
       var { dismiss } = notifyNotification(`Please confirm depositing into ${name} gauge`)
 

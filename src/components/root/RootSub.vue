@@ -1,13 +1,14 @@
 <template>
   <div>
-    <div class="error window half-width info" id="error-window" v-if='errMsg'>
+    <div class="error" v-if='errMsg'>
       {{ errMsg }}
     </div>
-    <b-container>
-      <div class='info-message gentle-message window half-width gentle-message mt-4' v-if='hasConnectedWallet'>
-        {{ $t('wallet.notConnected') }}<button class="ml-2" @click='changeWallets'>{{ $t('wallet.connect') }}</button>
-      </div>
-    </b-container>
+    <div class='mt-4' v-if='hasConnectedWallet'>
+      <span class="mr-2" >{{ $t('wallet.notConnected') }}</span>
+      <button @click='changeWallets'>
+        {{ $t('wallet.connect') }}
+      </button>
+    </div>
   </div>
 </template>
 

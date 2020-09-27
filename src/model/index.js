@@ -74,6 +74,12 @@ export const valueModel = {
       set [keys.revised] (val) {
         __store__.revised = floor(val, priceDecimal)
       },
+      // TODO:
+      // get validRevised () {
+      //   const { revised } = __store__
+
+      //   return +revised >= 0
+      // },
 
       /**
        *  TODO: typeNumber?

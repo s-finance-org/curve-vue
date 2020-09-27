@@ -12,14 +12,18 @@ import { notify, notifyHandler } from '../init'
 
 var cBN = (val) => new BigNumber(val);
 
-let requiresResetAllowance = ['0xdAC17F958D2ee523a2206206994597C13D831ec7', '0xC25a3A3b969415c80451098fa907EC722572917F', '0x075b1bb99792c9E1041bA13afEf80C91a1e70fB3', '0xdF5e0e81Dff6FAF3A7e52BA697820c5e32D806A8']
+let requiresResetAllowance = [
+  '0xdAC17F958D2ee523a2206206994597C13D831ec7', // USDT
+  '0xC25a3A3b969415c80451098fa907EC722572917F', // Curve.fi DAI/USDC/USDT/sUSD
+  '0x075b1bb99792c9E1041bA13afEf80C91a1e70fB3', // Curve.fi renBTC/wBTC/sBTC
+  '0xdF5e0e81Dff6FAF3A7e52BA697820c5e32D806A8'] // Curve.fi yDAI/yUSDC/yUSDT/yTUSD
 
 export function approve(contract, amount, account, toContract) {
     if(!toContract) toContract = currentContract.swap_address
     return new Promise((resolve, reject) => {
                 contract.methods.approve(toContract, cBN(amount).toFixed(0,1))
                 .send({
-                    from: account, 
+                    from: account,
                     gasPrice: gasPriceStore.state.gasPriceWei,
                     gas: 100000,
                 })
@@ -141,7 +145,6 @@ export async function ensure_underlying_allowance(i, _amount, underlying_coins =
 }
 
 export async function approveAmount(contract, amount, account, toContract, infinite = false) {
-console.log(await contract.methods.allowance(account, toContract).call())
     let current_allowance = cBN(await contract.methods.allowance(account, toContract).call())
     console.log(currentContract.max_allowance)
     console.log(current_allowance.toString(), amount.toString(), current_allowance.lt(amount))

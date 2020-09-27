@@ -169,5 +169,10 @@ export default {
     tutorial: 'Tutorial',
     communitySupport: 'Community support',
   },
+  model: {
+    valueOutValidRange: 'Value is out of valid range',
+    incorrectValue: 'Incorrect value',
+    approveOperation: 'Please authorize first, and then continue after authorization is completed'
+  },
   temp: '* If you only want to withdraw a single currency, you can modify the number of other currencies to 0'
 }

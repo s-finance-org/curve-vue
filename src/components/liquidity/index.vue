@@ -48,7 +48,7 @@
             <small class="d-flex mb-3">{{ $t('liquidity.depositTip') }}</small>
 
             <div class="row">
-              <div class="col pr-4 line-right">
+              <div class="col-12 col-lg mb-2 line-right">
                 <div role="group" class="mb-3" v-for='(currency, i) in Object.keys(currencies)' :key="'icon-'+currency">
                   <div class="currentInput d-flex">
                     <span class="coin d-flex align-items-center">
@@ -98,7 +98,7 @@
                 </div>
               </div>
 
-              <div class="col pl-4 d-flex flex-column text-black-65">
+              <div class="col-12 col-lg mb-2 d-flex flex-column text-black-65">
                 <label class="mb-3" v-show="estimateGas">
                   {{ $t('instantSwap.txCost') }}
                   <span class="ml-auto">{{ (estimateGas * gasPrice / 1e9 * ethPrice).toFixed(2) }} USD</span>
@@ -273,7 +273,7 @@
  -->
 
             <div class="row">
-              <div class="col pr-4 line-right">
+              <div class="col-12 col-lg mb-2 line-right">
                 <small class="mb-2">{{ $t('temp') }}</small>
                 <div role="group" class="mb-3" v-for='(currency, i) in Object.keys(currencies)' :key="'icon-'+currency">
                     <div class="currentInput d-flex">
@@ -311,7 +311,7 @@
                 </li>
               </div>
 
-              <div class="col pl-4 d-flex flex-column text-black-65">
+              <div class="col-12 col-lg mb-2 d-flex flex-column text-black-65">
                 <label class="mb-3" v-show="estimateGas">
                   {{ $t('instantSwap.txCost') }}
                   <span class="float-right">{{ (estimateGas * gasPrice / 1e9 * ethPrice).toFixed(2) }} USD</span>

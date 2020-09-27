@@ -298,6 +298,11 @@
                   @dismiss-count-down="countDownChanged"
                   v-html='waitingMessage'>
                 </b-alert>
+                <b-alert class="mt-3" :show="store.tokens.bpt.error.dismissCountDown" variant="dark" dismissible fade
+                  @dismissed="store.tokens.bpt.error.dismissCountDown=0"
+                  v-html='store.tokens.bpt.error.message'>
+                </b-alert>
+
                 <div class="d-flex align-items-end mt-5 float-right">
                   <text-overlay-loading :show="loadingAction">
                     <b-button size="lg" variant="danger" @click=onStake>
@@ -767,9 +772,18 @@
         methods: {
           // FIXME:
           async onStake () {
+            const { gauges, tokens } = store
             this.alert('notice.approveOperationWarning', 'stake')
 
-            store.gauges.bpt.onStake(currentContract.default_account, this.inf_approval)
+            if (!await tokens.bpt.hasValidAmount(gauges.bpt.mortgages.bpt.userStake.revised)) {
+              return false
+            }
+
+            if (await tokens.bpt.hasApprove(gauges.bpt.mortgages.bpt.userStake.revised, currentContract.default_account, gauges.bpt.address)) {
+              gauges.bpt.onStake(currentContract.default_account, this.inf_approval)
+            } else {
+              tokens.bpt.onApproveAmount(gauges.bpt.mortgages.bpt.userStake.revised, currentContract.default_account, gauges.bpt.address, this.inf_approval)
+            }
           },
           async onRedemption () {
             store.gauges.bpt.onRedemption(currentContract.default_account, this.inf_approval)
@@ -895,7 +909,12 @@
           async deposit () {
             let deposit = BN(this.currentPool.deposit.amount).times(1e18)
 
-            await common.approveAmount(store.tokens.susdv2LpToken.contract, deposit, currentContract.default_account, this.currentPool.gauge, this.inf_approval)
+            await common.approveAmount(
+              store.tokens.susdv2LpToken.contract,
+              deposit,
+              currentContract.default_account,
+              this.currentPool.gauge,
+              this.inf_approval)
 
             var { dismiss } = notifyNotification(`Please confirm depositing into ${this.currentPool.name} gauge`)
 

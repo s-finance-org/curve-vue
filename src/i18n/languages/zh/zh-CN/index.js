@@ -167,5 +167,10 @@ export default {
     tutorial: '挖矿教程',
     communitySupport: '社区支持',
   },
+  model: {
+    valueOutValidRange: '值不在有效范围内',
+    incorrectValue: '无效的数值',
+    approveOperation: '请先授权，并在授权完成后再继续操作'
+  },
   temp: '* 如果只想取单个币种可将其他币种数量修改为0',
 }
