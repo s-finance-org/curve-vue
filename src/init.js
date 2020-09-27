@@ -60,10 +60,10 @@ let wallets = [
   // { walletName: "status" },
   // { walletName: "fortmatic", apiKey: "pk_live_190B10CE18F47DCD" },
   // { walletName: "authereum", apiKey: "_BTsipRcEmPeuVteLOGdoh1CXt733YLZ7u3ipbe_dAk" },
-  // {
-  //   walletName: "trust",
-  //   rpcUrl: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`
-  // },
+  {
+    walletName: "trust",
+    rpcUrl: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`
+  },
   // {
   //   walletName: "walletLink",
   //   appName: 'Curve Finance',
@@ -181,8 +181,8 @@ async function init(init = true, name, walletlink = false) {
   window.web3provider = web3;*/
   try {
     state.contract.initializedContracts = false;
-    let userSelectedWallet = await onboard.walletSelect(localStorage.getItem('selectedWallet') 
-      || window.web3 && window.web3.currentProvider.isTrust && 'Trust' 
+    let userSelectedWallet = await onboard.walletSelect(localStorage.getItem('selectedWallet')
+      || window.web3 && window.web3.currentProvider.isTrust && 'Trust'
       || window.web3 && window.web3.currentProvider.isCoinbaseWallet && 'Coinbase');
     if(userSelectedWallet) await onboard.walletCheck();
     else window.web3 = new Web3(infura_url)
