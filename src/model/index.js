@@ -24,6 +24,7 @@ export const valueModel = {
   create ({
     name = '',
     priceDecimal = 4,
+    percentDecimal = 2,
     notationDecimal = 1e18,
     contMethod = floor,
   } = {}) {
@@ -33,6 +34,7 @@ export const valueModel = {
       tether: name + 'tether',
       revised: name + 'revised',
       handled: name + 'handled',
+      percent: name + 'percent',
       cont: name + 'cont',
     }
 
@@ -41,6 +43,7 @@ export const valueModel = {
        *  @type {number}
        */
       priceDecimal,
+      percentDecimal,
 
       /**
        *  @type {boolean}
@@ -93,6 +96,20 @@ export const valueModel = {
 
         this[keys.loading] &&
           (this[keys.loading] = false)
+      },
+
+      /**
+       *  @type {number}
+       */
+      get [keys.percent] () {
+        const { handled } = __store__
+        const { percentDecimal } = this
+        const val = handled * 100
+
+        return val >= 0
+          // TODO: formatNumber toFixed -> round()
+          ? helpers.formatNumber(contMethod(val, percentDecimal), percentDecimal)
+          : '-'
       },
 
       /**

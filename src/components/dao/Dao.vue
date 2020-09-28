@@ -17,10 +17,9 @@
             <span class="mr-3">{{ $t('dao.tokenTitle', [currentPool.nameCont]) }}</span>
             <small class="mr-auto">{{ $t('dao.describe', [currentPool.name + ' LP tokens', currentPool.describeTokensCont]) }}</small>
             <text-overlay-loading inline :show="store.gauges.susdv2.apy.loading">
-              <span class="h5 text-danger-1">
+              <span class="h5 text-danger-1 mb-0">
                 <small class="text-blank-45">{{ $t('global.apr') }}</small>
-                <!-- FIXME: 0.11 -->
-                {{ (store.gauges.susdv2.apy.handled + 0.11) * 100 | formatNumber(2) }}%
+                {{ store.gauges.susdv2.apy.percent }}%
               </span>
             </text-overlay-loading>
           </h4>
@@ -117,6 +116,11 @@
                   @dismiss-count-down="countDownChanged"
                   v-html='waitingMessage'>
                 </b-alert>
+                <b-alert class="mt-3" :show="store.tokens.susdv2LpToken.error.dismissCountDown" variant="dark" dismissible fade
+                  @dismissed="store.tokens.susdv2LpToken.error.dismissCountDown=0"
+                  v-html='store.tokens.susdv2LpToken.error.message'>
+                </b-alert>
+
                 <div class="d-flex align-items-end mt-5 float-right">
                   <text-overlay-loading :show="loadingAction">
                     <b-button size="lg" variant="danger" @click=withdraw>
@@ -189,6 +193,7 @@
                         <text-overlay-loading inline :show="currentPool.tokens[token].paidReward.loading">
                           {{ currentPool.tokens[token].paidReward.cont }} {{ currentPool.tokens[token].nameCont }}
                         </text-overlay-loading>
+                        <small class="iconTip iconTip-warning ml-2" id="tooltip-mining-paid-reward-tip"></small>
                         <em class="px-3 text-black-15">/</em>
                         {{ $t('dao.miningTotalReward') }}：
                         <text-overlay-loading inline :show="currentPool.tokens[token].totalReward.loading">
@@ -211,6 +216,7 @@
                       v-html='waitingMessage'>
                     </b-alert>
                   </template>
+
                 </div>
               </b-tab>
             </b-tabs>
@@ -223,9 +229,9 @@
             <span class="mr-3">{{ $t('dao.tokenTitle', [store.gauges.bpt.propagateMark]) }}</span>
             <small class="mr-auto">{{ $t('dao.describe', [store.gauges.bpt.mortgagesUnit, store.gauges.bpt.rewardsUnit.join(' ')]) }}</small>
             <text-overlay-loading inline :show="store.gauges.susdv2.apy.loading">
-              <span class="h5 text-danger-1">
+              <span class="h5 text-danger-1 mb-0">
                 <small class="text-blank-45">{{ $t('global.apr') }}</small>
-                {{ store.gauges.bpt.apy.handled * 100 | formatNumber(2) }}%
+                {{ store.gauges.bpt.apy.percent }}%
               </span>
             </text-overlay-loading>
           </h4>
@@ -362,6 +368,7 @@
                       <text-overlay-loading inline :show="store.gauges.bpt.rewards.sfg.userPaidReward.loading">
                         {{ store.gauges.bpt.rewards.sfg.userPaidReward.cont }} {{ store.gauges.bpt.rewards.sfg.name }}
                       </text-overlay-loading>
+                      <small class="iconTip iconTip-warning" id="tooltip-mining-paid-reward-tip"></small>
                       <em class="px-3 text-black-15">/</em>
                       {{ $t('dao.miningTotalReward') }}：
                       <text-overlay-loading inline :show="store.gauges.bpt.rewards.sfg.userTotalReward.loading">
@@ -384,6 +391,8 @@
           </div>
         </b-tab>
       </b-tabs>
+
+      <b-tooltip placement="topright" show target="tooltip-mining-paid-reward-tip" variant="success">{{ $t('dao.miningPaidRewardTip') }}</b-tooltip>
     </b-container>
 
 
@@ -773,11 +782,9 @@
           // FIXME:
           async onStake () {
             const { gauges, tokens } = store
-            this.alert('notice.approveOperationWarning', 'stake')
+            // this.alert('notice.approveOperationWarning', 'stake')
 
-            if (!await tokens.bpt.hasValidAmount(gauges.bpt.mortgages.bpt.userStake.revised)) {
-              return false
-            }
+            if (!await tokens.bpt.hasValidAmount(gauges.bpt.mortgages.bpt.userStake.revised)) return false
 
             if (await tokens.bpt.hasApprove(gauges.bpt.mortgages.bpt.userStake.revised, currentContract.default_account, gauges.bpt.address)) {
               gauges.bpt.onStake(currentContract.default_account, this.inf_approval)

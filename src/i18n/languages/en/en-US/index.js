@@ -146,6 +146,7 @@ export default {
     redemptionConfirm: 'Withdraw',
     miningPendingReward: 'Pending rewards',
     miningPaidReward: 'Paid rewards',
+    miningPaidRewardTip: 'Each deposit or withdraw of LP tokens will trigger the settlement of SFG rewards. The settled reward here does not represent the actual reward you received. Click the "Claim" button to send the SFG token into your wallet.(This feature is the Gas optimized plan, which witnesses the lowest Gas rate of the same type currently)',
     miningTotalReward: 'Total rewards',
     miningClaimConfirm: 'Claim',
     totalStaking: 'Total staking',

@@ -211,6 +211,74 @@ store.tokens = {
 
       return result
     },
+
+    error: errorModel.create(),
+
+    // amount: 0,
+    // approveAmount: 0,
+    // TODO: common & format type
+    // tether
+    minAllowance: 1,
+    // tether
+    maxAllowance: BN(2).pow(256).minus(1),
+    async hasValidAmount (val) {
+      const { minAllowance, maxAllowance, error } = this
+      const _val = BN(val).times(1e18)
+      // FIXME: balance Of
+      const result = _val.gte(minAllowance) &&
+        // TODO: div(2) why?
+        _val.lte(maxAllowance.div(2))
+
+      if (!result) {
+        error.message = store.i18n.$i18n.t('model.valueOutValidRange')
+      }
+
+      return result
+    },
+    async hasApprove (amount, accountAddress, toContract) {
+      const { contract, error } = this
+      const _amount = BN(amount).times(1e18)
+      // FIXME:
+      const allowance = BN(await contract.methods.allowance(accountAddress, toContract).call())
+      console.log('allowance', allowance.toString(), allowance.toString() / 1e18)
+      // allowance >= amount && amount > 0
+      const result = allowance.gte(_amount) && BN(_amount).gt(0)
+
+      if (!result) {
+        error.message = store.i18n.$i18n.t('model.approveOperation')
+      }
+
+      return result
+    },
+    async onApproveAmount (amount, accountAddress, toContract, infinite = false) {
+      const { contract, maxAllowance } = this
+      const _amount = BN(amount).times(1e18)
+
+      console.log('amount', amount)
+      if (!await this.hasValidAmount(amount)) return false
+
+      // FIXME:
+      const allowance = BN(await contract.methods.allowance(accountAddress, toContract).call())
+
+      if (infinite) {
+        // allowance < maxAllowance / 2 && amount > 0
+        // TODO: div(2) why?
+        if (allowance.lt(maxAllowance.div(2))) {
+          // TODO: ?
+          // if (allowance.gt(0) && requiresResetAllowance.includes(contract._address))
+          //   await approve(contract, 0, account, toContract)
+          await approve(contract, maxAllowance, accountAddress, toContract)
+        }
+      } else {
+        // allowance < amount && amount > 0
+        if (allowance.lt(_amount)) {
+          // TODO: ?
+          // if (allowance.gt(0) && requiresResetAllowance.includes(contract._address))
+          //   await approve(contract, 0, account, toContract)
+          await approve(contract, _amount, accountAddress, toContract)
+        }
+      }
+    },
   },
   snx: {
     address: '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f',
@@ -235,8 +303,8 @@ store.tokens = {
     },
   },
   bpt: {
-    address: '0x5F6eF509e65676134BD73baf85E0cf2744D8e254', // test
-    // address: '0x2f49EeA1EfC1B04e9EcD3b81321060e29Db26A19',
+    // address: '0x5F6eF509e65676134BD73baf85E0cf2744D8e254', // test
+    address: '0x2f49EeA1EfC1B04e9EcD3b81321060e29Db26A19',
     abi: abiBpt,
     __contract: null,
     get contract () {
@@ -264,7 +332,6 @@ store.tokens = {
     minAllowance: 1,
     maxAllowance: BN(2).pow(256).minus(1),
     async hasValidAmount (val) {
-      console.log('minAllowance', this.minAllowance)
       const { minAllowance, maxAllowance, error } = this
       const _val = BN(val).times(1e18)
       // FIXME: balance Of
@@ -275,7 +342,7 @@ store.tokens = {
       if (!result) {
         error.message = store.i18n.$i18n.t('model.valueOutValidRange')
       }
-// console.log('hasValidAmount', val.toString(), 'minAllowance', minAllowance.toString(), 'maxAllowance', maxAllowance.toString())
+
       return result
     },
     async hasApprove (amount, accountAddress, toContract) {
@@ -283,7 +350,7 @@ store.tokens = {
       const _amount = BN(amount).times(1e18)
       // FIXME:
       const allowance = BN(await contract.methods.allowance(accountAddress, toContract).call())
-console.log('allowance', allowance.toString(), allowance.toString() / 1e18)
+      console.log('allowance', allowance.toString(), allowance.toString() / 1e18)
       // allowance >= amount && amount > 0
       const result = allowance.gte(_amount) && BN(_amount).gt(0)
 
@@ -297,7 +364,7 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18)
       const { contract, maxAllowance } = this
       const _amount = BN(amount).times(1e18)
 
-console.log('amount', amount)
+      console.log('amount', amount)
       if (!await this.hasValidAmount(amount)) return false
 
       // FIXME:
@@ -367,8 +434,8 @@ store.gauges = {
     name: 'BPT',
     propagateMark: 'SFG',
     mortgagesUnit: 'BPT',
-    address: '0xf9417badb0692bdedad616058619201fcd292532', // test
-    // address: '0x318b2456A711c5f35E9eAa2B9EE5734A3635FE96',
+    // address: '0xf9417badb0692bdedad616058619201fcd292532', // test
+    address: '0x318b2456A711c5f35E9eAa2B9EE5734A3635FE96',
     abi: abiSUSDv2,
     __contract: null,
     get contract () {
@@ -609,7 +676,8 @@ store.gauges = {
       const { contract, dailyAPY, apy } = this
 
       dailyAPY.handled = BN(await price / 1e18).times(await dailyYield / 1e18).times(0.7).dividedBy(BN(await totalStaking / 1e18).times(lpTokenPrice)).toString()
-      apy.handled = +dailyAPY.handled * 365
+      // TMEP: + 0.11
+      apy.handled = +dailyAPY.handled * 365 + 0.11
     },
 
     async getBalanceOf (target, accountAddress) {

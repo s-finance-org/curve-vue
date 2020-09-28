@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="statement-banner py-2">
-      {{ $t('statement.coming') }}
+      {{ $t('statement.noticeTitleHtml') }}
       <a @click="onStatement" href="javascript:void(0);">{{ $t('statement.more') }}</a>
     </div>
     <b-container>
@@ -44,7 +44,7 @@
       onStatement () {
         const { $i18n, $createElement } = this
 
-        const messageVNode = $createElement('div', { class: ['text-break'] }, [
+        const messageVNode = $createElement('div', { class: [] }, [
           $createElement('p', { domProps: { innerHTML: $i18n.t('statement.noticeContHtml') } }),
         ])
 

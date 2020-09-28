@@ -144,6 +144,7 @@ export default {
     redemptionConfirm: '确认赎回',
     miningPendingReward: '未结算奖励',
     miningPaidReward: '已结算奖励',
+    miningPaidRewardTip: '每次抵押或赎回 LP tokens 都会触发关于 SFG 奖励结算，这里的已结算奖励不代表实际领取的奖励，需要点击「领取奖励」按钮 SFG 代币才会进入你的钱包中。(该特征为Gas优化方案，目前为同类型最低Gas费率）',
     miningTotalReward: '合计奖励',
     miningClaimConfirm: '领取奖励',
     totalStaking: '总抵押量',

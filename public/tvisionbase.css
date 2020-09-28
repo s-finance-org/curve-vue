@@ -77,6 +77,8 @@ h6, .h6 {
 p {
   font-size: 0.875rem;
   line-height: 1.375rem;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 small {
   font-size: 12px;
@@ -240,6 +242,25 @@ fieldset {
   padding: 1px;
 }
 
+.iconTip {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  line-height: 12px;
+  text-align: center;
+}
+.iconTip::before {
+  font-size: 10px;
+}
+.iconTip-warning {
+  color: #fff;
+  background-color: #1ba57b;
+}
+.iconTip-warning::before {
+  content: '!';
+}
+
+
 /* Box size */
 .box-98 {
   width: 98px;
@@ -358,6 +379,24 @@ input[type="text"]::-moz-placeholder, textarea::-moz-placeholder {
 .radio-danger[type="radio"]:checked + span{
 	border:1px solid #1e9fff;
 	animation: mymove .5s 1
+}
+
+/* Tooltip */
+.tooltip-inner {
+  font-size: 14px;
+  line-height: 22px;
+  max-width: 360px;
+}
+.tooltip.b-tooltip {
+  opacity: 1;
+}
+.tooltip.b-tooltip-success .tooltip-inner {
+  color: rgba(255,255,255,0.85);
+  background-color: #1ba57b;
+}
+.tooltip.b-tooltip-success.bs-tooltip-top .arrow::before,
+.tooltip.b-tooltip-success.bs-tooltip-auto .arrow::before {
+  border-top-color: #1ba57b;
 }
 
 /* Checkbox */

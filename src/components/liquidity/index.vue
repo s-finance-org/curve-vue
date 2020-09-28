@@ -8,13 +8,13 @@
             :src='getTokenIcon(currency)'>
         </div>
         <h3 class="mb-0">{{ currentPool }}<br/>{{ $t('liquidity.name') }}</h3>
-        <div class="total-box px-4 py-3 w-270 ml-auto mr-4">
+        <div class="total-box px-4 py-3 ml-auto mr-4 d-none d-lg-block">
           <h6 class="text-black-65">{{ $t('global.totalBalances') }}</h6>
           <text-overlay-loading :show="totalBalances === null">
             <h4 class="mb-0">${{ totalBalances | formatNumber(2) }}</h4>
           </text-overlay-loading>
         </div>
-        <div class="total-box px-4 py-3 w-270">
+        <div class="total-box px-4 py-3 d-none d-lg-block">
           <h6 class="text-black-65">{{ $t('global.dailyVol') }}</h6>
           <text-overlay-loading :show="poolVolumeUSD == -1">
             <h4 class="mb-0">${{ poolVolumeUSD && poolVolumeUSD | formatNumber(2) }}</h4>
