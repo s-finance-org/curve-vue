@@ -5,7 +5,7 @@ const HtmlCriticalWebpackPlugin = require("html-critical-webpack-plugin");
 const path = require('path')
 
 module.exports = {
-	// productionSourceMap: process.env.NODE_ENV == 'production' ? false : true,
+	productionSourceMap: process.env.NODE_ENV === 'production' ? false : true,
 	chainWebpack: config => {
 		config.plugins.delete('prefetch')
 		config.module.rule('worker')
@@ -36,7 +36,7 @@ module.exports = {
     },
 
     pwa: {
-    	name: 'Curve Finance',
+    	name: 'S Finance',
     	themeColor: '#3465a4',
     	msTileColor: '#000000',
     	appleMobileWebAppCapable: 'yes',
