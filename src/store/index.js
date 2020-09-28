@@ -274,7 +274,7 @@ store.tokens = {
       if (!result) {
         error.message = store.i18n.$i18n.t('model.valueOutValidRange')
       }
-console.log('hasValidAmount', val.toString(), 'minAllowance', minAllowance.toString(), 'maxAllowance', maxAllowance.toString())
+// console.log('hasValidAmount', val.toString(), 'minAllowance', minAllowance.toString(), 'maxAllowance', maxAllowance.toString())
       return result
     },
     async hasApprove (amount, accountAddress, toContract) {
