@@ -386,6 +386,7 @@ input[type="text"]::-moz-placeholder, textarea::-moz-placeholder {
   font-size: 14px;
   line-height: 22px;
   max-width: 360px;
+  padding: 8px 12px;
 }
 .tooltip.b-tooltip {
   opacity: 1;
