@@ -264,6 +264,7 @@ store.tokens = {
     minAllowance: BN(1).dividedBy(1e18),
     maxAllowance: BN(2).pow(256).minus(1),
     async hasValidAmount (val) {
+      console.log('minAllowance', this.minAllowance)
       const { minAllowance, maxAllowance, error } = this
       const _val = BN(val)
       // FIXME: balance Of
@@ -292,9 +293,9 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18)
       return result
     },
     async onApproveAmount (amount, accountAddress, toContract, infinite = false) {
-      const { contract, maxAllowance, hasValidAmount } = this
-
-      if (!await hasValidAmount(amount)) return false
+      const { contract, maxAllowance } = this
+console.log('amount', amount)
+      if (!await this.hasValidAmount(amount)) return false
 
       // FIXME:
       const allowance = BN(await contract.methods.allowance(accountAddress, toContract).call())
