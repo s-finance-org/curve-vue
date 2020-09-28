@@ -261,12 +261,12 @@ store.tokens = {
     // amount: 0,
     // approveAmount: 0,
     // TODO: common & format type
-    minAllowance: BN(1).dividedBy(1e18),
+    minAllowance: 1,
     maxAllowance: BN(2).pow(256).minus(1),
     async hasValidAmount (val) {
       console.log('minAllowance', this.minAllowance)
       const { minAllowance, maxAllowance, error } = this
-      const _val = BN(val)
+      const _val = BN(val).times(1e18)
       // FIXME: balance Of
       const result = _val.gte(minAllowance) &&
         // TODO: div(2) why?
@@ -280,11 +280,12 @@ store.tokens = {
     },
     async hasApprove (amount, accountAddress, toContract) {
       const { contract, error } = this
+      const _amount = BN(amount).times(1e18)
       // FIXME:
       const allowance = BN(await contract.methods.allowance(accountAddress, toContract).call())
 console.log('allowance', allowance.toString(), allowance.toString() / 1e18)
       // allowance >= amount && amount > 0
-      const result = allowance.gte(amount) && BN(amount).gt(0)
+      const result = allowance.gte(_amount) && BN(_amount).gt(0)
 
       if (!result) {
         error.message = store.i18n.$i18n.t('model.approveOperation')
@@ -294,6 +295,8 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18)
     },
     async onApproveAmount (amount, accountAddress, toContract, infinite = false) {
       const { contract, maxAllowance } = this
+      const _amount = BN(amount).times(1e18)
+
 console.log('amount', amount)
       if (!await this.hasValidAmount(amount)) return false
 
@@ -311,11 +314,11 @@ console.log('amount', amount)
         }
       } else {
         // allowance < amount && amount > 0
-        if (allowance.lt(amount)) {
+        if (allowance.lt(_amount)) {
           // TODO: ?
           // if (allowance.gt(0) && requiresResetAllowance.includes(contract._address))
           //   await approve(contract, 0, account, toContract)
-          await approve(contract, amount, accountAddress, toContract)
+          await approve(contract, _amount, accountAddress, toContract)
         }
       }
     },
