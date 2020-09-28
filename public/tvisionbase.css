@@ -448,10 +448,11 @@ input[type="text"]::-moz-placeholder, textarea::-moz-placeholder {
   border: 1px solid rgba(0,0,0,0.25);
   border-radius: 2px;
   padding: 6px 16px;
-  margin-left: 8px;
+  margin-right: 8px;
+  margin-bottom: 8px;
 }
-.tabs-nav li:first-child .nav-link {
-  margin-left: 0px;
+.tabs-nav li:last-child .nav-link {
+  margin-right: 0px;
 }
 .tabs-nav .nav-link.active, .tabs-nav .nav-link:hover {
   background-color: transparent;

@@ -145,16 +145,20 @@
                           </text-overlay-loading>
                         </h4>
                         <div class="d-flex no-gutters align-items-end mt-3">
-                          <small class="col">
-                            {{ $t('dao.miningPaidReward') }}：
-                            <text-overlay-loading inline :show="currentPool.tokens[childToken].paidReward.loading">
-                              {{ currentPool.tokens[childToken].paidReward.cont }} {{ currentPool.tokens[childToken].nameCont }}
-                            </text-overlay-loading>
-                            <em class="px-3 text-black-15">/</em>
-                            {{ $t('dao.miningTotalReward') }}：
-                            <text-overlay-loading inline :show="currentPool.tokens[childToken].totalReward.loading">
-                              {{ currentPool.tokens[childToken].totalReward.cont }} {{ currentPool.tokens[childToken].nameCont }}
-                            </text-overlay-loading>
+                          <small class="col row flex-wrap">
+                            <span class="col-12 col-lg-auto">
+                              {{ $t('dao.miningPaidReward') }}：
+                              <text-overlay-loading inline :show="currentPool.tokens[childToken].paidReward.loading">
+                                {{ currentPool.tokens[childToken].paidReward.cont }} {{ currentPool.tokens[childToken].nameCont }}
+                              </text-overlay-loading>
+                              <em class="px-3 text-black-15">/</em>
+                            </span>
+                            <span class="col-12 col-lg-auto">
+                              {{ $t('dao.miningTotalReward') }}：
+                              <text-overlay-loading inline :show="currentPool.tokens[childToken].totalReward.loading">
+                                {{ currentPool.tokens[childToken].totalReward.cont }} {{ currentPool.tokens[childToken].nameCont }}
+                              </text-overlay-loading>
+                            </span>
                             <!-- <em class="px-3 text-black-15">/</em>
                             <text-overlay-loading inline :show="store.tokens[childToken].price.loading">
                               {{ store.tokens[childToken].price.cont }} {{ store.tokens[childToken].priceUnit }} = 1 {{ store.tokens[childToken].name }}
@@ -188,20 +192,24 @@
                       </text-overlay-loading>
                     </h4>
                     <div class="d-flex no-gutters align-items-end">
-                      <small class="col">
-                        {{ $t('dao.miningPaidReward') }}：
-                        <text-overlay-loading inline :show="currentPool.tokens[token].paidReward.loading">
-                          {{ currentPool.tokens[token].paidReward.cont }} {{ currentPool.tokens[token].nameCont }}
-                        </text-overlay-loading>
-                        <b-avatar text="!" class="iconTip iconTip-warning ml-2" id="tooltip-mining-paid-reward-tip1"></b-avatar>
-                        <b-tooltip placement="topright" show target="tooltip-mining-paid-reward-tip1" variant="success">{{ $t('dao.miningPaidRewardTip') }}</b-tooltip>
-                        <em class="px-3 text-black-15">/</em>
-                        {{ $t('dao.miningTotalReward') }}：
-                        <text-overlay-loading inline :show="currentPool.tokens[token].totalReward.loading">
-                          {{ currentPool.tokens[token].totalReward.cont }} {{ currentPool.tokens[token].nameCont }}
-                        </text-overlay-loading>
-                        <em class="px-3 text-black-15">/</em>
-                        <text-overlay-loading inline :show="store.tokens[token].price.loading">
+                      <small class="col row flex-wrap">
+                        <span class="col-12 col-lg-auto">
+                          {{ $t('dao.miningPaidReward') }}：
+                          <text-overlay-loading inline :show="currentPool.tokens[token].paidReward.loading">
+                            {{ currentPool.tokens[token].paidReward.cont }} {{ currentPool.tokens[token].nameCont }}
+                          </text-overlay-loading>
+                          <b-avatar text="!" class="iconTip iconTip-warning ml-2" id="tooltip-mining-paid-reward-tip1"></b-avatar>
+                          <b-tooltip placement="topright" show target="tooltip-mining-paid-reward-tip1" variant="success">{{ $t('dao.miningPaidRewardTip') }}</b-tooltip>
+                          <em class="px-3 text-black-15">/</em>
+                        </span>
+                        <span class="col-12 col-lg-auto">
+                          {{ $t('dao.miningTotalReward') }}：
+                          <text-overlay-loading inline :show="currentPool.tokens[token].totalReward.loading">
+                            {{ currentPool.tokens[token].totalReward.cont }} {{ currentPool.tokens[token].nameCont }}
+                          </text-overlay-loading>
+                          <em class="px-3 text-black-15">/</em>
+                        </span>
+                        <text-overlay-loading class="col-12 col-lg-auto" inline :show="store.tokens[token].price.loading">
                           1 {{ store.tokens[token].name }} = {{ store.tokens[token].price.cont }} {{ store.tokens[token].priceUnit }}
                         </text-overlay-loading>
                       </small>
@@ -364,20 +372,24 @@
                     </text-overlay-loading>
                   </h4>
                   <div class="d-flex no-gutters align-items-end">
-                    <small class="col">
-                      {{ $t('dao.miningPaidReward') }}：
-                      <text-overlay-loading inline :show="store.gauges.bpt.rewards.sfg.userPaidReward.loading">
-                        {{ store.gauges.bpt.rewards.sfg.userPaidReward.cont }} {{ store.gauges.bpt.rewards.sfg.name }}
-                      </text-overlay-loading>
-                      <b-avatar text="!" class="iconTip iconTip-warning ml-2" id="tooltip-mining-paid-reward-tip2"></b-avatar>
-                      <b-tooltip placement="topright" show target="tooltip-mining-paid-reward-tip2" variant="success">{{ $t('dao.miningPaidRewardTip') }}</b-tooltip>
-                      <em class="px-3 text-black-15">/</em>
-                      {{ $t('dao.miningTotalReward') }}：
-                      <text-overlay-loading inline :show="store.gauges.bpt.rewards.sfg.userTotalReward.loading">
-                        {{ store.gauges.bpt.rewards.sfg.userTotalReward.cont }} {{ store.gauges.bpt.rewards.sfg.name }}
-                      </text-overlay-loading>
-                      <em class="px-3 text-black-15">/</em>
-                      <text-overlay-loading inline :show="store.tokens.sfg.price.loading">
+                    <small class="col row flex-wrap">
+                      <span class="col-12 col-lg-auto">
+                        {{ $t('dao.miningPaidReward') }}：
+                        <text-overlay-loading inline :show="store.gauges.bpt.rewards.sfg.userPaidReward.loading">
+                          {{ store.gauges.bpt.rewards.sfg.userPaidReward.cont }} {{ store.gauges.bpt.rewards.sfg.name }}
+                        </text-overlay-loading>
+                        <b-avatar text="!" class="iconTip iconTip-warning ml-2" id="tooltip-mining-paid-reward-tip2"></b-avatar>
+                        <b-tooltip placement="topright" show target="tooltip-mining-paid-reward-tip2" variant="success">{{ $t('dao.miningPaidRewardTip') }}</b-tooltip>
+                        <em class="px-3 text-black-15">/</em>
+                      </span>
+                      <span class="col-12 col-lg-auto">
+                        {{ $t('dao.miningTotalReward') }}：
+                        <text-overlay-loading inline :show="store.gauges.bpt.rewards.sfg.userTotalReward.loading">
+                          {{ store.gauges.bpt.rewards.sfg.userTotalReward.cont }} {{ store.gauges.bpt.rewards.sfg.name }}
+                        </text-overlay-loading>
+                        <em class="px-3 text-black-15">/</em>
+                      </span>
+                      <text-overlay-loading class="col-12 col-lg-auto"  inline :show="store.tokens.sfg.price.loading">
                         1 {{ store.tokens.sfg.name }} = {{ store.tokens.sfg.price.cont }} {{ store.tokens.sfg.priceUnit }}
                       </text-overlay-loading>
                     </small>

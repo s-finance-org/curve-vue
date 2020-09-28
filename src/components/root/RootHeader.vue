@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="statement-banner py-2">
+    <div class="statement-banner p-2">
       {{ $t('statement.noticeTitleHtml') }}
       <a @click="onStatement" href="javascript:void(0);">{{ $t('statement.more') }}</a>
     </div>
@@ -42,14 +42,13 @@
     },
     methods: {
       onStatement () {
-        const { $i18n, $createElement } = this
+        const { $i18n, $router, $createElement } = this
 
         const messageVNode = $createElement('div', { class: [] }, [
           $createElement('p', { domProps: { innerHTML: $i18n.t('statement.noticeContHtml') } }),
         ])
 
-        // msgBoxConfirm
-        this.$bvModal.msgBoxOk([messageVNode], {
+        this.$bvModal.msgBoxConfirm([messageVNode], {
             titleHtml: $i18n.t('statement.noticeTitleHtml'),
             hideBackdrop: true,
             size: 'lg',
@@ -57,13 +56,14 @@
             okVariant: 'danger',
             buttonSize: 'lg',
             centered: true,
-            // cancelTitle: $i18n.t('statement.toMore'),
-            // cancelVariant: 'outline-secondary',
-//             cancel () {
-// console.log(1)
-//             },
+            cancelTitle: $i18n.t('statement.toMore'),
+            cancelVariant: 'outline-secondary',
             // statement-modal
             contentClass: 'normal-modal',
+          })
+          .then(data => {
+            !data &&
+              $router.push({ name: 'Statemented', path: '/statemented' })
           })
       }
     },
