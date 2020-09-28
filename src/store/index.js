@@ -556,7 +556,7 @@ store.gauges = {
       // FIXME: 
       // console.log('getAPY', await price / 1e18 , await dailyYield / 1e18,  await totalStaking / 1e18,  await price / 1e18 * 7  )
 
-      dailyAPY.handled = BN(await price / 1e18).times(await dailyYield / 1e18).times(0.3).dividedBy(BN(await totalStaking / 1e18).times(await price / 1e18 * 7 )).toString()
+      dailyAPY.handled = BN(await price / 1e18).times(await dailyYield / 1e18).times(0.4).dividedBy(BN(await totalStaking / 1e18).times(await price / 1e18 * 7 )).toString()
       apy.handled = +dailyAPY.handled * 365
     },
 
@@ -675,7 +675,7 @@ store.gauges = {
     async getAPY (price, dailyYield, totalStaking, lpTokenPrice) {
       const { contract, dailyAPY, apy } = this
 
-      dailyAPY.handled = BN(await price / 1e18).times(await dailyYield / 1e18).times(0.7).dividedBy(BN(await totalStaking / 1e18).times(lpTokenPrice)).toString()
+      dailyAPY.handled = BN(await price / 1e18).times(await dailyYield / 1e18).times(0.6).dividedBy(BN(await totalStaking / 1e18).times(lpTokenPrice)).toString()
       // TMEP: + 0.11
       apy.handled = +dailyAPY.handled * 365 + 0.11
     },

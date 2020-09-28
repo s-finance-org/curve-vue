@@ -48,6 +48,7 @@
           $createElement('p', { domProps: { innerHTML: $i18n.t('statement.noticeContHtml') } }),
         ])
 
+        // msgBoxConfirm
         this.$bvModal.msgBoxOk([messageVNode], {
             titleHtml: $i18n.t('statement.noticeTitleHtml'),
             hideBackdrop: true,
@@ -55,9 +56,14 @@
             okTitle: $i18n.t('statement.ok'),
             okVariant: 'danger',
             buttonSize: 'lg',
+            centered: true,
+            // cancelTitle: $i18n.t('statement.toMore'),
+            // cancelVariant: 'outline-secondary',
+//             cancel () {
+// console.log(1)
+//             },
             // statement-modal
             contentClass: 'normal-modal',
-            centered: true
           })
       }
     },

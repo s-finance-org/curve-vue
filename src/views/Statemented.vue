@@ -10,9 +10,12 @@
     <b-container>
       <root-sub />
 
-      <div class="box mt-5 mb-4 px-4">
-        <h4 class="my-3 line-bottom" v-html="$t('statement.noticeTitleHtml')"></h4>
-        <p class="text-black-65" v-html="$t('statement.noticeContHtml')"></p>
+      <div class="box mt-5 mb-4 px-4" v-for="(item, i) of notices" :key="'notice-'+ i">
+        <h4 class="my-3 pb-3 line-bottom d-flex flex-wrap align-items-end">
+          <span class="mr-auto" v-html="$t(item.title)"></span>
+          <small class="text-black-65">{{ $t(item.date) }}</small>
+        </h4>
+        <p class="text-black-65" v-html="$t(item.cont)"></p>
       </div>
     </b-container>
   </div>
@@ -28,6 +31,12 @@
     },
     computed: {
       ...getters,
+      notices () {
+        return [
+          { title: 'statement.noticeTitleHtml', date: 'statement.noticeDateHtml', cont: 'statement.noticeContHtml' },
+          { title: 'statemented.notice1.titleHtml', date: 'statemented.notice1.dateHtml', cont: 'statemented.notice1.contHtml' }
+        ]
+      }
     },
   }
 </script>

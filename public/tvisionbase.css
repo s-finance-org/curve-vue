@@ -247,17 +247,12 @@ fieldset {
   height: 12px;
   border-radius: 50%;
   line-height: 12px;
+  font-size: 12px;
   text-align: center;
-}
-.iconTip::before {
-  font-size: 10px;
 }
 .iconTip-warning {
   color: #fff;
   background-color: #1ba57b;
-}
-.iconTip-warning::before {
-  content: '!';
 }
 
 

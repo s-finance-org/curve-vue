@@ -25,21 +25,21 @@
           </h4>
           <div class="box mb-4 px-4 py-3">
             <div class="row mb-3 line-bottom">
-              <span class="col-12 col-lg pb-3">
+              <span class="col-12 col-md-6 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.totalStaking') }}</h6>
                 <text-overlay-loading inline :show="currentPool.totalSupply.loading">
                   <span class="h4 mr-2">{{ currentPool.totalSupply.cont }}</span>
                   <span class="inline-block text-black-65">{{ currentPool.name }} LP tokens</span>
                 </text-overlay-loading>
               </span>
-              <span class="col-12 col-lg pb-3">
+              <span class="col-12 col-md-6 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.myStaking') }}</h6>
                 <text-overlay-loading inline :show="currentPool.gaugeBalance.loading">
                   <span class="h4 mr-2">{{ currentPool.gaugeBalance.cont }}</span>
                   <span class="inline-block text-black-65">{{ currentPool.name }} LP tokens</span>
                 </text-overlay-loading>
               </span>
-              <span class="col-12 col-lg pb-3">
+              <span class="col-12 col-md-6 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.virtualPrice') }}</h6>
                 <text-overlay-loading inline :show="loadingAction">
                   <span class="h4 mb-0">
@@ -50,10 +50,10 @@
                   </span>
                 </text-overlay-loading>
               </span>
-              <span class="col-12 col-lg pb-3">
+              <span class="col-12 col-md-6 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.rewardWeight', ['SFG']) }}</h6>
                 <!-- <text-overlay-loading inline :show="store.gauges.bpt.rewards.sfg.userPaidReward.loading"> -->
-                  <span class="h4">70%</span>
+                  <span class="h4">60%</span>
                 <!-- </text-overlay-loading> -->
               </span>
             </div>
@@ -193,7 +193,7 @@
                         <text-overlay-loading inline :show="currentPool.tokens[token].paidReward.loading">
                           {{ currentPool.tokens[token].paidReward.cont }} {{ currentPool.tokens[token].nameCont }}
                         </text-overlay-loading>
-                        <small class="iconTip iconTip-warning ml-2" id="tooltip-mining-paid-reward-tip1"></small>
+                        <b-avatar text="!" class="iconTip iconTip-warning ml-2" id="tooltip-mining-paid-reward-tip1"></b-avatar>
                         <b-tooltip placement="topright" show target="tooltip-mining-paid-reward-tip1" variant="success">{{ $t('dao.miningPaidRewardTip') }}</b-tooltip>
                         <em class="px-3 text-black-15">/</em>
                         {{ $t('dao.miningTotalReward') }}：
@@ -238,31 +238,31 @@
           </h4>
           <div class="box mb-4 px-4 py-3">
             <div class="row mb-3 line-bottom">
-              <span class="col-12 col-lg pb-3">
+              <span class="col-12 col-md-6 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.totalStaking') }}</h6>
                 <text-overlay-loading inline :show="store.gauges.bpt.mortgages.bpt.totalStaking.loading">
                   <span class="h4 mr-2">{{ store.gauges.bpt.mortgages.bpt.totalStaking.cont }}</span>
                   <span class="inline-block text-black-65">{{ store.gauges.bpt.mortgagesUnit }}</span>
                 </text-overlay-loading>
               </span>
-              <span class="col-12 col-lg pb-3">
+              <span class="col-12 col-md-6 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.myStaking') }}</h6>
                 <text-overlay-loading inline :show="store.gauges.bpt.mortgages.bpt.userStaking.loading">
                   <span class="h4 mr-2">{{ store.gauges.bpt.mortgages.bpt.userStaking.cont }}</span>
                   <span class="inline-block text-black-65">{{ store.gauges.bpt.mortgagesUnit }}</span>
                 </text-overlay-loading>
               </span>
-              <span class="col-12 col-lg pb-3">
+              <span class="col-12 col-md-6 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.miningPaidReward') }}</h6>
                 <text-overlay-loading inline :show="store.gauges.bpt.rewards.sfg.userPaidReward.loading">
                   <span class="h4 mr-2">{{ store.gauges.bpt.rewards.sfg.userPaidReward.cont }}</span>
                   <span class="inline-block text-black-65">{{ store.gauges.bpt.rewards.sfg.name }}</span>
                 </text-overlay-loading>
               </span>
-              <span class="col-12 col-lg pb-3">
+              <span class="col-12 col-md-6 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.rewardWeight', ['SFG']) }}</h6>
                 <!-- <text-overlay-loading inline :show="store.gauges.bpt.rewards.sfg.userPaidReward.loading"> -->
-                  <span class="h4">30%</span>
+                  <span class="h4">40%</span>
                 <!-- </text-overlay-loading> -->
               </span>
               <!-- <span class="col-12 col-lg pb-3">
@@ -369,7 +369,7 @@
                       <text-overlay-loading inline :show="store.gauges.bpt.rewards.sfg.userPaidReward.loading">
                         {{ store.gauges.bpt.rewards.sfg.userPaidReward.cont }} {{ store.gauges.bpt.rewards.sfg.name }}
                       </text-overlay-loading>
-                      <small class="iconTip iconTip-warning ml-2" id="tooltip-mining-paid-reward-tip2"></small>
+                      <b-avatar text="!" class="iconTip iconTip-warning ml-2" id="tooltip-mining-paid-reward-tip2"></b-avatar>
                       <b-tooltip placement="topright" show target="tooltip-mining-paid-reward-tip2" variant="success">{{ $t('dao.miningPaidRewardTip') }}</b-tooltip>
                       <em class="px-3 text-black-15">/</em>
                       {{ $t('dao.miningTotalReward') }}：
