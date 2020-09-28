@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h4 class="mt-5 mb-2">
+    <h4 class="mt-4 mb-2">
       {{ $t('instantSwap.name')}}
       <small class="ml-3">{{ $t('instantSwap.tip')}}</small>
     </h4>

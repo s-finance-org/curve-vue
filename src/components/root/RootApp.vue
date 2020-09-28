@@ -91,7 +91,9 @@
     </div> -->
 
     <div id="screen">
-      <root-sub />
+      <b-container>
+        <root-sub />
+      </b-container>
       <router-view />
     </div>
 
