@@ -149,8 +149,8 @@
             </div>
 
             <div v-show='showadvancedoptions'>
-              <div id='max_slippage' class="lists lists-select mt-3 d-flex no-gutters">
-                <b-form-group class="mb-0 col">
+              <div id='max_slippage' class="lists lists-select mt-3 d-flex flex-wrap no-gutters">
+                <b-form-group class="mb-0 col-12 col-md">
                   <ul>
                     <li>
                       <h6 class="text-black-65 mb-0">{{ $t('global.maxSlippage') }}</h6>
@@ -193,8 +193,8 @@
                     </li>
                   </ul>
                 </b-form-group>
-                <div class="col-1"></div>
-                <gas-price class="col"></gas-price>
+                <div class="col-none col-md-1"></div>
+                <gas-price class="col-12 col-md"></gas-price>
               </div>
             </div>
 
@@ -362,8 +362,8 @@
             </div>
 
             <div v-show='showadvancedoptions'>
-              <div id='max_slippage' class="lists lists-select mt-3 d-flex no-gutters">
-                <b-form-group class="mb-0 col">
+              <div id='max_slippage' class="lists lists-select mt-3 d-flex flex-wrap no-gutters">
+                <b-form-group class="mb-0 col-12 col-md">
                   <ul>
                     <li>
                       <h6 class="text-black-65 mb-0">{{ $t('global.maxSlippage') }}</h6>
@@ -406,8 +406,8 @@
                     </li>
                   </ul>
                 </b-form-group>
-                <div class="col-1"></div>
-                <gas-price class="col"></gas-price>
+                <div class="col-none col-md-1"></div>
+                <gas-price class="col-12 col-md"></gas-price>
               </div>
             </div>
 

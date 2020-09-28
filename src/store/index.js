@@ -104,10 +104,10 @@ const store = {
       title: 'S.finance',
       meta: [
         { 'property': 'og:title', 'content': 's.finance' },
-        {'property': 'og:url', 'content': 'https://s.finance'},
+        { 'property': 'og:url', 'content': 'https://s.finance'},
         {'property': 'og:type', 'content': 'website'},
         {'property': 'og:description', 'content': ''},
-        {'property': 'og:image', 'content': '/curve.png'},
+        {'property': 'og:image', 'content': '/sfinance.png'},
         {'name': 'twitter:card', 'content': 'summary_large_image'},
         {'name': 'twitter:title', 'content': 's.finance'},
         {'name': 'twitter:site', 'content': ''},
@@ -274,14 +274,14 @@ store.tokens = {
       if (!result) {
         error.message = store.i18n.$i18n.t('model.valueOutValidRange')
       }
-
+console.log('hasValidAmount', val.toString(), 'minAllowance', minAllowance.toString(), 'maxAllowance', maxAllowance.toString())
       return result
     },
     async hasApprove (amount, accountAddress, toContract) {
       const { contract, error } = this
       // FIXME:
       const allowance = BN(await contract.methods.allowance(accountAddress, toContract).call())
-
+console.log('allowance', allowance.toString(), allowance.toString() / 1e18)
       // allowance >= amount && amount > 0
       const result = allowance.gte(amount) && BN(amount).gt(0)
 
@@ -292,14 +292,17 @@ store.tokens = {
       return result
     },
     async onApproveAmount (amount, accountAddress, toContract, infinite = false) {
-      const { contract, maxAllowance } = this
+      const { contract, maxAllowance, hasValidAmount } = this
+
+      if (!await hasValidAmount(amount)) return false
+
       // FIXME:
       const allowance = BN(await contract.methods.allowance(accountAddress, toContract).call())
 
       if (infinite) {
         // allowance < maxAllowance / 2 && amount > 0
         // TODO: div(2) why?
-        if (allowance.lt(maxAllowance.div(2)) && BN(amount).gt(0)) {
+        if (allowance.lt(maxAllowance.div(2))) {
           // TODO: ?
           // if (allowance.gt(0) && requiresResetAllowance.includes(contract._address))
           //   await approve(contract, 0, account, toContract)
@@ -307,7 +310,7 @@ store.tokens = {
         }
       } else {
         // allowance < amount && amount > 0
-        if (allowance.lt(amount) && BN(amount).gt(0)) {
+        if (allowance.lt(amount)) {
           // TODO: ?
           // if (allowance.gt(0) && requiresResetAllowance.includes(contract._address))
           //   await approve(contract, 0, account, toContract)

@@ -1,7 +1,7 @@
 <template>
     <div class="m-4">
-      <div class="row">
-        <div class="d-flex-column col">
+      <div class="row justify-content-center">
+        <div class="d-flex-column col-12 col-md">
           <div role="group" class="mb-2">
             <label for="from-val" class="text-black-65">{{ $t('instantSwap.from') }}</label>
             <div class="currentInput d-flex">
@@ -59,11 +59,11 @@
           </div>
         </div>
 
-        <div class='col-1 d-flex justify-content-center align-items-center'>
+        <div class='col-1 my-3 d-flex justify-content-center align-items-center'>
           <b-button class="iconcontainer" @click='swapInputs' variant="light"><img :src="publicPath + 'res/icons/base/exchange.svg'" id='exchangeicon'/></b-button>
         </div>
 
-        <div class="d-flex-column col">
+        <div class="d-flex-column col-12 col-md">
           <div role="group" class="mb-2">
             <label for="to-val" class="text-black-65">{{ $t('instantSwap.to') }}</label>
             <div class="currentInput d-flex">
@@ -130,8 +130,8 @@
         <label for='sbtcpool'>sBTC</label>
       </div>
       <div v-show="showadvancedoptions">
-        <div id='max_slippage' class="lists lists-select mt-3 d-flex no-gutters">
-          <b-form-group class="mb-0 col">
+        <div id='max_slippage' class="lists lists-select mt-3 d-flex flex-wrap no-gutters">
+          <b-form-group class="mb-0 col-12 col-md">
             <ul>
               <li>
                 <h6 class="text-black-65 mb-0">{{ $t('global.maxSlippage') }}</h6>
@@ -174,8 +174,8 @@
               </li>
             </ul>
           </b-form-group>
-          <div class="col-1"></div>
-          <gas-price class="col"></gas-price>
+          <div class="col-none col-md-1"></div>
+          <gas-price class="col-12 col-md"></gas-price>
         </div>
       </div>
       <p class="mt-3" v-for="(item, idx) in messages" :key="idx">
@@ -185,20 +185,20 @@
         <span v-html='waitingMessage'></span>
         <span class='loading line'></span>
       </div>
-      <div class="row mt-3 align-items-end text-black-65">
-        <span class="col-auto">
+      <div class="row mt-3 align-items-end text-black-65 flex-wrap">
+        <span class="col-12 col-md mb-2">
           <h6 class="mb-1">{{ $t('instantSwap.exchangeRate') }}</h6>
           <text-overlay-loading :show="!checkExchangeRate">
             <span @click='swapExchangeRate'>{{ exchangeRateSwapped }}</span>
           </text-overlay-loading>
         </span>
-        <span class="col-auto">
+        <span class="col-12 col-md mb-2">
           <h6 class="mb-1">{{ $t('instantSwap.txCost') }}</h6>
           <text-overlay-loading :show="!estimateGas">
             ${{ (+estimateGas).toFixed(2) }}
           </text-overlay-loading>
         </span>
-        <span class="col-auto">
+        <span class="col-12 col-md mb-2">
           <h6 class="mb-1">{{ $t('instantSwap.routedThrough') }}</h6>
           <div v-if="bestPoolText != '1split'">
             {{ bestPoolText }}

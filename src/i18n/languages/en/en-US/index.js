@@ -9,6 +9,7 @@ export default {
     swap: 'Swap',
     liquidity: 'Liquidity',
     stats: 'Stats',
+    statemented: 'Statemented',
     operating: 'Actions',
     deposits: 'Deposits',
     totalBalances: 'Total balances',
@@ -42,12 +43,10 @@ export default {
     followMe: 'Follow me'
   },
   statement: {
-    slogan: 'Statement: S.finance have not issued any tokens currently',
-    cont: 'Token of S.finance will follow the method of 100% contribution based distribution, with neither private placement, no pre-dig, nor team distribution. The official name of the token is still being collected. Information about S.finance on Trx-chain is totally fraud, please log on official website to get the latest news about S.finance!',
     more: 'more',
     ok: 'Ok',
-    coming: 'S. Finance has started liquidity mining！',
-    comingCont: `S.finance will open the SFG liquidity pool at 2020-09-25 20:00 Singapore time. Mortgaging BPT will obtain the S.Finance governance token SFG award. SFG exchange and deposit/withdrawal services are provided by Balancer:<br/>
+    noticeTitleHtml: 'S. Finance has started liquidity mining！',
+    noticeContHtml: `S.finance will open the SFG liquidity pool at 2020-09-25 20:00 Singapore time. Mortgaging BPT will obtain the S.Finance governance token SFG award. SFG exchange and deposit/withdrawal services are provided by Balancer:<br/>
     * Exchange Address: <a href="https://legacy.balancer.exchange/#/swap/0x8a6ACA71A218301c7081d4e96D64292D3B275ce0" target="_blank">https://legacy.balancer.exchange/#/swap/0x8a6ACA71A218301c7081d4e96D64292D3B275ce0</a><br/>
     * Liquidity Pool Address：<a href="https://pools.balancer.exchange/#/pool/0x2f49eea1efc1b04e9ecd3b81321060e29db26a19/" target="_blank">https://pools.balancer.exchange/#/pool/0x2f49eea1efc1b04e9ecd3b81321060e29db26a19/</a><br/>
     * SFG smart contract （please make sure the contract address is right before trading）：<a href="https://etherscan.io/token/0x8a6ACA71A218301c7081d4e96D64292D3B275ce0" target="_blank">https://etherscan.io/token/0x8a6ACA71A218301c7081d4e96D64292D3B275ce0</a><br/>

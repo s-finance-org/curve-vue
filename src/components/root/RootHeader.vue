@@ -1,21 +1,8 @@
 <template>
   <div>
-    <!-- <div class="beta-banner py-2">
-      {{ $t('beta.slogan') }}<br/>{{ $t('beta.followMe') }}:
-      <a href="https://twitter.com/SFinanceEx" target="_blank">Twitter</a>
-      <a href="https://discord.gg/rc49Dzu" target="_blank">Discord</a>
-      <template v-if="$i18n.locale === 'zh-CN'">
-        <a href="https://t.me/SFinanceCN" target="_blank">Telegram CN</a>
-      </template>
-      <template v-else>
-        <a href="https://t.me/SFinanceEN" target="_blank">Telegram</a>
-      </template>
-    </div> -->
-    <!-- <div class="statement-banner py-2">
-      {{ $t('statement.slogan') }} <a @click="onStatement" href="javascript:void(0);">{{ $t('statement.more') }}</a>
-    </div> -->
-    <div class="beta-banner py-2">
-      {{ $t('statement.coming') }} <a @click="onStatement" href="javascript:void(0);">{{ $t('statement.more') }}</a>
+    <div class="statement-banner py-2">
+      {{ $t('statement.coming') }}
+      <a @click="onStatement" href="javascript:void(0);">{{ $t('statement.more') }}</a>
     </div>
     <b-container>
       <b-navbar class="no-gutters align-items-center p-0">
@@ -23,17 +10,23 @@
           <img class="logo-sm" :src="publicPath + 'res/icons/logo/logo_sm.svg'">
           <div class="beta-tag">BETA</div>
         </div>
-        <b-navbar-nav>
-          <b-nav-item :to="{name: 'RootIndex'}" href="###">{{ $t('global.home') }}</b-nav-item>
-          <!-- <b-nav-item :to="{name: 'Swap', path: '/susdv2/swap'}">{{ $t('global.swap') }}</b-nav-item> -->
-          <b-nav-item to="/susdv2/liquidity/">{{ $t('global.liquidity') }}</b-nav-item>
-          <!-- <b-nav-item :to="{name: 'Liquidity', path: '/:pool(susdv2)/liquidity'}">{{ $t('global.liquidity') }}</b-nav-item> -->
-          <b-nav-item :to="{name: 'Dao', path: '/dao'}">{{ $t('global.dao') }}</b-nav-item>
-          <b-nav-item :to="{name: 'Risks', path: '/risks'}">{{ $t('global.risks') }}</b-nav-item>
-          <!-- <b-nav-item href="###">{{ $t('global.stats') }}</b-nav-item> -->
-        </b-navbar-nav>
-        <sel-language class="ml-2" />
+        <div class="d-none d-md-flex align-items-center">
+          <b-navbar-nav>
+            <b-nav-item v-for="item in headerNav" :key="'nav_'+item.name" :to=item.to>{{ $t(item.i18n) }}</b-nav-item>
+          </b-navbar-nav>
+          <sel-language class="ml-2" />
+        </div>
+        <img class="d-md-none icon-w-20" v-b-toggle.sidebar-navbar :src="publicPath + 'res/icons/base/menu.svg'">
       </b-navbar>
+
+      <b-sidebar id="sidebar-navbar" sidebar-class="w-240" backdrop shadow right>
+        <b-navbar class="no-gutters p-0">
+          <b-navbar-nav class="col flex-column">
+            <b-nav-item v-for="item in headerNav" :key="'nav_'+item.name" :to=item.to>{{ $t(item.i18n) }}</b-nav-item>
+          </b-navbar-nav>
+        </b-navbar>
+        <sel-language class="ml-3 mt-3" />
+      </b-sidebar>
     </b-container>
   </div>
 </template>
@@ -49,31 +42,20 @@
     },
     methods: {
       onStatement () {
-        const { $i18n } = this
-        const h = this.$createElement
+        const { $i18n, $createElement } = this
 
-        // this.$bvModal.msgBoxOk($i18n.t('statement.cont'), {
-        //     title: $i18n.t('statement.slogan'),
-        //     hideBackdrop: true,
-        //     size: 'lg',
-        //     okTitle: $i18n.t('statement.ok'),
-        //     okVariant: 'danger',
-        //     buttonSize: 'lg',
-        //     contentClass: 'normal-modal statement-modal',
-        //     centered: true
-        //   })
-
-        const messageVNode = h('div', { class: ['text-break'] }, [
-          h('p', { domProps: { innerHTML: $i18n.t('statement.comingCont') } }),
+        const messageVNode = $createElement('div', { class: ['text-break'] }, [
+          $createElement('p', { domProps: { innerHTML: $i18n.t('statement.noticeContHtml') } }),
         ])
 
         this.$bvModal.msgBoxOk([messageVNode], {
-            titleHtml: $i18n.t('statement.coming'),
+            titleHtml: $i18n.t('statement.noticeTitleHtml'),
             hideBackdrop: true,
             size: 'lg',
             okTitle: $i18n.t('statement.ok'),
             okVariant: 'danger',
             buttonSize: 'lg',
+            // statement-modal
             contentClass: 'normal-modal',
             centered: true
           })
@@ -83,14 +65,16 @@
       publicPath() {
         return process.env.BASE_URL
       },
-      logoSrc() {
-        if(!currentContract.swapbtc) return this.publicPath + 'logo_optimized.svg'
-        else return this.publicPath + 'logo_ren_beta_optimized.svg'
-      },
-      header_nav () {
+      headerNav () {
         const { $i18n } = this
         const result = [
-          { name: 'RootIndex', to: '', i18n: $i18n.t('global.home'), active: false },
+          { name: 'home', to: { name: 'RootIndex'}, i18n: 'global.home' },
+          // { name: 'swap', to: {name: 'Swap', path: '/susdv2/swap'}, i18n: 'global.swap' },
+          { name: 'liquidity', to: '/susdv2/liquidity/', i18n: 'global.liquidity' },
+          { name: 'dao', to: { name: 'Dao', path: '/dao' }, i18n: 'global.dao' },
+          { name: 'risks', to: { name: 'Risks', path: '/risks' }, i18n: 'global.risks' },
+          // { name: 'stats', to: {}, i18n: 'global.stats' }
+          { name: 'statemented', to: { name: 'Statemented', path: '/statemented' }, i18n: 'global.statemented' }
         ]
 
         return result
@@ -110,27 +94,16 @@
     padding: 0 4px;
     margin-left: -4px;
   }
-  .beta-banner {
+  .statement-banner {
     background-color: #1BA57B;
     color: rgba(255,255,255,0.85);
     text-align: center;
     line-height: 20px;
     font-size: 12px;
   }
-  .beta-banner a {
+  .statement-banner a {
     color: #fff;
     padding-right: 8px;
     text-decoration: underline;
-  }
-  .statement-banner {
-    text-align: center;
-    line-height: 20px;
-    font-size: 12px;
-    background-color: #F7CA00;
-  }
-  .statement-banner a,
-  .statement-banner a:hover {
-    color: #1ba57b;
-    /* text-decoration: underline; */
   }
 </style>

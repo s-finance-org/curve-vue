@@ -14,6 +14,7 @@ const WithdrawRen = () => import('../components/ren/Withdraw.vue')
 const WithdrawOld = () => import('../components/WithdrawOld.vue')
 const Stats = () => import('../components/Stats.vue')
 const FAQ = () => import('../views/FAQ.vue')
+const Statemented = () => import('../views/Statemented.vue')
 const Donate = () => import('../views/Donate.vue')
 const Profit = () => import('../components/Profit.vue')
 const ProfitRouter = () => import('../components/ProfitRouter.vue')
@@ -188,6 +189,11 @@ let routes = [
         name: 'Dao',
         component: Dao
       },
+      {
+        path: '/statemented',
+        name: 'Statemented',
+        component: Statemented
+      }
     ]
   },
   // {

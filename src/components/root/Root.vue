@@ -11,9 +11,9 @@
         <template v-slot:cell(name)="data">
           <div class="d-flex">
             <div class="icon-box-20 d-flex flex-wrap mr-3">
-              <img v-for='(currency, i) in Object.keys(data.item.currencies)' :key="'icon-'+currency" class="icon-w-8"
-                :class="{'token-icon': true, [currency+'-icon']: true, 'y': depositc && !isPlain}" 
-                :src='getTokenIcon(currency)'>
+              <img v-for='currency in Object.keys(data.item.currencies)' :key="'icon-'+currency" class="icon-w-8"
+                :class="{'token-icon': true, [currency+'-icon']: true, 'y': depositc && !isPlain}"
+                :src='getTokenIcon(currency)' />
             </div>
             <span>{{ data.item.pooltext }}</span>
           </div>

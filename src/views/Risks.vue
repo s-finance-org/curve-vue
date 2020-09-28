@@ -16,16 +16,16 @@
         <p class="text-black-65" v-html="$t('risk.auditContHtml')"></p>
         <p>
           <template v-if="$i18n.locale === 'zh-CN'">
-            <b-button size="sm" variant="link" href="/audits/InitializableAdminUpgradeabilityProxy 智能合约安全审计报告 v1.0.pdf" target="_blank">InitializableAdminUpgradeabilityProxy 智能合约安全审计报告 v1.0.pdf</b-button><br/>
-            <b-button size="sm" variant="link" href="/audits/SfgToken智能合约安全审计报告 v1.0.pdf" target="_blank">SfgToken智能合约安全审计报告 v1.0.pdf</b-button><br/>
-            <b-button size="sm" variant="link" href="/audits/SMinter智能合约安全审计报告 v1.0.pdf" target="_blank">SMinter智能合约安全审计报告 v1.0.pdf</b-button><br/>
-            <b-button size="sm" variant="link" href="/audits/SNestGauge智能合约安全审计报告 v1.0.pdf" target="_blank">SNestGauge智能合约安全审计报告 v1.0.pdf</b-button><br/>
+            <b-button size="sm" variant="link" href="/res/audits/InitializableAdminUpgradeabilityProxy 智能合约安全审计报告 v1.0.pdf" target="_blank">InitializableAdminUpgradeabilityProxy 智能合约安全审计报告 v1.0.pdf</b-button><br/>
+            <b-button size="sm" variant="link" href="/res/audits/SfgToken智能合约安全审计报告 v1.0.pdf" target="_blank">SfgToken智能合约安全审计报告 v1.0.pdf</b-button><br/>
+            <b-button size="sm" variant="link" href="/res/audits/SMinter智能合约安全审计报告 v1.0.pdf" target="_blank">SMinter智能合约安全审计报告 v1.0.pdf</b-button><br/>
+            <b-button size="sm" variant="link" href="/res/audits/SNestGauge智能合约安全审计报告 v1.0.pdf" target="_blank">SNestGauge智能合约安全审计报告 v1.0.pdf</b-button><br/>
           </template>
           <template v-else>
-            <b-button size="sm" variant="link" href="/audits/InitializableAdminUpgradeabilityProxy Smart Contract Audit Report.pdf" target="_blank">InitializableAdminUpgradeabilityProxy Smart Contract Audit Report.pdf</b-button><br/>
-            <b-button size="sm" variant="link" href="/audits/SfgToken Smart Contract Audit Report.pdf" target="_blank">SfgToken Smart Contract Audit Report.pdf</b-button><br/>
-            <b-button size="sm" variant="link" href="/audits/SMinter Smart Contract Audit Report.pdf" target="_blank">SMinter Smart Contract Audit Report.pdf</b-button><br/>
-            <b-button size="sm" variant="link" href="/audits/SNestGauge Smart Contract Audit Report.pdf" target="_blank">SNestGauge Smart Contract Audit Report.pdf</b-button><br/>
+            <b-button size="sm" variant="link" href="/res/audits/InitializableAdminUpgradeabilityProxy Smart Contract Audit Report.pdf" target="_blank">InitializableAdminUpgradeabilityProxy Smart Contract Audit Report.pdf</b-button><br/>
+            <b-button size="sm" variant="link" href="/res/audits/SfgToken Smart Contract Audit Report.pdf" target="_blank">SfgToken Smart Contract Audit Report.pdf</b-button><br/>
+            <b-button size="sm" variant="link" href="/res/audits/SMinter Smart Contract Audit Report.pdf" target="_blank">SMinter Smart Contract Audit Report.pdf</b-button><br/>
+            <b-button size="sm" variant="link" href="/res/audits/SNestGauge Smart Contract Audit Report.pdf" target="_blank">SNestGauge Smart Contract Audit Report.pdf</b-button><br/>
           </template>
         </p>
       </div>

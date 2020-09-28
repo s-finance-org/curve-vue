@@ -9,6 +9,7 @@ export default {
     swap: '兑换',
     liquidity: '存取款',
     stats: '统计',
+    statemented: '新鲜事',
     operating: '操作',
     deposits: '资金',
     totalBalances: '资金总额',
@@ -43,12 +44,10 @@ export default {
     followMe: '抢先关注'
   },
   statement: {
-    slogan: '声明：S.finance 目前没有任何代币',
-    cont: 'S.finance 代币遵循100%基于贡献分配，无私募，无预挖，无团队分配的方式，代币名称目前还在征集中。Trx 链上有关于S.finance的合约为诈骗信息，最新消息以官网为准！',
     more: '查看详情',
     ok: '知道了',
-    coming: 'S.Finance 已开启 SFG 流动性挖矿',
-    comingCont: `S.Finance 将于新加坡时间 2020-09-25 20:00 开启 SFG 流动性矿池抵押挖矿，抵押 BPT 即可获得 S.Finance 治理代币 SFG 奖励。SFG 兑换以及存取款服务由 Balancer 提供，其中：<br/>
+    noticeTitleHtml: 'S.Finance 已开启 SFG 流动性挖矿',
+    noticeContHtml: `S.Finance 将于新加坡时间 2020-09-25 20:00 开启 SFG 流动性矿池抵押挖矿，抵押 BPT 即可获得 S.Finance 治理代币 SFG 奖励。SFG 兑换以及存取款服务由 Balancer 提供，其中：<br/>
     *兑换地址：<a href="https://legacy.balancer.exchange/#/swap/0x8a6ACA71A218301c7081d4e96D64292D3B275ce0" target="_blank">https://legacy.balancer.exchange/#/swap/0x8a6ACA71A218301c7081d4e96D64292D3B275ce0</a><br/>
     *流动性地址：<a href="https://pools.balancer.exchange/#/pool/0x2f49eea1efc1b04e9ecd3b81321060e29db26a19/" target="_blank">https://pools.balancer.exchange/#/pool/0x2f49eea1efc1b04e9ecd3b81321060e29db26a19/</a><br/>
     *SFG 合约（谨防假币）: <a href="https://etherscan.io/token/0x8a6ACA71A218301c7081d4e96D64292D3B275ce0" target="_blank">https://etherscan.io/token/0x8a6ACA71A218301c7081d4e96D64292D3B275ce0</a><br/>
