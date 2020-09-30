@@ -152,11 +152,24 @@ store.price = {
 // }
 
 store.tokens = {
+  usdt: {
+    address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+  },
   dai: {
+    address: '0x6b175474e89094c44da98b954eedeac495271d0f',
     // TEMP: 
     price: {
-      handled: 1.02
-    }
+      handled: 1.0115
+    },
+    // async getPrice () {
+    //   const { address, price } = this
+    //   // FIXME:
+    //   const result = await store.price.getPrice(store.tokens.usdt.address, address)
+
+    //   price.tether = result
+
+    //   return result
+    // }
   },
   sfg: {
     name: 'SFG',
@@ -393,10 +406,24 @@ store.tokens = {
     price: valueModel.create(),
     // TODO: priceUnit
     async getPrice () {
-      const { price } = this
+      const { price, contract } = this
       const { sfg, dai } = store.tokens
 
-      return price.handled = +sfg.price.handled * 2 + +dai.price.handled * 8
+      // FIXME:
+      const getalanceDaiInBpt = await contract.methods.getBalance(dai.address).call()
+      const getalanceSfgInBpt = await contract.methods.getBalance(sfg.address).call() / 1e18
+      const getTotalSupply = await contract.methods.totalSupply().call()
+
+      return price.handled = BN(getalanceDaiInBpt)
+        // FIXME: Dai price
+        .times(1.02)
+        .plus(
+          BN(getalanceSfgInBpt)
+          .times(sfg.price.handled)
+        )
+        .dividedBy(
+          getTotalSupply
+        ).toString()
     },
   }
 }
@@ -553,11 +580,10 @@ store.gauges = {
     // TEMP: 
     async getAPY (price, dailyYield, totalStaking, lpTokenPrice) {
       const { contract, dailyAPY, apy } = this
-      // FIXME: 
-      // console.log('getAPY', await price / 1e18 , await dailyYield / 1e18,  await totalStaking / 1e18,  await price / 1e18 * 7  )
 
-      dailyAPY.handled = BN(await price / 1e18).times(await dailyYield / 1e18).times(0.4).dividedBy(BN(await totalStaking / 1e18).times(await price / 1e18 * 7 )).toString()
+      dailyAPY.handled = BN(await price / 1e18).times(await dailyYield / 1e18).times(0.4).dividedBy(BN(await totalStaking / 1e18).times(await lpTokenPrice)).toString()
       apy.handled = +dailyAPY.handled * 365
+      console.log(+dailyAPY.handled * 365)
     },
 
     async getBalanceOf (target, accountAddress) {
@@ -576,7 +602,6 @@ store.gauges = {
       const { contract } = this
 
       // return target.tether = await contract.methods.integrate_fraction(accountAddress).call()
-      console.log('asdfasd', await gaugeStore.state.minter.methods.minted(accountAddress, this.address).call())
       return target.tether = await gaugeStore.state.minter.methods.minted(accountAddress, this.address).call()
     },
     async getUserTotalReward_SFG (target, pendingReward, paidReward) {

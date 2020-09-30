@@ -12,7 +12,7 @@
         </div>
         <div class="d-none d-md-flex align-items-center">
           <b-navbar-nav>
-            <b-nav-item v-for="item in headerNav" :key="'nav_'+item.name" :to=item.to>{{ $t(item.i18n) }}</b-nav-item>
+            <b-nav-item v-for="item in headerNav" :key="'nav_'+item.name" :to=item.to :href=item.href :target=item.target>{{ $t(item.i18n) }}</b-nav-item>
           </b-navbar-nav>
           <sel-language class="ml-2" />
         </div>
@@ -22,7 +22,7 @@
       <b-sidebar id="sidebar-navbar" sidebar-class="w-240" backdrop shadow right>
         <b-navbar class="no-gutters p-0">
           <b-navbar-nav class="col flex-column">
-            <b-nav-item v-for="item in headerNav" :key="'nav_'+item.name" :to=item.to>{{ $t(item.i18n) }}</b-nav-item>
+            <b-nav-item v-for="item in headerNav" :key="'nav_'+item.name" :to=item.to :href=item.href :target=item.target>{{ $t(item.i18n) }}</b-nav-item>
           </b-navbar-nav>
         </b-navbar>
         <sel-language class="ml-3 mt-3" />
@@ -80,7 +80,8 @@
           { name: 'dao', to: { name: 'Dao', path: '/dao' }, i18n: 'global.dao' },
           { name: 'risks', to: { name: 'Risks', path: '/risks' }, i18n: 'global.risks' },
           // { name: 'stats', to: {}, i18n: 'global.stats' }
-          { name: 'statemented', to: { name: 'Statemented', path: '/statemented' }, i18n: 'global.statemented' }
+          { name: 'statemented', to: { name: 'Statemented', path: '/statemented' }, i18n: 'global.announcements' },
+          { name: 'voting', href: 'https://signal.s.finance/', target: '_blank', i18n: 'global.voting' }
         ]
 
         return result

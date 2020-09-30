@@ -239,6 +239,7 @@
               <span class="h5 text-danger-1 mb-0">
                 <small class="text-blank-45">{{ $t('global.apr') }}</small>
                 {{ store.gauges.bpt.apy.percent }}%
+                <span v-show=false>{{ store.gauges.bpt.apy }}</span>
               </span>
             </text-overlay-loading>
           </h4>
@@ -891,8 +892,8 @@
               store.tokens.sfg.getPrice(),
               store.tokens.sfg.getDailyYield(),
               bpt.getTotalStaking(bpt.mortgages.bpt.totalStaking),
-              store.tokens.sfg.getPrice()
-              // store.tokens.bpt.getPrice(),
+              // store.tokens.sfg.getPrice()
+              store.tokens.bpt.getPrice(),
             )
 
             store.tokens.bpt.getBalanceOf(bpt.mortgages.bpt.userBalanceOf, currentContract.default_account)
