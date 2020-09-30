@@ -575,7 +575,9 @@ store.gauges = {
     async getUserPaidReward_SFG (target, accountAddress) {
       const { contract } = this
 
-      return target.tether = await contract.methods.integrate_fraction(accountAddress).call()
+      // return target.tether = await contract.methods.integrate_fraction(accountAddress).call()
+      console.log('asdfasd', await gaugeStore.state.minter.methods.minted(accountAddress, this.address).call())
+      return target.tether = await gaugeStore.state.minter.methods.minted(accountAddress, this.address).call()
     },
     async getUserTotalReward_SFG (target, pendingReward, paidReward) {
       return target.tether = BN(await pendingReward).plus(await paidReward).toString()
@@ -700,7 +702,10 @@ store.gauges = {
     async getSfgPaidReward (target, accountAddress) {
       const { contract } = this
 
-      return target.tether = await contract.methods.integrate_fraction(accountAddress).call()
+      // return target.tether = await contract.methods.integrate_fraction(accountAddress).call()
+      // FIXME:
+      // const minter = new web3.eth.Contract(daoabis.minter_abi, process.env.VUE_APP_PS_MINTER)
+      return target.tether = await gaugeStore.state.minter.methods.minted(accountAddress, this.address).call()
     },
     async getSfgTotalReward (target, pendingReward, paidReward) {
       return target.tether = BN(await pendingReward).plus(await paidReward).toString()

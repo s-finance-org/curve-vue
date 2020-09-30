@@ -94,6 +94,9 @@ export default {
   },
   risk: {
     title: '使用 S.Finance 的风险',
+    aboutTitle: 'S.Finance 是什么',
+    aboutContHtml: `S.Finance 是第一个实现三挖 DeFi 底层资产的连接器项目。以稳定币兑换为起点连接更多有价值的 DeFi 项目为其提供基础资产的支撑。<br/>
+    SFG 是 S.Finance 平台治理代币，总发行量 2100 万， 100%基于贡献分配，无私募，无预挖。每日挖矿产出未挖出部分的 0.2%，预计每年会有一次减半。用户可以通过向流动性池做出贡献获得 SFG 奖励并参与平台治理。`,
     auditTitle: '审计',
     auditContHtml: `S.finance 智能合约通过了KNOWNSEC审计。<a href="https://etherscan.io/token/${process.env.VUE_APP_SFG_TOKEN}" target="_blank">合约地址<a><br/>然而，安全审计并不能完全消除风险。请在能力承受范围内投资，不要盲目投入全部资产，尤其是在提供流动性交易时。<br/>使用S.finance 做兑换交易时风险会相对降低，但这只是建议。`,
     adminKeyTitle: '管理密钥',
@@ -139,8 +142,8 @@ export default {
     redemptionBalance: '可赎回数量',
     redemptionAmountPlaceholder: '输入赎回数量',
     redemptionConfirm: '确认赎回',
-    miningPendingReward: '未结算奖励',
-    miningPaidReward: '已结算奖励',
+    miningPendingReward: '待领取奖励',
+    miningPaidReward: '已领取奖励',
     miningPaidRewardTip: '每次抵押或赎回 LP tokens 都会触发关于 SFG 奖励结算，这里的已结算奖励不代表实际领取的奖励，需要点击「领取奖励」按钮 SFG 代币才会进入你的钱包中。(该特征为Gas优化方案，目前为同类型最低Gas费率）',
     miningTotalReward: '合计奖励',
     miningClaimConfirm: '领取奖励',
@@ -171,6 +174,13 @@ export default {
   },
   statemented: {
     notice1: {
+      titleHtml: 'S.Finance 即将开启流动性挖矿',
+      dateHtml: '2020/09/22 22:22:22',
+      contHtml: `S.Finance 将于新加坡时间 2020-09-23 00:00:00 开启 susd 流动性矿池抵押挖矿。 抵押 susdv2 LP tokens 即可获得 S.Finance 治理代币 SFG、Curve 治理代币 CRV 以及 Synthetix 平台代币 SNX。<br/>
+      SFG 总发行量 2100 万，遵循 100%基于贡献分配，无私募，无预挖。每日挖矿产出剩余部分的 0.2%，开启挖矿后的24 小时内 SFG 产出速率为 10%，即首日挖矿产出 0.02%，24 小时后挖矿速率恢复正常（CRV 和 SNX 的挖矿速率不受影响）。挖矿开启后的第三日将上线 SFG 流动性矿池，届时SFG 流动性矿池挖矿奖励权重将为稳定币矿池权重三倍。<br/>
+      S.Finance 智能合约已由知道创宇完成安全审计，然而，安全审计并不能完全消除风险，请在能力承受范围内谨慎操作，SFG 有可能一文不值。`
+    },
+    notice2: {
       titleHtml: 'S.Finance 已开启 SFG 流动性挖矿',
       dateHtml: '2020/09/25 20:00',
       contHtml: `S.Finance 已于新加坡时间 2020-09-25 20:00 开启 SFG 流动性矿池抵押挖矿，抵押 BPT 即可获得 S.Finance 治理代币 SFG 奖励。SFG 兑换以及存取款服务由 Balancer 提供，其中：<br/>

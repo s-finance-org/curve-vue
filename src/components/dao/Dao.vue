@@ -198,8 +198,6 @@
                           <text-overlay-loading inline :show="currentPool.tokens[token].paidReward.loading">
                             {{ currentPool.tokens[token].paidReward.cont }} {{ currentPool.tokens[token].nameCont }}
                           </text-overlay-loading>
-                          <b-avatar text="!" class="iconTip iconTip-warning ml-2" id="tooltip-mining-paid-reward-tip1"></b-avatar>
-                          <b-tooltip placement="topright" show target="tooltip-mining-paid-reward-tip1" variant="success">{{ $t('dao.miningPaidRewardTip') }}</b-tooltip>
                           <em class="px-3 text-black-15">/</em>
                         </span>
                         <span class="col-12 col-lg-auto">
@@ -378,8 +376,6 @@
                         <text-overlay-loading inline :show="store.gauges.bpt.rewards.sfg.userPaidReward.loading">
                           {{ store.gauges.bpt.rewards.sfg.userPaidReward.cont }} {{ store.gauges.bpt.rewards.sfg.name }}
                         </text-overlay-loading>
-                        <b-avatar text="!" class="iconTip iconTip-warning ml-2" id="tooltip-mining-paid-reward-tip2"></b-avatar>
-                        <b-tooltip placement="topright" show target="tooltip-mining-paid-reward-tip2" variant="success">{{ $t('dao.miningPaidRewardTip') }}</b-tooltip>
                         <em class="px-3 text-black-15">/</em>
                       </span>
                       <span class="col-12 col-lg-auto">

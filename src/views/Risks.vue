@@ -12,6 +12,10 @@
 
       <h2 class="mt-5 mb-5">{{ $t('risk.title') }}</h2>
       <div class="box mb-4 px-4">
+        <h4 class="my-3">{{ $t('risk.aboutTitle') }}</h4>
+        <p class="text-black-65" v-html="$t('risk.aboutContHtml')"></p>
+      </div>
+      <div class="box mb-4 px-4">
         <h4 class="my-3">{{ $t('risk.auditTitle') }}</h4>
         <p class="text-black-65" v-html="$t('risk.auditContHtml')"></p>
         <p>

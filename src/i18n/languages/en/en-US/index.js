@@ -9,7 +9,7 @@ export default {
     swap: 'Swap',
     liquidity: 'Liquidity',
     stats: 'Stats',
-    statemented: 'Statemented',
+    statemented: 'Announcements',
     operating: 'Actions',
     deposits: 'Deposits',
     totalBalances: 'Total balances',
@@ -94,6 +94,9 @@ export default {
   },
   risk: {
     title: 'Risks Warning',
+    aboutTitle: 'About S.Finance',
+    aboutContHtml: `S.Finance is the first DeFi project which achieved 3 mint rewarding. Starting with the stable coins swapping, it links various valuable DeFi projects to support their underlying assets.<br/>
+    SFG is the governance token of S.Finance platform, with a total circulation of 21 million. It follows rules of 100% contribution-based distribution, with neither private placement nor pre-dig. It is expected to mint by 0.2% of remaining SFG perday and the amount of SFG will half once a year. Users can get SFG rewards and participate in community governance by making contributions to the liquidity pool.`,
     auditTitle: 'Audits',
     auditContHtml: `S.Finance smart contracts were Audited by KNOWNSEC.<a href="https://etherscan.io/token/${process.env.VUE_APP_SFG_TOKEN}" target="_blank">Contract Address<a>.<br/>However, security audits don't eliminate risks completely. Please don’t supply your life savings, or assets you can’t afford to lose, to S.Finance, especially as a liquidity provider.<br/>Using S.Finance as an exchange user should be significantly less risky, but this is not advice.`,
     adminKeyTitle: 'Admin keys',
@@ -162,7 +165,7 @@ export default {
     github: 'Github',
     wechat: 'WeChat',
     tutorial: 'Tutorial',
-    communitySupport: 'Community support',
+    communitySupport: 'Support',
   },
   model: {
     valueOutValidRange: 'Value is out of valid range',
@@ -171,6 +174,13 @@ export default {
   },
   statemented: {
     notice1: {
+      titleHtml: 'S.Finance liquidity pool is coming ！',
+      dateHtml: '2020/09/22 22:22:22',
+      contHtml: `S.Finance liquidity pool is going to start at 00:00:00 (SGT) 23th September, 2020. Staking susdv2 LP tokens could get 3 kinds of token for reward，including SFG (governance token of S.finance) 、CRV （governance token of Curve) and SNX (governance token of Synthetix).<br/>
+      Total amount of SFG is 21 million, with 100% contribution-based distribution, no private placement, no pre-dig. Minted SFG per day is 0.2% of the remaining, and the output rate of SFG is 10% in the first 24 hours (0.02% minted SFG on the first day, while the rate of minted CRV and SNX is unaffected), and the mining rate will return to normal 24 hours later. SFG liquidity pool will start on the third day after the opening of S.Finance, and the rewarding weight of SFG liquidity pool will be three times that of the stable coin pool.<br/>
+      The S.finance smart contract has been scrutinized by KNOWNSEC. However, it cannot completely eliminate the risk, the price of SFG possibly get 0. Please invest within your capacity. `
+    },
+    notice2: {
       titleHtml: 'S. Finance has started liquidity mining！',
       dateHtml: '2020/09/25 20:00',
       contHtml: `S.finance will open the SFG liquidity pool at 2020-09-25 20:00 Singapore time. Mortgaging BPT will obtain the S.Finance governance token SFG award. SFG exchange and deposit/withdrawal services are provided by Balancer:<br/>
