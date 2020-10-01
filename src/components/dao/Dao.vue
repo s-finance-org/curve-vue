@@ -229,13 +229,183 @@
             </b-tabs>
           </div>
 
+          <!-- dfi -->
+          <h4 class="mb-2 d-flex flex-wrap align-items-end">
+            <span class="mr-3">{{ $t('dao.tokenTitle', [store.gauges.dfi.propagateMark]) }}</span>
+            <small class="mr-auto">{{ $t('dao.describe', [store.gauges.dfi.mortgagesUnit, store.gauges.dfi.rewardsUnit.join(' ')]) }}</small>
+            <text-overlay-loading inline :show="store.gauges.dfi.apy.loading">
+              <span class="h5 text-danger-1 mb-0">
+                <small class="text-blank-45">{{ $t('global.apr') }}</small>
+                {{ store.gauges.dfi.apy.percent }}%
+                <span v-show=false>{{ store.gauges.dfi.apy }}</span>
+              </span>
+            </text-overlay-loading>
+          </h4>
+          <div class="box mb-4 px-4 py-3">
+            <div class="row mb-3 line-bottom">
+              <span class="col-12 col-md-6 pb-3">
+                <h6 class="mb-0 text-black-65">{{ $t('dao.totalStaking') }}</h6>
+                <text-overlay-loading inline :show="store.gauges.dfi.mortgages.iUSD_LPT.totalStaking.loading">
+                  <span class="h4 mr-2">{{ store.gauges.dfi.mortgages.iUSD_LPT.totalStaking.cont }}</span>
+                  <span class="inline-block text-black-65">{{ store.gauges.dfi.mortgagesUnit }}</span>
+                </text-overlay-loading>
+              </span>
+              <span class="col-12 col-md-6 pb-3">
+                <h6 class="mb-0 text-black-65">{{ $t('dao.myStaking') }}</h6>
+                <text-overlay-loading inline :show="store.gauges.dfi.mortgages.iUSD_LPT.userStaking.loading">
+                  <span class="h4 mr-2">{{ store.gauges.dfi.mortgages.iUSD_LPT.userStaking.cont }}</span>
+                  <span class="inline-block text-black-65">{{ store.gauges.dfi.mortgagesUnit }}</span>
+                </text-overlay-loading>
+              </span>
+              <span class="col-12 col-md-6 pb-3">
+                <h6 class="mb-0 text-black-65">{{ $t('dao.miningPaidReward') }}</h6>
+                <text-overlay-loading inline :show="store.gauges.dfi.rewards.sfg.userPaidReward.loading">
+                  <span class="h4 mr-2">{{ store.gauges.dfi.rewards.sfg.userPaidReward.cont }}</span>
+                  <span class="inline-block text-black-65">{{ store.gauges.dfi.rewards.sfg.name }}</span>
+                </text-overlay-loading>
+              </span>
+              <span class="col-12 col-md-6 pb-3">
+                <h6 class="mb-0 text-black-65">{{ $t('dao.rewardWeight', ['SFG']) }}</h6>
+                <!-- <text-overlay-loading inline :show="store.gauges.bpt.rewards.sfg.userPaidReward.loading"> -->
+                  <span class="h4">?%</span>
+                <!-- </text-overlay-loading> -->
+              </span>
+              <!-- <span class="col-12 col-lg pb-3">
+                <h6 class="mb-0 text-black-65">{{ $t('dao.virtualPrice') }}</h6>
+                <text-overlay-loading inline :show="loadingAction">
+                  <span class="h4">
+                  1
+                  <span class="h6 text-black-65 inline-block ">{{ currentPool.name }} LP tokens = </span>
+                  {{ (1 * virtual_price).toFixed(6) }}
+                  <span class="text-black-65 h6">USD</span>
+                  </span>
+                </text-overlay-loading>
+              </span> -->
+            </div>
+
+            <b-tabs pills nav-class="tabs-nav" class="mt-1">
+              <b-tab :title="$t('dao.staking')" class="pt-3" active>
+                <label class="text-black-65 mb-0">{{ $t('dao.staking') }}</label>
+                <div class="row flex-wrap">
+                  <div class="col-12 col-lg mt-2">
+                    <b-form-input class="h-38" v-model="store.gauges.dfi.mortgages.iUSD_LPT.stakeAmountInput" :placeholder="$t('dao.stakingAmountPlaceholder')"></b-form-input>
+                  </div>
+                  <b-form-radio-group
+                    class="mt-2 col"
+                    v-model="store.gauges.dfi.mortgages.iUSD_LPT.stakeSliderSelectedRadio"
+                    :options="store.gauges.dfi.mortgages.iUSD_LPT.stakeSliderOptions"
+                    buttons
+                    button-variant="outline-secondary"
+                  ></b-form-radio-group>
+                </div>
+                <small class="d-flex mt-1 flex-wrap">
+                  {{ $t('dao.stakingBalance') }}：
+                  <text-overlay-loading class="mr-2" :show="store.gauges.dfi.mortgages.iUSD_LPT.userBalanceOf.loading">{{ store.gauges.dfi.mortgages.iUSD_LPT.userBalanceOf.cont }} {{ store.gauges.dfi.mortgages.iUSD_LPT.name }}</text-overlay-loading>
+                  <b-button class="text-blue-1" to='/iusd/liquidity/' size="xsm" variant="light">{{ $t('dao.stakingConfirmTip', [store.gauges.dfi.mortgages.iUSD_LPT.name]) }}</b-button>
+                </small>
+                <!-- FIXME: inf_approval -->
+                <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('dao.infiniteApproval') }}</b-form-checkbox>
+                <b-alert class="mt-3" :show="dismissCountDown" variant="dark" dismissible fade
+                  @dismissed="dismissCountDown=0"
+                  @dismiss-count-down="countDownChanged"
+                  v-html='waitingMessage'>
+                </b-alert>
+                <b-alert class="mt-3" :show="store.tokens.iUSD_LPT.error.dismissCountDown" variant="dark" dismissible fade
+                  @dismissed="store.tokens.iUSD_LPT.error.dismissCountDown=0"
+                  v-html='store.tokens.iUSD_LPT.error.message'>
+                </b-alert>
+
+                <div class="d-flex align-items-end mt-5 float-right">
+                  <text-overlay-loading :show="loadingAction">
+                    <b-button size="lg" variant="danger" @click=onDfiStake>
+                      {{ $t('dao.stakingConfirm') }}
+                    </b-button>
+                  </text-overlay-loading>
+                </div>
+              </b-tab>
+              <b-tab :title="$t('dao.redemption')" class="pt-3">
+                <label class="text-black-65 mb-0">{{ $t('dao.redemption') }}</label>
+                <div class="row flex-wrap">
+                  <div class="col-12 col-lg mt-2">
+                    <b-form-input class="h-38" v-model="store.gauges.dfi.mortgages.iUSD_LPT.redemptionAmountInput" :placeholder="$t('dao.redemptionAmountPlaceholder')"></b-form-input>
+                  </div>
+                  <b-form-radio-group
+                    class="mt-2 col"
+                    v-model="store.gauges.dfi.mortgages.iUSD_LPT.redemptionSliderSelectedRadio"
+                    :options="store.gauges.dfi.mortgages.iUSD_LPT.redemptionSliderOptions"
+                    buttons
+                    button-variant="outline-secondary"
+                  ></b-form-radio-group>
+                </div>
+                <small class="d-flex mt-1">
+                  {{ $t('dao.redemptionBalance') }}：
+                  <text-overlay-loading :show="store.gauges.dfi.mortgages.iUSD_LPT.userStaking.loading">{{ store.gauges.dfi.mortgages.iUSD_LPT.userStaking.cont }} {{ store.gauges.dfi.mortgages.iUSD_LPT.name }}</text-overlay-loading>
+                </small>
+                <!-- FIXME: inf_approval -->
+                <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('dao.infiniteApproval') }}</b-form-checkbox>
+                <b-alert class="mt-3" :show="dismissCountDown && waitingMessageTargetId === 'withdraw'" variant="dark" dismissible fade
+                  @dismissed="dismissCountDown=0"
+                  @dismiss-count-down="countDownChanged"
+                  v-html='waitingMessage'>
+                </b-alert>
+                <div class="d-flex align-items-end mt-5 float-right">
+                  <text-overlay-loading :show="loadingAction">
+                    <b-button size="lg" variant="danger" @click=onDfiRedemption>
+                      {{ $t('dao.redemptionConfirm') }}
+                    </b-button>
+                  </text-overlay-loading>
+                </div>
+              </b-tab>
+              <b-tab :title="$t('dao.miningReward')" class="pt-3">
+                <div class="area">
+                  <h5 class="mb-3 d-flex align-items-center">
+                    <img :src="getTokenIcon(store.gauges.dfi.rewards.sfg.code)" class="mr-2 icon-w-20 icon token-icon" :class="[store.gauges.dfi.rewards.sfg.code+'-icon']">
+                    {{ store.gauges.dfi.rewards.sfg.name }}
+                  </h5>
+                  <h6 class="mb-0 text-black-65">{{ $t('dao.miningPendingReward') }}</h6>
+                  <h4 class="mb-1">
+                    <text-overlay-loading inline :show="store.gauges.dfi.rewards.sfg.userPendingReward.loading">
+                      {{ store.gauges.dfi.rewards.sfg.userPendingReward.cont }} {{ store.gauges.dfi.rewards.sfg.name }}
+                    </text-overlay-loading>
+                  </h4>
+                  <div class="d-flex no-gutters align-items-end">
+                    <small class="col row flex-wrap">
+                      <span class="col-12 col-lg-auto">
+                        {{ $t('dao.miningPaidReward') }}：
+                        <text-overlay-loading inline :show="store.gauges.dfi.rewards.sfg.userPaidReward.loading">
+                          {{ store.gauges.dfi.rewards.sfg.userPaidReward.cont }} {{ store.gauges.dfi.rewards.sfg.name }}
+                        </text-overlay-loading>
+                        <em class="px-3 text-black-15">/</em>
+                      </span>
+                      <span class="col-12 col-lg-auto">
+                        {{ $t('dao.miningTotalReward') }}：
+                        <text-overlay-loading inline :show="store.gauges.dfi.rewards.sfg.userTotalReward.loading">
+                          {{ store.gauges.dfi.rewards.sfg.userTotalReward.cont }} {{ store.gauges.dfi.rewards.sfg.name }}
+                        </text-overlay-loading>
+                        <em class="px-3 text-black-15">/</em>
+                      </span>
+                      <text-overlay-loading class="col-12 col-lg-auto"  inline :show="store.tokens.sfg.price.loading">
+                        1 {{ store.tokens.sfg.name }} = {{ store.tokens.sfg.price.cont }} {{ store.tokens.sfg.priceUnit }}
+                      </text-overlay-loading>
+                    </small>
+                    <text-overlay-loading :show="loadingAction">
+                      <b-button variant="danger" @click="onDfiHarvest">
+                        {{ $t('dao.miningClaimConfirm') }}
+                      </b-button>
+                    </text-overlay-loading>
+                  </div>
+                </div>
+              </b-tab>
+            </b-tabs>
+          </div>
+
         </b-tab>
 
         <b-tab :title="$t('dao.tokenTitle', [store.gauges.bpt.propagateMark])" class="pt-3">
           <h4 class="mb-2 d-flex flex-wrap align-items-end">
             <span class="mr-3">{{ $t('dao.tokenTitle', [store.gauges.bpt.propagateMark]) }}</span>
             <small class="mr-auto">{{ $t('dao.describe', [store.gauges.bpt.mortgagesUnit, store.gauges.bpt.rewardsUnit.join(' ')]) }}</small>
-            <text-overlay-loading inline :show="store.gauges.susdv2.apy.loading">
+            <text-overlay-loading inline :show="store.gauges.bpt.apy.loading">
               <span class="h5 text-danger-1 mb-0">
                 <small class="text-blank-45">{{ $t('global.apr') }}</small>
                 {{ store.gauges.bpt.apy.percent }}%
@@ -809,6 +979,27 @@
             store.gauges.bpt.onHarvest(currentContract.default_account)
           },
 
+          // dfi
+          // FIXME:
+          async onDfiStake () {
+            const { gauges, tokens } = store
+            // this.alert('notice.approveOperationWarning', 'stake')
+
+            if (!await tokens.iUSD_LPT.hasValidAmount(gauges.dfi.mortgages.iUSD_LPT.userStake.revised)) return false
+
+            if (await tokens.iUSD_LPT.hasApprove(gauges.dfi.mortgages.iUSD_LPT.userStake.revised, currentContract.default_account, gauges.dfi.address)) {
+              gauges.dfi.onStake(currentContract.default_account, this.inf_approval)
+            } else {
+              tokens.iUSD_LPT.onApproveAmount(gauges.dfi.mortgages.iUSD_LPT.userStake.revised, currentContract.default_account, gauges.dfi.address, this.inf_approval)
+            }
+          },
+          async onDfiRedemption () {
+            store.gauges.dfi.onRedemption(currentContract.default_account, this.inf_approval)
+          },
+          async onDfiHarvest () {
+            store.gauges.dfi.onHarvest(currentContract.default_account)
+          },
+
           async mounted() {
             this.currentPool.gauge = process.env.VUE_APP_PSS_GAUGE
 
@@ -885,14 +1076,31 @@
               store.gauges.susdv2.getSnxPaidReward(snx.paidReward, currentContract.default_account)
             )
 
+            const { dfi, bpt } = store.gauges
+            // DFI
+            // store.gauges.dfi.getAPY(
+            //   store.tokens.sfg.getPrice(),
+            //   store.tokens.sfg.getDailyYield(),
+              dfi.getTotalStaking(dfi.mortgages.iUSD_LPT.totalStaking)
+            //   store.tokens.bpt.getPrice(),
+            // )
+
+            store.tokens.iUSD_LPT.getBalanceOf(dfi.mortgages.iUSD_LPT.userBalanceOf, currentContract.default_account)
+
+            dfi.getBalanceOf(dfi.mortgages.iUSD_LPT.userStaking, currentContract.default_account)
+
+            dfi.getUserTotalReward_SFG(
+              dfi.rewards.sfg.userTotalReward,
+              dfi.getUserPendingReward_SFG(dfi.rewards.sfg.userPendingReward, currentContract.default_account),
+              dfi.getUserPaidReward_SFG(dfi.rewards.sfg.userPaidReward, currentContract.default_account)
+            )
+
             // BPT
-            const { bpt } = store.gauges
 
             store.gauges.bpt.getAPY(
               store.tokens.sfg.getPrice(),
               store.tokens.sfg.getDailyYield(),
               bpt.getTotalStaking(bpt.mortgages.bpt.totalStaking),
-              // store.tokens.sfg.getPrice()
               store.tokens.bpt.getPrice(),
             )
 
