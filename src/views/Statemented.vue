@@ -34,6 +34,7 @@
       notices () {
         return [
           { title: 'statement.noticeTitleHtml', date: 'statement.noticeDateHtml', cont: 'statement.noticeContHtml' },
+          { title: 'statemented.notice3.titleHtml', date: 'statemented.notice3.dateHtml', cont: 'statemented.notice3.contHtml' },
           { title: 'statemented.notice2.titleHtml', date: 'statemented.notice2.dateHtml', cont: 'statemented.notice2.contHtml' },
           { title: 'statemented.notice1.titleHtml', date: 'statemented.notice1.dateHtml', cont: 'statemented.notice1.contHtml' }
         ]

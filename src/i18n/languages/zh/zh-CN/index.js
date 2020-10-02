@@ -48,11 +48,10 @@ export default {
     more: '查看详情',
     ok: '知道了',
     toMore: '了解更多',
-    noticeTitleHtml: '关于调整SFG流动性矿池挖矿奖励权重的公告',
-    noticeDateHtml: '2020/09/29 00:00',
-    noticeContHtml: `S.Finance 将于新加坡时间 2020-09-29 00:00 提升SFG流动性矿池挖矿奖励权重至40%。<br/>
-    S.Finance 即将在稳定币矿池区与YFII社区合作上线独有 dfi稳定币矿池，50%手续费奖励流动性提供用户，50%手续费将未来分享给SFG持有用户。同时抵押iUSD（dfi流动性矿池lp token）挖矿可获得SFG奖励。<br/>
-    S.Finance 将于近期上线链上投票治理工具，由社区讨论决定是否进行SFG挖矿减产以及减产方案。`,
+    noticeTitleHtml: 'SFG 每日挖矿产出降低 50%',
+    noticeDateHtml: '2020/10/03 00:00',
+    noticeContHtml: `根据社区提案投票结果，S.Finance 将于新加坡时间 2020-10-03 00:00 调整 SFG 每日挖矿产出为未挖出部分 0.1%，原先每日挖矿产出未挖出部分 0.2%，此次调整后每日挖矿产出 SFG 数量降低 50%。<br/>
+    S.Finance 已上线链上投票治理工具 Snapshot，SFG 持有者可对社区治理发起提案或对提案进行投票。`,
   },
   wallet: {
     notConnected: '你还没有连接钱包',
@@ -192,6 +191,13 @@ export default {
       S.Finance 流动性挖矿已开启 3 日，按照 SFG 挖矿释放规则，目前流通数量较少，通常价格波动比较剧烈，请谨慎操作注意风险。<br/>
       S.Finance 即将在稳定币流动性矿池区上线 Y （yfi）流动性矿池，抵押 iearn LP tokens  挖矿可获得 SFG 和 CRV 奖励。<br/>
       S.Finance 即将在稳定币流动性矿池区上线 iusd（yfii）流动性矿池，抵押 iearn LP tokens  挖矿可获得 SFG 和 iusd 奖励。`,
+    },
+    notice3: {
+      titleHtml: '关于调整SFG流动性矿池挖矿奖励权重的公告',
+      dateHtml: '2020/09/29 00:00',
+      contHtml: `S.Finance 将于新加坡时间 2020-09-29 00:00 提升SFG流动性矿池挖矿奖励权重至40%。<br/>
+      S.Finance 即将在稳定币矿池区与YFII社区合作上线独有 dfi稳定币矿池，50%手续费奖励流动性提供用户，50%手续费将未来分享给SFG持有用户。同时抵押iUSD（dfi流动性矿池lp token）挖矿可获得SFG奖励。<br/>
+      S.Finance 将于近期上线链上投票治理工具，由社区讨论决定是否进行SFG挖矿减产以及减产方案。`,
     }
   },
   temp: '* 如果只想取单个币种可将其他币种数量修改为0',
