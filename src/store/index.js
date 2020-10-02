@@ -203,7 +203,7 @@ store.tokens = {
       const { contract, dailyYield } = this
 
       // TEMP: 
-      return dailyYield.tether = await contract.methods.balanceOf(process.env.VUE_APP_PS_MINTER).call() * 0.002
+      return dailyYield.tether = await contract.methods.balanceOf(process.env.VUE_APP_PS_MINTER).call() * 0.001
     },
   },
   susdv2LpToken: {
