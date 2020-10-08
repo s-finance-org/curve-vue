@@ -281,7 +281,7 @@ let routes = [
   // },
   {
     // path: '/:pool(compound|usdt|y|iearn|busd|susdv2|pax|tbtc|ren|sbtc)/',
-    path: '/:pool(susdv2)/',
+    path: '/:pool(susdv2|dfi|y)/',
     name: 'Index',
     // component: PoolApp,
     component: RootDefault,
@@ -359,7 +359,20 @@ const router = new VueRouter({
   routes
 })
 
-const pools = ['compound','usdt','y','iearn','busd','susd', 'susdv2','pax','tbtc','ren', 'sbtc']
+const pools = [
+  // 'compound',
+  // 'usdt',
+  'y',
+  // 'iearn',
+  // 'busd',
+  // 'susd',
+  'susdv2',
+  // 'pax',
+  // 'tbtc',
+  // 'ren',
+  // 'sbtc'
+  'dfi'
+]
 
 router.beforeEach(async (to, from, next) => {
   if(from.path.includes('/compound/withdraw_old')) await common.update_fee_info()
@@ -370,13 +383,18 @@ router.beforeEach(async (to, from, next) => {
     return next();
   }
   let subdomain;
-  if(pools.includes(to.path.split('/')[1])) subdomain = to.path.split('/')[1]
-  else subdomain = window.location.hostname.split('.')[0]
+  if(pools.includes(to.path.split('/')[1])) {
+    subdomain = to.path.split('/')[1]
+  } else {
+    subdomain = window.location.hostname.split('.')[0]
+  }
+console.log('subdomain', subdomain)
 /*  if(window.location.hostname.split('.').length > 1) subdomain = window.location.hostname.split('.')[0]
   else subdomain = to.path.split('/')[1]*/
   if(subdomain == 'y') subdomain = 'iearn'
-  if(!pools.includes(subdomain)) subdomain = 'susdv2'
-
+console.log(pools.includes(subdomain))
+  // if(!pools.includes(subdomain)) subdomain = 'susdv2'
+console.log('subdomain', subdomain)
   if(!['ren', 'sbtc'].includes(subdomain)) {
     currentContract.swapbtc = false
   }

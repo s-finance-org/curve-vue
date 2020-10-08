@@ -477,7 +477,7 @@ store.tokens = {
       const _amount = BN(amount).times(1e18)
       // FIXME:
       const allowance = BN(await contract.methods.allowance(accountAddress, toContract).call())
-      console.log('allowance', allowance.toString(), allowance.toString() / 1e18)
+console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->', _amount.toString(), _amount.toString() / 1e18 )
       // allowance >= amount && amount > 0
       const result = allowance.gte(_amount) && BN(_amount).gt(0)
 
@@ -793,7 +793,7 @@ store.gauges = {
       iUSD_LPT: {
         code: 'iUSD_LPT',
         name: 'iUSD LP token',
-        priceDecimal: 4,
+        priceDecimal: 5,
 
         totalStaking: valueModel.create(),
         userStaking: valueModel.create(),
@@ -928,8 +928,8 @@ console.log('getBalanceOf', result)
     async onStake (accountAddress, infApproval) {
       const { tokens } = store
       const { name, address, contract, mortgages } = this
-
-      const deposit = BN(mortgages.bpt.userStake.revised).times(1e18)
+      // TODO: target
+      const deposit = BN(mortgages.iUSD_LPT.userStake.revised).times(1e18)
 
       // await common.approveAmount(tokens.bpt.contract, deposit, accountAddress, address, infApproval)
 
@@ -948,8 +948,8 @@ console.log('getBalanceOf', result)
 
     async onRedemption (accountAddress, infApproval) {
       const { name, address, contract, mortgages } = this
-
-      let withdraw = BN(mortgages.bpt.userRedemption.revised).times(1e18)
+      // TODO: target
+      let withdraw = BN(mortgages.iUSD_LPT.userRedemption.revised).times(1e18)
       let balance = BN(await contract.methods.balanceOf(accountAddress).call())
 
       console.log('withdraw', withdraw, 'balance', balance)

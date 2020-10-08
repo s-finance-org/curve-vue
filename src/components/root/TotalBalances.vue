@@ -51,6 +51,7 @@
       poolVolumeUSD() {
         const converts = {
           'iearn': 'y',
+          'dfi': 'dfi',
           'susdv2': 'susd'
         }
 

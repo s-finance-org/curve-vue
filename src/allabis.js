@@ -17465,5 +17465,6 @@ export default {
   pax,
   tbtc,
   ren,
-  sbtc
+  sbtc,
+  dfi: iearn
 }

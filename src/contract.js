@@ -72,7 +72,12 @@ const currencies = {
 		renbtc: 'renBTC',
 		wbtc: 'wBTC',
 		sbtc: 'sBTC',
-	},
+  },
+  dfi: {
+    dai: 'yDAI',
+		usdc: 'yUSDC',
+		usdt: 'yUSDT',
+  }
 }
 
 export const allCurrencies = currencies
@@ -87,7 +92,8 @@ export const poolMenu = {
 	pax: 'PAX',
 	tbtc: 'TBTC',
 	ren: 'renBTC',
-	sbtc: 'sBTC',
+  sbtc: 'sBTC',
+  dfi: 'DFI'
 }
 
 export const gas = {
@@ -131,6 +137,10 @@ export const gas = {
 		sbtc: {
 			exchange: (i, j) => (i == 2 || j == 2) ? 1000000 : 300000,
 			exchange_underlying: (i, j) => (i == 2 || j == 2) ? 1000000 : 300000,
+    },
+    dfi: {
+			exchange: (i, j) => 800000,
+			exchange_underlying: (i, j) => 1600000
 		},
 	},
 	deposit: {
@@ -144,6 +154,7 @@ export const gas = {
 		tbtc: 300000 * 1.5,
 		ren: 300000,
 		sbtc: 600000,
+		dfi: 1300000,
 	},
 	withdraw: {
 		compound: {
@@ -175,6 +186,9 @@ export const gas = {
 		},
 		sbtc: {
 			imbalance: x => 800000,
+    },
+    dfi: {
+			imbalance: x => (12642*x + 474068)*2.5 | 0,
 		},
 	},
 	depositzap: {
@@ -235,6 +249,12 @@ export const gas = {
 			withdraw: 350000,
 			withdrawShare: 350000,
 			withdrawImbalance: x => 800000,
+    },
+    dfi: {
+			deposit: x => (225377*x + 522674)*2 | 0,
+			withdraw: 3500000 / 1.4,
+			withdrawShare: 3000000,
+			withdrawImbalance: x => (276069*x + 516861)*2.5 | 0,
 		},
 	},
 	adapter: {
@@ -323,6 +343,11 @@ const state = Vue.observable({
 		sbtc: {
 			currentContract: 'sbtc',
 
+			...initState(),
+    },
+    dfi: {
+			currentContract: 'dfi',
+			aRewards: null,
 			...initState(),
 		},
 	},
@@ -481,7 +506,7 @@ export async function init(contract, refresh = false) {
         //admin_actions_deadline
         [allabis[contract.currentContract].swap_address, '0x405e28f8'],
     ];
-    
+
     if(contract.currentContract == 'compound') {
 	    state.old_swap = new state.web3.eth.Contract(allabis.compound.old_swap_abi, old_swap_address);
 	    state.old_swap_token = new state.web3.eth.Contract(ERC20_abi, old_token_address);
@@ -495,9 +520,9 @@ export async function init(contract, refresh = false) {
     	let default_account = state.default_account || '0x0000000000000000000000000000000000000000'
     	calls.push([allabis.susd.token_address, '0x70a08231000000000000000000000000'+default_account.slice(2)])
 
-		contract.curveRewards = new state.web3.eth.Contract(allabis.susdv2.sCurveRewards_abi, allabis.susdv2.sCurveRewards_address)
-		calls.push([contract.curveRewards._address, contract.curveRewards.methods.balanceOf(state.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
-    	
+      contract.curveRewards = new state.web3.eth.Contract(allabis.susdv2.sCurveRewards_abi, allabis.susdv2.sCurveRewards_address)
+      calls.push([contract.curveRewards._address, contract.curveRewards.methods.balanceOf(state.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
+
     	contract.snxExchanger = new state.web3.eth.Contract(synthetixExchanger_ABI, synthetixExchanger_address)
     }
     if(contract.currentContract == 'sbtc') {
@@ -510,7 +535,12 @@ export async function init(contract, refresh = false) {
     if(['iearn','y'].includes(contract.currentContract)) {
     	contract.aRewards = new state.web3.eth.Contract(allabis.iearn.aRewards_abi, allabis.iearn.aRewards_address)
     	contract.curveRewards = new state.web3.eth.Contract(allabis.iearn.sCurveRewards_abi, allabis.iearn.sCurveRewards_address)
-		calls.push([contract.curveRewards._address, contract.curveRewards.methods.balanceOf(state.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
+		  calls.push([contract.curveRewards._address, contract.curveRewards.methods.balanceOf(state.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
+    }
+    if(['dfi'].includes(contract.currentContract)) {
+    	contract.aRewards = new state.web3.eth.Contract(allabis.iearn.aRewards_abi, allabis.iearn.aRewards_address)
+    	contract.curveRewards = new state.web3.eth.Contract(allabis.iearn.sCurveRewards_abi, allabis.iearn.sCurveRewards_address)
+		  calls.push([contract.curveRewards._address, contract.curveRewards.methods.balanceOf(state.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
     }
     if(['tbtc', 'ren', 'sbtc'].includes(contract.currentContract)) {
     	//initial_A

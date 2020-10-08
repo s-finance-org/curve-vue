@@ -82,6 +82,11 @@ export async function getState() {
 			swap: '0x7fC77b5c7614E1533320Ea6DDc2Eb61fa00A9714',
 			swap_token: '0x075b1bb99792c9E1041bA13afEf80C91a1e70fB3',
 			name: 'sbtc',
+    },
+    dfi: {
+			swap: '0x00832130896b1992f6be24A4130e5e1e56d29d65',
+			swap_token: '0x00832130896b1992f6be24A4130e5e1e56d29d65',
+			name: 'dfi',
 		},
 	}
 
@@ -180,7 +185,7 @@ export async function getState() {
 
 	//console.log(decodedGauges, "THE GAUGES")
 
-	let pools = ['compound','usdt','iearn','busd','susdv2','pax','ren','sbtc']
+	let pools = ['compound','usdt','iearn','busd','susdv2','pax','ren','sbtc', 'dfi']
 
 	let prices = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,curve-dao-token&vs_currencies=usd')
 
