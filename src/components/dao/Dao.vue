@@ -948,7 +948,7 @@
           },
 
           async withdraw () {
-            // this.alert('notice.syntetixAnomalous', 'withdraw')
+            this.alert('notice.syntetixAnomalous', 'withdraw')
 
             let withdraw = BN(this.currentPool.withdraw.amount).times(1e18)
             let balance = BN(await this.gaugeContract.methods.balanceOf(currentContract.default_account).call())
@@ -982,7 +982,7 @@
           },
 
           async claim () {
-            // this.alert('notice.syntetixAnomalous' , 'claim')
+            this.alert('notice.syntetixAnomalous' , 'claim')
 
             const mint = await gaugeStore.state.minter.methods.mint(this.currentPool.gauge)
             // let gas = await mint.estimateGas()
@@ -1002,7 +1002,7 @@
           },
 
           async claimRewards () {
-            // this.alert('notice.syntetixAnomalous', 'claimRewards')
+            this.alert('notice.syntetixAnomalous', 'claimRewards')
 
             // let gas = await this.gaugeContract.methods.claim_rewards(currentContract.default_account).estimateGas()
 

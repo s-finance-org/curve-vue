@@ -154,7 +154,7 @@ export default {
   notice: {
     approveSpending: '请授权钱包进行扣款',
     confirmDepositTransaction: '请在钱包中确认存款转账',
-    // syntetixAnomalous: '由于Syntetix合约升级操作可能会失败，为避免矿工费损失可稍后再试。',
+    syntetixAnomalous: '由于Syntetix合约升级操作可能会失败，为避免矿工费损失可稍后再试。',
     approveOperationWarning: '抵押时如遇到 gas 费用超过 0.2ETH，请先点击拒绝等待一段时间后再试'
   },
   social: {
