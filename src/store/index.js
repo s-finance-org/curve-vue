@@ -153,6 +153,7 @@ store.price = {
 //   }
 // }
 
+
 store.tokens = {
   usdt: {
     address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
@@ -430,6 +431,7 @@ store.tokens = {
   },
   iUSD_LPT: {
     address: '0x4Dc0E64D50e9F850515D19BE6e66FC2aD122c222', // test
+    swapAddress: '0xa60cb5Af1B7B529d42DCDD114C6Ae5300250B1dB', // test
     abi: abi_iUSD_LPT,
     __contract: null,
     get contract () {
@@ -658,6 +660,7 @@ store.gauges = {
       sfg: {
         code: 'sfg',
         name: 'SFG',
+        weighting: '40%',
 
         userPendingReward: valueModel.create(),
         userPaidReward: valueModel.create(),
@@ -781,7 +784,7 @@ store.gauges = {
   dfi: {
     code: 'dfi',
     name: 'DFI',
-    propagateMark: 'dfi',
+    propagateMark: 'Dfi',
     mortgagesUnit: 'iUSD LP token',
     address: '0x00832130896b1992f6be24A4130e5e1e56d29d65',
     // abi: abiDfi, // FIXME: ???
@@ -884,6 +887,7 @@ store.gauges = {
       sfg: {
         code: 'sfg',
         name: 'SFG',
+        weighting: '30%',
 
         userPendingReward: valueModel.create(),
         userPaidReward: valueModel.create(),
@@ -1024,7 +1028,19 @@ console.log('getBalanceOf', result)
       return Object.keys(mortgages)
     },
     mortgages: {
-      sfg: {},
+
+    },
+
+    rewards: {
+      sfg: {
+        code: 'sfg',
+        name: 'SFG',
+        weighting: '30%',
+
+        userPendingReward: valueModel.create(),
+        userPaidReward: valueModel.create(),
+        userTotalReward: valueModel.create(),
+      },
       crv: {},
       snx: {}
     },

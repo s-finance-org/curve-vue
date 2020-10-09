@@ -185,7 +185,7 @@
           </li>
       </ul>
     </fieldset>
-    <fieldset id="lp-info-container" v-show="totalStake > 0 && initializedContracts && ['susdv2', 'sbtc', 'y', 'iearn'].includes(currentPool)">
+    <fieldset id="lp-info-container" v-show="totalStake > 0 && initializedContracts && ['susdv2', 'sbtc', 'y', 'iearn', 'dfi'].includes(currentPool)">
       <legend>Staked share: ( {{(totalStake / totalSupply * 100).toFixed(3)}}% of pool)</legend>
       <ul id='stakelp-info'>
           <li v-for='(currency, i) in Object.keys(currencies)'>
@@ -261,7 +261,7 @@
         return helpers.formatNumber(number, dec)
       },
       async updateShares() {
-        if(!(this.usdShare1 > 0 || (['susdv2', 'sbtc', 'y', 'iearn'].includes(this.currentPool) && this.usdStake1) > 0)) return;
+        if(!(this.usdShare1 > 0 || (['susdv2', 'sbtc', 'y', 'iearn', 'dfi'].includes(this.currentPool) && this.usdStake1) > 0)) return;
         let pool = this.currentPool
         pool = pool == 'iearn' ? 'y' : pool == 'susdv2' ? 'susd' : pool == 'ren' ? 'ren2' : pool == 'sbtc' ? 'rens' : pool  
         let req = await fetch(`${window.domain}/raw-stats/${pool}-1m.json`)

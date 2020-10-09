@@ -83,11 +83,6 @@ export async function getState() {
 			swap_token: '0x075b1bb99792c9E1041bA13afEf80C91a1e70fB3',
 			name: 'sbtc',
     },
-    // dfi: {
-		// 	swap: '0x00832130896b1992f6be24A4130e5e1e56d29d65',
-		// 	swap_token: '0x00832130896b1992f6be24A4130e5e1e56d29d65',
-		// 	name: 'dfi',
-		// },
 	}
 
 	state.gaugeController = new contract.web3.eth.Contract(daoabis.gaugecontroller_abi, process.env.VUE_APP_GAUGE_CONTROLLER)

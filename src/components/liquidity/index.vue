@@ -469,7 +469,7 @@
         </b-container>
 
         <!-- deposit -->
-        <div class="add-liquidity" v-show=false>
+        <div class="add-liquidity" v-show=true>
                 <fieldset class="currencies">
                     <legend>Currencies:</legend>
                     <ul>
@@ -643,7 +643,7 @@
         </div>
 
         <!-- withdraw -->
-        <div class="add-liquidity" v-show=false>
+        <div class="add-liquidity" v-show=true>
             <fieldset class="percentage">
                 <legend>
                   Share of liquidity (%)
@@ -895,10 +895,6 @@
     		Slippage, GasPrice, TextOverlayLoading, RootSub
     	},
     	data: () => ({
-        gauges: {
-          balanceOf: valueModel.create()
-        },
-
     		disabled: true,
     		disabledButtons: true,
     		sync_balances: false,
@@ -970,7 +966,7 @@
         withdrawBALPool: 0,
         withdrawSNXPool: 0,
         withdrawRENPool: 0,
-        withdrawADAI: 0,
+        // withdrawADAI: 0,
         show_loading: false,
         waitingMessage: '',
         showWithdrawSlippage: false,
@@ -1071,6 +1067,26 @@ console.log('created', volumeStore.state.volumes, key)
         },
         computed: {
           ...getters,
+          gauges () {
+            const { currentPool } = this
+
+            const result = {
+              balanceOf: valueModel.create()
+            }
+
+            const tokenKeys = {
+              susdv2: 'susdv2LpToken',
+              dfi: 'iUSD_LPT'
+            }
+
+            if (tokenKeys[currentPool]) {
+              store.tokens[tokenKeys[currentPool]].getBalanceOf(result.balanceOf, currentContract.default_account)
+            } else {
+              result.balanceOf.tether = currentContract.swap_token.methods.balanceOf(currentContract.default_account).call()
+            }
+
+            return result
+          },
           poolVolumeUSD() {
             return volumeStore.state.volumes[this.currentPool == 'iearn' ? 'y' : this.currentPool == 'susdv2' ? 'susd' : this.currentPool][0]
           },
@@ -1262,7 +1278,6 @@ console.log('current', this.currentPool, this.currencies)
 			},
 
             async mounted(oldContract) {
-              store.tokens.susdv2LpToken.getBalanceOf(this.gauges.balanceOf, currentContract.default_account)
 
             	if(['susd', 'susdv2', 'tbtc', 'ren', 'sbtc'].includes(currentContract.currentContract)) this.depositc = true;
                 else this.depositc = false;
@@ -1332,9 +1347,9 @@ console.log('current', this.currentPool, this.currencies)
                     this.withdrawRENPool = decoded[4] * decoded[3] / decoded[1]
 
                 }
-                if(['y','iearn', 'dfi'].includes(this.currentPool)) {
-                    this.withdrawADAI = await currentContract.aRewards.methods.claimable(currentContract.default_account).call()
-                }
+                // if(['y','iearn', 'dfi'].includes(this.currentPool)) {
+                //     this.withdrawADAI = await currentContract.aRewards.methods.claimable(currentContract.default_account).call()
+                // }
 
                 await common.update_fee_info();
                 await this.update_balances();
@@ -2089,7 +2104,7 @@ console.log('current', this.currentPool, this.currencies)
 			        }
                     token_amount = BN(token_amount).times(BN(1).plus(this.calcFee))
 			        token_amount = BN(Math.floor(token_amount * this.getWithdrawMaxSlippage).toString()).toFixed(0,1)
-                    if((this.token_balance.lt(BN(token_amount)) || unstake) && ['susdv2', 'sbtc','y','iearn'].includes(this.currentPool)) {
+                    if((this.token_balance.lt(BN(token_amount)) || unstake) && ['susdv2', 'sbtc','y','iearn', 'dfi'].includes(this.currentPool)) {
                         let unstakeAmount = BN(token_amount).minus(BN(this.token_balance))
                         if(unstake) unstakeAmount = BN(token_amount) 
                         await this.unstake(unstakeAmount, unstake && !unstake_only, unstake_only)
@@ -2178,7 +2193,7 @@ console.log('current', this.currentPool, this.currencies)
                     if(this.showstaked) balance = balance.plus(this.staked_balance)
                     var amount = BN(this.share).div(BN(100)).times(balance)
 
-                    if((this.token_balance.lt(amount) || unstake) && ['susdv2', 'sbtc', 'y', 'iearn'].includes(this.currentPool)) {
+                    if((this.token_balance.lt(amount) || unstake) && ['susdv2', 'sbtc', 'y', 'iearn', 'dfi'].includes(this.currentPool)) {
                         let unstakeAmount = BN(amount).minus(BN(this.token_balance))
                         if(unstake) unstakeAmount = BN(amount)
                         await this.unstake(unstakeAmount, unstake && !unstake_only, unstake_only)

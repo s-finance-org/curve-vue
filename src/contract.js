@@ -74,9 +74,9 @@ const currencies = {
 		sbtc: 'sBTC',
   },
   dfi: {
-    dai: 'yDAI',
-		usdc: 'yUSDC',
-		usdt: 'yUSDT',
+    dai: 'iDAI',
+		usdc: 'iUSDC',
+		usdt: 'iUSDT',
   }
 }
 
@@ -532,13 +532,8 @@ export async function init(contract, refresh = false) {
 
     	contract.snxExchanger = new state.web3.eth.Contract(synthetixExchanger_ABI, synthetixExchanger_address)
     }
-    if(['iearn','y'].includes(contract.currentContract)) {
-    	contract.aRewards = new state.web3.eth.Contract(allabis.iearn.aRewards_abi, allabis.iearn.aRewards_address)
-    	contract.curveRewards = new state.web3.eth.Contract(allabis.iearn.sCurveRewards_abi, allabis.iearn.sCurveRewards_address)
-		  calls.push([contract.curveRewards._address, contract.curveRewards.methods.balanceOf(state.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
-    }
-    if(['dfi'].includes(contract.currentContract)) {
-    	contract.aRewards = new state.web3.eth.Contract(allabis.iearn.aRewards_abi, allabis.iearn.aRewards_address)
+    if(['iearn','y', 'dfi'].includes(contract.currentContract)) {
+    	// contract.aRewards = new state.web3.eth.Contract(allabis.iearn.aRewards_abi, allabis.iearn.aRewards_address)
     	contract.curveRewards = new state.web3.eth.Contract(allabis.iearn.sCurveRewards_abi, allabis.iearn.sCurveRewards_address)
 		  calls.push([contract.curveRewards._address, contract.curveRewards.methods.balanceOf(state.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
     }
@@ -600,6 +595,7 @@ export async function getAllUnderlying() {
 }
 
 export async function changeContract(pool) {
+console.log(!(pool in allabis))
 	//re-init contract with different pool
 	if(!(pool in allabis)) return;
 	state.initializedContracts = false;
@@ -620,7 +616,8 @@ export async function changeContract(pool) {
 	state.bal_info = []
 	state.l_info = []
 	state.total = 0
-	state.totalShare = 0
+  state.totalShare = 0
+console.log('state', state)
 	await web3Init();
 }
 

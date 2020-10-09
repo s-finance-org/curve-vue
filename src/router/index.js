@@ -359,11 +359,13 @@ const router = new VueRouter({
   routes
 })
 
+const defaultPool = 'susdv2'
+
 const pools = [
   // 'compound',
   // 'usdt',
   'y',
-  // 'iearn',
+  'iearn',
   // 'busd',
   // 'susd',
   'susdv2',
@@ -379,7 +381,7 @@ router.beforeEach(async (to, from, next) => {
   //if(from.path.includes('profit') && to.path.includes('profit')) return window.location.href = to.path
   if(['Donate', 'StatsDaily', 'Audits'].includes(to.name)) return next();
   if(to.name == 'RootIndex') {
-    init('susdv2');
+    init(defaultPool);
     return next();
   }
   let subdomain;
@@ -391,9 +393,11 @@ router.beforeEach(async (to, from, next) => {
 console.log('subdomain', subdomain)
 /*  if(window.location.hostname.split('.').length > 1) subdomain = window.location.hostname.split('.')[0]
   else subdomain = to.path.split('/')[1]*/
+
   if(subdomain == 'y') subdomain = 'iearn'
-console.log(pools.includes(subdomain))
-  if(!pools.includes(subdomain)) subdomain = 'susdv2'
+console.log(subdomain, pools.includes(subdomain), !pools.includes(subdomain))
+  // default
+  if(!pools.includes(subdomain)) subdomain = defaultPool
 console.log('subdomain', subdomain)
   if(!['ren', 'sbtc'].includes(subdomain)) {
     currentContract.swapbtc = false

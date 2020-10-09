@@ -53,7 +53,7 @@
               <span class="col-12 col-md-6 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.rewardWeight', ['SFG']) }}</h6>
                 <!-- <text-overlay-loading inline :show="store.gauges.bpt.rewards.sfg.userPaidReward.loading"> -->
-                  <span class="h4">60%</span>
+                  <span class="h4">{{ store.gauges.susdv2.rewards.sfg.weighting }}</span>
                 <!-- </text-overlay-loading> -->
               </span>
             </div>
@@ -267,7 +267,7 @@
               <span class="col-12 col-md-6 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.rewardWeight', ['SFG']) }}</h6>
                 <!-- <text-overlay-loading inline :show="store.gauges.bpt.rewards.sfg.userPaidReward.loading"> -->
-                  <span class="h4">?%</span>
+                  <span class="h4">{{ store.gauges.dfi.rewards.sfg.weighting }}</span>
                 <!-- </text-overlay-loading> -->
               </span>
               <!-- <span class="col-12 col-lg pb-3">
@@ -439,7 +439,7 @@
               <span class="col-12 col-md-6 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.rewardWeight', ['SFG']) }}</h6>
                 <!-- <text-overlay-loading inline :show="store.gauges.bpt.rewards.sfg.userPaidReward.loading"> -->
-                  <span class="h4">40%</span>
+                  <span class="h4">{{ store.gauges.bpt.rewards.sfg.weighting }}</span>
                 <!-- </text-overlay-loading> -->
               </span>
               <!-- <span class="col-12 col-lg pb-3">

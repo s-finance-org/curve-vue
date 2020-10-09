@@ -76,7 +76,7 @@
         const result = [
           { name: 'home', to: { name: 'RootIndex'}, i18n: 'global.home' },
           // { name: 'swap', to: {name: 'Swap', path: '/susdv2/swap'}, i18n: 'global.swap' },
-          { name: 'liquidity', to: '/susdv2/liquidity/', i18n: 'global.liquidity' },
+          { name: 'liquidity', to: { path: '/susdv2/liquidity' }, i18n: 'global.liquidity' },
           { name: 'dao', to: { name: 'Dao', path: '/dao' }, i18n: 'global.dao' },
           { name: 'risks', to: { name: 'Risks', path: '/risks' }, i18n: 'global.risks' },
           // { name: 'stats', to: {}, i18n: 'global.stats' }
