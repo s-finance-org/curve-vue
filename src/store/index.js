@@ -563,6 +563,11 @@ store.gauges = {
         (this.__contract = new web3.eth.Contract(abi, address))
     },
 
+    get mortgageMember () {
+      const { mortgages } = this
+
+      return Object.keys(mortgages)
+    },
     mortgages: {
       bpt: {
         code: 'bpt',
@@ -1011,6 +1016,17 @@ console.log('getBalanceOf', result)
 
       return __contract ||
         (this.__contract = new web3.eth.Contract(abi, address))
+    },
+
+    get mortgageMember () {
+      const { mortgages } = this
+
+      return Object.keys(mortgages)
+    },
+    mortgages: {
+      sfg: {},
+      crv: {},
+      snx: {}
     },
 
     dailyAPY: valueModel.create(),

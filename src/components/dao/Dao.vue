@@ -745,6 +745,12 @@
         dismissSecs: 10,
         dismissCountDown: 0,
 
+        // TODO: 
+        pools: {
+          stand: ['susdv2', 'dfi'],
+          token: ['sfg']
+        },
+
         currentPool: {
           swap: '',
           swap_token: '',

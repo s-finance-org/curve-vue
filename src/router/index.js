@@ -393,7 +393,7 @@ console.log('subdomain', subdomain)
   else subdomain = to.path.split('/')[1]*/
   if(subdomain == 'y') subdomain = 'iearn'
 console.log(pools.includes(subdomain))
-  // if(!pools.includes(subdomain)) subdomain = 'susdv2'
+  if(!pools.includes(subdomain)) subdomain = 'susdv2'
 console.log('subdomain', subdomain)
   if(!['ren', 'sbtc'].includes(subdomain)) {
     currentContract.swapbtc = false
