@@ -133,7 +133,7 @@
 			  [process.env.VUE_APP_PSS_GAUGE]: 'susdv2',
 			  [process.env.VUE_APP_REN]: 'ren',
         [process.env.VUE_APP_SBTC]: 'sbtc',
-        [process.env.VUE_APP_DFI]: 'dfi',
+        [process.env.VUE_APP_DFI_TOKEN]: 'dfi',
 			},
 			selectedGauge: "0x0000000000000000000000000000000000000000",
 			weight: 1,
@@ -243,7 +243,7 @@
 						swap: store.tokens.iUSD_LPT.address,
 						swap_token: store.tokens.iUSD_LPT.swapAddress,
 						name: store.gauges.dfi.code,
-						gauge: process.env.VUE_APP_DFI
+						gauge: process.env.VUE_APP_DFI_TOKEN
 					},
 				}
 		}),
@@ -324,7 +324,7 @@
 				  process.env.VUE_APP_REN,
 				  process.env.VUE_APP_PSS_GAUGE,
           process.env.VUE_APP_SBTC,
-          process.env.VUE_APP_DFI
+          process.env.VUE_APP_DFI_TOKEN
 				]
 
 				let gaugeController_address = process.env.VUE_APP_GAUGE_CONTROLLER

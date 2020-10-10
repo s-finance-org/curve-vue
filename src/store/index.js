@@ -431,8 +431,9 @@ store.tokens = {
     },
   },
   iUSD_LPT: {
-    address: '0x4Dc0E64D50e9F850515D19BE6e66FC2aD122c222', // test
-    swapAddress: '0xa60cb5Af1B7B529d42DCDD114C6Ae5300250B1dB', // test
+    name: 'iUSD LP tokens',
+    address: process.env.VUE_APP_DFI,
+    swapAddress: process.env.VUE_APP_DFI_SWAP,
     abi: abi_iUSD_LPT,
     swapAbi: swapAbi_iUSD_LPT,
     __contract: null,
@@ -806,7 +807,7 @@ store.gauges = {
     code: 'dfi',
     name: 'DFI',
     propagateMark: 'dfi',
-    mortgagesUnit: 'iUSD LP token',
+    mortgagesUnit: 'iUSD LP tokens',
     address: '0x00832130896b1992f6be24A4130e5e1e56d29d65',
     // abi: abiDfi, // FIXME: ???
     abi: abiSUSDv2,
@@ -821,7 +822,7 @@ store.gauges = {
     mortgages: {
       iUSD_LPT: {
         code: 'iUSD_LPT',
-        name: 'iUSD LP token',
+        name: 'iUSD LP tokens',
         priceDecimal: 5,
 
         totalStaking: valueModel.create(),

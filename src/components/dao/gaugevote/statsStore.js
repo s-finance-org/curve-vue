@@ -11,7 +11,7 @@ export let state = Vue.observable({
     [process.env.VUE_APP_PSS_GAUGE]: 'susdv2',
     [process.env.VUE_APP_REN]: 'ren',
     [process.env.VUE_APP_SBTC]: 'sbtc',
-    [process.env.VUE_APP_DFI]: 'dfi',
+    [process.env.VUE_APP_DFI_TOKEN]: 'dfi',
 	},
 
 	gaugesWeights: {
@@ -23,7 +23,7 @@ export let state = Vue.observable({
 	  [process.env.VUE_APP_PSS_GAUGE]: 0,
 	  [process.env.VUE_APP_REN]: 0,
     [process.env.VUE_APP_SBTC]: 0,
-    [process.env.VUE_APP_DFI]: 0
+    [process.env.VUE_APP_DFI_TOKEN]: 0
 	},
 
 	pieGaugeWeights: {
@@ -35,7 +35,7 @@ export let state = Vue.observable({
 	  [process.env.VUE_APP_PSS_GAUGE]: 0,
 	  [process.env.VUE_APP_REN]: 0,
     [process.env.VUE_APP_SBTC]: 0,
-    [process.env.VUE_APP_DFI]: 0
+    [process.env.VUE_APP_DFI_TOKEN]: 0
 	},
 
 	calculatedWeights: {
@@ -47,7 +47,7 @@ export let state = Vue.observable({
 	  [process.env.VUE_APP_PSS_GAUGE]: 0,
 	  [process.env.VUE_APP_REN]: 0,
     [process.env.VUE_APP_SBTC]: 0,
-    [process.env.VUE_APP_DFI]: 0
+    [process.env.VUE_APP_DFI_TOKEN]: 0
 	},
 
 	currentCRVAPYs: {
@@ -59,7 +59,7 @@ export let state = Vue.observable({
 	  [process.env.VUE_APP_PSS_GAUGE]: 0,
 	  [process.env.VUE_APP_REN]: 0,
     [process.env.VUE_APP_SBTC]: 0,
-    [process.env.VUE_APP_DFI]: 0
+    [process.env.VUE_APP_DFI_TOKEN]: 0
 	},
 
 })

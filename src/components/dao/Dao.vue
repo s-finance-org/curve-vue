@@ -258,10 +258,15 @@
                 </text-overlay-loading>
               </span>
               <span class="col-12 col-md-6 pb-3">
-                <h6 class="mb-0 text-black-65">{{ $t('dao.miningPaidReward') }}</h6>
-                <text-overlay-loading inline :show="store.gauges.dfi.rewards.sfg.userPaidReward.loading">
-                  <span class="h4 mr-2">{{ store.gauges.dfi.rewards.sfg.userPaidReward.cont }}</span>
-                  <span class="inline-block text-black-65">{{ store.gauges.dfi.rewards.sfg.name }}</span>
+                <h6 class="mb-0 text-black-65">{{ $t('dao.virtualPrice') }}</h6>
+                <text-overlay-loading inline :show="store.tokens.iUSD_LPT.price.loading">
+                  <span class="h4 mb-0">
+                    1 <span class="h6 text-black-65">{{ store.tokens.iUSD_LPT.name }} = </span>
+                  </span>
+                  <span class="h4 mb-0">
+                    {{ store.tokens.iUSD_LPT.price.cont }}
+                    <span class="text-black-65 h6">USD</span>
+                  </span>
                 </text-overlay-loading>
               </span>
               <span class="col-12 col-md-6 pb-3">
@@ -270,17 +275,6 @@
                   <span class="h4">{{ store.gauges.dfi.rewards.sfg.weighting.percent }}%</span>
                 </text-overlay-loading>
               </span>
-              <!-- <span class="col-12 col-lg pb-3">
-                <h6 class="mb-0 text-black-65">{{ $t('dao.virtualPrice') }}</h6>
-                <text-overlay-loading inline :show="loadingAction">
-                  <span class="h4">
-                  1
-                  <span class="h6 text-black-65 inline-block ">{{ currentPool.name }} LP tokens = </span>
-                  {{ (1 * virtual_price).toFixed(6) }}
-                  <span class="text-black-65 h6">USD</span>
-                  </span>
-                </text-overlay-loading>
-              </span> -->
             </div>
 
             <b-tabs pills nav-class="tabs-nav" class="mt-1">

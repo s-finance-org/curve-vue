@@ -62,7 +62,7 @@
 			  [process.env.VUE_APP_PSS_GAUGE]: 'susdv2',
 			  [process.env.VUE_APP_REN]: 'ren',
         [process.env.VUE_APP_SBTC]: 'sbtc',
-        [process.env.VUE_APP_DFI]: 'dfi'
+        [process.env.VUE_APP_DFI_TOKEN]: 'dfi'
 			},
 			selectedGauge: "0x0000000000000000000000000000000000000000",
 			weight: 1,

@@ -13857,7 +13857,7 @@ var dfi = {
   use_lending: [true, true, true],
   tethered: [true, false, false],
   is_plain: [false, false, false],
-  swap_address: '0xa60cb5Af1B7B529d42DCDD114C6Ae5300250B1dB', // curve 0x45F783CCE6B7FF23B2ab2D70e416cdb7D6055f51
+  swap_address: process.env.VUE_APP_DFI_SWAP, // curve 0x45F783CCE6B7FF23B2ab2D70e416cdb7D6055f51
   swap_abi: [
     {
       'name': 'TokenExchange',
@@ -14672,7 +14672,7 @@ var dfi = {
       'gas': 2321
     }
   ],
-  token_address: '0x4Dc0E64D50e9F850515D19BE6e66FC2aD122c222', // curve 0xdF5e0e81Dff6FAF3A7e52BA697820c5e32D806A8
+  token_address: process.env.VUE_APP_DFI_TOKEN, // curve 0xdF5e0e81Dff6FAF3A7e52BA697820c5e32D806A8
   infura_url: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`,
   underlying_coins: [
     '0xdAC17F958D2ee523a2206206994597C13D831ec7', // USDT
@@ -14684,7 +14684,7 @@ var dfi = {
     '0x1e0DC67aEa5aA74718822590294230162B5f2064', // iDAI
     '0x23B4dB3a435517fd5f2661a9c5a16f78311201c1', // iUSDC
   ],
-  deposit_address: '0x0428FdF0f0a7638865757ccA97396CfDAbd68c47', // curve 0xbBC81d23Ea2c3ec7e56D39296F0cbB648873a5d3
+  deposit_address: process.env.VUE_APP_DFI_DEPOSIT, // curve 0xbBC81d23Ea2c3ec7e56D39296F0cbB648873a5d3
   deposit_abi: [
     {
       'outputs': [],

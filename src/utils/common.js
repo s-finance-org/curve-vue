@@ -17,7 +17,7 @@ let requiresResetAllowance = [
   '0xC25a3A3b969415c80451098fa907EC722572917F', // Curve.fi DAI/USDC/USDT/sUSD
   '0x075b1bb99792c9E1041bA13afEf80C91a1e70fB3', // Curve.fi renBTC/wBTC/sBTC
   '0xdF5e0e81Dff6FAF3A7e52BA697820c5e32D806A8', // Curve.fi yDAI/yUSDC/yUSDT/yTUSD
-  '0x4Dc0E64D50e9F850515D19BE6e66FC2aD122c222' // s.finance iUSDT/iDAI/iUSDC
+  process.env.VUE_APP_DFI_TOKEN // s.finance iUSDT/iDAI/iUSDC
 ]
 
 export function approve(contract, amount, account, toContract) {
