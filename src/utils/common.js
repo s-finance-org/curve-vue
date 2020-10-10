@@ -13,7 +13,7 @@ import { notify, notifyHandler } from '../init'
 var cBN = (val) => new BigNumber(val);
 
 let requiresResetAllowance = [
-  '0xdAC17F958D2ee523a2206206994597C13D831ec7', // USDT
+  process.env.VUE_APP_USDT_TOKEN, // USDT
   '0xC25a3A3b969415c80451098fa907EC722572917F', // Curve.fi DAI/USDC/USDT/sUSD
   '0x075b1bb99792c9E1041bA13afEf80C91a1e70fB3', // Curve.fi renBTC/wBTC/sBTC
   '0xdF5e0e81Dff6FAF3A7e52BA697820c5e32D806A8', // Curve.fi yDAI/yUSDC/yUSDT/yTUSD

@@ -157,10 +157,10 @@ store.price = {
 
 store.tokens = {
   usdt: {
-    address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+    address: process.env.VUE_APP_USDT_TOKEN,
   },
   dai: {
-    address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+    address: process.env.VUE_APP_DAI_TOKEN,
     // TEMP: 
     price: {
       handled: 1.0115
@@ -190,7 +190,7 @@ store.tokens = {
 
     // FIXME: change
     priceUnit: 'DAI',
-    priceUnitAddress: '0x6B175474E89094C44Da98b954EedeAC495271d0F', // DAI
+    priceUnitAddress: process.env.VUE_APP_DAI_TOKEN, // DAI
     price: valueModel.create(),
     // TODO: priceUnit
     async getPrice (priceUnit) {
@@ -320,8 +320,7 @@ store.tokens = {
     },
   },
   bpt: {
-    address: '0x5F6eF509e65676134BD73baf85E0cf2744D8e254', // test
-    // address: '0x2f49EeA1EfC1B04e9EcD3b81321060e29Db26A19',
+    address: process.env.VUE_APP_BPT_TOKEN,
     abi: abiBpt,
     __contract: null,
     get contract () {
@@ -432,7 +431,7 @@ store.tokens = {
   },
   iUSD_LPT: {
     name: 'iUSD LP tokens',
-    address: process.env.VUE_APP_DFI,
+    address: process.env.VUE_APP_DFI_TOKEN,
     swapAddress: process.env.VUE_APP_DFI_SWAP,
     abi: abi_iUSD_LPT,
     swapAbi: swapAbi_iUSD_LPT,
@@ -576,8 +575,7 @@ store.gauges = {
     name: 'BPT',
     propagateMark: 'SFG',
     mortgagesUnit: 'BPT',
-    address: '0xf9417badb0692bdedad616058619201fcd292532', // test
-    // address: '0x318b2456A711c5f35E9eAa2B9EE5734A3635FE96',
+    address: process.env.VUE_APP_BPT_GAUGE,
     abi: abiSUSDv2,
     __contract: null,
     get contract () {

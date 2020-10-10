@@ -2020,7 +2020,7 @@ var compound = {
   migration_address: '0x54Ee22d5593FC76fB20EafAb66C45aAb3268B800',
   infura_url: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`,
   underlying_coins: [
-    '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+    process.env.VUE_APP_DAI_TOKEN,
     '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
   ],
   coins: [
@@ -3844,14 +3844,14 @@ var usdt = {
   token_address: '0x9fC689CCaDa600B6DF723D9E47D84d76664a1F23',
   infura_url: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`,
   underlying_coins: [
-    '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+    process.env.VUE_APP_DAI_TOKEN,
     '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-    '0xdAC17F958D2ee523a2206206994597C13D831ec7'
+    process.env.VUE_APP_USDT_TOKEN
   ],
   coins: [
     '0x5d3a536E4D6DbD6114cc1Ead35777bAB948E3643',
     '0x39AA39c021dfbaE8faC545936693aC917d5E7563',
-    '0xdAC17F958D2ee523a2206206994597C13D831ec7'
+    process.env.VUE_APP_USDT_TOKEN
   ],
   deposit_address: '0xac795D2c97e60DF6a99ff1c814727302fD747a80',
   deposit_abi: [
@@ -4905,9 +4905,9 @@ var iearn = {
   token_address: '0xdF5e0e81Dff6FAF3A7e52BA697820c5e32D806A8',
   infura_url: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`,
   underlying_coins: [
-    '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+    process.env.VUE_APP_DAI_TOKEN,
     '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-    '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+    process.env.VUE_APP_USDT_TOKEN,
     '0x0000000000085d4780B73119b644AE5ecd22b376'
   ],
   coins: [
@@ -6372,9 +6372,9 @@ var busd = {
   token_address: '0x3B3Ac5386837Dc563660FB6a0937DFAa5924333B',
   infura_url: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`,
   underlying_coins: [
-    '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+    process.env.VUE_APP_DAI_TOKEN,
     '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-    '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+    process.env.VUE_APP_USDT_TOKEN,
     '0x4Fabb145d64652a948d72533023f6E7A623C7C53'
   ],
   coins: [
@@ -9290,15 +9290,15 @@ var susdv2 = {
   infura_url: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`,
   deposit_address: '0xFCBa3E75865d2d561BE8D220616520c171F12851',
   underlying_coins: [
-    '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+    process.env.VUE_APP_DAI_TOKEN,
     '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-    '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+    process.env.VUE_APP_USDT_TOKEN,
     '0x57Ab1ec28D129707052df4dF418D58a2D46d5f51'
   ],
   coins: [
-    '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+    process.env.VUE_APP_DAI_TOKEN,
     '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-    '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+    process.env.VUE_APP_USDT_TOKEN,
     '0x57Ab1ec28D129707052df4dF418D58a2D46d5f51'
   ],
 
@@ -10736,9 +10736,9 @@ var pax = {
   infura_url: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`,
   deposit_address: '0xA50cCc70b6a011CffDdf45057E39679379187287',
   underlying_coins: [
-    '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+    process.env.VUE_APP_DAI_TOKEN,
     '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-    '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+    process.env.VUE_APP_USDT_TOKEN,
     '0x8E870D67F660D95d5be530380D0eC0bd388289E1'
   ],
   coins: [
@@ -14675,8 +14675,8 @@ var dfi = {
   token_address: process.env.VUE_APP_DFI_TOKEN, // curve 0xdF5e0e81Dff6FAF3A7e52BA697820c5e32D806A8
   infura_url: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`,
   underlying_coins: [
-    '0xdAC17F958D2ee523a2206206994597C13D831ec7', // USDT
-    '0x6B175474E89094C44Da98b954EedeAC495271d0F', // DAI
+    process.env.VUE_APP_USDT_TOKEN, // USDT
+    process.env.VUE_APP_DAI_TOKEN, // DAI
     '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', // USDC
   ],
   coins: [
