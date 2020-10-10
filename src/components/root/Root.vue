@@ -35,11 +35,11 @@
         </template>
         <template v-slot:cell(volume)="data">
           <text-overlay-loading :show="data.item.volData && data.item.volData[0] < 0">
-            <template v-if="data.item.volData && data.item.volData[0] >= 0">
+            <template v-if="data.item.volData && data.item.volData[0] > 0">
               ${{(data.item.volData && data.item.volData[0] | 0) | formatNumber(0)}}
             </template>
             <template v-else>
-              $0
+              -
             </template>
           </text-overlay-loading>
         </template>
@@ -55,8 +55,8 @@
           {{ $t('global.operating') }}
         </template>
         <template v-slot:cell(operating)="data">
-          <b-button to="/susdv2/liquidity" size="sm" variant="danger">{{ $t('global.deposit') }}</b-button>
-          <b-button to="/dao" class="ml-2" size="sm" variant="outline-secondary">{{ $t('global.dao') }}</b-button>
+          <b-button :to=data.item.toDeposit size="sm" variant="danger">{{ $t('global.deposit') }}</b-button>
+          <b-button :to=data.item.toDao class="ml-2" size="sm" variant="outline-secondary">{{ $t('global.dao') }}</b-button>
         </template>
       </b-table>
     </div>
@@ -525,7 +525,8 @@
             // },
             {
               id: 4,
-              to: '/susdv2',
+              toDeposit: '/susdv2/liquidity',
+              toDao: '/dao',
               pooltext: 'sUSD',
               pools: 'DAI USDC USDT sUSD',
               volData: volumes.susd,
@@ -551,6 +552,17 @@
             //   funds: '-',
             //   link: '/sbtc'
             // },
+            {
+              id: 2,
+              toDeposit: '/dfi/liquidity',
+              toDao: '/dao',
+              pooltext: 'dfi',
+              pools: '(i)DAI (i)USDC (i)USDT',
+              volData: null, // volData.dfi
+              currencies: {dai: 'DAI', usdc: 'USDC', usdt: "USDT"},
+              funds: '-',
+              link: '/dfi'
+            },
           ]
         }
       }

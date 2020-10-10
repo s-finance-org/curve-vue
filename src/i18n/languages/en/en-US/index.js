@@ -48,11 +48,14 @@ export default {
     more: 'more',
     ok: 'Ok',
     toMore: 'More',
-    noticeTitleHtml: 'Announcement of adjusting the rewarding weight of SFG liquidity pool ',
-    noticeDateHtml: '2020/09/29 00:00',
-    noticeContHtml: `S.finance will increase the rewarding  weight of SFG liquidity pool to 40% at 2020-09-29 00:00 Singapore time.<br/>
-    S.Finance will launch a unique DeFi stable coin liquidity pool，cooperating with YFII community. In this liquidity pool，50% of the fee will be given to liquidity providers and SFG holders could share another 50% of the fee. At the same time，users can gain SFG rewarding by staking iUSD (LP Token of DeFi liquidity pool ).<br/>
-    S.Finance voting function will be launched as soon as possible. The plan of halving SFG mint rate will be decided by the community.`
+    noticeTitleHtml: 'dfi (yfii) pool has launched',
+    noticeDateHtml: '2020/10/10 22:00:00',
+    noticeContHtml: `S.Finance has launched dfi (yfii) pool at 2020/10/10 22:00:00 SGT. Users could get iUSD LP tokens by depositing stable coins （ iDAI、iUSDC、iUSDT）or i token of yfii vault （ iDAI、iUSDC、iUSDT). Users could get SFG reward by staking iUSD LP tokens.<br/>
+    Users can obtain triple rewards by providing liquidity in the DFI pool:<br/>
+    YFII vault reward<br/>
+    SFG reward by staking<br/>
+    Fee of DFI pool<br/>
+    DFI pool rewarding weight will be up to 30%.`
   },
   wallet: {
     notConnected: "You haven't connected wallet",
@@ -196,6 +199,13 @@ export default {
       S. Finance has been opened for 3 days. According to the SFG mint rules. In view of the small amount of current circulation, the price fluctuation could be quite violent, please pay attention to the risks.<br/>
       S.Finance will soon launch Y (YFI) liquidity pool in the stable currency liquidity pool area, users could obtain SFG and CRV rewards by mining iearn LP tokens.<br/>
       S. Finance will soon launch iusd (YFII) liquidity pool in the stable currency liquidity pool area, users could obtain SFG and iusd rewards for mining iearn LP tokens.`,
+    },
+    notice3: {
+      titleHtml: 'Announcement of adjusting the rewarding weight of SFG liquidity pool ',
+      dateHtml: '2020/09/29 00:00',
+      contHtml: `S.finance will increase the rewarding  weight of SFG liquidity pool to 40% at 2020-09-29 00:00 Singapore time.<br/>
+      S.Finance will launch a unique DeFi stable coin liquidity pool，cooperating with YFII community. In this liquidity pool，50% of the fee will be given to liquidity providers and SFG holders could share another 50% of the fee. At the same time，users can gain SFG rewarding by staking iUSD (LP Token of DeFi liquidity pool ).<br/>
+      S.Finance voting function will be launched as soon as possible. The plan of halving SFG mint rate will be decided by the community.`
     }
   },
   temp: '* If you only want to withdraw a single currency, you can modify the number of other currencies to 0'
