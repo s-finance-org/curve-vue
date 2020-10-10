@@ -487,6 +487,17 @@
             'operating'
           ],
           items: [
+            {
+              id: 2,
+              toDeposit: '/liquidity/dfi',
+              toDao: '/dao',
+              pooltext: 'dfi',
+              pools: '(i)DAI (i)USDC (i)USDT',
+              volData: null, // volData.dfi
+              currencies: {dai: 'DAI', usdc: 'USDC', usdt: "USDT"},
+              funds: '-',
+              link: '/dfi'
+            },
             // {
             //   id: 0,
             //   to: '/compound',
@@ -552,17 +563,6 @@
             //   funds: '-',
             //   link: '/sbtc'
             // },
-            {
-              id: 2,
-              toDeposit: '/liquidity/dfi',
-              toDao: '/dao',
-              pooltext: 'dfi',
-              pools: '(i)DAI (i)USDC (i)USDT',
-              volData: null, // volData.dfi
-              currencies: {dai: 'DAI', usdc: 'USDC', usdt: "USDT"},
-              funds: '-',
-              link: '/dfi'
-            },
           ]
         }
       }
