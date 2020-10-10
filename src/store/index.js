@@ -928,15 +928,17 @@ store.gauges = {
     async getAPY (price, dailyYield, totalStaking, lpTokenPrice) {
       const { contract, dailyAPY, apy, rewards } = this
 
+      const req = await fetch('https://api.dfi.money/apy.json')
+      let daiAPY = (await req.json()).dai.replace('%','')
+
       dailyAPY.handled = BN(await price / 1e18).times(await dailyYield / 1e18).times(rewards.sfg.weighting.handled).dividedBy(BN(await totalStaking / 1e18).times(await lpTokenPrice)).toString()
-      apy.handled = +dailyAPY.handled * 365
-      console.log(+dailyAPY.handled * 365)
+      apy.handled = (+dailyAPY.handled * 365) + +daiAPY
     },
 
     async getBalanceOf (target, accountAddress) {
       const { contract } = this
       const result = await contract.methods.balanceOf(accountAddress).call()
-console.log('getBalanceOf', result)
+
       target.tether = result
       return result
     },

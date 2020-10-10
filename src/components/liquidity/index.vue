@@ -2047,59 +2047,64 @@ console.log('current', this.currentPool, this.currencies)
                 this.waitingMessage = ''
                 this.show_loading = false
 			},
-            setLoadingAction(val) {
-                this.loadingAction = val;
-                setTimeout(() => this.loadingAction = false, 500)
-            },
+      setLoadingAction(val) {
+          this.loadingAction = val;
+          setTimeout(() => this.loadingAction = false, 500)
+      },
 			async handle_remove_liquidity(unstake = false, unstake_only = false, exit = false) {
-                await common.update_fee_info();
-                await this.update_balances();
+        await common.update_fee_info();
+        await this.update_balances();
 
-                let actionType = unstake == false ? 1 : 2
-                if(this.loadingAction == actionType) return;
-                this.setLoadingAction(actionType)
-                let promises = await Promise.all([helpers.getETHPrice()])
-                this.ethPrice = promises[0]
-                this.estimateGas = 0;
-                if(['susdv2', 'sbtc','y','iearn', 'dfi'].includes(this.currentPool)) {
-                    if(unstake_only) {
-                        this.estimateGas = 125000
-                        if(this.currentPool == 'sbtc') this.estimateGas += 300000
-                    }
-                    else {
-                        let nonZeroInputs = this.withdraw_inputs.filter(Number).length
-                        if(this.share == '---') {
-                            this.estimateGas = contractGas.withdraw[this.currentPool].imbalance(nonZeroInputs) | 0
-                        }
-                        else if(this.to_currency !== null && this.to_currency < 10) {
-                            this.estimateGas = contractGas.depositzap[this.currentPool].withdraw / 2
-                        }
-                        else {
-                            this.estimateGas = contractGas.depositzap[this.currentPool].withdrawShare / 2
-                        }
-                    }
+        let actionType = unstake == false ? 1 : 2
+        if(this.loadingAction == actionType) return;
+        this.setLoadingAction(actionType)
+        let promises = await Promise.all([helpers.getETHPrice()])
+        this.ethPrice = promises[0]
+        this.estimateGas = 0;
+        if(['susdv2', 'sbtc','y','iearn', 'dfi'].includes(this.currentPool)) {
+            if(unstake_only) {
+                this.estimateGas = 125000
+                if(this.currentPool == 'sbtc') this.estimateGas += 300000
+            }
+            else {
+                let nonZeroInputs = this.withdraw_inputs.filter(Number).length
+                if(this.share == '---') {
+                    this.estimateGas = contractGas.withdraw[this.currentPool].imbalance(nonZeroInputs) | 0
                 }
-                this.show_loading = true;
-                let inOneCoin = currentContract.deposit_zap
-                if(['tbtc','ren', 'sbtc'].includes(currentContract.currentContract)) inOneCoin = currentContract.swap
+                else if(this.to_currency !== null && this.to_currency < 10) {
+                    this.estimateGas = contractGas.depositzap[this.currentPool].withdraw / 2
+                }
+                else {
+                    this.estimateGas = contractGas.depositzap[this.currentPool].withdrawShare / 2
+                }
+            }
+        }
+        this.show_loading = true;
+        let inOneCoin = currentContract.deposit_zap
+        if(['tbtc','ren', 'sbtc'].includes(currentContract.currentContract)) inOneCoin = currentContract.swap
 
-				let min_amounts = []
-			    for (let i = 0; i < currentContract.N_COINS; i++) {
-                    if(!this.withdraw_inputs[i]) {
-                        Vue.set(this.amounts, i, 0)
-                        continue
-                    }
-                    let maxDiff = BN(this.calc_balances[i]).minus(BN(this.withdraw_inputs[i]))
-                    let useMax = this.calc_balances[i] > 0 && maxDiff.lte(BN(this.minAmount)) && maxDiff > 0
-                    if(useMax) {
-			    		Vue.set(this.amounts, i, BN(this.calc_balances[i]).div(currentContract.c_rates[i]).toFixed(0,1))
-			    	}
-			    	else {
-			        	Vue.set(this.amounts, i, BN(Math.floor(this.withdraw_inputs[i] / currentContract.c_rates[i]).toString()).toFixed(0,1)); // -> c-tokens
-			    	}
-			    }
-			    var txhash;
-                this.amounts = this.amounts.map(amount => amount || 0)
+        let min_amounts = []
+
+        for (let i = 0; i < currentContract.N_COINS; i++) {
+          if(!this.withdraw_inputs[i]) {
+              Vue.set(this.amounts, i, 0)
+              continue
+          }
+          let maxDiff = BN(this.calc_balances[i]).minus(BN(this.withdraw_inputs[i]))
+          let useMax = this.calc_balances[i] > 0 && maxDiff.lte(BN(this.minAmount)) && maxDiff > 0
+          if(useMax) {
+            Vue.set(this.amounts, i, BN(this.calc_balances[i]).div(currentContract.c_rates[i]).toFixed(0,1))
+          }
+          else {
+            Vue.set(this.amounts, i, BN(Math.floor(this.withdraw_inputs[i] / currentContract.c_rates[i]).toString()).toFixed(0,1)); // -> c-tokens
+          }
+        }
+
+        var txhash;
+        this.amounts = this.amounts.map(amount => amount || 0)
+
+        console.log('amounts', this.amounts)
+
 			    if (this.share == '---') {
 			    	var token_amount;
 			        try {
@@ -2110,7 +2115,7 @@ console.log('current', this.currentPool, this.currencies)
 						this.show_nobalance = true;
 						this.show_nobalance_i = this.to_currency;
 			        }
-                    token_amount = BN(token_amount).times(BN(1).plus(this.calcFee))
+              token_amount = BN(token_amount).times(BN(1).plus(this.calcFee))
 			        token_amount = BN(Math.floor(token_amount * this.getWithdrawMaxSlippage).toString()).toFixed(0,1)
                     if((this.token_balance.lt(BN(token_amount)) || unstake) && ['susdv2', 'sbtc','y','iearn', 'dfi'].includes(this.currentPool)) {
                         let unstakeAmount = BN(token_amount).minus(BN(this.token_balance))
@@ -2155,10 +2160,9 @@ console.log('current', this.currentPool, this.currencies)
                             this.show_loading = false
                             throw err;
                         }
-			    	}
-			        else {
+			    	  } else {
 			        	let withdraw_inputs = this.withdraw_inputs;
-                        withdraw_inputs = withdraw_inputs.map(v => v || 0)
+                withdraw_inputs = withdraw_inputs.map(v => v || 0)
 			        	let amounts = this.withdraw_inputs.map((v, i) => {
                             if(!v) v = 0
                             let maxDiff = BN(this.calc_balances[i]).minus(BN(v))
@@ -2196,59 +2200,59 @@ console.log('current', this.currentPool, this.currencies)
 			        }
 			    }
 			    else {
-                    let balance = BN(this.token_balance)
-                    if(this.share == 100) balance = BN(await currentContract.swap_token.methods.balanceOf(currentContract.default_account).call());
-                    if(this.showstaked) balance = balance.plus(this.staked_balance)
-                    var amount = BN(this.share).div(BN(100)).times(balance)
+            let balance = BN(this.token_balance)
+            if(this.share == 100) balance = BN(await currentContract.swap_token.methods.balanceOf(currentContract.default_account).call());
+            if(this.showstaked) balance = balance.plus(this.staked_balance)
+            var amount = BN(this.share).div(BN(100)).times(balance)
 
-                    if((this.token_balance.lt(amount) || unstake) && ['susdv2', 'sbtc', 'y', 'iearn', 'dfi'].includes(this.currentPool)) {
-                        let unstakeAmount = BN(amount).minus(BN(this.token_balance))
-                        if(unstake) unstakeAmount = BN(amount)
-                        await this.unstake(unstakeAmount, unstake && !unstake_only, unstake_only)
-                    }
-                    if(unstake_only) return;
-                    amount = amount.toFixed(0,1)
-                    if(this.to_currency !== null && this.to_currency < 10) {
-                        this.waitingMessage = this.$i18n.t('liquidity.approveLptokenWithdrawal', [this.toFixed(amount / 1e18), 'LP tokens'])
-                        var { dismiss } = notifyNotification(this.waitingMessage)
-                        this.estimateGas = contractGas.depositzap[this.currentPool].withdraw / 2
-                        if(!['tbtc','ren','sbtc'].includes(currentContract.currentContract)) await common.ensure_allowance_zap_out(amount, undefined, undefined, this.inf_approval)
-                        dismiss()
-                        let min_amount;
-                        try {
-                            min_amount = await inOneCoin.methods.calc_withdraw_one_coin(amount, this.to_currency).call();
-                            min_amount = BN(min_amount).times(BN(1).minus(this.calcFee))
-                        }
-                        catch(err) {
-                            console.error(err)
-                            this.show_nobalance = true;
-                            this.show_nobalance_i = this.to_currency;
-                        }
-                        this.waitingMessage = this.$i18n.t('liquidity.confirmWithdrawalTransaction')
-                        var { dismiss } = notifyNotification(this.waitingMessage)
-                        let args = [BN(amount).toFixed(0,1), this.to_currency, BN(min_amount).times(BN(1).div(BN(this.getWithdrawMaxSlippage))).toFixed(0, 1)]
-                        if(!['tbtc','ren','sbtc'].includes(currentContract.currentContract)) args.push(this.donate_dust)
-                        await helpers.setTimeoutPromise(100)
-			        	try {
-                            await inOneCoin.methods
-			        		.remove_liquidity_one_coin(...args)
-			        		.send({
-			        			from: currentContract.default_account,
-			        			gasPrice: this.gasPriceWei,
-                                gas: contractGas.depositzap[this.currentPool].withdraw | 0,
-			        		}).once('transactionHash', hash => {
-                                dismiss()
-                                notifyHandler(hash)
-                                this.waitingMessage = `Waiting for withdrawal 
-                                <a href='https://etherscan.io/tx/${hash}'>transaction</a>
-                                to confirm: no further action needed`
-                            })
-                        }
-                        catch(err) {
-                            console.error(err)
-                            dismiss()
-                            errorStore.handleError(err)
-                        }
+            if((this.token_balance.lt(amount) || unstake) && ['susdv2', 'sbtc', 'y', 'iearn', 'dfi'].includes(this.currentPool)) {
+                let unstakeAmount = BN(amount).minus(BN(this.token_balance))
+                if(unstake) unstakeAmount = BN(amount)
+                await this.unstake(unstakeAmount, unstake && !unstake_only, unstake_only)
+            }
+            if(unstake_only) return;
+            amount = amount.toFixed(0,1)
+            if(this.to_currency !== null && this.to_currency < 10) {
+              this.waitingMessage = this.$i18n.t('liquidity.approveLptokenWithdrawal', [this.toFixed(amount / 1e18), 'LP tokens'])
+              var { dismiss } = notifyNotification(this.waitingMessage)
+              this.estimateGas = contractGas.depositzap[this.currentPool].withdraw / 2
+              if(!['tbtc','ren','sbtc'].includes(currentContract.currentContract)) await common.ensure_allowance_zap_out(amount, undefined, undefined, this.inf_approval)
+              dismiss()
+              let min_amount;
+              try {
+                  min_amount = await inOneCoin.methods.calc_withdraw_one_coin(amount, this.to_currency).call();
+                  min_amount = BN(min_amount).times(BN(1).minus(this.calcFee))
+              }
+              catch(err) {
+                  console.error(err)
+                  this.show_nobalance = true;
+                  this.show_nobalance_i = this.to_currency;
+              }
+              this.waitingMessage = this.$i18n.t('liquidity.confirmWithdrawalTransaction')
+              var { dismiss } = notifyNotification(this.waitingMessage)
+              let args = [BN(amount).toFixed(0,1), this.to_currency, BN(min_amount).times(BN(1).div(BN(this.getWithdrawMaxSlippage))).toFixed(0, 1)]
+              if(!['tbtc','ren','sbtc'].includes(currentContract.currentContract)) args.push(this.donate_dust)
+              await helpers.setTimeoutPromise(100)
+          try {
+                      await inOneCoin.methods
+            .remove_liquidity_one_coin(...args)
+            .send({
+              from: currentContract.default_account,
+              gasPrice: this.gasPriceWei,
+                          gas: contractGas.depositzap[this.currentPool].withdraw | 0,
+            }).once('transactionHash', hash => {
+                          dismiss()
+                          notifyHandler(hash)
+                          this.waitingMessage = `Waiting for withdrawal 
+                          <a href='https://etherscan.io/tx/${hash}'>transaction</a>
+                          to confirm: no further action needed`
+                      })
+                  }
+                  catch(err) {
+                      console.error(err)
+                      dismiss()
+                      errorStore.handleError(err)
+                  }
 			        }
 			        else if(this.to_currency == 10) {
                         this.waitingMessage = this.$i18n.t('liquidity.approveLptokenWithdrawal', [this.toFixed(amount / 1e18), 'LP tokens'])
@@ -2285,7 +2289,7 @@ console.log('current', this.currentPool, this.currencies)
                         }
 			        }
 			        else {
-                        try {
+                try {
     			        	let min_amounts = await this.getMinAmounts();
                             this.waitingMessage = this.$i18n.t('liquidity.confirmWithdrawalTransaction')
                             var { dismiss } = notifyNotification(this.waitingMessage)
