@@ -12,7 +12,12 @@
         </div>
         <div class="d-none d-md-flex align-items-center">
           <b-navbar-nav>
-            <b-nav-item v-for="item in headerNav" :key="'nav_'+item.name" :to=item.to :href=item.href :target=item.target>{{ $t(item.i18n) }}</b-nav-item>
+            <b-nav-item v-for="item in headerNav"
+              :key="'nav_'+item.name"
+              :to=item.to :href=item.href
+              :target=item.target
+              :active=item.active
+              >{{ $t(item.i18n) }}</b-nav-item>
           </b-navbar-nav>
           <sel-language class="ml-2" />
         </div>
@@ -72,7 +77,7 @@
         return process.env.BASE_URL
       },
       headerNav () {
-        const { $i18n } = this
+        const { $i18n, $router } = this
         const result = [
           { name: 'home', to: { name: 'RootIndex'}, i18n: 'global.home' },
           // { name: 'swap', to: {name: 'Swap', path: '/susdv2/swap'}, i18n: 'global.swap' },

@@ -314,6 +314,7 @@ function checkTethered(contract, i) {
 export async function multiInitState(calls, contract, initContracts = false) {
     let web3 = currentContract.web3 || new Web3(infura_url)
     let multicall = new web3.eth.Contract(multicall_abi, multicall_address)
+    console.log('multicall_address', multicall_address, calls)
     var default_account = currentContract.default_account;
     let aggcalls;
     try {

@@ -74,9 +74,9 @@ const currencies = {
 		sbtc: 'sBTC',
   },
   dfi: {
+    usdt: 'iUSDT',
     dai: 'iDAI',
 		usdc: 'iUSDC',
-		usdt: 'iUSDT',
   }
 }
 
@@ -483,15 +483,15 @@ export async function init(contract, refresh = false) {
 	if(contract && (contract.currentContract == state.currentContract || state.contracts[contract.currentContract].initializedContracts) && !refresh) return Promise.resolve();
 	if(!contract) contract = state
 	try {
-        let networkId = await state.web3.eth.net.getId();
-        if(networkId != 1) {
-            this.error = 'Error: wrong network type. Please switch to mainnet';
-        }
+    let networkId = await state.web3.eth.net.getId();
+    if(networkId != 1) {
+        this.error = 'Error: wrong network type. Please switch to mainnet';
     }
-    catch(err) {
-        console.error(err);
-        this.error = 'There was an error connecting. Please refresh page';
-    }
+  }
+  catch(err) {
+      console.error(err);
+      this.error = 'There was an error connecting. Please refresh page';
+  }
 
 	if(['ren', 'sbtc'].includes(contract.currentContract))
 		state.chi = state.chi || new web3.eth.Contract(ERC20_abi, CHI_address)
@@ -502,9 +502,9 @@ export async function init(contract, refresh = false) {
     	//A
     	[allabis[contract.currentContract].swap_address, '0xf446c1d0'],
     	//future_A
-        [allabis[contract.currentContract].swap_address, '0xb4b577ad'],
-        //admin_actions_deadline
-        [allabis[contract.currentContract].swap_address, '0x405e28f8'],
+      [allabis[contract.currentContract].swap_address, '0xb4b577ad'],
+      //admin_actions_deadline
+      [allabis[contract.currentContract].swap_address, '0x405e28f8'],
     ];
 
     if(contract.currentContract == 'compound') {
@@ -526,14 +526,17 @@ export async function init(contract, refresh = false) {
     	contract.snxExchanger = new state.web3.eth.Contract(synthetixExchanger_ABI, synthetixExchanger_address)
     }
     if(contract.currentContract == 'sbtc') {
-
     	contract.curveRewards = new state.web3.eth.Contract(allabis.sbtc.sCurveRewards_abi, allabis.sbtc.sCurveRewards_address)
-		calls.push([contract.curveRewards._address, contract.curveRewards.methods.balanceOf(state.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
+		  calls.push([contract.curveRewards._address, contract.curveRewards.methods.balanceOf(state.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
 
     	contract.snxExchanger = new state.web3.eth.Contract(synthetixExchanger_ABI, synthetixExchanger_address)
     }
-    if(['iearn','y', 'dfi'].includes(contract.currentContract)) {
-    	// contract.aRewards = new state.web3.eth.Contract(allabis.iearn.aRewards_abi, allabis.iearn.aRewards_address)
+    if(['iearn','y'].includes(contract.currentContract)) {
+    	contract.aRewards = new state.web3.eth.Contract(allabis.iearn.aRewards_abi, allabis.iearn.aRewards_address)
+    	contract.curveRewards = new state.web3.eth.Contract(allabis.iearn.sCurveRewards_abi, allabis.iearn.sCurveRewards_address)
+		  calls.push([contract.curveRewards._address, contract.curveRewards.methods.balanceOf(state.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
+    }
+    if(['dfi'].includes(contract.currentContract)) {
     	contract.curveRewards = new state.web3.eth.Contract(allabis.iearn.sCurveRewards_abi, allabis.iearn.sCurveRewards_address)
 		  calls.push([contract.curveRewards._address, contract.curveRewards.methods.balanceOf(state.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
     }

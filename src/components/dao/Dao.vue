@@ -52,9 +52,9 @@
               </span>
               <span class="col-12 col-md-6 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.rewardWeight', ['SFG']) }}</h6>
-                <!-- <text-overlay-loading inline :show="store.gauges.bpt.rewards.sfg.userPaidReward.loading"> -->
-                  <span class="h4">{{ store.gauges.susdv2.rewards.sfg.weighting }}</span>
-                <!-- </text-overlay-loading> -->
+                <text-overlay-loading inline :show="store.gauges.susdv2.rewards.sfg.weighting.loading">
+                  <span class="h4">{{ store.gauges.susdv2.rewards.sfg.weighting.percent }}%</span>
+                </text-overlay-loading>
               </span>
             </div>
 
@@ -266,9 +266,9 @@
               </span>
               <span class="col-12 col-md-6 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.rewardWeight', ['SFG']) }}</h6>
-                <!-- <text-overlay-loading inline :show="store.gauges.bpt.rewards.sfg.userPaidReward.loading"> -->
-                  <span class="h4">{{ store.gauges.dfi.rewards.sfg.weighting }}</span>
-                <!-- </text-overlay-loading> -->
+                <text-overlay-loading inline :show="store.gauges.dfi.rewards.sfg.weighting.loading">
+                  <span class="h4">{{ store.gauges.dfi.rewards.sfg.weighting.percent }}%</span>
+                </text-overlay-loading>
               </span>
               <!-- <span class="col-12 col-lg pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.virtualPrice') }}</h6>
@@ -438,9 +438,9 @@
               </span>
               <span class="col-12 col-md-6 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.rewardWeight', ['SFG']) }}</h6>
-                <!-- <text-overlay-loading inline :show="store.gauges.bpt.rewards.sfg.userPaidReward.loading"> -->
-                  <span class="h4">{{ store.gauges.bpt.rewards.sfg.weighting }}</span>
-                <!-- </text-overlay-loading> -->
+                <text-overlay-loading inline :show="store.gauges.bpt.rewards.sfg.weighting.loading">
+                  <span class="h4">{{ store.gauges.bpt.rewards.sfg.weighting.percent }}%</span>
+                </text-overlay-loading>
               </span>
               <!-- <span class="col-12 col-lg pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.virtualPrice') }}</h6>
@@ -1055,6 +1055,8 @@
             // TODO: temp
             this.gaugeContract = store.gauges.susdv2.contract
 
+            store.gauges.susdv2.rewards.sfg.weighting.handled = 0.3
+
             store.gauges.susdv2.getAPY(
               store.tokens.sfg.getPrice(),
               store.tokens.sfg.getDailyYield(),
@@ -1083,13 +1085,16 @@
             )
 
             const { dfi, bpt } = store.gauges
+
+            store.gauges.dfi.rewards.sfg.weighting.handled = 0.3
+
             // DFI
-            // store.gauges.dfi.getAPY(
-            //   store.tokens.sfg.getPrice(),
-            //   store.tokens.sfg.getDailyYield(),
-              dfi.getTotalStaking(dfi.mortgages.iUSD_LPT.totalStaking)
-            //   store.tokens.bpt.getPrice(),
-            // )
+            store.gauges.dfi.getAPY(
+              store.tokens.sfg.getPrice(),
+              store.tokens.sfg.getDailyYield(),
+              dfi.getTotalStaking(dfi.mortgages.iUSD_LPT.totalStaking),
+              store.tokens.iUSD_LPT.getPrice(),
+            )
 
             store.tokens.iUSD_LPT.getBalanceOf(dfi.mortgages.iUSD_LPT.userBalanceOf, currentContract.default_account)
 
@@ -1102,6 +1107,7 @@
             )
 
             // BPT
+            store.gauges.bpt.rewards.sfg.weighting.handled = 0.4
 
             store.gauges.bpt.getAPY(
               store.tokens.sfg.getPrice(),

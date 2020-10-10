@@ -114,7 +114,7 @@ export default {
     depositTip: '你可以存入下方任意一种或多种稳定币，智能合约将按比例自动平衡存入的资产',
     depositBalancedProportion: '均衡添加所有硬币',
     depositUseMaximumAvailable: '使用最大数量的硬币',
-    depositWrapped: '打包存款',
+    depositWrapped: '存入 {0} 代币',
     depositWrappedPlaceholder: '存入抵押凭据',
     willLeastReceive: '你将至少收到',
     willReceive: '你将收到',
@@ -124,8 +124,12 @@ export default {
     depositStakeGauge: '存款并抵押挖矿',
     withdrawAvailableAmount: '可取款数量',
     withdrawAmountPlaceholder: '输入取出数量',
+    withdrawWrapped: '取出 {0} 代币',
     withdrawRedemptionTip: '赎回挖矿中的 LP token',
-    dailyProfit: '今日存款收益'
+    dailyProfit: '今日存款收益',
+    approveStakingTokens: '请批准您的 {0} 代币',
+    approveLptokenWithdrawal: '请批准取出 {0} {1}',
+    confirmWithdrawalTransaction: '请确认取出交易',
   },
   dao: {
     standTitle: '稳定币流动性矿池',

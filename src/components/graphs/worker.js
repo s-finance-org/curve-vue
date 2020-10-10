@@ -56,9 +56,9 @@ const currencies = {
 		sbtc: 'sBTC',
   },
   dfi: {
+    usdt: 'iUSDT',
     dai: 'iDAI',
 		usdc: 'iUSDC',
-		usdt: 'iUSDT',
   }
 }
 

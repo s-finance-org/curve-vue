@@ -124,8 +124,12 @@ export default {
     depositStakeGauge: 'Deposit & stake in gauge',
     withdrawAvailableAmount: 'available amount',
     withdrawAmountPlaceholder: 'amount',
+    withdrawWrapped: 'Withdraw wrapped ',
     withdrawRedemptionTip: 'LP token redemption',
-    dailyProfit: 'Daily profit'
+    dailyProfit: 'Daily profit',
+    approveStakingTokens: 'Please approve staking {0} of your tokens',
+    approveLptokenWithdrawal: 'Please approve {0} {1} for withdrawal',
+    confirmWithdrawalTransaction: 'Please confirm withdrawal transaction',
   },
   dao: {
     standTitle: 'Stablecoin liquidity pool',

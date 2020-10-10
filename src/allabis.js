@@ -13850,11 +13850,12 @@ var sbtc = {
 }
 
 var dfi = {
+  // USDT、DAI、USDC
   N_COINS: 3,
-  coin_precisions: [1e18, 1e6, 1e6],
-  wrapped_precisions: [1e18, 1e6, 1e6],
+  coin_precisions: [1e6, 1e18, 1e6],
+  wrapped_precisions: [1e6, 1e18, 1e6],
   use_lending: [true, true, true],
-  tethered: [false, false, true],
+  tethered: [true, false, false],
   is_plain: [false, false, false],
   swap_address: '0xa60cb5Af1B7B529d42DCDD114C6Ae5300250B1dB', // curve 0x45F783CCE6B7FF23B2ab2D70e416cdb7D6055f51
   swap_abi: [
@@ -13931,12 +13932,12 @@ var dfi = {
           'indexed': true
         },
         {
-          'type': 'uint256[4]',
+          'type': 'uint256[3]',
           'name': 'token_amounts',
           'indexed': false
         },
         {
-          'type': 'uint256[4]',
+          'type': 'uint256[3]',
           'name': 'fees',
           'indexed': false
         },
@@ -13963,12 +13964,12 @@ var dfi = {
           'indexed': true
         },
         {
-          'type': 'uint256[4]',
+          'type': 'uint256[3]',
           'name': 'token_amounts',
           'indexed': false
         },
         {
-          'type': 'uint256[4]',
+          'type': 'uint256[3]',
           'name': 'fees',
           'indexed': false
         },
@@ -13990,12 +13991,12 @@ var dfi = {
           'indexed': true
         },
         {
-          'type': 'uint256[4]',
+          'type': 'uint256[3]',
           'name': 'token_amounts',
           'indexed': false
         },
         {
-          'type': 'uint256[4]',
+          'type': 'uint256[3]',
           'name': 'fees',
           'indexed': false
         },
@@ -14097,11 +14098,11 @@ var dfi = {
       'outputs': [],
       'inputs': [
         {
-          'type': 'address[4]',
+          'type': 'address[3]',
           'name': '_coins'
         },
         {
-          'type': 'address[4]',
+          'type': 'address[3]',
           'name': '_underlying_coins'
         },
         {
@@ -14145,7 +14146,7 @@ var dfi = {
       ],
       'inputs': [
         {
-          'type': 'uint256[4]',
+          'type': 'uint256[3]',
           'name': 'amounts'
         },
         {
@@ -14163,7 +14164,7 @@ var dfi = {
       'outputs': [],
       'inputs': [
         {
-          'type': 'uint256[4]',
+          'type': 'uint256[3]',
           'name': 'amounts'
         },
         {
@@ -14345,7 +14346,7 @@ var dfi = {
           'name': '_amount'
         },
         {
-          'type': 'uint256[4]',
+          'type': 'uint256[3]',
           'name': 'min_amounts'
         }
       ],
@@ -14359,7 +14360,7 @@ var dfi = {
       'outputs': [],
       'inputs': [
         {
-          'type': 'uint256[4]',
+          'type': 'uint256[3]',
           'name': 'amounts'
         },
         {
@@ -14674,14 +14675,14 @@ var dfi = {
   token_address: '0x4Dc0E64D50e9F850515D19BE6e66FC2aD122c222', // curve 0xdF5e0e81Dff6FAF3A7e52BA697820c5e32D806A8
   infura_url: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`,
   underlying_coins: [
+    '0xdAC17F958D2ee523a2206206994597C13D831ec7', // USDT
     '0x6B175474E89094C44Da98b954EedeAC495271d0F', // DAI
     '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', // USDC
-    '0xdAC17F958D2ee523a2206206994597C13D831ec7', // USDT
   ],
   coins: [
+    '0x72Cf258c852Dc485a853370171d46B9D29fD3184', // iUSDT
     '0x1e0DC67aEa5aA74718822590294230162B5f2064', // iDAI
     '0x23B4dB3a435517fd5f2661a9c5a16f78311201c1', // iUSDC
-    '0x72Cf258c852Dc485a853370171d46B9D29fD3184', // iUSDT
   ],
   deposit_address: '0x0428FdF0f0a7638865757ccA97396CfDAbd68c47', // curve 0xbBC81d23Ea2c3ec7e56D39296F0cbB648873a5d3
   deposit_abi: [
@@ -14689,11 +14690,11 @@ var dfi = {
       'outputs': [],
       'inputs': [
         {
-          'type': 'address[4]',
+          'type': 'address[3]',
           'name': '_coins'
         },
         {
-          'type': 'address[4]',
+          'type': 'address[3]',
           'name': '_underlying_coins'
         },
         {
@@ -14714,7 +14715,7 @@ var dfi = {
       'outputs': [],
       'inputs': [
         {
-          'type': 'uint256[4]',
+          'type': 'uint256[3]',
           'name': 'uamounts'
         },
         {
@@ -14736,7 +14737,7 @@ var dfi = {
           'name': '_amount'
         },
         {
-          'type': 'uint256[4]',
+          'type': 'uint256[3]',
           'name': 'min_uamounts'
         }
       ],
@@ -14750,7 +14751,7 @@ var dfi = {
       'outputs': [],
       'inputs': [
         {
-          'type': 'uint256[4]',
+          'type': 'uint256[3]',
           'name': 'uamounts'
         },
         {
@@ -14908,7 +14909,7 @@ var dfi = {
       'gas': 1571
     }
   ],
-  sCurveRewards_address: '0xe1cfD38Ca4E7FE244C73666C300fB7A896Ba8Bde', // curve 0x0001FB050Fe7312791bF6475b96569D83F695C9f
+  sCurveRewards_address: '0x0001FB050Fe7312791bF6475b96569D83F695C9f',
   sCurveRewards_abi: [
     {
       'anonymous': false,
@@ -15239,79 +15240,80 @@ var dfi = {
     }
   ],
   aRewards_abi: [
-    // {
-    //   'inputs': [],
-    //   'payable': false,
-    //   'stateMutability': 'nonpayable',
-    //   'type': 'constructor'
-    // },
-    // {
-    //   'constant': true,
-    //   'inputs': [],
-    //   'name': 'adai',
-    //   'outputs': [
-    //     { 'internalType': 'contract IERC20', 'name': '', 'type': 'address' }
-    //   ],
-    //   'payable': false,
-    //   'stateMutability': 'view',
-    //   'type': 'function'
-    // },
-    // {
-    //   'constant': false,
-    //   'inputs': [
-    //     { 'internalType': 'uint256', 'name': '_amount', 'type': 'uint256' }
-    //   ],
-    //   'name': 'claim',
-    //   'outputs': [],
-    //   'payable': false,
-    //   'stateMutability': 'nonpayable',
-    //   'type': 'function'
-    // },
-    // {
-    //   'constant': true,
-    //   'inputs': [
-    //     { 'internalType': 'address', 'name': '_claimer', 'type': 'address' }
-    //   ],
-    //   'name': 'claimable',
-    //   'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-    //   'payable': false,
-    //   'stateMutability': 'view',
-    //   'type': 'function'
-    // },
-    // {
-    //   'constant': true,
-    //   'inputs': [],
-    //   'name': 'governance',
-    //   'outputs': [{ 'internalType': 'address', 'name': '', 'type': 'address' }],
-    //   'payable': false,
-    //   'stateMutability': 'view',
-    //   'type': 'function'
-    // },
-    // {
-    //   'constant': false,
-    //   'inputs': [
-    //     { 'internalType': 'address', 'name': '_token', 'type': 'address' },
-    //     { 'internalType': 'uint256', 'name': '_amount', 'type': 'uint256' }
-    //   ],
-    //   'name': 'seize',
-    //   'outputs': [],
-    //   'payable': false,
-    //   'stateMutability': 'nonpayable',
-    //   'type': 'function'
-    // },
-    // {
-    //   'constant': true,
-    //   'inputs': [],
-    //   'name': 'yfi',
-    //   'outputs': [
-    //     { 'internalType': 'contract IERC20', 'name': '', 'type': 'address' }
-    //   ],
-    //   'payable': false,
-    //   'stateMutability': 'view',
-    //   'type': 'function'
-    // }
+    {
+      'inputs': [],
+      'payable': false,
+      'stateMutability': 'nonpayable',
+      'type': 'constructor'
+    },
+    {
+      'constant': true,
+      'inputs': [],
+      'name': 'adai',
+      'outputs': [
+        { 'internalType': 'contract IERC20', 'name': '', 'type': 'address' }
+      ],
+      'payable': false,
+      'stateMutability': 'view',
+      'type': 'function'
+    },
+    {
+      'constant': false,
+      'inputs': [
+        { 'internalType': 'uint256', 'name': '_amount', 'type': 'uint256' }
+      ],
+      'name': 'claim',
+      'outputs': [],
+      'payable': false,
+      'stateMutability': 'nonpayable',
+      'type': 'function'
+    },
+    {
+      'constant': true,
+      'inputs': [
+        { 'internalType': 'address', 'name': '_claimer', 'type': 'address' }
+      ],
+      'name': 'claimable',
+      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
+      'payable': false,
+      'stateMutability': 'view',
+      'type': 'function'
+    },
+    {
+      'constant': true,
+      'inputs': [],
+      'name': 'governance',
+      'outputs': [{ 'internalType': 'address', 'name': '', 'type': 'address' }],
+      'payable': false,
+      'stateMutability': 'view',
+      'type': 'function'
+    },
+    {
+      'constant': false,
+      'inputs': [
+        { 'internalType': 'address', 'name': '_token', 'type': 'address' },
+        { 'internalType': 'uint256', 'name': '_amount', 'type': 'uint256' }
+      ],
+      'name': 'seize',
+      'outputs': [],
+      'payable': false,
+      'stateMutability': 'nonpayable',
+      'type': 'function'
+    },
+    {
+      'constant': true,
+      'inputs': [],
+      'name': 'yfi',
+      'outputs': [
+        { 'internalType': 'contract IERC20', 'name': '', 'type': 'address' }
+      ],
+      'payable': false,
+      'stateMutability': 'view',
+      'type': 'function'
+    }
   ],
-  // aRewards_address: '0xcc9efea3ac5df6ad6a656235ef955fbfef65b862'
+  // NOTE: not required
+  aRewards_address: '0xcc9efea3ac5df6ad6a656235ef955fbfef65b862'
 }
 
 export let iearnAPR_abi = [

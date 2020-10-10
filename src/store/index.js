@@ -25,6 +25,7 @@ import BALANCER_POOL_ABI from '../components/dao/abi/BALANCER_POOL_ABI'
 import abiSFG from '../components/dao/abi/sfg'
 import abiDfi from '../components/dao/abi/dfi'
 import abi_iUSD_LPT from '../components/dao/abi/iUSD_LPT'
+import swapAbi_iUSD_LPT from '../components/dao/abi/swapAbi_iUSD_LPT'
 import { ERC20_abi as abiSusdv2LpToken } from '../allabis'
 
 // FIXME: 
@@ -433,12 +434,21 @@ store.tokens = {
     address: '0x4Dc0E64D50e9F850515D19BE6e66FC2aD122c222', // test
     swapAddress: '0xa60cb5Af1B7B529d42DCDD114C6Ae5300250B1dB', // test
     abi: abi_iUSD_LPT,
+    swapAbi: swapAbi_iUSD_LPT,
     __contract: null,
     get contract () {
       const { __contract, abi, address } = this
 
       return __contract ||
         (this.__contract = new web3.eth.Contract(abi, address))
+    },
+
+    __contractSwap: null,
+    get contractSwap () {
+      const { __contractSwap, swapAbi, swapAddress } = this
+
+      return __contractSwap ||
+        (this.__contractSwap = new web3.eth.Contract(swapAbi, swapAddress))
     },
 
     userBalanceOf: valueModel.create(),
@@ -452,6 +462,17 @@ store.tokens = {
     },
 
     error: errorModel.create(),
+
+    price: valueModel.create(),
+    async getPrice () {
+      const { contractSwap, price } = this
+      console.log(await contractSwap.methods.get_virtual_price().call())
+      const result = await contractSwap.methods.get_virtual_price().call()
+
+      price.tether = result
+
+      return result
+    },
 
     // amount: 0,
     // approveAmount: 0,
@@ -660,7 +681,7 @@ store.gauges = {
       sfg: {
         code: 'sfg',
         name: 'SFG',
-        weighting: '40%',
+        weighting: valueModel.create(),
 
         userPendingReward: valueModel.create(),
         userPaidReward: valueModel.create(),
@@ -678,9 +699,9 @@ store.gauges = {
     apy: valueModel.create(),
     // TEMP: 
     async getAPY (price, dailyYield, totalStaking, lpTokenPrice) {
-      const { contract, dailyAPY, apy } = this
+      const { contract, dailyAPY, apy, rewards } = this
 
-      dailyAPY.handled = BN(await price / 1e18).times(await dailyYield / 1e18).times(0.4).dividedBy(BN(await totalStaking / 1e18).times(await lpTokenPrice)).toString()
+      dailyAPY.handled = BN(await price / 1e18).times(await dailyYield / 1e18).times(rewards.sfg.weighting.handled).dividedBy(BN(await totalStaking / 1e18).times(await lpTokenPrice)).toString()
       apy.handled = +dailyAPY.handled * 365
       console.log(+dailyAPY.handled * 365)
     },
@@ -784,7 +805,7 @@ store.gauges = {
   dfi: {
     code: 'dfi',
     name: 'DFI',
-    propagateMark: 'Dfi',
+    propagateMark: 'dfi',
     mortgagesUnit: 'iUSD LP token',
     address: '0x00832130896b1992f6be24A4130e5e1e56d29d65',
     // abi: abiDfi, // FIXME: ???
@@ -887,7 +908,7 @@ store.gauges = {
       sfg: {
         code: 'sfg',
         name: 'SFG',
-        weighting: '30%',
+        weighting: valueModel.create(),
 
         userPendingReward: valueModel.create(),
         userPaidReward: valueModel.create(),
@@ -905,9 +926,9 @@ store.gauges = {
     apy: valueModel.create(),
     // TEMP: 
     async getAPY (price, dailyYield, totalStaking, lpTokenPrice) {
-      const { contract, dailyAPY, apy } = this
+      const { contract, dailyAPY, apy, rewards } = this
 
-      dailyAPY.handled = BN(await price / 1e18).times(await dailyYield / 1e18).times(0.4).dividedBy(BN(await totalStaking / 1e18).times(await lpTokenPrice)).toString()
+      dailyAPY.handled = BN(await price / 1e18).times(await dailyYield / 1e18).times(rewards.sfg.weighting.handled).dividedBy(BN(await totalStaking / 1e18).times(await lpTokenPrice)).toString()
       apy.handled = +dailyAPY.handled * 365
       console.log(+dailyAPY.handled * 365)
     },
@@ -1035,7 +1056,7 @@ console.log('getBalanceOf', result)
       sfg: {
         code: 'sfg',
         name: 'SFG',
-        weighting: '30%',
+        weighting: valueModel.create(),
 
         userPendingReward: valueModel.create(),
         userPaidReward: valueModel.create(),
@@ -1049,9 +1070,9 @@ console.log('getBalanceOf', result)
     apy: valueModel.create(),
     // TEMP: 
     async getAPY (price, dailyYield, totalStaking, lpTokenPrice) {
-      const { contract, dailyAPY, apy } = this
+      const { contract, dailyAPY, apy, rewards } = this
 
-      dailyAPY.handled = BN(await price / 1e18).times(await dailyYield / 1e18).times(0.6).dividedBy(BN(await totalStaking / 1e18).times(lpTokenPrice)).toString()
+      dailyAPY.handled = BN(await price / 1e18).times(await dailyYield / 1e18).times(rewards.sfg.weighting.handled).dividedBy(BN(await totalStaking / 1e18).times(lpTokenPrice)).toString()
       // TMEP: + 0.11
       apy.handled = +dailyAPY.handled * 365 + 0.11
     },

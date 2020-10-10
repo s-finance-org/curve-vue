@@ -282,7 +282,7 @@ let routes = [
   {
     // path: '/:pool(compound|usdt|y|iearn|busd|susdv2|pax|tbtc|ren|sbtc)/',
     path: '/:pool(susdv2|dfi|y)/',
-    name: 'Index',
+    name: 'PoolIndex',
     // component: PoolApp,
     component: RootDefault,
     children: [
@@ -292,7 +292,7 @@ let routes = [
         component: SwapRouter,
       },
       {
-        path: 'liquidity',
+        path: '/:pool(susdv2|dfi|y)/liquidity',
         name: 'Liquidity',
         component: Liquidity,
       },

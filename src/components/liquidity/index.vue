@@ -101,7 +101,7 @@
                       <b-form-checkbox v-model="inf_approval" name="inf-approval">{{ $t('dao.infiniteApproval') }}</b-form-checkbox>
                       <b-form-checkbox @change='handle_sync_balances_proportion' :disabled='disabledButtons' checked v-model='sync_balances' name="sync-balances">{{ $t('liquidity.depositBalancedProportion') }}</b-form-checkbox>
                       <b-form-checkbox @change='handle_sync_balances' :disabled='disabledButtons' checked v-model='max_balances' name="max-balances">{{ $t('liquidity.depositUseMaximumAvailable') }}</b-form-checkbox>
-                      <b-form-checkbox v-show = "!['susd','susdv2','tbtc','ren','sbtc'].includes(currentPool)" checked v-model='depositc' name="inf-approval" >{{ $t('liquidity.depositWrapped') }}</b-form-checkbox>
+                      <b-form-checkbox v-show = "!['susd','susdv2','tbtc','ren','sbtc'].includes(currentPool)" checked v-model='depositc' name="inf-approval" >{{ $t('liquidity.depositWrapped', ['i']) }}</b-form-checkbox>
                     </div>
                   </div>
 
@@ -129,7 +129,7 @@
                     <label class="mb-3">
                       <span class="text-danger-1">{{ $t('liquidity.willLeastReceive') }}</span>
                       <span class="float-right">
-                        <span class="text-danger-1 text-18">{{ lpCrvReceivedText }}</span> {{ currentPool }} LP tokens
+                        <span class="text-danger-1 text-18">{{ lpCrvReceivedText }}</span> {{ currentPoolTokenName }}
                       </span>
                     </label>
                   </div>
@@ -238,7 +238,7 @@
               <b-tab :title="$t('global.withdraw')" class="pt-3">
                 <small class="d-flex mb-3">{{ $t('liquidity.withdrawAvailableAmount') }}：
                   <text-overlay-loading :show="gauges.balanceOf.loading">
-                    {{ gauges.balanceOf.cont }} {{ currentPool }} LP tokens
+                    {{ gauges.balanceOf.cont }} {{ currentPoolTokenName }}
                   </text-overlay-loading>
                 </small>
 
@@ -312,10 +312,7 @@
                       </b-form-text> -->
                     </div>
 
-                    <li v-show = "!['susd','susdv2','tbtc','ren', 'sbtc'].includes(currentPool)">
-                      <input id="withdrawc" type="checkbox" name="withdrawc" v-model='withdrawc'>
-                      <label for="withdrawc">Withdraw wrapped</label>
-                    </li>
+                    <b-form-checkbox v-show = "!['susd','susdv2','tbtc','ren','sbtc'].includes(currentPool)" v-model='withdrawc' name="inf-approval" >{{ $t('liquidity.withdrawWrapped', ['i']) }}</b-form-checkbox>
                   </div>
 
                   <div class="col-12 col-lg mb-2 d-flex flex-column text-black-65">
@@ -469,7 +466,7 @@
         </b-container>
 
         <!-- deposit -->
-        <div class="add-liquidity" v-show=true>
+        <div class="add-liquidity" v-if=false>
                 <fieldset class="currencies">
                     <legend>Currencies:</legend>
                     <ul>
@@ -582,10 +579,10 @@
                         Stake unstaked <span class='loading line' v-show='loadingAction == 3'></span>
                     </button>
                     <p class='info-message gentle-message' v-show="lpCrvReceived > 0">
-                        You'll receive minimum {{ lpCrvReceivedText }} Curve {{currentPool}} LP tokens <sub>{{ ((1 - getDepositMaxSlippage) * 100).toFixed(2)}}% max slippage</sub>
+                        You'll receive minimum {{ lpCrvReceivedText }} {{ currentPoolTokenName }}<sub>{{ ((1 - getDepositMaxSlippage) * 100).toFixed(2)}}% max slippage</sub>
 
                         <span class='curvelpusd'> 
-                            1 Curve {{currentPool}} LP token = {{ (1 * virtual_price).toFixed(6) }} 
+                            1 {{ currentPoolTokenName }} = {{ (1 * virtual_price).toFixed(6) }} 
                             {{ !['ren', 'sbtc'].includes(currentPool) ? 'USD' : 'BTC' }} 
                         </span>
                     </p>
@@ -643,7 +640,7 @@
         </div>
 
         <!-- withdraw -->
-        <div class="add-liquidity" v-show=true>
+        <div class="add-liquidity" v-if=false>
             <fieldset class="percentage">
                 <legend>
                   Share of liquidity (%)
@@ -1067,6 +1064,14 @@ console.log('created', volumeStore.state.volumes, key)
         },
         computed: {
           ...getters,
+          currentPoolTokenName () {
+            const conversions = {
+              'dfi': 'iUSD'
+            }
+            const result = conversions[this.currentPool] || this.currentPool
+
+            return `${result} LP tokens`
+          },
           gauges () {
             const { currentPool } = this
 
@@ -1244,7 +1249,7 @@ console.log('current', this.currentPool, this.currencies)
                     tokens = BN(await currentContract.swap_token.methods.balanceOf(currentContract.default_account).call());
                     tokens = BN(this.stakepercentage / 100).times(tokens)
                 }
-                this.waitingMessage = `Please approve staking ${this.toFixed(tokens.div(BN(1e18)))} of your sCurve tokens`
+                this.waitingMessage = this.$i18n.t('liquidity.approveStakingTokens', [this.toFixed(tokens.div(BN(1e18)))])
                 var { dismiss } = notifyNotification(this.waitingMessage)
                 await common.ensure_stake_allowance(tokens, currentContract.curveRewards, this.inf_approval);
                 dismiss()
@@ -1707,7 +1712,8 @@ console.log('current', this.currentPool, this.currencies)
       async getLPCrvReceived() {
         let deposit_inputs = this.deposit_inputs.map(v => v || 0)
         this.lpCrvReceived = (await currentContract.swap.methods
-            .calc_token_amount(deposit_inputs.map((v, i) => BN(v).div(currentContract.c_rates[i]).toFixed(0,1)), true).call() / 1e18) * this.getDepositMaxSlippage
+            .calc_token_amount(deposit_inputs.map((v, i) => BN(v).div(currentContract.c_rates[i]).toFixed(0,1)
+            ), true).call() / 1e18) * this.getDepositMaxSlippage
       },
 			async change_currency(i, setInputs = true, event) {
 				if(event) {
@@ -2158,7 +2164,7 @@ console.log('current', this.currentPool, this.currencies)
                         })
                         amounts = amounts.map(amount => amount || 0)
                         let gas = contractGas.depositzap[this.currentPool].withdrawImbalance(nonZeroInputs) | 0
-                        this.waitingMessage = `Please approve ${this.toFixed(token_amount / 1e18)} Curve LP tokens for withdrawal`
+                        this.waitingMessage = this.$i18n.t('liquidity.approveLptokenWithdrawal', [this.toFixed(token_amount / 1e18), 'LP tokens'])
                         var { dismiss } = notifyNotification(this.waitingMessage)
                         try {
                             this.estimateGas = gas / (['compound', 'usdt'].includes(currentContract.currentContract) ? 1.5 : 2.5)
@@ -2201,7 +2207,7 @@ console.log('current', this.currentPool, this.currencies)
                     if(unstake_only) return;
                     amount = amount.toFixed(0,1)
                     if(this.to_currency !== null && this.to_currency < 10) {
-                        this.waitingMessage = `Please approve ${this.toFixed((amount / 1e18))} Curve LP tokens for withdrawal`
+                        this.waitingMessage = this.$i18n.t('liquidity.approveLptokenWithdrawal', [this.toFixed(amount / 1e18), 'LP tokens'])
                         var { dismiss } = notifyNotification(this.waitingMessage)
                         this.estimateGas = contractGas.depositzap[this.currentPool].withdraw / 2
                         if(!['tbtc','ren','sbtc'].includes(currentContract.currentContract)) await common.ensure_allowance_zap_out(amount, undefined, undefined, this.inf_approval)
@@ -2243,7 +2249,7 @@ console.log('current', this.currentPool, this.currencies)
                         }
 			        }
 			        else if(this.to_currency == 10) {
-                        this.waitingMessage = `Please approve ${this.toFixed(amount / 1e18)} Curve LP tokens for withdrawal`
+                        this.waitingMessage = this.$i18n.t('liquidity.approveLptokenWithdrawal', [this.toFixed(amount / 1e18), 'LP tokens'])
                         var { dismiss } = notifyNotification(this.waitingMessage)
                         try {
                             this.estimateGas = contractGas.depositzap[this.currentPool].withdrawShare / 2
