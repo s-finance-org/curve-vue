@@ -643,7 +643,7 @@
         </div>
 
         <!-- withdraw -->
-        <div class="add-liquidity" v-if=true>
+        <div class="add-liquidity" v-if=false>
             <fieldset class="percentage">
                 <legend>
                   Share of liquidity (%)
