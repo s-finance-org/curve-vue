@@ -1490,11 +1490,11 @@ console.log('current', this.currentPool, this.currencies)
 
         this.show_loading = true
         let calls = [...Array(currentContract.N_COINS).keys()].map(i=> {
-                if(this.currentPool == 'susdv2' && i == 3 || this.currentPool == 'sbtc' && i == 2)
-                  return [this.coins[i]._address, this.coins[i].methods.transferableSynths(currentContract.default_account).encodeABI()]
-                return [this.coins[i]._address, this.coins[i].methods.balanceOf(currentContract.default_account).encodeABI()]
-              }
-          )
+            if(this.currentPool == 'susdv2' && i == 3 || this.currentPool == 'sbtc' && i == 2)
+              return [this.coins[i]._address, this.coins[i].methods.transferableSynths(currentContract.default_account).encodeABI()]
+            return [this.coins[i]._address, this.coins[i].methods.balanceOf(currentContract.default_account).encodeABI()]
+          }
+        )
 
         let endOffset = 1
         calls.push([currentContract.swap_token._address, currentContract.swap_token.methods.totalSupply().encodeABI()])
@@ -1573,21 +1573,21 @@ console.log('current', this.currentPool, this.currencies)
 			    let minted = 0;
 			    if(this.depositc) {
             this.waitingMessage = this.$i18n.t('notice.confirmDepositTransaction')
-            console.log(this.waitingMessage)
+
             var { dismiss } = notifyNotification(this.waitingMessage)
             await helpers.setTimeoutPromise(100)
 			    	let add_liquidity = currentContract.swap.methods.add_liquidity(this.amounts, token_amount).send({
 				        from: currentContract.default_account,
-                        gasPrice: this.gasPriceWei,
-				        gas: contractGas.deposit[this.currentPool],
+                gasPrice: this.gasPriceWei,
+				        // gas: contractGas.deposit[this.currentPool],
 				    }).once('transactionHash', hash => {
-                        dismiss()
-                        notifyHandler(hash)
-                        this.waitingMessage = 
-                        `Waiting for deposit 
-                            <a href='http://etherscan.io/tx/${hash}'>transaction</a> 
-                            to confirm ${stake ? 'before staking' : 'no further action required'}`
-                    })
+                dismiss()
+                notifyHandler(hash)
+                this.waitingMessage = 
+                `Waiting for deposit 
+                    <a href='http://etherscan.io/tx/${hash}'>transaction</a> 
+                    to confirm ${stake ? 'before staking' : 'no further action required'}`
+            })
 				    try {
 				    	receipt = await add_liquidity
 				    }
@@ -1611,8 +1611,8 @@ console.log('current', this.currentPool, this.currencies)
                     await helpers.setTimeoutPromise(100)
 					let add_liquidity = currentContract.deposit_zap.methods.add_liquidity(amounts, token_amount).send({
 						from: currentContract.default_account,
-                        gasPrice: this.gasPriceWei,
-						gas: gas,
+            gasPrice: this.gasPriceWei,
+						// gas: gas,
 					})
 					.once('transactionHash', hash => {
                         notifyHandler(hash)
@@ -1885,7 +1885,7 @@ console.log('current', this.currentPool, this.currencies)
                             .send({
                                 from: currentContract.default_account,
                                 gasPrice: this.gasPriceWei,
-                                gas: 400000,
+                                // gas: 400000,
                             })
                             .once('transactionHash', hash => {
                                 dismiss()
@@ -1912,7 +1912,7 @@ console.log('current', this.currentPool, this.currencies)
                         .send({
                             from: currentContract.default_account,
                             gasPrice: this.gasPriceWei,
-                            gas: 600000,
+                            // gas: 600000,
                         })
                         .once('transactionHash', hash => {
                             dismiss()
@@ -1995,7 +1995,7 @@ console.log('current', this.currentPool, this.currencies)
     						.send({
     							from: currentContract.default_account,
     							gasPrice: this.gasPriceWei,
-                                gas: 125000,
+                  // gas: 125000,
     						})
     						.once('transactionHash', hash => {
                                 this.waitingMessage = 'Waiting for unstake transaction to confirm'
@@ -2117,7 +2117,7 @@ console.log('current', this.currentPool, this.currencies)
                                                     .estimateGas({
                                                         from: currentContract.default_account,
                                                         gasPrice: this.gasPriceWei,
-                                                        gas: gas,
+                                                        // gas: gas,
                                                     })
                             }
                             catch(err) {
@@ -2127,7 +2127,7 @@ console.log('current', this.currentPool, this.currencies)
     			        	await currentContract.swap.methods.remove_liquidity_imbalance(this.amounts, token_amount).send({
     				        	from: currentContract.default_account, 
                                 gasPrice: this.gasPriceWei,
-                                gas: gas,
+                                // gas: gas,
     				        }).once('transactionHash', hash => {
                                 dismiss()
                                 notifyHandler(hash)
@@ -2164,7 +2164,7 @@ console.log('current', this.currentPool, this.currencies)
     			        	await inOneCoin.methods.remove_liquidity_imbalance(amounts, token_amount).send({
     				        	from: currentContract.default_account, 
                                 gasPrice: this.gasPriceWei,
-                                gas: gas,
+                                // gas: gas,
     				        }).once('transactionHash', hash => {
                                 dismiss()
                                 notifyHandler(hash)
@@ -2221,7 +2221,7 @@ console.log('current', this.currentPool, this.currencies)
             .send({
               from: currentContract.default_account,
               gasPrice: this.gasPriceWei,
-                          gas: contractGas.depositzap[this.currentPool].withdraw | 0,
+              // gas: contractGas.depositzap[this.currentPool].withdraw | 0,
             }).once('transactionHash', hash => {
                           dismiss()
                           notifyHandler(hash)
@@ -2251,7 +2251,7 @@ console.log('current', this.currentPool, this.currencies)
     			        	.send({
                                 from: currentContract.default_account, 
                                 gasPrice: this.gasPriceWei,
-                                gas: contractGas.depositzap[this.currentPool].withdrawShare,
+                                // gas: contractGas.depositzap[this.currentPool].withdrawShare,
                             })
                             .once('transactionHash', hash => {
                                 dismiss()
@@ -2280,7 +2280,7 @@ console.log('current', this.currentPool, this.currencies)
                                                     .estimateGas({
                                                         from: currentContract.default_account,
                                                         gasPrice: this.gasPriceWei,
-                                                        gas: 600000,
+                                                        // gas: 600000,
                                                     })
                             }
                             catch(err) {
@@ -2290,7 +2290,7 @@ console.log('current', this.currentPool, this.currencies)
     			        	await currentContract.swap.methods.remove_liquidity(amount, min_amounts).send({
                                 from: currentContract.default_account, 
                                 gasPrice: this.gasPriceWei,
-                                gas: 600000,
+                                // gas: 600000,
                             })
                             .once('transactionHash', hash => {
                                 dismiss()
