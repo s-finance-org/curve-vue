@@ -76,7 +76,7 @@
                 <small class="d-flex mt-1 flex-wrap">
                   {{ $t('dao.stakingBalance') }}：
                   <text-overlay-loading class="mr-2" :show="currentPool.balanceOf.loading">{{ currentPool.balanceOf.cont }} {{ currentPool.name }} LP tokens</text-overlay-loading>
-                  <b-button class="text-blue-1" to="/susdv2/liquidity/" size="xsm" variant="light">{{ $t('dao.stakingConfirmTip', ['LP tokens']) }}</b-button>
+                  <b-button class="text-blue-1" to="/liquidity/susdv2" size="xsm" variant="light">{{ $t('dao.stakingConfirmTip', ['LP tokens']) }}</b-button>
                 </small>
                 <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('dao.infiniteApproval') }}</b-form-checkbox>
                 <b-alert class="mt-3" :show="dismissCountDown && waitingMessageTargetId === 'deposit'" variant="dark" dismissible fade
@@ -295,7 +295,7 @@
                 <small class="d-flex mt-1 flex-wrap">
                   {{ $t('dao.stakingBalance') }}：
                   <text-overlay-loading class="mr-2" :show="store.gauges.dfi.mortgages.iUSD_LPT.userBalanceOf.loading">{{ store.gauges.dfi.mortgages.iUSD_LPT.userBalanceOf.cont }} {{ store.gauges.dfi.mortgages.iUSD_LPT.name }}</text-overlay-loading>
-                  <b-button class="text-blue-1" to='/dfi/liquidity/' size="xsm" variant="light">{{ $t('dao.stakingConfirmTip', [store.gauges.dfi.mortgages.iUSD_LPT.name]) }}</b-button>
+                  <b-button class="text-blue-1" to='/liquidity/dfi' size="xsm" variant="light">{{ $t('dao.stakingConfirmTip', [store.gauges.dfi.mortgages.iUSD_LPT.name]) }}</b-button>
                 </small>
                 <!-- FIXME: inf_approval -->
                 <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('dao.infiniteApproval') }}</b-form-checkbox>
@@ -1002,7 +1002,6 @@
 
           async mounted() {
             this.currentPool.gauge = process.env.VUE_APP_PSS_GAUGE
-
 
             await gaugeStore.getState()
 

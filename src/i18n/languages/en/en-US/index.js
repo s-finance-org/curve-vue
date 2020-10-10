@@ -50,7 +50,7 @@ export default {
     toMore: 'More',
     noticeTitleHtml: 'dfi (yfii) pool has launched',
     noticeDateHtml: '2020/10/10 22:00:00',
-    noticeContHtml: `S.Finance has launched dfi (yfii) pool at 2020/10/10 22:00:00 SGT. Users could get iUSD LP tokens by depositing stable coins （ iDAI、iUSDC、iUSDT）or i token of yfii vault （ iDAI、iUSDC、iUSDT). Users could get SFG reward by staking iUSD LP tokens.<br/>
+    noticeContHtml: `S.Finance has launched dfi (yfii) pool at 2020/10/10 22:00:00 SGT. Users could get iUSD LP tokens by depositing stable coins (DAI, USDC, USDT) or i token of yfii vault (iDAI, iUSDC, iUSDT). Users could get SFG reward by staking iUSD LP tokens.<br/>
     Users can obtain triple rewards by providing liquidity in the DFI pool:<br/>
     YFII vault reward<br/>
     SFG reward by staking<br/>

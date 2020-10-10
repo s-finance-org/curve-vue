@@ -16,6 +16,7 @@
               :key="'nav_'+item.name"
               :to=item.to :href=item.href
               :target=item.target
+              :active=item.active
               >{{ $t(item.i18n) }}</b-nav-item>
           </b-navbar-nav>
           <sel-language class="ml-2" />
@@ -31,6 +32,7 @@
               :to=item.to
               :href=item.href
               :target=item.target
+              :active=item.active
               >{{ $t(item.i18n) }}</b-nav-item>
           </b-navbar-nav>
         </b-navbar>
@@ -81,11 +83,11 @@
         return process.env.BASE_URL
       },
       headerNav () {
-        const { $i18n, $router } = this
+        const { $i18n, $route } = this
         const result = [
-          { name: 'home', to: { name: 'RootIndex'}, i18n: 'global.home' },
+          { name: 'home', to: { name: 'RootIndex' }, i18n: 'global.home' },
           // { name: 'swap', to: {name: 'Swap', path: '/susdv2/swap'}, i18n: 'global.swap' },
-          { name: 'liquidity', to: { name: 'Liquidity', params: { pool: 'susdv2' } }, i18n: 'global.liquidity' },
+          { name: 'liquidity', to: { name: 'Liquidity' }, i18n: 'global.liquidity', active: 'Liquidity' === $route.name },
           { name: 'dao', to: { name: 'Dao', path: '/dao' }, i18n: 'global.dao' },
           { name: 'risks', to: { name: 'Risks', path: '/risks' }, i18n: 'global.risks' },
           // { name: 'stats', to: {}, i18n: 'global.stats' }

@@ -525,7 +525,7 @@
             // },
             {
               id: 4,
-              toDeposit: '/susdv2/liquidity',
+              toDeposit: '/liquidity/susdv2',
               toDao: '/dao',
               pooltext: 'sUSD',
               pools: 'DAI USDC USDT sUSD',
@@ -554,7 +554,7 @@
             // },
             {
               id: 2,
-              toDeposit: '/dfi/liquidity',
+              toDeposit: '/liquidity/dfi',
               toDao: '/dao',
               pooltext: 'dfi',
               pools: '(i)DAI (i)USDC (i)USDT',

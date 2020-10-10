@@ -3,9 +3,9 @@
         <div class="total-bg">
           <b-container class="d-flex py-4 total-cont">
             <b-navbar-nav class="navbar-tabs flex-row">
-              <b-nav-item to='/susdv2/liquidity/'>sUSD</b-nav-item>
-              <!-- <b-nav-item to='/y/liquidity/'>Y</b-nav-item> -->
-              <b-nav-item to='/dfi/liquidity/'>dfi</b-nav-item>
+              <b-nav-item :to="{ name: 'Liquidity', params: { pool: 'susdv2' } }">sUSD</b-nav-item>
+              <!-- <b-nav-item to='/liquidity/y'>Y</b-nav-item> -->
+              <b-nav-item :to="{ name: 'Liquidity', params: { pool: 'dfi' } }">dfi</b-nav-item>
             </b-navbar-nav>
           </b-container>
           <b-container class="d-flex py-4 total-cont align-items-center">
@@ -1066,7 +1066,6 @@ console.log('created', volumeStore.state.volumes, key)
         },
         computed: {
           ...getters,
-          
           currentPoolTokenName () {
             const conversions = {
               'dfi': 'iUSD'
