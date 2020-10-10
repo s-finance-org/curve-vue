@@ -15,18 +15,18 @@
                 :src='getTokenIcon(currency)'>
             </div>
             <h3 class="mb-0">{{ currentPool }}<br/>{{ $t('liquidity.name') }}</h3>
-            <div class="total-box col px-4 py-3 ml-5 mr-4 d-none d-lg-block">
+            <div class="total-box col-3 px-4 py-3 ml-auto mr-4 d-none d-lg-block">
               <h6 class="text-black-65">{{ $t('global.totalBalances') }}</h6>
               <text-overlay-loading :show="totalBalances === null">
                 <h4 class="mb-0">${{ totalBalances | formatNumber(2) }}</h4>
               </text-overlay-loading>
             </div>
-            <div class="total-box col px-4 py-3 d-none d-lg-block">
+            <!-- <div class="total-box col-3 px-4 py-3 d-none d-lg-block">
               <h6 class="text-black-65">{{ $t('global.dailyVol') }}</h6>
               <text-overlay-loading :show="poolVolumeUSD == -1">
                 <h4 class="mb-0">${{ poolVolumeUSD && poolVolumeUSD | formatNumber(2) }}</h4>
               </text-overlay-loading>
-            </div>
+            </div> -->
           </b-container>
         </div>
 
@@ -1038,16 +1038,15 @@ console.log('created', volumeStore.state.volumes, key)
         		await this.handle_sync_balances()
         		!this.max_balances && this.highlightAllInputs();
         		//await Promise.all([...Array(currentContract.N_COINS).keys()].map(i=>this.change_currency(i, false)))
-        		await this.calcSlippage()
+            await this.calcSlippage()
+
+            await this.getLPCrvReceived()
         	},
           getDepositMaxSlippage() {
             this.getLPCrvReceived()
           },
 
           // withdraw
-          getDepositMaxSlippage() {
-            this.getLPCrvReceived()
-          },
           to_currency(val) {
         		if(this.share == 0 || this.share == '---') this.share = 100
 	        	this.setInputStyles()
@@ -1067,6 +1066,7 @@ console.log('created', volumeStore.state.volumes, key)
         },
         computed: {
           ...getters,
+          
           currentPoolTokenName () {
             const conversions = {
               'dfi': 'iUSD'
@@ -1291,7 +1291,7 @@ console.log('current', this.currentPool, this.currencies)
                 else this.depositc = false;
             	this.changeSwapInfo(this.depositc)
             	currentContract.showSlippage = false;
-        		currentContract.slippage = 0;
+        		  currentContract.slippage = 0;
                 await this.handle_sync_balances();
                 await this.getLPCrvReceived()
                 await this.calcSlippage()
@@ -1759,14 +1759,14 @@ console.log('current', this.currentPool, this.currencies)
           // withdraw
           handleCheck(idx) {
             if(idx === this.to_currency) {
-              // if(this.withdrawc == false) this.withdrawc = true
+              if(this.withdrawc == false) this.withdrawc = true
               this.to_currency = null
 
               currentContract.slippage = 0
               currentContract.showSlippage = false
             }
             else {
-              // this.withdrawc = false
+              this.withdrawc = false
               this.to_currency = idx
             }
           },

@@ -16,7 +16,6 @@
               :key="'nav_'+item.name"
               :to=item.to :href=item.href
               :target=item.target
-              :active=item.active
               >{{ $t(item.i18n) }}</b-nav-item>
           </b-navbar-nav>
           <sel-language class="ml-2" />

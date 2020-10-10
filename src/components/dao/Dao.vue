@@ -301,7 +301,7 @@
                 <small class="d-flex mt-1 flex-wrap">
                   {{ $t('dao.stakingBalance') }}：
                   <text-overlay-loading class="mr-2" :show="store.gauges.dfi.mortgages.iUSD_LPT.userBalanceOf.loading">{{ store.gauges.dfi.mortgages.iUSD_LPT.userBalanceOf.cont }} {{ store.gauges.dfi.mortgages.iUSD_LPT.name }}</text-overlay-loading>
-                  <b-button class="text-blue-1" to='/iusd/liquidity/' size="xsm" variant="light">{{ $t('dao.stakingConfirmTip', [store.gauges.dfi.mortgages.iUSD_LPT.name]) }}</b-button>
+                  <b-button class="text-blue-1" to='/dfi/liquidity/' size="xsm" variant="light">{{ $t('dao.stakingConfirmTip', [store.gauges.dfi.mortgages.iUSD_LPT.name]) }}</b-button>
                 </small>
                 <!-- FIXME: inf_approval -->
                 <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('dao.infiniteApproval') }}</b-form-checkbox>
