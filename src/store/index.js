@@ -198,7 +198,8 @@ store.tokens = {
     async getPrice (priceUnit) {
       const { address, priceUnitAddress, price } = this
       const result = await store.price.getPrice(priceUnitAddress, address)
-
+      
+      // XXX: tether?
       price.tether = result
 
       return result
@@ -468,12 +469,11 @@ store.tokens = {
     price: valueModel.create(),
     async getPrice () {
       const { contractSwap, price } = this
-      console.log(await contractSwap.methods.get_virtual_price().call())
       const result = await contractSwap.methods.get_virtual_price().call()
 
       price.tether = result
 
-      return result
+      return price.handled
     },
 
     // amount: 0,
@@ -704,7 +704,6 @@ store.gauges = {
 
       dailyAPY.handled = BN(await price / 1e18).times(await dailyYield / 1e18).times(rewards.sfg.weighting.handled).dividedBy(BN(await totalStaking / 1e18).times(await lpTokenPrice)).toString()
       apy.handled = +dailyAPY.handled * 365
-      console.log(+dailyAPY.handled * 365)
     },
 
     async getBalanceOf (target, accountAddress) {
@@ -931,9 +930,7 @@ store.gauges = {
 
       const req = await fetch('https://api.dfi.money/apy.json')
       let daiDailyAPY = BN((await req.json()).dai.replace('%','')).dividedBy(100 * 365)
-
-      dailyAPY.handled = BN(await price / 1e18).times(await dailyYield / 1e18).times(rewards.sfg.weighting.handled).dividedBy(BN(await totalStaking / 1e18).times(await lpTokenPrice)).plus(daiDailyAPY).toString()
-
+      dailyAPY.handled = BN(await price / 1e18).times(await dailyYield / 1e18).times(rewards.sfg.weighting.handled).dividedBy(BN(await totalStaking).times(await lpTokenPrice / 1e18)).plus(daiDailyAPY).toString()
       apy.handled = +dailyAPY.handled * 365
     },
 

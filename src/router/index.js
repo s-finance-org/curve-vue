@@ -56,7 +56,7 @@ import * as common from '../utils/common.js'
 
 Vue.use(VueRouter)
 
-const defaultPool = 'susdv2'
+const defaultPool = 'dfi'
 
 let routes = [
   {
