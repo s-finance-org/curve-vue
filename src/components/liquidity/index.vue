@@ -61,12 +61,12 @@
                         <span class="coin d-flex align-items-center">
                           <img class="icon-w-20 mr-2"
                             :class="{'token-icon': true, [currency+'-icon']: true, 'y': depositc && !isPlain}" 
-                            :src='getTokenIcon(currency)'>
+                            :src='getTokenIcon(currency, depositc)'>
                           <span v-show='depositc'>{{currencies[currency]}}
-                            <span v-show="!(currency == 'usdt' && currentPool == 'usdt' || currency == 'pax') 
+                            <!-- <span v-show="!(currency == 'usdt' && currentPool == 'usdt' || currency == 'pax') 
                                     && !['susdv2', 'tbtc', 'ren', 'sbtc'].includes(currentPool)"> 
                               (in {{currency | capitalize}}) 
-                            </span>
+                            </span> -->
                           </span>
                           <span v-show='!depositc'>{{currency | capitalize}}</span>
                         </span>
@@ -289,9 +289,9 @@
                             <!-- <b-form-radio :id="'to_cur_'+i" name="withdraw_all" :value='i' @click='handleCheck(i)'> -->
                               <img class="icon-w-20 mr-2"
                                 :class="{'token-icon': true, [currency+'-icon']: true, 'y': depositc && !isPlain}" 
-                                :src='getTokenIcon(currency)'>
+                                :src='getTokenIcon(currency, withdrawc)'>
                               <span v-show='withdrawc'>{{currencies[currency]}}
-                                <span v-show="!(currency == 'usdt' && currentPool == 'usdt') && !['susdv2', 'ren', 'sbtc'].includes(currentPool)">(in {{currency | capitalize}})</span>
+                                <!-- <span v-show="!(currency == 'usdt' && currentPool == 'usdt') && !['susdv2', 'ren', 'sbtc'].includes(currentPool)">(in {{currency | capitalize}})</span> -->
                               </span>
                               <span v-show="!withdrawc && !['susdv2', 'tbtc', 'ren', 'sbtc'].includes(currentPool)">{{currency | capitalize}}</span>
                               <span v-show="!withdrawc && ['susdv2', 'tbtc', 'ren', 'sbtc'].includes(currentPool)">{{currencies[currency]}}</span>
@@ -478,7 +478,7 @@
                               <span class='currency_label'>
                                     <img 
                                         :class="{'token-icon': true, [currency+'-icon']: true, 'y': depositc && !isPlain}" 
-                                        :src='getTokenIcon(currency)'>
+                                        :src='getTokenIcon(currency, depositc)'>
                                     <span v-show='depositc'>{{currencies[currency]}}
                                       <span v-show="!(currency == 'usdt' && currentPool == 'usdt' || currency == 'pax') 
                                               && !['susdv2', 'tbtc', 'ren', 'sbtc'].includes(currentPool)"> 
@@ -643,7 +643,7 @@
         </div>
 
         <!-- withdraw -->
-        <div class="add-liquidity" v-if=false>
+        <div class="add-liquidity" v-if=true>
             <fieldset class="percentage">
                 <legend>
                   Share of liquidity (%)
@@ -669,7 +669,7 @@
                         <label :for="'currency_'+i" class='currency_label'>
                             <img 
                                 :class="{'token-icon': true, [currency+'-icon']: true, 'y': withdrawc, [currentPool]: true}" 
-                                :src='getTokenIcon(currency)'>
+                                :src='getTokenIcon(currency, withdrawc)'>
                           <span v-show='withdrawc'>{{currencies[currency]}}
                             <span v-show="!(currency == 'usdt' && currentPool == 'usdt') && !['susdv2', 'ren', 'sbtc'].includes(currentPool)">(in {{currency | capitalize}})</span>
                           </span>
@@ -710,7 +710,7 @@
                       <span v-show='i > 0'>+</span>
                       <img 
                         :class="{'token-icon': true, [currency+'-icon']: true, 'y': withdrawc, [currentPool]: true}" 
-                        :src='getTokenIcon(currency)'>
+                        :src='getTokenIcon(currency, withdrawc)'>
                     </span>
                   </label>
                 </li>
@@ -719,7 +719,7 @@
                       <label :for="'to_cur_'+i">
                             <img 
                                 :class="{'token-icon': true, [currency+'-icon']: true, 'y': withdrawc, [currentPool]: true}" 
-                                :src='getTokenIcon(currency)'> 
+                                :src='getTokenIcon(currency, withdrawc)'> 
                                 <span v-show='!withdrawc'> {{ currency | capitalize }} </span>
                                 <span v-show='withdrawc'> {{ currencies[currency] }} </span>
                         </label>
@@ -1364,8 +1364,8 @@ console.log('current', this.currentPool, this.currencies)
                 this.setCalcBalances()
             	this.handle_change_share();
             },
-            getTokenIcon(token) {
-                return helpers.getTokenIcon(token, this.depositc, this.currentPool)
+            getTokenIcon(token, type = false) {
+                return helpers.getTokenIcon(token, type, this.currentPool)
             },
             toFixed(num, precisions = 2, round = 4) {
                 if(+num == 0 && ['ren', 'sbtc'].includes(currentContract.currentContract)) return '0.00'
