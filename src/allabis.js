@@ -13850,12 +13850,11 @@ var sbtc = {
 }
 
 var dfi = {
-  // USDT、DAI、USDC
   N_COINS: 3,
-  coin_precisions: [1e6, 1e18, 1e6],
-  wrapped_precisions: [1e6, 1e18, 1e6],
+  coin_precisions: [1e18, 1e6, 1e6],
+  wrapped_precisions: [1e18, 1e6, 1e6],
   use_lending: [true, true, true],
-  tethered: [true, false, false],
+  tethered: [false, false, true],
   is_plain: [false, false, false],
   swap_address: process.env.VUE_APP_DFI_SWAP, // curve 0x45F783CCE6B7FF23B2ab2D70e416cdb7D6055f51
   swap_abi: [
@@ -14675,14 +14674,14 @@ var dfi = {
   token_address: process.env.VUE_APP_DFI_TOKEN, // curve 0xdF5e0e81Dff6FAF3A7e52BA697820c5e32D806A8
   infura_url: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`,
   underlying_coins: [
-    process.env.VUE_APP_USDT_TOKEN, // USDT
     process.env.VUE_APP_DAI_TOKEN, // DAI
     '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', // USDC
+    process.env.VUE_APP_USDT_TOKEN, // USDT
   ],
   coins: [
-    '0x72Cf258c852Dc485a853370171d46B9D29fD3184', // iUSDT
     '0x1e0DC67aEa5aA74718822590294230162B5f2064', // iDAI
     '0x23B4dB3a435517fd5f2661a9c5a16f78311201c1', // iUSDC
+    '0x72Cf258c852Dc485a853370171d46B9D29fD3184', // iUSDT
   ],
   deposit_address: process.env.VUE_APP_DFI_DEPOSIT, // curve 0xbBC81d23Ea2c3ec7e56D39296F0cbB648873a5d3
   deposit_abi: [
