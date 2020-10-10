@@ -281,7 +281,7 @@ let routes = [
   // },
   {
     // path: '/:pool(compound|usdt|y|iearn|busd|susdv2|pax|tbtc|ren|sbtc)/',
-    path: '/:pool(susdv2|dfi|y)/',
+    path: '/:pool(susdv2|dfi)/',
     name: 'PoolIndex',
     // component: PoolApp,
     component: RootDefault,
@@ -364,8 +364,8 @@ const defaultPool = 'susdv2'
 const pools = [
   // 'compound',
   // 'usdt',
-  'y',
-  'iearn',
+  // 'y',
+  // 'iearn',
   // 'busd',
   // 'susd',
   'susdv2',

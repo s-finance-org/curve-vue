@@ -4,7 +4,7 @@
           <b-container class="d-flex py-4 total-cont">
             <b-navbar-nav class="navbar-tabs flex-row">
               <b-nav-item to='/susdv2/liquidity/'>sUSD</b-nav-item>
-              <b-nav-item to='/y/liquidity/'>Y</b-nav-item>
+              <!-- <b-nav-item to='/y/liquidity/'>Y</b-nav-item> -->
               <b-nav-item to='/dfi/liquidity/'>dfi</b-nav-item>
             </b-navbar-nav>
           </b-container>
