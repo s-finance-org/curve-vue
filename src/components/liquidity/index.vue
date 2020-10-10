@@ -108,7 +108,7 @@
                   <div class="col-12 col-lg mb-2 d-flex flex-column text-black-65">
                     <label class="mb-3" v-show="estimateGas">
                       {{ $t('instantSwap.txCost') }}
-                      <span class="ml-auto">{{ (estimateGas * gasPrice / 1e9 * ethPrice).toFixed(2) }} USD</span>
+                      <span class="float-right">{{ (estimateGas * gasPrice / 1e9 * ethPrice).toFixed(2) }} USD</span>
                     </label>
                     <label class="mb-3">
                       {{ $t('global.maxSlippage') }}

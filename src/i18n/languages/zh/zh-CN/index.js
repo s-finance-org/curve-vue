@@ -49,7 +49,7 @@ export default {
     ok: '知道了',
     toMore: '了解更多',
     noticeTitleHtml: 'dfi (yfii) 流动性矿池已上线',
-    noticeDateHtml: '2020/10/10 23:00:00',
+    noticeDateHtml: '2020/10/10 23:00',
     noticeContHtml: `S.Finance 已于新加坡时间 2020-10-10 23:00 上线 dfi 流动性矿池，2020-10-11 01:00 开启流动性挖矿。<br/>
     在 dfi 池存入稳定币（DAI、USDC、USDT）或者 yfii 机枪池 i 代币（ iDAI、iUSDC、iUSDT）即可获得流动性凭证 iUSD LP tokens，抵押 iUSD LP tokens 即可获得 S.Finance 治理代币 SFG。<br/>
     用户在 dfi 池提供流动性可获得三重收益：<br/>

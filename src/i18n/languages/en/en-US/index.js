@@ -49,7 +49,7 @@ export default {
     ok: 'Ok',
     toMore: 'More',
     noticeTitleHtml: 'dfi (yfii) pool has launched',
-    noticeDateHtml: '2020/10/10 23:00:00',
+    noticeDateHtml: '2020/10/10 23:00',
     noticeContHtml: `S.Finance has launched dfi (yfii) pool at 2020-10-10 23:00 SGT. 2020-10-11 01:00 Open liquidity mining. Users could get iUSD LP tokens by depositing stable coins (DAI, USDC, USDT) or i token of yfii vault (iDAI, iUSDC, iUSDT). Users could get SFG reward by staking iUSD LP tokens.<br/>
     Users can obtain triple rewards by providing liquidity in the DFI pool:<br/>
     YFII vault reward<br/>

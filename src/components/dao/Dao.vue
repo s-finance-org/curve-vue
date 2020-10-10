@@ -230,7 +230,6 @@
           </div>
 
           <!-- dfi -->
-        <template v-if=false>
           <h4 class="mb-2 d-flex flex-wrap align-items-end">
             <span class="mr-3">{{ $t('dao.tokenTitle', [store.gauges.dfi.propagateMark]) }}</span>
             <small class="mr-auto">{{ $t('dao.describe', [store.gauges.dfi.mortgagesUnit, store.gauges.dfi.rewardsUnit.join(' ')]) }}</small>
@@ -393,7 +392,6 @@
               </b-tab>
             </b-tabs>
           </div>
-        </template>
         </b-tab>
 
         <b-tab :title="$t('dao.tokenTitle', [store.gauges.bpt.propagateMark])" class="pt-3">
@@ -1049,8 +1047,7 @@
             // TODO: temp
             this.gaugeContract = store.gauges.susdv2.contract
 
-            // store.gauges.susdv2.rewards.sfg.weighting.handled = 0.3
-            store.gauges.susdv2.rewards.sfg.weighting.handled = 0.6
+            store.gauges.susdv2.rewards.sfg.weighting.handled = 0.3
 
             store.gauges.susdv2.getAPY(
               store.tokens.sfg.getPrice(),
@@ -1082,24 +1079,24 @@
             const { dfi, bpt } = store.gauges
 
             // dfi
-            // store.gauges.dfi.rewards.sfg.weighting.handled = 0.3
+            store.gauges.dfi.rewards.sfg.weighting.handled = 0.3
 
-            // store.gauges.dfi.getAPY(
-            //   store.tokens.sfg.getPrice(),
-            //   store.tokens.sfg.getDailyYield(),
-            //   dfi.getTotalStaking(dfi.mortgages.iUSD_LPT.totalStaking),
-            //   store.tokens.iUSD_LPT.getPrice(),
-            // )
+            store.gauges.dfi.getAPY(
+              store.tokens.sfg.getPrice(),
+              store.tokens.sfg.getDailyYield(),
+              dfi.getTotalStaking(dfi.mortgages.iUSD_LPT.totalStaking),
+              store.tokens.iUSD_LPT.getPrice(),
+            )
 
-            // store.tokens.iUSD_LPT.getBalanceOf(dfi.mortgages.iUSD_LPT.userBalanceOf, currentContract.default_account)
+            store.tokens.iUSD_LPT.getBalanceOf(dfi.mortgages.iUSD_LPT.userBalanceOf, currentContract.default_account)
 
-            // dfi.getBalanceOf(dfi.mortgages.iUSD_LPT.userStaking, currentContract.default_account)
+            dfi.getBalanceOf(dfi.mortgages.iUSD_LPT.userStaking, currentContract.default_account)
 
-            // dfi.getUserTotalReward_SFG(
-            //   dfi.rewards.sfg.userTotalReward,
-            //   dfi.getUserPendingReward_SFG(dfi.rewards.sfg.userPendingReward, currentContract.default_account),
-            //   dfi.getUserPaidReward_SFG(dfi.rewards.sfg.userPaidReward, currentContract.default_account)
-            // )
+            dfi.getUserTotalReward_SFG(
+              dfi.rewards.sfg.userTotalReward,
+              dfi.getUserPendingReward_SFG(dfi.rewards.sfg.userPendingReward, currentContract.default_account),
+              dfi.getUserPaidReward_SFG(dfi.rewards.sfg.userPaidReward, currentContract.default_account)
+            )
 
             // bpt
             store.gauges.bpt.rewards.sfg.weighting.handled = 0.4
