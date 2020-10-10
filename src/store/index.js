@@ -178,7 +178,7 @@ store.tokens = {
   sfg: {
     name: 'SFG',
 
-    address: '0x8a6ACA71A218301c7081d4e96D64292D3B275ce0',
+    address: process.env.VUE_APP_SFG_TOKEN,
     abi: abiSFG,
     __contract: null,
     get contract () {
@@ -211,7 +211,7 @@ store.tokens = {
     },
   },
   susdv2LpToken: {
-    address: process.env.VUE_APP_LPT,
+    address: process.env.VUE_APP_SUSDV2_LPT_TOKEN,
     abi: abiSusdv2LpToken,
     __contract: null,
     get contract () {
@@ -298,7 +298,7 @@ store.tokens = {
     },
   },
   snx: {
-    address: '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f',
+    address: process.env.VUE_APP_SNX_TOKEN                                                                                                         ,
     abi: abiSNX,
     __contract: null,
     get contract () {
@@ -309,7 +309,7 @@ store.tokens = {
     },
   },
   crv: {
-    address: '0xd533a949740bb3306d119cc777fa900ba034cd52',
+    address: process.env.VUE_APP_CRV_TOKEN,
     abi: abiCRV,
     __contract: null,
     get contract () {
@@ -806,7 +806,7 @@ store.gauges = {
     name: 'DFI',
     propagateMark: 'dfi',
     mortgagesUnit: 'iUSD LP tokens',
-    address: '0x00832130896b1992f6be24A4130e5e1e56d29d65',
+    address: process.env.VUE_APP_DFI_GAUGE,
     // abi: abiDfi, // FIXME: ???
     abi: abiSUSDv2,
     __contract: null,

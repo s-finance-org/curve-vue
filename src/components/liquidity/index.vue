@@ -946,14 +946,12 @@
     		},
     		inputStyles: [],
     		calc_balances: [],
-    		balances: [],
     		staked_balance: null,
     		token_balance: null,
     		token_supply: 0,
     		show_nobalance: false,
     		show_nobalance_i: 0,
     		bgColor: [],
-    		amounts: [],
     		to_currency: 10,
     		test: null,
     		withdrawc: false,
@@ -968,26 +966,12 @@
         withdrawRENPool: 0,
         // withdrawADAI: 0,
         show_loading: false,
-        waitingMessage: '',
         showWithdrawSlippage: false,
-        maxSlippage: 0.2,
+// maxSlippage: 0.2,
         setSlippage: false,
-        maxInputSlippage: '',
-        customSlippageDisabled: true,
-        estimateGas: 0,
-        ethPrice: 0,
         unstakepercentage: 0,
-        get showadvancedoptions() {
-            return localStorage.getItem('advancedoptions') === 'true' 
-        },
-        set showadvancedoptions(val) {
-            localStorage.setItem('advancedoptions', val)
-        },
-        loadingAction: false,
         warninglow: false,
         showModal: false,
-        slippagePromise: helpers.makeCancelable(Promise.resolve()),
-        inf_approval: true,
 
         maxSlippageMode: 2
       }),
@@ -1004,14 +988,13 @@
               this.setInputStyles(false, val, oldval)
               if(currentContract.initializedContracts) this.mounted();
           })
-console.log('created', this.currentPool)
+
           let key = this.currentPool == 'iearn'
             ? 'y'
             : this.currentPool == 'susdv2'
               ? 'susd'
               : this.currentPool
 
-console.log('created', volumeStore.state.volumes, key)
           let volume = volumeStore.state.volumes[key][0] || 0
           if(this.isBTC) {
             this.btcPrice = await priceStore.getBTCPrice()
@@ -1038,7 +1021,7 @@ console.log('created', volumeStore.state.volumes, key)
         		await this.handle_sync_balances()
         		!this.max_balances && this.highlightAllInputs();
         		//await Promise.all([...Array(currentContract.N_COINS).keys()].map(i=>this.change_currency(i, false)))
-            await this.calcSlippage()
+            await this.calcSlippage(this.deposit_inputs, true)
 
             await this.getLPCrvReceived()
         	},
@@ -1293,7 +1276,7 @@ console.log('current', this.currentPool, this.currencies)
         		  currentContract.slippage = 0;
                 await this.handle_sync_balances();
                 await this.getLPCrvReceived()
-                await this.calcSlippage()
+                await this.calcSlippage(this.deposit_inputs, true)
                 let calls = [...Array(currentContract.N_COINS).keys()].map(i=>[this.coins[i]._address, 
                 	this.coins[i].methods.allowance(currentContract.default_account || '0x0000000000000000000000000000000000000000', this.swap_address).encodeABI()])
                 if(['susdv2', 'sbtc', 'y', 'iearn', 'dfi'].includes(this.currentPool))
@@ -1338,7 +1321,7 @@ console.log('current', this.currentPool, this.currencies)
                     let calls = [
                         [curveRewards._address, curveRewards.methods.earned(this.default_account).encodeABI()],
                         [this.balancerPool._address, this.balancerPool.methods.totalSupply().encodeABI()],
-                        [this.balancerPool._address, this.balancerPool.methods.getBalance('0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f').encodeABI()],
+                        [this.balancerPool._address, this.balancerPool.methods.getBalance(process.env.VUE_APP_SNX_TOKEN).encodeABI()],
                         [this.balancerPool._address, this.balancerPool.methods.getBalance('0x408e41876cccdc0f92210600ef50372656052a38').encodeABI()],
                         [this.balancerPool._address, this.balancerPool.methods.balanceOf(currentContract.default_account).encodeABI()],
                     ]
@@ -1419,14 +1402,14 @@ console.log('current', this.currentPool, this.currencies)
                 color: '#d0d0d0',
               })
             },
-            async calcSlippage() {
+            async calcSlippage(...args) {
             	try {
 	            	this.slippagePromise.cancel();
-                this.slippagePromise = helpers.makeCancelable(common.calc_slippage(this.deposit_inputs, true))
+                this.slippagePromise = helpers.makeCancelable(common.calc_slippage(...args))
                 await this.slippagePromise;
             	}
-            	catch(err) {
-            		console.error(err)
+            	catch (err) {
+            		console.error('calcSlippage err', err)
             	}
             },
             async handle_sync_balances() {
@@ -1721,39 +1704,39 @@ console.log('current', this.currentPool, this.currencies)
 				if(event) {
 					this.deposit_inputs[i] = event.target.value
 				}
-                var value = this.deposit_inputs[i]
-                this.highlightInputs(i)
+        var value = this.deposit_inputs[i]
+        this.highlightInputs(i)
 
-                if (this.sync_balances && !this.max_balances) {
-                    for (let j = 0; j < currentContract.N_COINS; j++)
-                        if (j != i) {
-                            var value_j = this.deposit_inputs[j]
+        if (this.sync_balances && !this.max_balances) {
+            for (let j = 0; j < currentContract.N_COINS; j++)
+                if (j != i) {
+                    var value_j = this.deposit_inputs[j]
 
-                            if (this.balances[i] * currentContract.c_rates[i] > 1) {
-                                // proportional
-                                var newval = value / currentContract.c_rates[i] * this.balances[j] / this.balances[i];
-                                newval = Math.floor(newval * currentContract.c_rates[j] * 100) / 100;
-                                setInputs && Vue.set(this.deposit_inputs, j, newval);
+                    if (this.balances[i] * currentContract.c_rates[i] > 1) {
+                        // proportional
+                        var newval = value / currentContract.c_rates[i] * this.balances[j] / this.balances[i];
+                        newval = Math.floor(newval * currentContract.c_rates[j] * 100) / 100;
+                        setInputs && Vue.set(this.deposit_inputs, j, newval);
 
-                            } else {
-                                // same value as we type
-                                var newval = value;
-                                setInputs && Vue.set(this.deposit_inputs, j, newval);
-                            }
+                    } else {
+                        // same value as we type
+                        var newval = value;
+                        setInputs && Vue.set(this.deposit_inputs, j, newval);
+                    }
 
-                            // Balance not enough highlight
-                            if (newval > this.wallet_balances[j] * this.rates[j])
-                                Vue.set(this.bgColors, j, 'red');
-                            else
-                                Vue.set(this.bgColors, j, 'blue');
-                        }
+                    // Balance not enough highlight
+                    if (newval > this.wallet_balances[j] * this.rates[j])
+                        Vue.set(this.bgColors, j, 'red');
+                    else
+                        Vue.set(this.bgColors, j, 'blue');
                 }
-                await this.getLPCrvReceived()
-	              await this.calcSlippage()
-	        },
-	        handle_migrate_new() {
-	        	common.handle_migrate_new('new')
-          },
+        }
+        await this.getLPCrvReceived()
+        await this.calcSlippage(this.deposit_inputs, true)
+      },
+      handle_migrate_new() {
+        common.handle_migrate_new('new')
+      },
 
           // withdraw
           handleCheck(idx) {

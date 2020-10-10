@@ -310,8 +310,8 @@
             },
             async calcSlippage(...args) {
             	this.slippagePromise.cancel();
-        		this.slippagePromise = helpers.makeCancelable(common.calc_slippage(...args))
-        		await this.slippagePromise;
+              this.slippagePromise = helpers.makeCancelable(common.calc_slippage(...args))
+              await this.slippagePromise;
             },
             handleCheck(val) {
             	if(val === this.to_currency) {

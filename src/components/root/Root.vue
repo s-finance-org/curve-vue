@@ -594,7 +594,7 @@
 
 					[
 						balancerPool._address,
-						balancerPool.methods.getBalance('0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f').encodeABI()
+						balancerPool.methods.getBalance(process.env.VUE_APP_SNX_TOKEN).encodeABI()
 					],
           [
             balancerPool._address,
