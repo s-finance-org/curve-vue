@@ -178,6 +178,8 @@ store.tokens = {
   sfg: {
     name: 'SFG',
 
+    miningRate: 0.001,
+
     address: process.env.VUE_APP_SFG_TOKEN,
     abi: abiSFG,
     __contract: null,
@@ -204,10 +206,10 @@ store.tokens = {
 
     dailyYield: valueModel.create(),
     async getDailyYield () {
-      const { contract, dailyYield } = this
+      const { contract, dailyYield, miningRate } = this
 
       // TEMP: 
-      return dailyYield.tether = await contract.methods.balanceOf(process.env.VUE_APP_PS_MINTER).call() * 0.002
+      return dailyYield.tether = await contract.methods.balanceOf(process.env.VUE_APP_PS_MINTER).call() * miningRate
     },
   },
   susdv2LpToken: {
@@ -931,7 +933,7 @@ store.gauges = {
       let daiDailyAPY = BN((await req.json()).dai.replace('%','')).dividedBy(100 * 365)
 
       dailyAPY.handled = BN(await price / 1e18).times(await dailyYield / 1e18).times(rewards.sfg.weighting.handled).dividedBy(BN(await totalStaking / 1e18).times(await lpTokenPrice)).plus(daiDailyAPY).toString()
-console.log('dailyAPY.handled', dailyAPY.handled)
+
       apy.handled = +dailyAPY.handled * 365
     },
 
