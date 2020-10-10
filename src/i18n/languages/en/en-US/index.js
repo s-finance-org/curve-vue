@@ -48,10 +48,14 @@ export default {
     more: 'more',
     ok: 'Ok',
     toMore: 'More',
-    noticeTitleHtml: 'Account of minting SFG will reduce by 50% per day',
-    noticeDateHtml: '2020/10/03 00:00',
-    noticeContHtml: `According to the result of the community proposal voting, S.Finance will adjust the rate of daily mint SFG from 0.2% to 0.1% at 2020-10-03 00:00 Singapore time，meaning the daily minting SFG will be reduced by 50% after the adjustment.<br/>
-    S. Finance has already launched Snapshot, an on-chain voting governance function, allowing SFG holders to initiate or vote on a proposal for community governance.`
+    noticeTitleHtml: 'dfi (yfii) pool has launched',
+    noticeDateHtml: '2020/10/10 23:00:00',
+    noticeContHtml: `S.Finance has launched dfi (yfii) pool at 2020-10-10 23:00 SGT. 2020-10-11 01:00 Open liquidity mining. Users could get iUSD LP tokens by depositing stable coins (DAI, USDC, USDT) or i token of yfii vault (iDAI, iUSDC, iUSDT). Users could get SFG reward by staking iUSD LP tokens.<br/>
+    Users can obtain triple rewards by providing liquidity in the DFI pool:<br/>
+    YFII vault reward<br/>
+    SFG reward by staking<br/>
+    Fee of DFI pool<br/>
+    DFI pool rewarding weight will be up to 30%.`
   },
   wallet: {
     notConnected: "You haven't connected wallet",
@@ -123,8 +127,12 @@ export default {
     depositStakeGauge: 'Deposit & stake in gauge',
     withdrawAvailableAmount: 'available amount',
     withdrawAmountPlaceholder: 'amount',
+    withdrawWrapped: 'Withdraw wrapped ',
     withdrawRedemptionTip: 'LP token redemption',
-    dailyProfit: 'Daily profit'
+    dailyProfit: 'Daily profit',
+    approveStakingTokens: 'Please approve staking {0} of your tokens',
+    approveLptokenWithdrawal: 'Please approve {0} {1} for withdrawal',
+    confirmWithdrawalTransaction: 'Please confirm withdrawal transaction',
   },
   dao: {
     standTitle: 'Stablecoin liquidity pool',

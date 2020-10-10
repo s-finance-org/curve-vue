@@ -487,8 +487,8 @@
 
 	export default {
 		data: () => ({
-			allPools: ['compound', 'usdt', 'iearn', 'busd', 'susdv2', 'pax', 'tbtc', 'ren', 'sbtc'],
-			pools: ['compound', 'usdt', 'iearn', 'busd', 'susdv2', 'pax', 'tbtc', 'ren', 'sbtc'],
+			allPools: ['compound', 'usdt', 'iearn', 'busd', 'susdv2', 'pax', 'tbtc', 'ren', 'sbtc', 'dfi'],
+			pools: ['compound', 'usdt', 'iearn', 'busd', 'susdv2', 'pax', 'tbtc', 'ren', 'sbtc', 'dfi'],
 			createdAtBlocks: [9554040, 9456293, 9476468, 9567295, 9906598, 10041041, 10074719, 10068305],
 			allEvents: ['Exchange', 'Deposit', 'Withdraw'],
 			event: 0,
@@ -821,7 +821,7 @@
 							rate = 1 / abi.coin_precisions[j]
 							this.c_rates[pool][j] = rate
 						}
-						else if(['iearn', 'busd', 'pax'].includes(pool)) {
+						else if(['iearn', 'busd', 'pax', 'dfi'].includes(pool)) {
 							calls.push([
 								address,
 								//getPricePerFullShare()
@@ -856,7 +856,7 @@
 					let abi = allabis[pool]
 					//usdt in usdt pool and susdv2 pool are already in the array, no need to calculate
 					if(['susdv2', 'tbtc', 'ren', 'sbtc'].includes(pool)) continue;
-					else if(['iearn', 'busd', 'pax'].includes(pool)) {
+					else if(['iearn', 'busd', 'pax', 'dfi'].includes(pool)) {
 						let len = 4;
 						if(pool == 'pax') len = 3
 						let calls = decoded.slice(0,len)

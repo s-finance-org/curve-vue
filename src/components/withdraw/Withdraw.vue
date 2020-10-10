@@ -4,7 +4,7 @@
             <legend>
             	Share of liquidity (%)
         		<input id='showstaked' type='checkbox' name='showstaked' v-model = 'showstaked'>
-        		<label for='showstaked' v-show="['susdv2', 'sbtc', 'y', 'iearn'].includes(currentPool)"> Show staked </label>
+        		<label for='showstaked' v-show="['susdv2', 'sbtc', 'y', 'iearn', 'dfi'].includes(currentPool)"> Show staked </label>
             </legend>
             <ul>
                 <li>
@@ -141,16 +141,16 @@
             </button>
             <button 
                 id='remove-liquidity-unstake'
-                v-show = "['susdv2', 'sbtc','y','iearn'].includes(currentPool) && staked_balance > 0 "
+                v-show = "['susdv2', 'sbtc','y','iearn', 'dfi'].includes(currentPool) && staked_balance > 0 "
                 :disabled = 'slippage < -0.03'
                 @click='handle_remove_liquidity(true, false, true)'>
                 Withdraw & claim <span class='loading line' v-show='loadingAction == 2'></span>
             </button>
             <button id='claim-snx'
                 @click='claim_SNX(false)'
-                v-show="['susdv2', 'sbtc','y','iearn'].includes(currentPool) && pendingSNXRewards > 0"
+                v-show="['susdv2', 'sbtc','y','iearn', 'dfi'].includes(currentPool) && pendingSNXRewards > 0"
             >
-                Claim {{(pendingSNXRewards / 1e18).toFixed(2)}} {{ ['y','iearn'].includes(currentPool) ? 'YFI' : 'SNX' }}
+                Claim {{(pendingSNXRewards / 1e18).toFixed(2)}} {{ ['y','iearn', 'dfi'].includes(currentPool) ? 'YFI' : 'SNX' }}
                 <span v-show="currentPool == 'sbtc'"> + {{(pendingRENRewards / 1e18).toFixed(2)}} REN</span>
             </button>
             <button id='claim-bpt'
@@ -167,7 +167,7 @@
             </button>
             <!-- <button id='claim-adai' 
                 @click='showModal = true'
-                v-show="['y', 'iearn'].includes(currentPool) && withdrawADAI > 0"
+                v-show="['y', 'iearn', 'dfi'].includes(currentPool) && withdrawADAI > 0"
             >
                 {{(pendingSNXRewards / 1e18).toFixed(2)}} YFI -> {{(withdrawADAI / 1e18).toFixed(2)}} aDAI
                 <span class='tooltip'> [?]
@@ -178,7 +178,7 @@
             </button> -->
             <button id='unstake-snx'
                 @click='handle_remove_liquidity(true, true)'
-                v-show="['susdv2', 'sbtc','y','iearn'].includes(currentPool) && staked_balance > 0"
+                v-show="['susdv2', 'sbtc','y', 'dfi'].includes(currentPool) && staked_balance > 0"
             >
                 Unstake
             </button>
@@ -190,7 +190,7 @@
             </p>
             <div id='mintr' v-show="['susdv2', 'sbtc'].includes(currentPool)">
                 <a href = 'https://mintr.synthetix.io/' v-show="['susdv2', 'sbtc'].includes(currentPool)" target='_blank' rel="noopener noreferrer">Manage staking in Mintr</a>
-                <a href = 'https://ygov.finance/' v-show="['y', 'iearn'].includes(currentPool)" target='_blank' rel="noopener noreferrer"> yGov. </a>
+                <a href = 'https://ygov.finance/' v-show="['y', 'iearn', 'dfi'].includes(currentPool)" target='_blank' rel="noopener noreferrer"> yGov. </a>
             </div>
             <div class='info-message gentle-message' v-show='show_loading'>
                 <span v-html='waitingMessage'></span> <span class='loading line'></span>
@@ -204,7 +204,7 @@
             <Slippage v-bind="{show_nobalance, show_nobalance_i}"/>
         </div>
 
-        <div v-show="staked_balance > 0 && ['susdv2', 'sbtc', 'y', 'iearn'].includes(currentPool)">
+        <div v-show="staked_balance > 0 && ['susdv2', 'sbtc', 'y', 'iearn', 'dfi'].includes(currentPool)">
             <button class='simplebutton advancedoptions' @click='showadvancedoptions = !showadvancedoptions'>
                 Advanced unstaking options
                 <span v-show='!showadvancedoptions'>▼</span>
@@ -221,7 +221,7 @@
                             <label for='unstakepercentage'>Unstake:</label>
                             <input id='unstakepercentage' v-model='unstakepercentage' :class="{'invalid': unstakePercentageInvalid}">
                             <button id='unstakestaked' 
-                                v-show="staked_balance > 0 && ['susdv2', 'sbtc', 'y', 'iearn'].includes(currentPool)"
+                                v-show="staked_balance > 0 && ['susdv2', 'sbtc', 'y', 'iearn', 'dfi'].includes(currentPool)"
                                 :disabled='unstakePercentageInvalid' 
                                 @click='unstakeStaked()'
                             >
@@ -386,7 +386,7 @@
             },
         },
         mounted() {
-        	if(['susdv2', 'sbtc', 'y', 'iearn'].includes(this.currentPool)) {
+        	if(['susdv2', 'sbtc', 'y', 'iearn', 'dfi'].includes(this.currentPool)) {
         		this.showstaked = true
         	}
         	this.$watch(() => this.showstaked, this.handle_change_share)
@@ -408,7 +408,7 @@
                 let allowance = BN(await currentContract.swap_token.methods.allowance(currentContract.default_account || '0x0000000000000000000000000000000000000000', currentContract.deposit_zap._address).call())
                 if(allowance.lte(currentContract.max_allowance.div(BN(2))))
                     this.inf_approval = false
-                if(['susdv2', 'y', 'iearn'].includes(this.currentPool)) {
+                if(['susdv2', 'y', 'iearn', 'dfi'].includes(this.currentPool)) {
                     this.pendingSNXRewards = await curveRewards.methods.earned(this.default_account).call()
                     console.log(this.pendingSNXRewards, "PENDING SNX REWARDS")
                 }
@@ -418,7 +418,7 @@
                     let calls = [
                         [curveRewards._address, curveRewards.methods.earned(this.default_account).encodeABI()],
                         [this.balancerPool._address, this.balancerPool.methods.totalSupply().encodeABI()],
-                        [this.balancerPool._address, this.balancerPool.methods.getBalance('0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f').encodeABI()],
+                        [this.balancerPool._address, this.balancerPool.methods.getBalance(process.env.VUE_APP_SNX_TOKEN).encodeABI()],
                         [this.balancerPool._address, this.balancerPool.methods.getBalance('0x408e41876cccdc0f92210600ef50372656052a38').encodeABI()],
                         [this.balancerPool._address, this.balancerPool.methods.balanceOf(currentContract.default_account).encodeABI()],
                     ]
@@ -434,7 +434,7 @@
                     this.withdrawRENPool = decoded[4] * decoded[3] / decoded[1]
 
                 }
-                if(['y','iearn'].includes(this.currentPool)) {
+                if(['y','iearn', 'dfi'].includes(this.currentPool)) {
                     this.withdrawADAI = await currentContract.aRewards.methods.claimable(currentContract.default_account).call()
                 }
 
@@ -514,7 +514,7 @@
 			    for (let i = 0; i < currentContract.N_COINS; i++) {
 			    	calls.push([currentContract.swap._address ,currentContract.swap.methods.balances(i).encodeABI()])
 			    }
-		    	if(['susdv2', 'sbtc','y','iearn'].includes(this.currentPool)) calls.push([currentContract.curveRewards._address, currentContract.curveRewards.methods.balanceOf(currentContract.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
+		    	if(['susdv2', 'sbtc','y','iearn', 'dfi'].includes(this.currentPool)) calls.push([currentContract.curveRewards._address, currentContract.curveRewards.methods.balanceOf(currentContract.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
 				calls.push([currentContract.swap_token._address ,currentContract.swap_token.methods.totalSupply().encodeABI()])
 				let aggcalls = await currentContract.multicall.methods.aggregate(calls).call()
 				let decoded = aggcalls[1].map(hex => currentContract.web3.eth.abi.decodeParameter('uint256', hex))
@@ -530,7 +530,7 @@
 			        if(!currentContract.default_account) Vue.set(this.balances, i, 0)
 				})
                 console.log(decoded[decoded.length-2])
-                if(['susdv2', 'sbtc','y','iearn'].includes(this.currentPool)) this.staked_balance = BN(decoded[decoded.length-2])
+                if(['susdv2', 'sbtc','y','iearn', 'dfi'].includes(this.currentPool)) this.staked_balance = BN(decoded[decoded.length-2])
                 else this.staked_balance = BN(0)
                 this.unstakepercentage = this.toFixed(this.staked_balance.div(1e18))
 				this.token_supply = +decoded[decoded.length-1]
@@ -609,7 +609,7 @@
             async claim_SNX(claim_bpt_only = false, unstake = true) {
                 this.show_loading = true
                 this.waitingMessage = `Please confirm claiming ${(this.pendingSNXRewards / 1e18).toFixed(2)} 
-                    ${['y', 'iearn'].includes(this.currentPool) ? 'YFI' : 'SNX'}`
+                    ${['y', 'iearn', 'dfi'].includes(this.currentPool) ? 'YFI' : 'SNX'}`
                 if(this.currentPool == 'sbtc')
                     this.waitingMessage += ` and ${(this.pendingRENRewards / 1e18).toFixed(2)} REN`
                 
@@ -835,7 +835,7 @@
 			        }
                     token_amount = BN(token_amount).times(BN(1).plus(this.calcFee))
 			        token_amount = BN(Math.floor(token_amount * this.getMaxSlippage).toString()).toFixed(0,1)
-                    if((this.token_balance.lt(BN(token_amount)) || unstake) && ['susdv2', 'sbtc','y','iearn'].includes(this.currentPool)) {
+                    if((this.token_balance.lt(BN(token_amount)) || unstake) && ['susdv2', 'sbtc','y','iearn', 'dfi'].includes(this.currentPool)) {
                         let unstakeAmount = BN(token_amount).minus(BN(this.token_balance))
                         if(unstake) unstakeAmount = BN(token_amount) 
                         await this.unstake(unstakeAmount, unstake && !unstake_only, unstake_only)
@@ -924,7 +924,7 @@
                     if(this.showstaked) balance = balance.plus(this.staked_balance)
                     var amount = BN(this.share).div(BN(100)).times(balance)
 
-                    if((this.token_balance.lt(amount) || unstake) && ['susdv2', 'sbtc', 'y', 'iearn'].includes(this.currentPool)) {
+                    if((this.token_balance.lt(amount) || unstake) && ['susdv2', 'sbtc', 'y', 'iearn', 'dfi'].includes(this.currentPool)) {
                         let unstakeAmount = BN(amount).minus(BN(this.token_balance))
                         if(unstake) unstakeAmount = BN(amount)
                         await this.unstake(unstakeAmount, unstake && !unstake_only, unstake_only)

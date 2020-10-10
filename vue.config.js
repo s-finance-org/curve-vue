@@ -4,8 +4,10 @@ const HtmlCriticalWebpackPlugin = require("html-critical-webpack-plugin");
 
 const path = require('path')
 
+const isProductionMode = process.env.NODE_ENV === 'production'
+
 module.exports = {
-	productionSourceMap: process.env.NODE_ENV === 'production' ? false : true,
+	productionSourceMap: !isProductionMode,
 	chainWebpack: config => {
 		config.plugins.delete('prefetch')
 		config.module.rule('worker')

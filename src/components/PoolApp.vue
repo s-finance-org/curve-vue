@@ -125,10 +125,11 @@
       busd: 'bUSD',
       susd: 'sUSD-yCurve old',
       susdv2: 'sUSD',
-        pax: 'PAX',
-        tbtc: 'TBTC',
-        ren: 'renBTC',
-        sbtc: 'sBTC',
+      pax: 'PAX',
+      tbtc: 'TBTC',
+      ren: 'renBTC',
+      sbtc: 'sBTC',
+      dfi: 'DFI'
     }
 
   export default {
@@ -150,6 +151,7 @@
         tbtc: 'tbtc',
         ren: 'ren',
         sbtc: 'renbtc_sbtc',
+        dfi: 'dfi',
       }
     }),
     components: {

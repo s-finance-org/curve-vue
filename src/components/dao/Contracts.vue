@@ -185,6 +185,10 @@
 					{
 						name: "sbtc",
 						address: process.env.VUE_APP_SBTC,
+          },
+          {
+					    name: "DFI",
+					    address: process.env.VUE_APP_DFI_TOKEN,
 					},
 				]
 			},

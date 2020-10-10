@@ -54,7 +54,12 @@ const currencies = {
 		renbtc: 'renBTC',
 		wbtc: 'wBTC',
 		sbtc: 'sBTC',
-	},
+  },
+  dfi: {
+    dai: 'iDAI',
+    usdc: 'iUSDC',
+    usdt: 'iUSDT',
+  }
 }
 
 let calcPrice = (config, fromCurrency, toCurrency, precisions, usefee = false) => {

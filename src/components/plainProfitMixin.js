@@ -121,7 +121,7 @@ export default {
                 let balancerPool = new currentContract.web3.eth.Contract(balancer_ABI, balancer_address)
 				calls.push(
 					[balancerPool._address, balancerPool.methods.totalSupply().encodeABI()],
-                    [balancerPool._address, balancerPool.methods.getBalance('0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f').encodeABI()],
+                    [balancerPool._address, balancerPool.methods.getBalance(process.env.VUE_APP_SNX_TOKEN).encodeABI()],
                     [balancerPool._address, balancerPool.methods.getBalance('0x408e41876cccdc0f92210600ef50372656052a38').encodeABI()],
                 )
 			}

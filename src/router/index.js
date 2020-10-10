@@ -56,6 +56,8 @@ import * as common from '../utils/common.js'
 
 Vue.use(VueRouter)
 
+const defaultPool = 'susdv2'
+
 let routes = [
   {
     path: '/',
@@ -280,9 +282,26 @@ let routes = [
   //   ]
   // },
   {
+    path: '/liquidity',
+    name: 'RootLiquidity',
+    component: RootDefault,
+    children: [
+      {
+        path: ':pool(susdv2|dfi)?',
+        name: 'Liquidity',
+        beforeEnter: (to, from, next) => {
+          !to.params.pool
+            ? next('/liquidity/' + defaultPool)
+            : next()
+        },
+        component: Liquidity,
+      }
+    ]
+  },
+  {
     // path: '/:pool(compound|usdt|y|iearn|busd|susdv2|pax|tbtc|ren|sbtc)/',
-    path: '/:pool(susdv2)/',
-    name: 'Index',
+    path: '/:pool(susdv2|dfi)/',
+    name: 'PoolIndex',
     // component: PoolApp,
     component: RootDefault,
     children: [
@@ -291,11 +310,11 @@ let routes = [
         name: 'Swap',
         component: SwapRouter,
       },
-      {
-        path: 'liquidity',
-        name: 'Liquidity',
-        component: Liquidity,
-      },
+      // {
+      //   path: 'liquidity',
+      //   name: 'Liquidity',
+      //   component: Liquidity,
+      // },
       // {
       //   path: 'deposit',
       //   name: 'Deposit',
@@ -359,24 +378,47 @@ const router = new VueRouter({
   routes
 })
 
-const pools = ['compound','usdt','y','iearn','busd','susd', 'susdv2','pax','tbtc','ren', 'sbtc']
+const pools = [
+  // 'compound',
+  // 'usdt',
+  // 'y',
+  // 'iearn',
+  // 'busd',
+  // 'susd',
+  'susdv2',
+  // 'pax',
+  // 'tbtc',
+  // 'ren',
+  // 'sbtc'
+  'dfi'
+]
 
 router.beforeEach(async (to, from, next) => {
   if(from.path.includes('/compound/withdraw_old')) await common.update_fee_info()
   //if(from.path.includes('profit') && to.path.includes('profit')) return window.location.href = to.path
   if(['Donate', 'StatsDaily', 'Audits'].includes(to.name)) return next();
   if(to.name == 'RootIndex') {
-    init('susdv2');
+    init(defaultPool);
     return next();
   }
   let subdomain;
-  if(pools.includes(to.path.split('/')[1])) subdomain = to.path.split('/')[1]
-  else subdomain = window.location.hostname.split('.')[0]
+  if(pools.includes(to.path.split('/')[2])) {
+    subdomain = to.path.split('/')[2]
+    console.log('1 subdomain', subdomain)
+  } else {
+    subdomain = window.location.hostname.split('.')[0]
+    console.log('2 subdomain', subdomain)
+  }
+  console.log('subdomain', subdomain)
+console.log('subdomain', subdomain)
 /*  if(window.location.hostname.split('.').length > 1) subdomain = window.location.hostname.split('.')[0]
-  else subdomain = to.path.split('/')[1]*/
-  if(subdomain == 'y') subdomain = 'iearn'
-  if(!pools.includes(subdomain)) subdomain = 'susdv2'
+  else subdomain = to.path.split('/')[2]*/
 
+  if(subdomain == 'y') subdomain = 'iearn'
+console.log(subdomain, pools.includes(subdomain), !pools.includes(subdomain))
+  // default
+  if(!pools.includes(subdomain)) subdomain = defaultPool
+console.log('subdomain', subdomain)
   if(!['ren', 'sbtc'].includes(subdomain)) {
     currentContract.swapbtc = false
   }

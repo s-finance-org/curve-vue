@@ -75,7 +75,9 @@
 	import daoabis from '../../dao/allabis'
 
 	import * as gasPriceStore from '../../common/gasPriceStore'
-    import GasPrice from '../../common/GasPrice.vue'
+  import GasPrice from '../../common/GasPrice.vue'
+
+  import store from '../../../store'
 
 	import BN from 'bignumber.js'
 
@@ -130,7 +132,8 @@
 			  [process.env.VUE_APP_BUSD]: 'busd',
 			  [process.env.VUE_APP_PSS_GAUGE]: 'susdv2',
 			  [process.env.VUE_APP_REN]: 'ren',
-			  [process.env.VUE_APP_SBTC]: 'sbtc',
+        [process.env.VUE_APP_SBTC]: 'sbtc',
+        [process.env.VUE_APP_DFI_TOKEN]: 'dfi',
 			},
 			selectedGauge: "0x0000000000000000000000000000000000000000",
 			weight: 1,
@@ -235,6 +238,12 @@
 						swap_token: '0x075b1bb99792c9E1041bA13afEf80C91a1e70fB3',
 						name: 'sbtc',
 						gauge: process.env.VUE_APP_SBTC,
+          },
+          dfi: {
+						swap: store.tokens.iUSD_LPT.address,
+						swap_token: store.tokens.iUSD_LPT.swapAddress,
+						name: store.gauges.dfi.code,
+						gauge: process.env.VUE_APP_DFI_TOKEN
 					},
 				}
 		}),
@@ -252,7 +261,7 @@
 		},
 
 		watch: {
-			
+
 		},
 
 		computed: {
@@ -314,13 +323,14 @@
 				  process.env.VUE_APP_PAX,
 				  process.env.VUE_APP_REN,
 				  process.env.VUE_APP_PSS_GAUGE,
-				  process.env.VUE_APP_SBTC
+          process.env.VUE_APP_SBTC,
+          process.env.VUE_APP_DFI_TOKEN
 				]
 
 				let gaugeController_address = process.env.VUE_APP_GAUGE_CONTROLLER
 				let gauge_relative_weight = '0x6207d866000000000000000000000000'
 
-				let pools = ['compound','usdt','iearn','busd','susdv2','pax','ren','sbtc']
+				let pools = ['compound','usdt','iearn','busd','susdv2','pax','ren','sbtc', 'dfi']
 
 				let prices = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,curve-dao-token&vs_currencies=usd')
 				prices = await prices.json()

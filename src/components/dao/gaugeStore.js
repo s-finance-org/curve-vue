@@ -82,7 +82,7 @@ export async function getState() {
 			swap: '0x7fC77b5c7614E1533320Ea6DDc2Eb61fa00A9714',
 			swap_token: '0x075b1bb99792c9E1041bA13afEf80C91a1e70fB3',
 			name: 'sbtc',
-		},
+    },
 	}
 
 	state.gaugeController = new contract.web3.eth.Contract(daoabis.gaugecontroller_abi, process.env.VUE_APP_GAUGE_CONTROLLER)
@@ -163,15 +163,16 @@ export async function getState() {
 	let gaugeBalances = aggcalls1[1].filter((_, i) => i % 5 == 2).map((hex, i) => ({
 		gauge: calls1[i*5+2][0],
 		balance: web3.eth.abi.decodeParameter('uint256', hex),
-	}))
-
-
+  }))
+  console.log('aggcalls1', aggcalls1)
+  console.log('gaugeBalances', gaugeBalances)
 
 	state.mypools = decodedBalances.map(v => {
-		let poolInfo = Object.values(state.pools).find(pool => pool.swap_token.toLowerCase() == v.swap_token.toLowerCase())
-    
+    const poolInfo = Object.values(state.pools)
+      .find(pool => pool.swap_token.toLowerCase() == v.swap_token.toLowerCase())
+
     return {
-			...poolInfo, 
+			...poolInfo,
 			balance: v.balance,
 			origBalance: v.balance,
 			gaugeBalance: gaugeBalances.find(pool => pool.gauge.toLowerCase() == poolInfo.gauge.toLowerCase()).balance
@@ -180,7 +181,8 @@ export async function getState() {
 
 	//console.log(decodedGauges, "THE GAUGES")
 
-	let pools = ['compound','usdt','iearn','busd','susdv2','pax','ren','sbtc']
+  // 
+	let pools = ['compound','usdt','iearn','busd','susdv2','pax','ren','sbtc', 'dfi']
 
 	let prices = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,curve-dao-token&vs_currencies=usd')
 

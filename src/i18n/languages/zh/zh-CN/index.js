@@ -48,10 +48,15 @@ export default {
     more: '查看详情',
     ok: '知道了',
     toMore: '了解更多',
-    noticeTitleHtml: 'SFG 每日挖矿产出降低 50%',
-    noticeDateHtml: '2020/10/03 00:00',
-    noticeContHtml: `根据社区提案投票结果，S.Finance 将于新加坡时间 2020-10-03 00:00 调整 SFG 每日挖矿产出为未挖出部分 0.1%，原先每日挖矿产出未挖出部分 0.2%，此次调整后每日挖矿产出 SFG 数量降低 50%。<br/>
-    S.Finance 已上线链上投票治理工具 Snapshot，SFG 持有者可对社区治理发起提案或对提案进行投票。`,
+    noticeTitleHtml: 'dfi (yfii) 流动性矿池已上线',
+    noticeDateHtml: '2020/10/10 23:00:00',
+    noticeContHtml: `S.Finance 已于新加坡时间 2020-10-10 23:00 上线 dfi 流动性矿池，2020-10-11 01:00 开启流动性挖矿。<br/>
+    在 dfi 池存入稳定币（DAI、USDC、USDT）或者 yfii 机枪池 i 代币（ iDAI、iUSDC、iUSDT）即可获得流动性凭证 iUSD LP tokens，抵押 iUSD LP tokens 即可获得 S.Finance 治理代币 SFG。<br/>
+    用户在 dfi 池提供流动性可获得三重收益：<br/>
+    yfii 机枪池产生的收益<br/>
+    抵押挖矿获得的 SFG<br/>
+    dfi 池兑换产生的手续费<br/>
+    dfi 流动性矿池挖矿奖励 3 倍速。`,
   },
   wallet: {
     notConnected: '你还没有连接钱包',
@@ -111,9 +116,9 @@ export default {
     name: '流动性矿池',
     reservesTitle: '资产分布',
     depositTip: '你可以存入下方任意一种或多种稳定币，智能合约将按比例自动平衡存入的资产',
-    depositBalancedProportion: '均衡添加所有硬币',
-    depositUseMaximumAvailable: '使用最大数量的硬币',
-    depositWrapped: '打包存款',
+    depositBalancedProportion: '均衡添加所有代币',
+    depositUseMaximumAvailable: '使用最大数量的代币',
+    depositWrapped: '存入 {0} 代币',
     depositWrappedPlaceholder: '存入抵押凭据',
     willLeastReceive: '你将至少收到',
     willReceive: '你将收到',
@@ -123,8 +128,12 @@ export default {
     depositStakeGauge: '存款并抵押挖矿',
     withdrawAvailableAmount: '可取款数量',
     withdrawAmountPlaceholder: '输入取出数量',
+    withdrawWrapped: '取出 {0} 代币',
     withdrawRedemptionTip: '赎回挖矿中的 LP token',
-    dailyProfit: '今日存款收益'
+    dailyProfit: '今日存款收益',
+    approveStakingTokens: '请批准您的 {0} 代币',
+    approveLptokenWithdrawal: '请批准取出 {0} {1}',
+    confirmWithdrawalTransaction: '请确认取出交易',
   },
   dao: {
     standTitle: '稳定币流动性矿池',

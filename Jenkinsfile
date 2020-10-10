@@ -61,7 +61,7 @@ pipeline {
                         CDN_PATH = 'https://s.finance/'
                     } else {
                         OSS_BUCKET = 'test-s-finance'
-                        CDN_PATH = 'http://test.s.finance/'
+                        CDN_PATH = 'https://test.s.finance/'
                     }
                 }
                 withCredentials([usernamePassword(credentialsId: 'aliyun-builder', usernameVariable: 'ACCESS_KEY_ID', passwordVariable: 'ACCESS_KEY_SECRET')]){

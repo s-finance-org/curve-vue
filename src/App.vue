@@ -23,10 +23,11 @@
     busd: 'bUSD',
     susd: 'sUSD-yCurve old',
     susdv2: 'sUSD',
-      pax: 'PAX',
-      tbtc: 'TBTC',
-      ren: 'renBTC',
-      sbtc: 'sBTC',
+    pax: 'PAX',
+    tbtc: 'TBTC',
+    ren: 'renBTC',
+    sbtc: 'sBTC',
+    dfi: 'dfi'
   }
 
 	export default {

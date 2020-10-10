@@ -97,13 +97,13 @@
                 </button>
                 <button 
                     id='add-liquidity-stake' 
-                    v-show="['susdv2', 'sbtc', 'y', 'iearn'].includes(currentPool) && hasRewards" 
+                    v-show="['susdv2', 'sbtc', 'y', 'iearn', 'dfi'].includes(currentPool) && hasRewards" 
                     :disabled = 'slippage < -0.03 || depositingZeroWarning || isZeroSlippage'
                     @click = 'justDeposit = false; deposit_stake()'>
                     Deposit and stake <span class='loading line' v-show='loadingAction == 2'></span>
                 </button>
                 <button id='stakeunstaked' 
-                    v-show="totalShare > 0 && ['susdv2', 'sbtc', 'y', 'iearn'].includes(currentPool) && hasRewards"
+                    v-show="totalShare > 0 && ['susdv2', 'sbtc', 'y', 'iearn', 'dfi'].includes(currentPool) && hasRewards"
                     :disabled='stakePercentageInvalid' 
                     @click='stakeTokens()'
                     >
@@ -126,11 +126,11 @@
                     <div v-show='showadvancedoptions'>
                         <fieldset>
                             <legend>Advanced options:</legend>
-                            <div v-show="hasRewards && totalShare > 0 && ['susdv2', 'sbtc', 'y', 'iearn'].includes(currentPool)">
+                            <div v-show="hasRewards && totalShare > 0 && ['susdv2', 'sbtc', 'y', 'iearn', 'dfi'].includes(currentPool)">
                                 <label for='stakepercentage'>Stake %</label>
                                 <input id='stakepercentage' v-model='stakepercentage' :class="{'invalid': stakePercentageInvalid}">
                                 <button id='stakeunstaked' 
-                                    v-show="totalShare > 0 && ['susdv2', 'sbtc', 'y', 'iearn'].includes(currentPool)"
+                                    v-show="totalShare > 0 && ['susdv2', 'sbtc', 'y', 'iearn', 'dfi'].includes(currentPool)"
                                     :disabled='stakePercentageInvalid' 
                                     @click='stakeTokens()'
                                 >
@@ -418,14 +418,14 @@
                 await this.calcSlippage()
                 let calls = [...Array(currentContract.N_COINS).keys()].map(i=>[this.coins[i]._address, 
                 	this.coins[i].methods.allowance(currentContract.default_account || '0x0000000000000000000000000000000000000000', this.swap_address).encodeABI()])
-                if(['susdv2', 'sbtc', 'y', 'iearn'].includes(this.currentPool))
+                if(['susdv2', 'sbtc', 'y', 'iearn', 'dfi'].includes(this.currentPool))
                     calls.push([currentContract.curveRewards._address, currentContract.curveRewards.methods.periodFinish().encodeABI()])
                 let aggcalls = await currentContract.multicall.methods.aggregate(calls).call()
                 let decoded = aggcalls[1].map(hex => currentContract.web3.eth.abi.decodeParameter('uint256', hex))
                 if(decoded.slice(0,decoded.length-1).some(v=>BN(v).lte(currentContract.max_allowance.div(BN(2))) > 0))
                 	this.inf_approval = false
                 let now = Date.now() / 1000
-                if(['susdv2', 'sbtc', 'y', 'iearn'].includes(this.currentPool) && +decoded[decoded.length-1] < now)
+                if(['susdv2', 'sbtc', 'y', 'iearn', 'dfi'].includes(this.currentPool) && +decoded[decoded.length-1] < now)
                     this.hasRewards = false
 
                 this.disabledButtons = false;
@@ -715,7 +715,7 @@
 				}
 				this.waitingMessage = ''
 				if(!stake ) this.show_loading = false
-				if(stake && ['susdv2', 'sbtc', 'y', 'iearn'].includes(this.currentPool)) {
+				if(stake && ['susdv2', 'sbtc', 'y', 'iearn', 'dfi'].includes(this.currentPool)) {
                     console.warn(receipt.events)
                     try {
     					minted = BN(

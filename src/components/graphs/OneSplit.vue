@@ -608,6 +608,7 @@
                     pax: 0x80000000,
                     ren: 0x100000000,
                     sbtc: 0x40000000000,
+                    dfi: 0x4000
                 }
                 let addPoolFlag = Object.keys(curveFlags).filter(pool=>this.pools.includes(pool)).map(pool=>curveFlags[pool])
                 addPoolFlag = addPoolFlag.reduce((a, b) => a + b, 0)
@@ -1318,7 +1319,7 @@
                         this.estimateGas = txPrice1split
                     }
                     else {
-                        let pools = ['compound', 'iearn', 'busd', 'susdv2', 'pax', 'ren', 'sbtc', '1split']
+                        let pools = ['compound', 'iearn', 'busd', 'susdv2', 'pax', 'ren', 'sbtc', '1split', 'dfi']
                         this.swapPromise.cancel()
                         let promises = [this.realComparePools()]
                         if(this.fromInput > 100 || [7,8].includes(this.from_currency) && [7,8].includes(this.to_currency)) {

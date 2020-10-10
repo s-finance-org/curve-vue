@@ -35,11 +35,11 @@
         </template>
         <template v-slot:cell(volume)="data">
           <text-overlay-loading :show="data.item.volData && data.item.volData[0] < 0">
-            <template v-if="data.item.volData && data.item.volData[0] >= 0">
+            <template v-if="data.item.volData && data.item.volData[0] > 0">
               ${{(data.item.volData && data.item.volData[0] | 0) | formatNumber(0)}}
             </template>
             <template v-else>
-              $0
+              -
             </template>
           </text-overlay-loading>
         </template>
@@ -55,8 +55,8 @@
           {{ $t('global.operating') }}
         </template>
         <template v-slot:cell(operating)="data">
-          <b-button to="/susdv2/liquidity" size="sm" variant="danger">{{ $t('global.deposit') }}</b-button>
-          <b-button to="/dao" class="ml-2" size="sm" variant="outline-secondary">{{ $t('global.dao') }}</b-button>
+          <b-button :to=data.item.toDeposit size="sm" variant="danger">{{ $t('global.deposit') }}</b-button>
+          <b-button :to=data.item.toDao class="ml-2" size="sm" variant="outline-secondary">{{ $t('global.dao') }}</b-button>
         </template>
       </b-table>
     </div>
@@ -525,7 +525,8 @@
             // },
             {
               id: 4,
-              to: '/susdv2',
+              toDeposit: '/liquidity/susdv2',
+              toDao: '/dao',
               pooltext: 'sUSD',
               pools: 'DAI USDC USDT sUSD',
               volData: volumes.susd,
@@ -551,6 +552,17 @@
             //   funds: '-',
             //   link: '/sbtc'
             // },
+            {
+              id: 2,
+              toDeposit: '/liquidity/dfi',
+              toDao: '/dao',
+              pooltext: 'dfi',
+              pools: '(i)DAI (i)USDC (i)USDT',
+              volData: null, // volData.dfi
+              currencies: {dai: 'DAI', usdc: 'USDC', usdt: "USDT"},
+              funds: '-',
+              link: '/dfi'
+            },
           ]
         }
       }
@@ -582,7 +594,7 @@
 
 					[
 						balancerPool._address,
-						balancerPool.methods.getBalance('0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f').encodeABI()
+						balancerPool.methods.getBalance(process.env.VUE_APP_SNX_TOKEN).encodeABI()
 					],
           [
             balancerPool._address,
@@ -799,13 +811,14 @@
 				  "0x64E3C23bfc40722d3B649844055F1D51c1ac041d",
 				  "0xB1F2cdeC61db658F091671F5f199635aEF202CAC",
 				  process.env.VUE_APP_PSS_GAUGE,
-				  "0x705350c4BcD35c9441419DdD5d2f097d7a55410F"
+          "0x705350c4BcD35c9441419DdD5d2f097d7a55410F",
+          
 				]
 
 				let gaugeController_address = '0x2F50D538606Fa9EDD2B11E2446BEb18C9D5846bB'
 				let gauge_relative_weight = '0x6207d866000000000000000000000000'
 
-				let pools = ['compound','usdt','iearn','busd','susdv2','pax','ren','sbtc']
+				let pools = ['compound','usdt','iearn','busd','susdv2','pax','ren','sbtc', 'dfi']
 
 				let prices = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,curve-dao-token&vs_currencies=usd')
 				prices = await prices.json()

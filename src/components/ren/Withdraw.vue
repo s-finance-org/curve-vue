@@ -359,7 +359,7 @@
                     let calls = [
                         [curveRewards._address, curveRewards.methods.earned(this.default_account).encodeABI()],
                         [this.balancerPool._address, this.balancerPool.methods.totalSupply().encodeABI()],
-                        [this.balancerPool._address, this.balancerPool.methods.getBalance('0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f').encodeABI()],
+                        [this.balancerPool._address, this.balancerPool.methods.getBalance(process.env.VUE_APP_SNX_TOKEN).encodeABI()],
                         [this.balancerPool._address, this.balancerPool.methods.getBalance('0x408e41876cccdc0f92210600ef50372656052a38').encodeABI()],
                     ]
                     let aggcalls = await currentContract.multicall.methods.aggregate(calls).call()
