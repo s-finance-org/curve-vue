@@ -292,7 +292,7 @@ let routes = [
         component: SwapRouter,
       },
       {
-        path: '/:pool(susdv2|dfi|y)/liquidity',
+        path: 'liquidity',
         name: 'Liquidity',
         component: Liquidity,
       },

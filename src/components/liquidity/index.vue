@@ -15,13 +15,13 @@
                 :src='getTokenIcon(currency)'>
             </div>
             <h3 class="mb-0">{{ currentPool }}<br/>{{ $t('liquidity.name') }}</h3>
-            <div class="total-box px-4 py-3 ml-auto mr-4 d-none d-lg-block">
+            <div class="total-box col px-4 py-3 ml-5 mr-4 d-none d-lg-block">
               <h6 class="text-black-65">{{ $t('global.totalBalances') }}</h6>
               <text-overlay-loading :show="totalBalances === null">
                 <h4 class="mb-0">${{ totalBalances | formatNumber(2) }}</h4>
               </text-overlay-loading>
             </div>
-            <div class="total-box px-4 py-3 d-none d-lg-block">
+            <div class="total-box col px-4 py-3 d-none d-lg-block">
               <h6 class="text-black-65">{{ $t('global.dailyVol') }}</h6>
               <text-overlay-loading :show="poolVolumeUSD == -1">
                 <h4 class="mb-0">${{ poolVolumeUSD && poolVolumeUSD | formatNumber(2) }}</h4>
@@ -312,7 +312,10 @@
                       </b-form-text> -->
                     </div>
 
-                    <b-form-checkbox v-show = "!['susd','susdv2','tbtc','ren','sbtc'].includes(currentPool)" v-model='withdrawc' name="inf-approval" >{{ $t('liquidity.withdrawWrapped', ['i']) }}</b-form-checkbox>
+                    <div class="mt-4">
+                      <b-form-checkbox v-model="inf_approval" name="inf-approval">{{ $t('dao.infiniteApproval') }}</b-form-checkbox>
+                      <b-form-checkbox v-show = "!['susd','susdv2','tbtc','ren','sbtc'].includes(currentPool)" v-model='withdrawc' name="inf-approval" >{{ $t('liquidity.withdrawWrapped', ['i']) }}</b-form-checkbox>
+                    </div>
                   </div>
 
                   <div class="col-12 col-lg mb-2 d-flex flex-column text-black-65">
@@ -702,14 +705,14 @@
                 <li v-show = "!['susdv2','tbtc','ren', 'sbtc'].includes(currentPool)">
                   <input type='radio' id='to_cur_comb' name="to_cur" :value='10' :checked='to_currency === 10' @click='handleCheck(10)'>
                   <label for='to_cur_comb'>
-                            Combination of all coins
-                            <span v-for='(currency, i) in Object.keys(currencies)'>
-                                <span v-show='i > 0'>+</span>
-                                <img 
-                                :class="{'token-icon': true, [currency+'-icon']: true, 'y': withdrawc, [currentPool]: true}" 
-                                :src='getTokenIcon(currency)'>
-                            </span>
-                        </label>
+                    Combination of all coins
+                    <span v-for='(currency, i) in Object.keys(currencies)'>
+                      <span v-show='i > 0'>+</span>
+                      <img 
+                        :class="{'token-icon': true, [currency+'-icon']: true, 'y': withdrawc, [currentPool]: true}" 
+                        :src='getTokenIcon(currency)'>
+                    </span>
+                  </label>
                 </li>
                 <li v-for='(currency, i) in Object.keys(currencies)' class='withdrawin'>
                       <input type="radio" :id="'to_cur_'+i" name="to_cur" :value='i' :checked='to_currency === i' @click='handleCheck(i)'>
@@ -1195,11 +1198,11 @@ console.log('current', this.currentPool, this.currencies)
               return this.toFixed(BN(this.unstakepercentage / 100).times(this.staked_balance / 1e18))
           },
           showInfApprovalZap() {
-              if(!this.withdrawc && this.currentPool != 'susdv2')
-                  return true
-              if(this.share != '---' && ((this.to_currency !== null && this.to_currency < 10) || this.to_currency == 10)) {
-                  return true
-              }
+            if(!this.withdrawc && this.currentPool != 'susdv2')
+                return true
+            if(this.share != '---' && ((this.to_currency !== null && this.to_currency < 10) || this.to_currency == 10)) {
+                return true
+            }
           },
 
 
@@ -1754,18 +1757,17 @@ console.log('current', this.currentPool, this.currencies)
           },
 
           // withdraw
-          handleCheck(val) {
-            console.log(val)
-            if(val === this.to_currency) {
-              if(this.withdrawc == false) this.withdrawc = true
+          handleCheck(idx) {
+            if(idx === this.to_currency) {
+              // if(this.withdrawc == false) this.withdrawc = true
               this.to_currency = null
 
               currentContract.slippage = 0
               currentContract.showSlippage = false
             }
             else {
-              this.withdrawc = false
-              this.to_currency = val
+              // this.withdrawc = false
+              this.to_currency = idx
             }
           },
           setCalcBalances() {
@@ -2120,7 +2122,7 @@ console.log('current', this.currentPool, this.currencies)
 			        if(this.withdrawc || ['susdv2', 'sbtc'].includes(this.currentPool)) {
 			        	let gas = contractGas.withdraw[this.currentPool].imbalance(nonZeroInputs) | 0
                         try {
-                            this.waitingMessage = 'Please confirm withdrawal transaction'
+                            this.waitingMessage = this.$i18n.t('liquidity.confirmWithdrawalTransaction')
                             var { dismiss } = notifyNotification(this.waitingMessage)
 
                             try {
@@ -2170,7 +2172,7 @@ console.log('current', this.currentPool, this.currencies)
                             this.estimateGas = gas / (['compound', 'usdt'].includes(currentContract.currentContract) ? 1.5 : 2.5)
                             if(!['tbtc','ren','sbtc'].includes(currentContract.currentContract)) await common.ensure_allowance_zap_out(token_amount, undefined, undefined, this.inf_approvalamount)
                             dismiss()
-                            this.waitingMessage = 'Please confirm withdrawal transaction'
+                            this.waitingMessage = this.$i18n.t('liquidity.confirmWithdrawalTransaction')
                             var { dismiss } = notifyNotification(this.waitingMessage)
                             await helpers.setTimeoutPromise(100)
     			        	await inOneCoin.methods.remove_liquidity_imbalance(amounts, token_amount).send({
@@ -2222,7 +2224,7 @@ console.log('current', this.currentPool, this.currencies)
                             this.show_nobalance = true;
                             this.show_nobalance_i = this.to_currency;
                         }
-                        this.waitingMessage = 'Please confirm withdrawal transaction'
+                        this.waitingMessage = this.$i18n.t('liquidity.confirmWithdrawalTransaction')
                         var { dismiss } = notifyNotification(this.waitingMessage)
                         let args = [BN(amount).toFixed(0,1), this.to_currency, BN(min_amount).times(BN(1).div(BN(this.getWithdrawMaxSlippage))).toFixed(0, 1)]
                         if(!['tbtc','ren','sbtc'].includes(currentContract.currentContract)) args.push(this.donate_dust)
@@ -2255,7 +2257,7 @@ console.log('current', this.currentPool, this.currencies)
                             this.estimateGas = contractGas.depositzap[this.currentPool].withdrawShare / 2
                             if(!['tbtc','ren','sbtc'].includes(currentContract.currentContract)) await common.ensure_allowance_zap_out(amount, undefined, undefined, this.inf_approval)
                             dismiss()
-                            this.waitingMessage = 'Please confirm withdrawal transaction'
+                            this.waitingMessage = this.$i18n.t('liquidity.confirmWithdrawalTransaction')
                             var { dismiss } = notifyNotification(this.waitingMessage)
                             let min_amounts = await this.getMinAmounts();
                             await helpers.setTimeoutPromise(100)
@@ -2285,7 +2287,7 @@ console.log('current', this.currentPool, this.currencies)
 			        else {
                         try {
     			        	let min_amounts = await this.getMinAmounts();
-                            this.waitingMessage = 'Please confirm withdrawal transaction'
+                            this.waitingMessage = this.$i18n.t('liquidity.confirmWithdrawalTransaction')
                             var { dismiss } = notifyNotification(this.waitingMessage)
                             try {
                                 this.estimateGas = await currentContract.swap.methods.remove_liquidity(amount, min_amounts)
