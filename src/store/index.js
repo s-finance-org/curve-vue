@@ -26,6 +26,7 @@ import abiSFG from '../components/dao/abi/sfg'
 import abiDfi from '../components/dao/abi/dfi'
 import abi_iUSD_LPT from '../components/dao/abi/iUSD_LPT'
 import swapAbi_iUSD_LPT from '../components/dao/abi/swapAbi_iUSD_LPT'
+import abi_susdv2_swap from '../components/dao/abi/susdv2_swap'
 import { ERC20_abi as abiSusdv2LpToken } from '../allabis'
 
 // FIXME: 
@@ -215,7 +216,9 @@ store.tokens = {
   },
   susdv2LpToken: {
     address: process.env.VUE_APP_SUSDV2_LPT_TOKEN,
+    swapAddress: '0xA5407eAE9Ba41422680e2e00537571bcC53efBfD',
     abi: abiSusdv2LpToken,
+    swapAbi: abi_susdv2_swap,
     __contract: null,
     get contract () {
       const { __contract, abi, address } = this
@@ -223,6 +226,25 @@ store.tokens = {
       return __contract ||
         (this.__contract = new web3.eth.Contract(abi, address))
     },
+
+    __contractSwap: null,
+    get contractSwap () {
+      const { __contractSwap, swapAbi, swapAddress } = this
+
+      return __contractSwap ||
+        (this.__contractSwap = new web3.eth.Contract(swapAbi, swapAddress))
+    },
+
+    price: valueModel.create(),
+    async getPrice () {
+      const { contractSwap, price } = this
+      const result = await contractSwap.methods.get_virtual_price().call()
+
+      price.tether = result
+
+      return price.handled
+    },
+
     async getBalanceOf (target, accountAddress) {
       const { contract } = this
       const result = await contract.methods.balanceOf(accountAddress).call()
@@ -1073,7 +1095,7 @@ store.gauges = {
     async getAPY (price, dailyYield, totalStaking, lpTokenPrice) {
       const { contract, dailyAPY, apy, rewards } = this
 
-      dailyAPY.handled = BN(await price / 1e18).times(await dailyYield / 1e18).times(rewards.sfg.weighting.handled).dividedBy(BN(await totalStaking / 1e18).times(lpTokenPrice)).toString()
+      dailyAPY.handled = BN(await price / 1e18).times(await dailyYield / 1e18).times(rewards.sfg.weighting.handled).dividedBy(BN(await totalStaking / 1e18).times(await lpTokenPrice)).toString()
       // TMEP: + 0.11
       apy.handled = +dailyAPY.handled * 365 + 0.11
     },

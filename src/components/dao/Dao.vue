@@ -205,12 +205,12 @@
               </span>
               <span class="col-12 col-md-6 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.virtualPrice') }}</h6>
-                <text-overlay-loading inline :show="loadingAction">
+                <text-overlay-loading inline :show="store.tokens.susdv2LpToken.price.loading">
                   <span class="h4 mb-0">
                     1 <span class="h6 text-black-65">{{ currentPool.name }} LP tokens = </span>
                   </span>
                   <span class="h4 mb-0">
-                    {{ (1 * virtual_price).toFixed(6) }}<span class="text-black-65 h6">USD</span>
+                    {{ store.tokens.susdv2LpToken.price.cont }}<span class="text-black-65 h6"> USD</span>
                   </span>
                 </text-overlay-loading>
               </span>
@@ -436,17 +436,6 @@
                   <span class="h4">{{ store.gauges.bpt.rewards.sfg.weighting.percent }}%</span>
                 </text-overlay-loading>
               </span>
-              <!-- <span class="col-12 col-lg pb-3">
-                <h6 class="mb-0 text-black-65">{{ $t('dao.virtualPrice') }}</h6>
-                <text-overlay-loading inline :show="loadingAction">
-                  <span class="h4">
-                  1
-                  <span class="h6 text-black-65 inline-block ">{{ currentPool.name }} LP tokens = </span>
-                  {{ (1 * virtual_price).toFixed(6) }}
-                  <span class="text-black-65 h6">USD</span>
-                  </span>
-                </text-overlay-loading>
-              </span> -->
             </div>
 
             <b-tabs pills nav-class="tabs-nav" class="mt-1">
@@ -847,9 +836,6 @@
 
         computed: {
           ...getters,
-          virtual_price() {
-            return currentContract.virtual_price
-          },
           gasPrice() {
             return gasPriceStore.state.gasPrice
           },
@@ -1054,7 +1040,7 @@
               store.tokens.sfg.getPrice(),
               store.tokens.sfg.getDailyYield(),
               store.gauges.susdv2.getTotalSupply(this.currentPool.totalSupply),
-              currentContract.virtual_price
+              store.tokens.susdv2LpToken.getPrice(),
             )
 
             store.gauges.susdv2.getBalanceOf(this.currentPool.gaugeBalance, currentContract.default_account)
