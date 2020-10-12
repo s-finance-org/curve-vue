@@ -56,8 +56,8 @@ let wallets = [
     //LedgerTransport: TransportWebUSB,
   },
   // { walletName: "dapper" },
-  // { walletName: "coinbase" },
-  // { walletName: "status" },
+  { walletName: "coinbase" },
+  { walletName: "status" },
   // { walletName: "fortmatic", apiKey: "pk_live_190B10CE18F47DCD" },
   // { walletName: "authereum", apiKey: "_BTsipRcEmPeuVteLOGdoh1CXt733YLZ7u3ipbe_dAk" },
   {
