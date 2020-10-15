@@ -134,6 +134,7 @@
 			  [process.env.VUE_APP_REN]: 'ren',
         [process.env.VUE_APP_SBTC]: 'sbtc',
         [process.env.VUE_APP_DFI_TOKEN]: 'dfi',
+        [process.env.VUE_APP_DUSD_TOKEN]: 'dusd',
 			},
 			selectedGauge: "0x0000000000000000000000000000000000000000",
 			weight: 1,
@@ -244,6 +245,12 @@
 						swap_token: store.tokens.iUSD_LPT.swapAddress,
 						name: store.gauges.dfi.code,
 						gauge: process.env.VUE_APP_DFI_TOKEN
+          },
+          dusd: {
+						swap: process.env.VUE_APP_DUSD_TOKEN,
+						swap_token: process.env.VUE_APP_DUSD_SWAP,
+						name: store.gauges.dusd.code,
+						gauge: process.env.VUE_APP_DUSD_GAUGE
 					},
 				}
 		}),
@@ -324,13 +331,14 @@
 				  process.env.VUE_APP_REN,
 				  process.env.VUE_APP_PSS_GAUGE,
           process.env.VUE_APP_SBTC,
-          process.env.VUE_APP_DFI_TOKEN
+          process.env.VUE_APP_DFI_TOKEN,
+          process.env.VUE_APP_DUSD_TOKEN,
 				]
 
 				let gaugeController_address = process.env.VUE_APP_GAUGE_CONTROLLER
 				let gauge_relative_weight = '0x6207d866000000000000000000000000'
 
-				let pools = ['compound','usdt','iearn','busd','susdv2','pax','ren','sbtc', 'dfi']
+				let pools = ['compound','usdt','iearn','busd','susdv2','pax','ren','sbtc', 'dfi', 'dusd']
 
 				let prices = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,curve-dao-token&vs_currencies=usd')
 				prices = await prices.json()

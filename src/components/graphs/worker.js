@@ -59,7 +59,13 @@ const currencies = {
     dai: 'iDAI',
     usdc: 'iUSDC',
     usdt: 'iUSDT',
-  }
+  },
+  dusd: {
+		dai: 'dDAI',
+		usdc: 'dUSDC',
+		usdt: 'dUSDT',
+		usdx: 'dUSDx'
+	},
 }
 
 let calcPrice = (config, fromCurrency, toCurrency, precisions, usefee = false) => {

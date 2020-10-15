@@ -1,34 +1,35 @@
 <template>
 	<div>
-        <div class="total-bg">
-          <b-container class="d-flex py-4 total-cont">
-            <b-navbar-nav class="navbar-tabs flex-row">
-              <b-nav-item :to="{ name: 'Liquidity', params: { pool: 'dfi' } }">dfi</b-nav-item>
-              <b-nav-item :to="{ name: 'Liquidity', params: { pool: 'susdv2' } }">sUSD</b-nav-item>
-              <!-- <b-nav-item to='/liquidity/y'>Y</b-nav-item> -->
-            </b-navbar-nav>
-          </b-container>
-          <b-container class="d-flex py-4 total-cont align-items-center">
-            <div class="total-box p-2 mr-4 col-auto box-98 d-flex flex-wrap">
-              <img v-for='(currency, i) in Object.keys(currencies)' :key="'icon-'+currency" class="icon-w-40"
-                :class="{'token-icon': true, [currency+'-icon']: true, 'y': depositc && !isPlain}" 
-                :src='getTokenIcon(currency)'>
-            </div>
-            <h3 class="mb-0">{{ currentPool }}<br/>{{ $t('liquidity.name') }}</h3>
-            <div class="total-box col-3 px-4 py-3 ml-auto mr-4 d-none d-lg-block">
-              <h6 class="text-black-65">{{ $t('global.totalBalances') }}</h6>
-              <text-overlay-loading :show="totalBalances === null">
-                <h4 class="mb-0">${{ totalBalances | formatNumber(2) }}</h4>
-              </text-overlay-loading>
-            </div>
-            <!-- <div class="total-box col-3 px-4 py-3 d-none d-lg-block">
-              <h6 class="text-black-65">{{ $t('global.dailyVol') }}</h6>
-              <text-overlay-loading :show="poolVolumeUSD == -1">
-                <h4 class="mb-0">${{ poolVolumeUSD && poolVolumeUSD | formatNumber(2) }}</h4>
-              </text-overlay-loading>
-            </div> -->
-          </b-container>
+    <!-- FIXME: common -->
+    <div class="total-bg">
+      <b-container class="d-flex py-4 total-cont">
+        <b-navbar-nav class="navbar-tabs flex-row">
+          <b-nav-item :to="{ name: 'Liquidity', params: { pool: 'dfi' } }">dfi</b-nav-item>
+          <b-nav-item :to="{ name: 'Liquidity', params: { pool: 'susdv2' } }">sUSD</b-nav-item>
+          <b-nav-item :to="{ name: 'Liquidity', params: { pool: 'dusd' } }">dUSD</b-nav-item>
+        </b-navbar-nav>
+      </b-container>
+      <b-container class="d-flex py-4 total-cont align-items-center">
+        <div class="total-box p-2 mr-4 col-auto box-98 d-flex flex-wrap">
+          <img v-for='(currency, i) in Object.keys(currencies)' :key="'icon-'+currency" class="icon-w-40"
+            :class="{'token-icon': true, [currency+'-icon']: true, 'y': depositc && !isPlain}" 
+            :src='getTokenIcon(currency)'>
         </div>
+        <h3 class="mb-0">{{ currentPool }}<br/>{{ $t('liquidity.name') }}</h3>
+        <div class="total-box col-3 px-4 py-3 ml-auto mr-4 d-none d-lg-block">
+          <h6 class="text-black-65">{{ $t('global.totalBalances') }}</h6>
+          <text-overlay-loading :show="totalBalances === null">
+            <h4 class="mb-0">${{ totalBalances | formatNumber(2) }}</h4>
+          </text-overlay-loading>
+        </div>
+        <!-- <div class="total-box col-3 px-4 py-3 d-none d-lg-block">
+          <h6 class="text-black-65">{{ $t('global.dailyVol') }}</h6>
+          <text-overlay-loading :show="poolVolumeUSD == -1">
+            <h4 class="mb-0">${{ poolVolumeUSD && poolVolumeUSD | formatNumber(2) }}</h4>
+          </text-overlay-loading>
+        </div> -->
+      </b-container>
+    </div>
 
         <b-container>
           <root-sub />
@@ -98,7 +99,7 @@
                       </b-form-text>
                     </div>
                     <div class="mt-4">
-                      <b-form-checkbox v-model="inf_approval" name="inf-approval">{{ $t('dao.infiniteApproval') }}</b-form-checkbox>
+                      <b-form-checkbox v-model="inf_approval" name="inf-approval">{{ $t('global.infiniteApproval') }}</b-form-checkbox>
                       <b-form-checkbox @change='handle_sync_balances_proportion' :disabled='disabledButtons' checked v-model='sync_balances' name="sync-balances">{{ $t('liquidity.depositBalancedProportion') }}</b-form-checkbox>
                       <b-form-checkbox @change='handle_sync_balances' :disabled='disabledButtons' checked v-model='max_balances' name="max-balances">{{ $t('liquidity.depositUseMaximumAvailable') }}</b-form-checkbox>
                       <b-form-checkbox v-show = "!['susd','susdv2','tbtc','ren','sbtc'].includes(currentPool)" checked v-model='depositc' name="inf-approval" >{{ $t('liquidity.depositWrapped', ['i']) }}</b-form-checkbox>
@@ -238,7 +239,7 @@
               <b-tab :title="$t('global.withdraw')" class="pt-3">
                 <small class="d-flex mb-3">{{ $t('liquidity.withdrawAvailableAmount') }}：
                   <text-overlay-loading :show="gauges.balanceOf.loading">
-                    {{ gauges.balanceOf.cont }} {{ currentPoolTokenName }}
+                    {{ gauges.balanceOf.wrapped }} {{ currentPoolTokenName }}
                   </text-overlay-loading>
                 </small>
 
@@ -313,7 +314,7 @@
                     </div>
 
                     <div class="mt-4">
-                      <b-form-checkbox v-model="inf_approval" name="inf-approval">{{ $t('dao.infiniteApproval') }}</b-form-checkbox>
+                      <b-form-checkbox v-model="inf_approval" name="inf-approval">{{ $t('global.infiniteApproval') }}</b-form-checkbox>
                       <b-form-checkbox v-show = "!['susd','susdv2','tbtc','ren','sbtc'].includes(currentPool)" v-model='withdrawc' name="inf-approval" >{{ $t('liquidity.withdrawWrapped', ['i']) }}</b-form-checkbox>
                     </div>
                   </div>
@@ -442,7 +443,7 @@
                   <text-overlay-loading :show="loadingAction == 1">
                     <b-button size="lg" variant="danger"
                       id='remove-liquidity-unstake'
-                      v-show = "['susdv2', 'sbtc', 'y', 'iearn', 'dfi'].includes(currentPool) && staked_balance > 0 "
+                      v-show = "['susdv2', 'sbtc', 'y', 'iearn', 'dfi', 'dusd'].includes(currentPool) && staked_balance > 0 "
                       :disabled = 'slippage < -0.03'
                       @click='handle_remove_liquidity(true, false, true)'
                       >
@@ -569,13 +570,13 @@
 
                     <button 
                         id='add-liquidity-stake' 
-                        v-show="['susdv2', 'sbtc', 'y', 'iearn', 'dfi'].includes(currentPool) && hasRewards" 
+                        v-show="['susdv2', 'sbtc', 'y', 'iearn', 'dfi', 'dusd'].includes(currentPool) && hasRewards" 
                         :disabled = 'slippage < -0.03 || depositingZeroWarning || isZeroSlippage'
                         @click = 'justDeposit = false; deposit_stake()'>
                         Deposit and stake <span class='loading line' v-show='loadingAction == 2'></span>
                     </button>
                     <button id='stakeunstaked' 
-                        v-show="totalShare > 0 && ['susdv2', 'sbtc', 'y', 'iearn', 'dfi'].includes(currentPool) && hasRewards"
+                        v-show="totalShare > 0 && ['susdv2', 'sbtc', 'y', 'iearn', 'dfi', 'dusd'].includes(currentPool) && hasRewards"
                         :disabled='stakePercentageInvalid' 
                         @click='stakeTokens()'
                         >
@@ -598,11 +599,11 @@
                         <div v-show='showadvancedoptions'>
                             <fieldset>
                                 <legend>Advanced options:</legend>
-                                <div v-show="hasRewards && totalShare > 0 && ['susdv2', 'sbtc', 'y', 'iearn', 'dfi'].includes(currentPool)">
+                                <div v-show="hasRewards && totalShare > 0 && ['susdv2', 'sbtc', 'y', 'iearn', 'dfi', 'dusd'].includes(currentPool)">
                                     <label for='stakepercentage'>Stake %</label>
                                     <input id='stakepercentage' v-model='stakepercentage' :class="{'invalid': stakePercentageInvalid}">
                                     <button id='stakeunstaked' 
-                                        v-show="totalShare > 0 && ['susdv2', 'sbtc', 'y', 'iearn', 'dfi'].includes(currentPool)"
+                                        v-show="totalShare > 0 && ['susdv2', 'sbtc', 'y', 'iearn', 'dfi', 'dusd'].includes(currentPool)"
                                         :disabled='stakePercentageInvalid' 
                                         @click='stakeTokens()'
                                     >
@@ -648,7 +649,7 @@
                 <legend>
                   Share of liquidity (%)
                 <input id='showstaked' type='checkbox' name='showstaked' v-model = 'showstaked'>
-                <label for='showstaked' v-show="['susdv2', 'sbtc', 'y', 'iearn', 'dfi'].includes(currentPool)"> Show staked </label>
+                <label for='showstaked' v-show="['susdv2', 'sbtc', 'y', 'iearn', 'dfi', 'dusd'].includes(currentPool)"> Show staked </label>
                 </legend>
                 <ul>
                     <li>
@@ -769,16 +770,16 @@
                 </button>
                 <button 
                     id='remove-liquidity-unstake'
-                    v-show = "['susdv2', 'sbtc','y','iearn', 'dfi'].includes(currentPool) && staked_balance > 0 "
+                    v-show = "['susdv2', 'sbtc','y','iearn', 'dfi', 'dusd'].includes(currentPool) && staked_balance > 0 "
                     :disabled = 'slippage < -0.03'
                     @click='handle_remove_liquidity(true, false, true)'>
                     Withdraw & claim <span class='loading line' v-show='loadingAction == 2'></span>
                 </button>
                 <button id='claim-snx'
                     @click='claim_SNX(false)'
-                    v-show="['susdv2', 'sbtc','y','iearn', 'dfi'].includes(currentPool) && pendingSNXRewards > 0"
+                    v-show="['susdv2', 'sbtc','y','iearn', 'dfi', 'dusd'].includes(currentPool) && pendingSNXRewards > 0"
                 >
-                    Claim {{(pendingSNXRewards / 1e18).toFixed(2)}} {{ ['y','iearn', 'dfi'].includes(currentPool) ? 'YFI' : 'SNX' }}
+                    Claim {{(pendingSNXRewards / 1e18).toFixed(2)}} {{ ['y','iearn', 'dfi', 'dusd'].includes(currentPool) ? 'YFI' : 'SNX' }}
                     <span v-show="currentPool == 'sbtc'"> + {{(pendingRENRewards / 1e18).toFixed(2)}} REN</span>
                 </button>
                 <button id='claim-bpt'
@@ -795,7 +796,7 @@
                 </button>
                 <!-- <button id='claim-adai' 
                     @click='showModal = true'
-                    v-show="['y', 'iearn', 'dfi'].includes(currentPool) && withdrawADAI > 0"
+                    v-show="['y', 'iearn', 'dfi', 'dusd'].includes(currentPool) && withdrawADAI > 0"
                 >
                     {{(pendingSNXRewards / 1e18).toFixed(2)}} YFI -> {{(withdrawADAI / 1e18).toFixed(2)}} aDAI
                     <span class='tooltip'> [?]
@@ -806,7 +807,7 @@
                 </button> -->
                 <button id='unstake-snx'
                     @click='handle_remove_liquidity(true, true)'
-                    v-show="['susdv2', 'sbtc','y','iearn', 'dfi'].includes(currentPool) && staked_balance > 0"
+                    v-show="['susdv2', 'sbtc','y','iearn', 'dfi', 'dusd'].includes(currentPool) && staked_balance > 0"
                 >
                     Unstake
                 </button>
@@ -818,7 +819,7 @@
                 </p>
                 <div id='mintr' v-show="['susdv2', 'sbtc'].includes(currentPool)">
                     <a href = 'https://mintr.synthetix.io/' v-show="['susdv2', 'sbtc'].includes(currentPool)" target='_blank' rel="noopener noreferrer">Manage staking in Mintr</a>
-                    <a href = 'https://ygov.finance/' v-show="['y', 'iearn', 'dfi'].includes(currentPool)" target='_blank' rel="noopener noreferrer"> yGov. </a>
+                    <a href = 'https://ygov.finance/' v-show="['y', 'iearn', 'dfi', 'dusd'].includes(currentPool)" target='_blank' rel="noopener noreferrer"> yGov. </a>
                 </div>
                 <div class='info-message gentle-message' v-show='show_loading'>
                     <span v-html='waitingMessage'></span> <span class='loading line'></span>
@@ -832,7 +833,7 @@
                 <Slippage v-bind="{show_nobalance, show_nobalance_i}"/>
             </div>
 
-            <div v-show="staked_balance > 0 && ['susdv2', 'sbtc', 'y', 'iearn', 'dfi'].includes(currentPool)">
+            <div v-show="staked_balance > 0 && ['susdv2', 'sbtc', 'y', 'iearn', 'dfi', 'dusd'].includes(currentPool)">
                 <button class='simplebutton advancedoptions' @click='showadvancedoptions = !showadvancedoptions'>
                     Advanced unstaking options
                     <span v-show='!showadvancedoptions'>▼</span>
@@ -849,7 +850,7 @@
                                 <label for='unstakepercentage'>Unstake:</label>
                                 <input id='unstakepercentage' v-model='unstakepercentage' :class="{'invalid': unstakePercentageInvalid}">
                                 <button id='unstakestaked' 
-                                    v-show="staked_balance > 0 && ['susdv2', 'sbtc', 'y', 'iearn', 'dfi'].includes(currentPool)"
+                                    v-show="staked_balance > 0 && ['susdv2', 'sbtc', 'y', 'iearn', 'dfi', 'dusd'].includes(currentPool)"
                                     :disabled='unstakePercentageInvalid' 
                                     @click='unstakeStaked()'
                                 >
@@ -868,7 +869,7 @@
 </template>
 
 <script>
-	import Vue from 'vue'
+	  import Vue from 'vue'
     import { notify, notifyHandler, notifyNotification } from '../../init'
     import * as common from '../../utils/common.js'
     import { getters, contract as currentContract, gas as contractGas } from '../../contract'
@@ -886,6 +887,7 @@
     import BN from 'bignumber.js'
     import store from '../../store'
     import { valueModel } from '../../model'
+    import { ModelValueTether } from '../../model/index1'
 
     import Slippage from '../common/Slippage.vue'
     import TextOverlayLoading from '../../components/common/TextOverlayLoading'
@@ -1015,217 +1017,221 @@
           }
           this.hasLoadedInfo && this.updateShares()
         },
-        watch: {
-        	async depositc(val, oldval) {
-        		this.changeSwapInfo(val)
-        		await this.handle_sync_balances()
-        		!this.max_balances && this.highlightAllInputs();
-        		//await Promise.all([...Array(currentContract.N_COINS).keys()].map(i=>this.change_currency(i, false)))
-            await this.calcSlippage(this.deposit_inputs, true)
+      watch: {
+        async depositc(val, oldval) {
+          this.changeSwapInfo(val)
+          await this.handle_sync_balances()
+          !this.max_balances && this.highlightAllInputs();
+          //await Promise.all([...Array(currentContract.N_COINS).keys()].map(i=>this.change_currency(i, false)))
+          await this.calcSlippage(this.deposit_inputs, true)
 
-            await this.getLPCrvReceived()
-        	},
-          getDepositMaxSlippage() {
-            this.getLPCrvReceived()
-          },
-
-          // withdraw
-          to_currency(val) {
-        		if(this.share == 0 || this.share == '---') this.share = 100
-	        	this.setInputStyles()
-	        	if(val !== null) this.handle_change_share();
-        	},
-        	withdrawc(val) {
-        		if(this.share == '---' ) return;
-        		if(!val && this.to_currency === null) this.to_currency = 10
-        		if(val && this.to_currency !== null) this.to_currency = null
-        	},
-          maxSlippage() {
-              this.setSlippage = true
-          },
-          maxInputSlippage(val) {
-              if(val) this.setSlippage = true
-          },
+          await this.getLPCrvReceived()
         },
-        computed: {
-          ...getters,
-          currentPoolTokenName () {
-            const conversions = {
-              'dfi': 'iUSD'
-            }
-            const result = conversions[this.currentPool] || this.currentPool
+        getDepositMaxSlippage() {
+          this.getLPCrvReceived()
+        },
 
-            return `${result} LP tokens`
-          },
-          gauges () {
-            const { currentPool } = this
+        // withdraw
+        to_currency(val) {
+          if(this.share == 0 || this.share == '---') this.share = 100
+          this.setInputStyles()
+          if(val !== null) this.handle_change_share();
+        },
+        withdrawc(val) {
+          if(this.share == '---' ) return;
+          if(!val && this.to_currency === null) this.to_currency = 10
+          if(val && this.to_currency !== null) this.to_currency = null
+        },
+        maxSlippage() {
+            this.setSlippage = true
+        },
+        maxInputSlippage(val) {
+            if(val) this.setSlippage = true
+        },
+      },
+      computed: {
+        ...getters,
+        currentPoolTokenName () {
+          const conversions = {
+            'dfi': 'iUSD',
+            'dusd': 'dUSD'
+          }
+          const result = conversions[this.currentPool] || this.currentPool
 
-            const result = {
-              balanceOf: valueModel.create()
-            }
+          return `${result} LP tokens`
+        },
+        gauges () {
+          const { currentPool } = this
 
-            const tokenKeys = {
-              susdv2: 'susdv2LpToken',
-              dfi: 'iUSD_LPT'
-            }
+          const result = {
+            // valueModel
+            balanceOf: ModelValueTether.create()
+          }
+// store.tokens.dusd.getBalanceOf(result.balanceOf, currentContract.default_account)
 
-            if (tokenKeys[currentPool]) {
-              store.tokens[tokenKeys[currentPool]].getBalanceOf(result.balanceOf, currentContract.default_account)
-            } else {
-              result.balanceOf.tether = currentContract.swap_token.methods.balanceOf(currentContract.default_account).call()
-            }
+          const tokenKeys = {
+            susdv2: 'susdv2LpToken',
+            dfi: 'iUSD_LPT',
+            dusd: 'dusd'
+          }
 
-            return result
-          },
-          poolVolumeUSD() {
-            return volumeStore.state.volumes[this.currentPool == 'iearn' ? 'y' : this.currentPool == 'susdv2' ? 'susd' : this.currentPool][0]
-          },
-          totalBalances() {
-            return this.bal_info && this.bal_info.reduce((a, b) => a + b, 0) || null
-          },
-          minAmount() {
-          	if(['tbtc', 'ren', 'sbtc'].includes(currentContract.currentContract)) return 1e-8
-          	return 0.01
-          },
-          calcFee() {
-            let N_COINS = allabis[currentContract.currentContract].N_COINS
-            return this.fee / 100 * N_COINS / (4 * (N_COINS -1))
-          },
-          compareInputsWarning() {
-            let currencies = []
-console.log('current', this.currentPool, this.currencies)
+          if (tokenKeys[currentPool]) {
+            console.log('111----1111')
+            store.tokens[tokenKeys[currentPool]].getBalanceOf(result.balanceOf, currentContract.default_account)
+          } else {
+            result.balanceOf.tether = currentContract.swap_token.methods.balanceOf(currentContract.default_account).call()
+          }
 
-            for(let [i, currency] of Object.keys(this.currencies).entries()) {
-                let balance = this.wallet_balances[i]
-                if(this.currentPool == 'susdv2' && i == 3) {
-                    balance = this.susdWaitingPeriod ? 0 : this.transferableBalance
-                }
-                let diff3 = BN(BN(balance).times(this.rates[i])).minus(this.deposit_inputs[i])
-                if(diff3.lt(BN(-0.01))) currencies.push(this.depositc ? this.currencies[currency] : currency.toUpperCase())
-            }
-            return currencies
-          },
-          depositingZeroWarning() {
-            return this.deposit_inputs.filter(v=>+v==0).length == this.N_COINS && !this.disabledButtons
-          },
-          isPlain() {
-            return ['susdv2', 'tbtc', 'ren', 'sbtc'].includes(this.currentPool)
-          },
-          transferableBalanceText() {
-            return this.toFixed((this.transferableBalance / 1e18))
-          },
-          virtual_price() {
-            return currentContract.virtual_price
-          },
-          lpCrvReceivedText() {
-            return this.toFixed(this.lpCrvReceived)
-          },
-          gasPrice() {
-            return gasPriceStore.state.gasPrice
-          },
-          gasPriceWei() {
-            return gasPriceStore.state.gasPriceWei
-          },
-          stakePercentageInvalid() {
-            return this.stakepercentage < 0 || this.stakepercentage > 100
-          },
-          getDepositMaxSlippage() {
+          return result
+        },
+        poolVolumeUSD() {
+          return volumeStore.state.volumes[this.currentPool == 'iearn' ? 'y' : this.currentPool == 'susdv2' ? 'susd' : this.currentPool][0]
+        },
+        totalBalances() {
+          return this.bal_info && this.bal_info.reduce((a, b) => a + b, 0) || null
+        },
+        minAmount() {
+          if(['tbtc', 'ren', 'sbtc'].includes(currentContract.currentContract)) return 1e-8
+          return 0.01
+        },
+        calcFee() {
+          let N_COINS = allabis[currentContract.currentContract].N_COINS
+          return this.fee / 100 * N_COINS / (4 * (N_COINS -1))
+        },
+        compareInputsWarning() {
+          let currencies = []
+
+          for(let [i, currency] of Object.keys(this.currencies).entries()) {
+              let balance = this.wallet_balances[i]
+              if(this.currentPool == 'susdv2' && i == 3) {
+                  balance = this.susdWaitingPeriod ? 0 : this.transferableBalance
+              }
+              let diff3 = BN(BN(balance).times(this.rates[i])).minus(this.deposit_inputs[i])
+              if(diff3.lt(BN(-0.01))) currencies.push(this.depositc ? this.currencies[currency] : currency.toUpperCase())
+          }
+          return currencies
+        },
+        depositingZeroWarning() {
+          return this.deposit_inputs.filter(v=>+v==0).length == this.N_COINS && !this.disabledButtons
+        },
+        isPlain() {
+          return ['susdv2', 'tbtc', 'ren', 'sbtc'].includes(this.currentPool)
+        },
+        transferableBalanceText() {
+          return this.toFixed((this.transferableBalance / 1e18))
+        },
+        virtual_price() {
+          return currentContract.virtual_price
+        },
+        lpCrvReceivedText() {
+          return this.toFixed(this.lpCrvReceived)
+        },
+        gasPrice() {
+          return gasPriceStore.state.gasPrice
+        },
+        gasPriceWei() {
+          return gasPriceStore.state.gasPriceWei
+        },
+        stakePercentageInvalid() {
+          return this.stakepercentage < 0 || this.stakepercentage > 100
+        },
+        getDepositMaxSlippage() {
+          let maxSlippage = +this.maxSlippage;
+          if(this.maxInputSlippage) maxSlippage = +this.maxInputSlippage;
+          return (100 - maxSlippage)/100
+        },
+        warningInputSlippage() {
+          if(!this.maxInputSlippage) return false
+          return +this.maxInputSlippage < 0.5
+        },
+        isZeroSlippage() {
+          return this.maxInputSlippage !== '' && (+this.maxInputSlippage == 0 || isNaN(this.maxInputSlippage))
+        },
+
+        showSlippageTooLow() {
+            return this.maxInputSlippage != '' && +this.maxInputSlippage < 0.2
+        },
+
+
+        // withdraw
+        showMigrateNew() {
+          return (this.currentPool == 'compound' && this.oldBalance > 0) || this.currentPool == 'susd'
+        },
+        nobalance() {
+          return this.staked_balance && this.token_balance.plus(this.staked_balance).eq(BN(0))
+        },
+        getWithdrawMaxSlippage() {
             let maxSlippage = +this.maxSlippage;
             if(this.maxInputSlippage) maxSlippage = +this.maxInputSlippage;
-            return (100 - maxSlippage)/100
-          },
-          warningInputSlippage() {
-            if(!this.maxInputSlippage) return false
-            return +this.maxInputSlippage < 0.5
-          },
-          isZeroSlippage() {
-            return this.maxInputSlippage !== '' && (+this.maxInputSlippage == 0 || isNaN(this.maxInputSlippage))
-          },
-
-          showSlippageTooLow() {
-              return this.maxInputSlippage != '' && +this.maxInputSlippage < 0.2
-          },
-
-
-          // withdraw
-          showMigrateNew() {
-        		return (this.currentPool == 'compound' && this.oldBalance > 0) || this.currentPool == 'susd'
-         	},
-         	nobalance() {
-         		return this.staked_balance && this.token_balance.plus(this.staked_balance).eq(BN(0))
-         	},
-          getWithdrawMaxSlippage() {
-              let maxSlippage = +this.maxSlippage;
-              if(this.maxInputSlippage) maxSlippage = +this.maxInputSlippage;
-              return (100 + maxSlippage)/100
-          },
-          minAmount() {
-          if(['tbtc', 'ren', 'sbtc'].includes(currentContract.currentContract)) return 1e-8
-              return 0.01
-          },
-          calcFee() {
-              let N_COINS = allabis[currentContract.currentContract].N_COINS
-              return this.fee / 100 * N_COINS / (4 * (N_COINS -1))
-          },
-          gasPrice() {
-              return gasPriceStore.state.gasPrice
-          },
-          gasPriceWei() {
-              return gasPriceStore.state.gasPriceWei
-          },
-          unstakePercentageInvalid() {
-              return BN(this.unstakepercentage).times(1e18).gt(BN(this.staked_balance).times(1.01))
-          },
-          unstakeAmount() {
-              return this.toFixed(BN(this.unstakepercentage / 100).times(this.staked_balance / 1e18))
-          },
-          showInfApprovalZap() {
-            if(!this.withdrawc && this.currentPool != 'susdv2')
-                return true
-            if(this.share != '---' && ((this.to_currency !== null && this.to_currency < 10) || this.to_currency == 10)) {
-                return true
-            }
-          },
-
-
-          customMaxSlippageInput: {
-            get () {
-              return this.maxInputSlippage
-            },
-            set (val) {
-              this.maxSlippage = this.maxInputSlippage = val
-            }
-          },
-          selectMaxSlippageMode: {
-            get () {
-              return this.maxSlippageMode
-            },
-            set (val) {
-              const { maxInputSlippage } = this
-              const modes = {
-                1: 0.5,
-                2: 1,
-                3: 2,
-                4: maxInputSlippage
-              }
-
-              this.maxSlippageMode = val
-              this.maxSlippage = modes[val]
-            }
-          },
+            return (100 + maxSlippage)/100
         },
-        mounted() {
-          // withdraw
-          if(['susdv2', 'sbtc', 'y', 'iearn', 'dfi'].includes(this.currentPool)) {
-        		this.showstaked = true
-        	}
-        	this.$watch(() => this.showstaked, this.handle_change_share)
-          if(currentContract.currentContract == 'susd') this.withdrawc = true;
-
-
-	        this.setInputStyles(true)
-          if(currentContract.initializedContracts) this.mounted();
+        minAmount() {
+        if(['tbtc', 'ren', 'sbtc'].includes(currentContract.currentContract)) return 1e-8
+            return 0.01
         },
+        calcFee() {
+            let N_COINS = allabis[currentContract.currentContract].N_COINS
+            return this.fee / 100 * N_COINS / (4 * (N_COINS -1))
+        },
+        gasPrice() {
+            return gasPriceStore.state.gasPrice
+        },
+        gasPriceWei() {
+            return gasPriceStore.state.gasPriceWei
+        },
+        unstakePercentageInvalid() {
+            return BN(this.unstakepercentage).times(1e18).gt(BN(this.staked_balance).times(1.01))
+        },
+        unstakeAmount() {
+            return this.toFixed(BN(this.unstakepercentage / 100).times(this.staked_balance / 1e18))
+        },
+        showInfApprovalZap() {
+          if(!this.withdrawc && this.currentPool != 'susdv2')
+              return true
+          if(this.share != '---' && ((this.to_currency !== null && this.to_currency < 10) || this.to_currency == 10)) {
+              return true
+          }
+        },
+
+
+        customMaxSlippageInput: {
+          get () {
+            return this.maxInputSlippage
+          },
+          set (val) {
+            this.maxSlippage = this.maxInputSlippage = val
+          }
+        },
+        selectMaxSlippageMode: {
+          get () {
+            return this.maxSlippageMode
+          },
+          set (val) {
+            const { maxInputSlippage } = this
+            const modes = {
+              1: 0.5,
+              2: 1,
+              3: 2,
+              4: maxInputSlippage
+            }
+
+            this.maxSlippageMode = val
+            this.maxSlippage = modes[val]
+          }
+        },
+      },
+      mounted() {
+        // withdraw
+        if(['susdv2', 'sbtc', 'y', 'iearn', 'dfi', 'dusd'].includes(this.currentPool)) {
+          this.showstaked = true
+        }
+        this.$watch(() => this.showstaked, this.handle_change_share)
+        if(currentContract.currentContract == 'susd') this.withdrawc = true;
+
+
+        this.setInputStyles(true)
+        if(currentContract.initializedContracts) this.mounted();
+      },
         methods: {
         	async stakeTokens(tokens, deposit_and_stake = false) {
                 if(this.loadingAction == 3) return;
@@ -1267,158 +1273,159 @@ console.log('current', this.currentPool, this.currencies)
 				this.show_loading = false;
 			},
 
-            async mounted(oldContract) {
+          async mounted(oldContract) {
 
-            	if(['susd', 'susdv2', 'tbtc', 'ren', 'sbtc'].includes(currentContract.currentContract)) this.depositc = true;
-                else this.depositc = false;
-            	this.changeSwapInfo(this.depositc)
-            	currentContract.showSlippage = false;
-        		  currentContract.slippage = 0;
-                await this.handle_sync_balances();
-                await this.getLPCrvReceived()
-                await this.calcSlippage(this.deposit_inputs, true)
-                let calls = [...Array(currentContract.N_COINS).keys()].map(i=>[this.coins[i]._address, 
-                	this.coins[i].methods.allowance(currentContract.default_account || '0x0000000000000000000000000000000000000000', this.swap_address).encodeABI()])
-                if(['susdv2', 'sbtc', 'y', 'iearn', 'dfi'].includes(this.currentPool))
-                    calls.push([currentContract.curveRewards._address, currentContract.curveRewards.methods.periodFinish().encodeABI()])
-                let aggcalls = await currentContract.multicall.methods.aggregate(calls).call()
-                let decoded = aggcalls[1].map(hex => currentContract.web3.eth.abi.decodeParameter('uint256', hex))
-                if(decoded.slice(0,decoded.length-1).some(v=>BN(v).lte(currentContract.max_allowance.div(BN(2))) > 0))
-                	this.inf_approval = false
-                let now = Date.now() / 1000
-                if(['susdv2', 'sbtc', 'y', 'iearn', 'dfi'].includes(this.currentPool) && +decoded[decoded.length-1] < now)
-                    this.hasRewards = false
+            if(['susd', 'susdv2', 'tbtc', 'ren', 'sbtc'].includes(currentContract.currentContract)) this.depositc = true;
+              else this.depositc = false;
+            this.changeSwapInfo(this.depositc)
+            currentContract.showSlippage = false;
+            currentContract.slippage = 0;
+              await this.handle_sync_balances();
+              await this.getLPCrvReceived()
+              await this.calcSlippage(this.deposit_inputs, true)
+              let calls = [...Array(currentContract.N_COINS).keys()].map(i=>[this.coins[i]._address, 
+                this.coins[i].methods.allowance(currentContract.default_account || '0x0000000000000000000000000000000000000000', this.swap_address).encodeABI()])
+              if(['susdv2', 'sbtc', 'y', 'iearn', 'dfi', 'dusd'].includes(this.currentPool))
+                  calls.push([currentContract.curveRewards._address, currentContract.curveRewards.methods.periodFinish().encodeABI()])
+              let aggcalls = await currentContract.multicall.methods.aggregate(calls).call()
+              let decoded = aggcalls[1].map(hex => currentContract.web3.eth.abi.decodeParameter('uint256', hex))
+              if(decoded.slice(0,decoded.length-1).some(v=>BN(v).lte(currentContract.max_allowance.div(BN(2))) > 0))
+                this.inf_approval = false
+              let now = Date.now() / 1000
+              if(['susdv2', 'sbtc', 'y', 'iearn', 'dfi', 'dusd'].includes(this.currentPool) && +decoded[decoded.length-1] < now)
+                  this.hasRewards = false
 
-                this.disabledButtons = false;
-
-
+              this.disabledButtons = false;
 
 
 
 
 
 
-                // withdraw
-                if(['susdv2', 'tbtc', 'ren', 'sbtc'].includes(this.currentPool)) {
-                  this.withdrawc = true;
-                  this.to_currency = null
-                }
-                else
-                    this.withdrawc = false
-            	currentContract.showSlippage = false;
-        		  currentContract.slippage = 0;
-                let curveRewards = currentContract.curveRewards
-                let allowance = BN(await currentContract.swap_token.methods.allowance(currentContract.default_account || '0x0000000000000000000000000000000000000000', currentContract.deposit_zap._address).call())
-                if(allowance.lte(currentContract.max_allowance.div(BN(2))))
-                    this.inf_approval = false
-                if(['susdv2', 'y', 'iearn', 'dfi'].includes(this.currentPool)) {
-                    this.pendingSNXRewards = await curveRewards.methods.earned(this.default_account).call()
-                    console.log(this.pendingSNXRewards, "PENDING SNX REWARDS")
-                }
-                if(['sbtc'].includes(this.currentPool)) {
-                    this.balancerPool = new currentContract.web3.eth.Contract(balancer_ABI, balancer_address)
-                    window.balancerPool = this.balancerPool
-                    let calls = [
-                        [curveRewards._address, curveRewards.methods.earned(this.default_account).encodeABI()],
-                        [this.balancerPool._address, this.balancerPool.methods.totalSupply().encodeABI()],
-                        [this.balancerPool._address, this.balancerPool.methods.getBalance(process.env.VUE_APP_SNX_TOKEN).encodeABI()],
-                        [this.balancerPool._address, this.balancerPool.methods.getBalance('0x408e41876cccdc0f92210600ef50372656052a38').encodeABI()],
-                        [this.balancerPool._address, this.balancerPool.methods.balanceOf(currentContract.default_account).encodeABI()],
-                    ]
-                    let aggcalls = await currentContract.multicall.methods.aggregate(calls).call()
-                    let decoded = aggcalls[1].map(hex => currentContract.web3.eth.abi.decodeParameter('uint256', hex))
 
-                    this.pendingBALRewards = decoded[0]
-                    this.pendingSNXRewards = decoded[0] * decoded[2] / decoded[1]
-                    this.pendingRENRewards = decoded[0] * decoded[3] / decoded[1]
 
-                    this.withdrawBALPool = decoded[4]
-                    this.withdrawSNXPool = decoded[4] * decoded[2] / decoded[1]
-                    this.withdrawRENPool = decoded[4] * decoded[3] / decoded[1]
+              // withdraw
+              if(['susdv2', 'tbtc', 'ren', 'sbtc'].includes(this.currentPool)) {
+                this.withdrawc = true;
+                this.to_currency = null
+              }
+              else
+                  this.withdrawc = false
+            currentContract.showSlippage = false;
+            currentContract.slippage = 0;
+              let curveRewards = currentContract.curveRewards
+              let allowance = BN(await currentContract.swap_token.methods.allowance(currentContract.default_account || '0x0000000000000000000000000000000000000000', currentContract.deposit_zap._address).call())
+              if(allowance.lte(currentContract.max_allowance.div(BN(2))))
+                  this.inf_approval = false
+              if(['susdv2', 'y', 'iearn', 'dfi', 'dusd'].includes(this.currentPool)) {
+                  this.pendingSNXRewards = await curveRewards.methods.earned(this.default_account).call()
+                  console.log(this.pendingSNXRewards, "PENDING SNX REWARDS")
+              }
+              if(['sbtc'].includes(this.currentPool)) {
+                  this.balancerPool = new currentContract.web3.eth.Contract(balancer_ABI, balancer_address)
+                  window.balancerPool = this.balancerPool
+                  let calls = [
+                      [curveRewards._address, curveRewards.methods.earned(this.default_account).encodeABI()],
+                      [this.balancerPool._address, this.balancerPool.methods.totalSupply().encodeABI()],
+                      [this.balancerPool._address, this.balancerPool.methods.getBalance(process.env.VUE_APP_SNX_TOKEN).encodeABI()],
+                      [this.balancerPool._address, this.balancerPool.methods.getBalance('0x408e41876cccdc0f92210600ef50372656052a38').encodeABI()],
+                      [this.balancerPool._address, this.balancerPool.methods.balanceOf(currentContract.default_account).encodeABI()],
+                  ]
+                  let aggcalls = await currentContract.multicall.methods.aggregate(calls).call()
+                  let decoded = aggcalls[1].map(hex => currentContract.web3.eth.abi.decodeParameter('uint256', hex))
 
-                }
-                // if(['y','iearn', 'dfi'].includes(this.currentPool)) {
-                //     this.withdrawADAI = await currentContract.aRewards.methods.claimable(currentContract.default_account).call()
-                // }
+                  this.pendingBALRewards = decoded[0]
+                  this.pendingSNXRewards = decoded[0] * decoded[2] / decoded[1]
+                  this.pendingRENRewards = decoded[0] * decoded[3] / decoded[1]
 
-                await common.update_fee_info();
-                await this.update_balances();
-                this.setCalcBalances()
-            	this.handle_change_share();
-            },
-            getTokenIcon(token, type = false) {
-                return helpers.getTokenIcon(token, type, this.currentPool)
-            },
-            toFixed(num, precisions = 2, round = 4) {
-                if(+num == 0 && ['ren', 'sbtc'].includes(currentContract.currentContract)) return '0.00'
-                if(precisions == 2 && ['tbtc', 'ren', 'sbtc'].includes(currentContract.currentContract)) precisions = 8
-                let rounded = (+num).toFixed(precisions)
-                return isNaN(rounded) ? '0.00' : rounded
-            },
-            maxBalanceCoin(i) {
-              return this.toFixed(this.wallet_balances[i] * this.rates[i])
-            },
-            setMaxBalanceCoin(i) {
-                Vue.set(this.deposit_inputs, i, this.maxBalanceCoin(i))
-                if(this.currentPool == 'susdv2' && i == 3 || this.currentPool == 'sbtc' && i == 2) {
-                    let maxbalance_susd = this.susdWaitingPeriod ? 0 : BN(this.transferableBalance).times(this.rates[i]).toString()
-                    Vue.set(this.deposit_inputs, i, maxbalance_susd)
-                }
-            },
+                  this.withdrawBALPool = decoded[4]
+                  this.withdrawSNXPool = decoded[4] * decoded[2] / decoded[1]
+                  this.withdrawRENPool = decoded[4] * decoded[3] / decoded[1]
+
+              }
+              // if(['y','iearn', 'dfi', 'dusd'].includes(this.currentPool)) {
+              //     this.withdrawADAI = await currentContract.aRewards.methods.claimable(currentContract.default_account).call()
+              // }
+
+              await common.update_fee_info();
+              await this.update_balances();
+              this.setCalcBalances()
+            this.handle_change_share();
+          },
+          getTokenIcon(token, type = false) {
+              return helpers.getTokenIcon(token, type, this.currentPool)
+          },
+          toFixed(num, precisions = 2, round = 4) {
+              if(+num == 0 && ['ren', 'sbtc'].includes(currentContract.currentContract)) return '0.00'
+              if(precisions == 2 && ['tbtc', 'ren', 'sbtc'].includes(currentContract.currentContract)) precisions = 8
+              let rounded = (+num).toFixed(precisions)
+              return isNaN(rounded) ? '0.00' : rounded
+          },
+          maxBalanceCoin(i) {
+            return this.toFixed(this.wallet_balances[i] * this.rates[i])
+          },
+          setMaxBalanceCoin(i) {
+              Vue.set(this.deposit_inputs, i, this.maxBalanceCoin(i))
+              if(this.currentPool == 'susdv2' && i == 3 || this.currentPool == 'sbtc' && i == 2) {
+                  let maxbalance_susd = this.susdWaitingPeriod ? 0 : BN(this.transferableBalance).times(this.rates[i]).toString()
+                  Vue.set(this.deposit_inputs, i, maxbalance_susd)
+              }
+          },
         	inputsFormat(i) {
         		if(this.deposit_inputs[i]) {
         			return this.toFixed(+this.deposit_inputs[i])
         		}
         		return '0.00'
         	},
-            changeSwapInfo(val) {
-            	if(val) {
-                    this.coins = currentContract.coins
-                    if(this.currentPool == 'susdv2') Vue.set(this.coins, 3, currentContract.underlying_coins[3])
-                    if(this.currentPool == 'sbtc') Vue.set(this.coins, 2, currentContract.underlying_coins[2])
-	            	this.rates = currentContract.c_rates
-	            	this.swap_address = currentContract.swap_address
-        		}
-            	else {
-            		this.coins = currentContract.underlying_coins
-            		this.rates = currentContract.coin_precisions.map(cp=>1/cp)
-            		this.swap_address = currentContract.deposit_zap._address
-            	}
-            },
-            setInputStyles(newInputs = false, newContract, oldContract) {
-              if(oldContract) {
-                for(let i = 0; i < allabis[newContract].N_COINS - allabis[oldContract].N_COINS; i++) {
-                  this.deposit_inputs.push('0.00')
-                }
-                if(allabis[oldContract].N_COINS - allabis[newContract].N_COINS > 0) {
-                  this.deposit_inputs = this.deposit_inputs.filter((_, i) => i < allabis[newContract].N_COINS)
-                }
+          changeSwapInfo(val) {
+            if(val) {
+                  this.coins = currentContract.coins
+                  if(this.currentPool == 'susdv2') Vue.set(this.coins, 3, currentContract.underlying_coins[3])
+                  if(this.currentPool == 'sbtc') Vue.set(this.coins, 2, currentContract.underlying_coins[2])
+              this.rates = currentContract.c_rates
+              this.swap_address = currentContract.swap_address
+          }
+            else {
+              this.coins = currentContract.underlying_coins
+              this.rates = currentContract.coin_precisions.map(cp=>1/cp)
+              this.swap_address = currentContract.deposit_zap._address
+            }
+          },
+          setInputStyles(newInputs = false, newContract, oldContract) {
+            if(oldContract) {
+              for(let i = 0; i < allabis[newContract].N_COINS - allabis[oldContract].N_COINS; i++) {
+                this.deposit_inputs.push('0.00')
               }
-              else if(newInputs) {
-                this.deposit_inputs = new Array(Object.keys(this.currencies).length).fill('0.00')
+              if(allabis[oldContract].N_COINS - allabis[newContract].N_COINS > 0) {
+                this.deposit_inputs = this.deposit_inputs.filter((_, i) => i < allabis[newContract].N_COINS)
               }
-              this.bgColors = Array(currentContract.N_COINS).fill({
-                backgroundColor: '#707070',
-                color: '#d0d0d0',
-              })
-            },
-            async calcSlippage(...args) {
-            	try {
-	            	this.slippagePromise.cancel();
-                this.slippagePromise = helpers.makeCancelable(common.calc_slippage(...args))
-                await this.slippagePromise;
-            	}
-            	catch (err) {
-            		console.error('calcSlippage err', err)
-            	}
-            },
-            async handle_sync_balances() {
-			    await common.update_fee_info();
-			    let calls = []
-			    for (let i = 0; i < currentContract.N_COINS; i++) {
-			    	calls.push([this.coins[i]._address, this.coins[i].methods.balanceOf(currentContract.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
-			    	calls.push([currentContract.swap._address, currentContract.swap.methods.balances(i).encodeABI()])
-			    }
+            }
+            else if(newInputs) {
+              this.deposit_inputs = new Array(Object.keys(this.currencies).length).fill('0.00')
+            }
+            this.bgColors = Array(currentContract.N_COINS).fill({
+              backgroundColor: '#707070',
+              color: '#d0d0d0',
+            })
+          },
+          async calcSlippage(...args) {
+            try {
+              this.slippagePromise.cancel();
+              this.slippagePromise = helpers.makeCancelable(common.calc_slippage(...args))
+              await this.slippagePromise;
+            }
+            catch (err) {
+              console.error('calcSlippage err', err)
+            }
+          },
+          async handle_sync_balances() {
+            return false
+            await common.update_fee_info();
+            let calls = []
+            for (let i = 0; i < currentContract.N_COINS; i++) {
+              calls.push([this.coins[i]._address, this.coins[i].methods.balanceOf(currentContract.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
+              calls.push([currentContract.swap._address, currentContract.swap.methods.balances(i).encodeABI()])
+            }
                 if(this.currentPool == 'susdv2' || this.currentPool == 'sbtc') {
                     let idx = this.currentPool == 'susdv2' ? 3 : 2
                     let currencyKey = '0x7355534400000000000000000000000000000000000000000000000000000000'
@@ -1464,7 +1471,6 @@ console.log('current', this.currentPool, this.currencies)
 			    }
 			    else
               this.disabled = false;
-              
 
           // FIXME: temp
           this.disabled = false;
@@ -1635,7 +1641,7 @@ console.log('current', this.currentPool, this.currencies)
 				}
 				this.waitingMessage = ''
 				if(!stake ) this.show_loading = false
-				if(stake && ['susdv2', 'sbtc', 'y', 'iearn', 'dfi'].includes(this.currentPool)) {
+				if(stake && ['susdv2', 'sbtc', 'y', 'iearn', 'dfi', 'dusd'].includes(this.currentPool)) {
                     console.warn(receipt.events)
                     try {
     					minted = BN(
@@ -1773,7 +1779,7 @@ console.log('current', this.currentPool, this.currencies)
             for (let i = 0; i < currentContract.N_COINS; i++) {
               calls.push([currentContract.swap._address ,currentContract.swap.methods.balances(i).encodeABI()])
             }
-            if(['susdv2', 'sbtc','y','iearn', 'dfi'].includes(this.currentPool)) calls.push([currentContract.curveRewards._address, currentContract.curveRewards.methods.balanceOf(currentContract.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
+            if(['susdv2', 'sbtc','y','iearn', 'dfi', 'dusd'].includes(this.currentPool)) calls.push([currentContract.curveRewards._address, currentContract.curveRewards.methods.balanceOf(currentContract.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
           calls.push([currentContract.swap_token._address ,currentContract.swap_token.methods.totalSupply().encodeABI()])
           let aggcalls = await currentContract.multicall.methods.aggregate(calls).call()
           let decoded = aggcalls[1].map(hex => currentContract.web3.eth.abi.decodeParameter('uint256', hex))
@@ -1789,7 +1795,7 @@ console.log('current', this.currentPool, this.currencies)
                 if(!currentContract.default_account) Vue.set(this.balances, i, 0)
           })
                   console.log(decoded[decoded.length-2])
-                  if(['susdv2', 'sbtc','y','iearn', 'dfi'].includes(this.currentPool)) this.staked_balance = BN(decoded[decoded.length-2])
+                  if(['susdv2', 'sbtc','y','iearn', 'dfi', 'dusd'].includes(this.currentPool)) this.staked_balance = BN(decoded[decoded.length-2])
                   else this.staked_balance = BN(0)
                   this.unstakepercentage = this.toFixed(this.staked_balance.div(1e18))
           this.token_supply = +decoded[decoded.length-1]
@@ -1868,7 +1874,7 @@ console.log('current', this.currentPool, this.currencies)
             async claim_SNX(claim_bpt_only = false, unstake = true) {
                 this.show_loading = true
                 this.waitingMessage = `Please confirm claiming ${(this.pendingSNXRewards / 1e18).toFixed(2)} 
-                    ${['y', 'iearn', 'dfi'].includes(this.currentPool) ? 'YFI' : 'SNX'}`
+                    ${['y', 'iearn', 'dfi', 'dusd'].includes(this.currentPool) ? 'YFI' : 'SNX'}`
                 if(this.currentPool == 'sbtc')
                     this.waitingMessage += ` and ${(this.pendingRENRewards / 1e18).toFixed(2)} REN`
                 
@@ -2015,7 +2021,7 @@ console.log('current', this.currentPool, this.currencies)
     				})
                     if(exit) {
         				this.claim_SNX()
-                        //if(['y', 'iearn', 'dfi'].includes(this.currentPool))
+                        //if(['y', 'iearn', 'dfi', 'dusd'].includes(this.currentPool))
                             //this.showModal = true
                     }
                 }
@@ -2043,7 +2049,7 @@ console.log('current', this.currentPool, this.currencies)
         let promises = await Promise.all([helpers.getETHPrice()])
         this.ethPrice = promises[0]
         this.estimateGas = 0;
-        if(['susdv2', 'sbtc','y','iearn', 'dfi'].includes(this.currentPool)) {
+        if(['susdv2', 'sbtc','y','iearn', 'dfi', 'dusd'].includes(this.currentPool)) {
             if(unstake_only) {
                 this.estimateGas = 125000
                 if(this.currentPool == 'sbtc') this.estimateGas += 300000
@@ -2099,7 +2105,7 @@ console.log('current', this.currentPool, this.currencies)
 			        }
               token_amount = BN(token_amount).times(BN(1).plus(this.calcFee))
 			        token_amount = BN(Math.floor(token_amount * this.getWithdrawMaxSlippage).toString()).toFixed(0,1)
-                    if((this.token_balance.lt(BN(token_amount)) || unstake) && ['susdv2', 'sbtc','y','iearn', 'dfi'].includes(this.currentPool)) {
+                    if((this.token_balance.lt(BN(token_amount)) || unstake) && ['susdv2', 'sbtc','y','iearn', 'dfi', 'dusd'].includes(this.currentPool)) {
                         let unstakeAmount = BN(token_amount).minus(BN(this.token_balance))
                         if(unstake) unstakeAmount = BN(token_amount) 
                         await this.unstake(unstakeAmount, unstake && !unstake_only, unstake_only)
@@ -2187,7 +2193,7 @@ console.log('current', this.currentPool, this.currencies)
             if(this.showstaked) balance = balance.plus(this.staked_balance)
             var amount = BN(this.share).div(BN(100)).times(balance)
 
-            if((this.token_balance.lt(amount) || unstake) && ['susdv2', 'sbtc', 'y', 'iearn', 'dfi'].includes(this.currentPool)) {
+            if((this.token_balance.lt(amount) || unstake) && ['susdv2', 'sbtc', 'y', 'iearn', 'dfi', 'dusd'].includes(this.currentPool)) {
                 let unstakeAmount = BN(amount).minus(BN(this.token_balance))
                 if(unstake) unstakeAmount = BN(amount)
                 await this.unstake(unstakeAmount, unstake && !unstake_only, unstake_only)

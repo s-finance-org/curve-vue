@@ -38,28 +38,41 @@ export function notifyNotification(message, type = 'pending') {
 
   return notify.notification(notificationObject)
 }
+
+/**
+ *  @see <https://docs.blocknative.com/onboard#wallet-modules>
+ */
 let wallets = [
-  { walletName: "metamask" },
+  {
+    walletName: "metamask",
+    preferred: true,
+  },
   {
     walletName: "walletConnect",
-    infuraKey: "c334bb4b45a444979057f0fb8a0c9d1b"
+    infuraKey: "6121e453b77a4855afa627a732bb7e4a",
+    preferred: true,
   },
   {
     walletName: "trezor",
     appUrl: "https://s.finance",
     email: "robert@s.finance",
-    rpcUrl: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`
+    rpcUrl: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`,
+    preferred: true,
   },
   {
     walletName: "ledger",
     rpcUrl: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`,
     //LedgerTransport: TransportWebUSB,
+    preferred: true,
   },
   // { walletName: "dapper" },
   { walletName: "coinbase" },
   { walletName: "status" },
-  // { walletName: "fortmatic", apiKey: "pk_live_190B10CE18F47DCD" },
-  // { walletName: "authereum", apiKey: "_BTsipRcEmPeuVteLOGdoh1CXt733YLZ7u3ipbe_dAk" },
+  // { 
+  //   walletName: "fortmatic",
+  //   apiKey: "pk_live_190B10CE18F47DCD" // FORTMATIC_KEY
+  // },
+  // { walletName: "authereum" },
   {
     walletName: "trust",
     rpcUrl: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`
@@ -72,10 +85,10 @@ let wallets = [
   // },
   // {
   //   walletName: "portis",
-  //   apiKey: "a3bb2525-5101-4a9c-b300-febc6319c3b4"
+  //   apiKey: "" // PORTIS_KEY
   // },
   // { walletName: "torus" },
-  // { walletName: "squarelink", apiKey: "db2074f87c34f247593c" },
+  // { walletName: "squarelink", apiKey: "" // SQUARELINK_KEY },
   // { walletName: "opera" },
   // { walletName: "operaTouch" },
   // { walletName: "unilogin" },
@@ -83,50 +96,39 @@ let wallets = [
   { walletName: "meetone" },
 ]
 
-let isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+let isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
 
-if(isMobile && !window.web3) {
-  wallets = wallets.filter(wallet => !['trust', 'imToken', 'status', 'coinbase'].includes(wallet.walletName))
-}
+const _Web3 = window.web3
 
-if(isMobile && window.web3) {
-  if(!window.web3.currentProvider.isTrust) {
-    wallets = wallets.filter(wallet => wallet.walletName != 'trust')
-  }
-
-  if(!window.web3.currentProvider.isImToken) {
-    wallets = wallets.filter(wallet => wallet.walletName != 'imToken')
-  }
-
-  if(!window.web3.currentProvider.isStatus) {
-    wallets = wallets.filter(wallet => wallet.walletName != 'status')
-  }
-
-  if(!window.web3.currentProvider.isCoinbaseWallet) {
-    wallets = wallets.filter(wallet => wallet.walletName != 'coinbase')
+const walletsEnvFactor = {
+  trust: {
+    provider: _Web3 && _Web3.currentProvider.isTrust
+  },
+  imToken: {
+    provider: _Web3 && _Web3.currentProvider.isImToken
+  },
+  status: {
+    provider: _Web3 && _Web3.currentProvider.isStatus
+  },
+  coinbase: {
+    provider: _Web3 && _Web3.currentProvider.isCoinbaseWallet
+  },
+  meetone: {
+    provider: _Web3 && _Web3.currentProvider.wallet === "MEETONE"
   }
 }
 
+wallets = wallets.filter(wallet => {
+  const factor = walletsEnvFactor[wallet.walletName]
 
-if(window.web3 && window.web3.currentProvider.isTrust) {
-  wallets.find(wallet => wallet.walletName == 'trust').preferred = true
-}
-
-if(window.web3 && window.web3.currentProvider.isImToken) {
-  wallets.find(wallet => wallet.walletName == 'imToken').preferred = true
-}
-
-if(window.web3 && window.web3.currentProvider.isStatus) {
-  wallets.find(wallet => wallet.walletName == 'status').preferred = true
-}
-
-if(window.web3 && window.web3.currentProvider.isCoinbaseWallet) {
-  wallets.find(wallet => wallet.walletName == 'coinbase').preferred = true
-}
-
-if(window.web3 && window.web3.currentProvider.wallet == "MEETONE") {
-  wallets.find(wallet => wallet.walletName == 'meetone').preferred = true
-}
+  return !factor ||
+    // TODO: only mobile env?
+    (isMobile
+      ? window.web3
+        ? factor.provider
+        : false
+      : true)
+})
 
 export const onboard = Onboard({
   dappId: process.env.VUE_APP_BLOCKNATIVE_KEY,       // [String] The API key created by step one above
@@ -203,11 +205,12 @@ async function init(init = true, name, walletlink = false) {
 
 export async function changeWallets() {
   state.contract.default_account = ''
-  await onboard.walletReset()
+  onboard.walletReset()
   localStorage.removeItem('selectedWallet')
   state.contract.totalShare = 0
-  let userSelectedWallet = await onboard.walletSelect();
-  await onboard.walletCheck();
+
+  await onboard.walletSelect()
+  await onboard.walletCheck()
 }
 
 export default init;

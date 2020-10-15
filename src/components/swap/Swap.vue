@@ -1,192 +1,462 @@
 <template>
 	<div>
-        <div class="">
-            <div class='exchange'>
-                <div class='exchangefields'>
-                    <fieldset class='item'>
-                        <legend>From:</legend>
-                        <div class='maxbalance' @click='set_max_balance'>
-                            Max: 
-                            <span 
-                                v-show="(currentPool == 'susdv2' && from_currency == 3 || currentPool == 'sbtc' && from_currency == 2)
-                                         && maxBalanceText != '0.00'"
-                            >
-                                {{maxSynthText}}/
-                            </span>
-                            <span>{{maxBalanceText}}</span>
-                            <span v-show='susdWaitingPeriod' class='susd-waiting-period'>
-                                <span class='tooltip'>
-                                    <img src='@/assets/clock-regular.svg' class='icon small'>
-                                    <span class='tooltiptext'>
-                                        Cannot transfer during waiting period. {{ (susdWaitingPeriodTime).toFixed(0) }} secs left.
-                                    </span>
-                                </span>
-                            </span>
-                            <span v-show="(currentPool == 'susdv2' && from_currency == 3 || currentPool == 'sbtc' && from_currency == 2)
-                                            && maxBalanceText != '0.00'" 
-                                class='tooltip'> [?]
-                                <span class='tooltiptext long'>
-                                    Max transferrable amount is {{ maxSynthText }}. You can free the remaining balance by settling.
-                                </span>
-                            </span>
-                        </div>
-                        <ul>
-                            <li>
-                                <input type="text" id="from_currency" :disabled='disabled' name="from_currency" value='0.00'
-                                :style = "{backgroundColor: fromBgColor}"
-                                @input='set_to_amount'
-                                v-model='fromInput'>
-                                <p class='actualvalue' v-show='swapwrapped'>
-                                    ≈ {{toFixed(actualFromValue)}} {{Object.keys(currencies)[this.from_currency] | capitalize}}
-                                </p>
-                                <p class='actualvalue' v-show="['sbtc', 'ren'].includes(currentPool)">
-                                    ≈ {{ actualFromValue }}$
-                                </p>
-                            </li>
-                            <li class='coins' v-for='(currency, i) in Object.keys(currencies)'>
-                                <input type="radio" :id="'from_cur_'+i" name="from_cur" :value='i' v-model='from_currency'>
-                                <label :for="'from_cur_'+i">
-                                    <img 
-                                        :class="{'token-icon': true, [currency+'-icon']: true, 'y': swapwrapped}" 
-                                        :src='getTokenIcon(currency)'>
-                                    <span v-show="!swapwrapped && !['tbtc', 'ren', 'sbtc'].includes(currentPool)">{{currency | capitalize}}</span>
-                                    <span v-show="swapwrapped || ['tbtc', 'ren', 'sbtc'].includes(currentPool)">{{currencies[currency]}}</span>
-                                </label>
-                            </label>
-                            </li>
-                        </ul>
-                    </fieldset>
-                    <fieldset class='item iconcontainer' @click='swapInputs'>
-                        <img :src="publicPath + 'exchange-alt-solid.svg'" id='exchangeicon'/>
-                    </fieldset>
-                    <fieldset class='item'>
-                        <legend>To:</legend>
-                        <div class='maxbalance2'>Max: <span></span> </div>
-                        <ul>
-                            <li>
-                                <input type="text" 
-                                id="to_currency" 
-                                name="to_currency" 
-                                value="0.00" 
-                                disabled
-                                :style = "{backgroundColor: bgColor}"
-                                v-model='toInput'>
-                                <p class='actualvalue' v-show='swapwrapped'>
-                                    ≈ {{toFixed(actualToValue)}} {{Object.keys(currencies)[this.to_currency] | capitalize}}
-                                </p>
-                                <p class='actualvalue' v-show="['ren', 'sbtc'].includes(currentPool)">
-                                    ≈ {{ actualToValue }}$
-                                </p>
-                            </li>
-                            <li class='coins' v-for='(currency, i) in Object.keys(currencies)'>
-                                <input type="radio" :id="'to_cur_'+i" name="to_cur" :value='i' v-model='to_currency'>
-                                <label :for="'to_cur_'+i">
-                                    <img 
-                                        :class="{'token-icon': true, [currency+'-icon']: true, 'y': swapwrapped}" 
-                                        :src='getTokenIcon(currency)'>
-                                    <span v-show="!swapwrapped && !['tbtc', 'ren'].includes(currentPool)">{{currency | capitalize}}</span>
-                                    <span v-show="swapwrapped || ['tbtc', 'ren'].includes(currentPool)">{{currencies[currency]}}</span>
-                                </label>
-                            </label>
-                            </li>
-                        </ul>
-                    </fieldset>
-                </div>
-                <p class='exchange-rate'>
-                    Exchange rate
-                    <span @click='swapExchangeRate' class='clickable underline'>
-                        {{getPair(swaprate)}}
-                        <img src='@/assets/sync-solid.svg' class='swaprates-icon'>
-                    </span> (including fees): 
-                    <span id="exchange-rate" @click='swapExchangeRate' class='clickable'>
-                        {{exchangeRateSwapped}}
-                    </span>
-                </p>
-                <ul>
-                    <li>
-                        <input id="inf-approval" type="checkbox" name="inf-approval" v-model='inf_approval'>
-                        <label for="inf-approval">Infinite approval - trust this contract forever
-                            <span class='tooltip'>[?]
-                                <span class='tooltiptext long'>
-                                    Preapprove the contract to to be able to spend any amount of your coins. You will not need to approve again.
-                                </span>
-                            </span>
-                        </label>
-                    </li>
-                    <li>
-                        <input id='swapw' type='checkbox' name='swapw' v-model = 'swapwrapped'>
-                        <label for='swapw' v-show = "!['susdv2', 'tbtc', 'ren', 'sbtc'].includes(currentPool)">Swap wrapped</label>
-                    </li>
-                </ul>
-                <div>
-                    <button class='simplebutton advancedoptions' @click='showadvancedoptions = !showadvancedoptions'>
-                        Advanced options
-                        <span v-show='!showadvancedoptions'>▼</span>
-                        <span v-show='showadvancedoptions'>▲</span>
-                    </button>
-                    <div v-show='showadvancedoptions'>
-                        <fieldset>
-                            <legend>Advanced options:</legend>
-                            <div id='max_slippage'><span>Max slippage:</span> 
-                                <input id="slippage05" type="radio" name="slippage" value='0.005' @click='maxSlippage = 0.5; customSlippageDisabled = true'>
-                                <label for="slippage05">0.5%</label>
-
-                                <input id="slippage1" type="radio" name="slippage" checked value='0.01' @click='maxSlippage = 1; customSlippageDisabled = true'>
-                                <label for="slippage1">1%</label>
-
-                                <input id="custom_slippage" type="radio" name="slippage" value='-' @click='customSlippageDisabled = false'>
-                                <label for="custom_slippage" @click='customSlippageDisabled = false'>
-                                    <input type="text" id="custom_slippage_input" :disabled='customSlippageDisabled' name="custom_slippage_input" v-model='maxInputSlippage'> %
-                                </label>
-                                <span class='tooltip' v-show='showSlippageTooLow'>
-                                    <img class='icon small hoverpointer warning' :src="publicPath + 'exclamation-circle-solid.svg'">
-                                    <span class='tooltiptext'>
-                                        Max slippage value is likely too low and the transaction may fail
-                                    </span>
-                                </span>
-                            </div>
-                            <gas-price></gas-price>
-                        </fieldset>
-                    </div>
-                </div>
-                <p class='simple-error' v-show="exchangeRate<=0.98 && (to_currency > 0 && !['ren', 'sbtc'].includes(currentPool))">
-                    Warning! Exchange rate is too low!
-                </p>
-                <p class='simple-error' v-show="exchangeRate<=0.98 && ['ren', 'sbtc'].includes(currentPool)">
-                    Warning! Exchange rate is too low!
-                </p>
-                <p class='simple-error' v-show="exchangeRate<=0.95 && (to_currency == 0 && !['ren', 'sbtc'].includes(currentPool))">
-                    Warning! Exchange rate is too low!
-                </p>
-                <p class='trade-buttons' v-show="['ren', 'sbtc'].includes(currentPool)">
-                    <a href='https://bridge.renproject.io/'>Mint/redeem renBTC</a>
-                </p>
-                <!-- <p class='simple-error' id='no-balance-synth' v-show='notEnoughBalanceSynth'>
-                    Max balance you can use is {{ (+maxSynthBalance).toFixed(2) }}
-                </p> -->
-                <p class='trade-buttons'>
-                    <button id="trade" @click='handle_trade'>
-                        Sell <span class='loading line' v-show='loadingAction'></span>
-                    </button>
-                </p>
-                <div class='info-message gentle-message waiting-message' v-show='show_loading'>
-                    <span v-html='waitingMessage'></span>
-                    <span class='loading line'></span>
-                </div>
-                <p class='simple-error' id='no-balance' v-show='selldisabled'>
-                    Not enough balance for 
-                    <span v-show='!swapwrapped'>{{Object.keys(currencies)[from_currency] | capitalize}}</span>
-                    <span v-show='swapwrapped'>{{Object.values(currencies)[from_currency]}}</span>. <span>Swap is not available.</span>
-                </p>
-                <div class='simple-error pulse' v-show="susdWaitingPeriod">
-                    Cannot transfer {{ currentPool == 'susdv2' ? 'sUSD' : 'sBTC' }} during waiting period. {{ (susdWaitingPeriodTime).toFixed(0) }} secs left.
-                </div>
-                <div class='info-message gentle-message' v-show='estimateGas'>
-                    Estimated tx cost: {{ (estimateGas * gasPrice / 1e9 * ethPrice).toFixed(2) }}$
-                </div>
-
-            </div>
+    <!-- FIXME: common -->
+    <div class="total-bg">
+      <b-container class="d-flex py-4 total-cont">
+        <b-navbar-nav class="navbar-tabs flex-row">
+          <b-nav-item :to="{ name: 'Swap', params: { pool: 'dfi' } }">dfi</b-nav-item>
+        </b-navbar-nav>
+      </b-container>
+      <b-container class="d-flex py-4 total-cont align-items-center">
+        <div class="total-box p-2 mr-4 col-auto box-98 d-flex flex-wrap">
+          <img v-for='(currency, i) in Object.keys(currencies)' :key="'icon-'+currency" class="icon-w-40"
+            :class="{'token-icon': true, [currency+'-icon']: true, 'y': depositc && !isPlain}" 
+            :src='getTokenIcon(currency)'>
         </div>
+        <h3 class="mb-0">{{ currentPool }}<br/>{{ $t('liquidity.name') }}</h3>
+        <div class="total-box col-3 px-4 py-3 ml-auto mr-4 d-none d-lg-block">
+          <h6 class="text-black-65">{{ $t('global.totalBalances') }}</h6>
+          <text-overlay-loading :show="totalBalances === null">
+            <h4 class="mb-0">${{ totalBalances | formatNumber(2) }}</h4>
+          </text-overlay-loading>
+        </div>
+        <!-- <div class="total-box col-3 px-4 py-3 d-none d-lg-block">
+          <h6 class="text-black-65">{{ $t('global.dailyVol') }}</h6>
+          <text-overlay-loading :show="poolVolumeUSD == -1">
+            <h4 class="mb-0">${{ poolVolumeUSD && poolVolumeUSD | formatNumber(2) }}</h4>
+          </text-overlay-loading>
+        </div> -->
+      </b-container>
+    </div>
+
+    <b-container>
+      <root-sub />
+      <h4 class="mt-4 mb-2">
+        {{ $t('instantSwap.name') }}
+      </h4>
+      <div class="box">
+        <div class="m-4">
+          <div class="row justify-content-center">
+            <div class="d-flex-column col-12 col-md">
+              <div role="group" class="mb-2">
+                <label for="from-val" class="text-black-65">{{ $t('instantSwap.from') }}</label>
+                <div class="currentInput d-flex">
+                  <span class="coin d-flex align-items-center">
+                    <img class="icon-w-20 mr-2" :class="{'icon token-icon': true, [getCurrFrom+'-icon']: true}" :src='getTokenIcon(getCurrFrom)'>
+                    <span v-show='!swapwrapped'> {{getCurrFrom | capitalize}} </span>
+                    <span v-show='swapwrapped'> {{currencies[getCurrFrom]}} </span>
+                  </span>
+                  <!-- <b-form-input
+                    id="from-val"
+                    v-model="fromInput"
+                    aria-describedby="from-val-help"
+                    :placeholder="$t('instantSwap.sizePlaceholder')"
+                    @input='set_to_amount'
+                    type="number"
+                    debounce="200"
+                    name="from_currency"
+                    :disabled='disabled || selldisabled'
+                  ></b-form-input> -->
+                  <input class="form-control" type="text" id="from_currency" :disabled='disabled || selldisabled' name="from_currency" value='0.00'
+                    :placeholder="$t('instantSwap.sizePlaceholder')"
+                    @input='set_to_amount'
+                    v-model='fromInput'>
+                </div>
+                <b-form-text id="from-val-help" class="text-black-65 mt-0" @click=set_max_balance>
+                  {{ $t('instantSwap.max') }}:
+                  <span v-show="(currentPool == 'susdv2' && from_currency == 3 || currentPool == 'sbtc' && from_currency == 2)
+                    && maxBalanceText != '0.00'"
+                    >
+                    {{ maxSynthText }} /
+                  </span>
+                  <span>{{ maxBalanceText }}</span>
+                  <span v-show='susdWaitingPeriod' class='susd-waiting-period'>
+                      <span class='tooltip'>
+                          <img src='@/assets/clock-regular.svg' class='icon small'>
+                          <span class='tooltiptext'>
+                              Cannot transfer during waiting period. {{ (susdWaitingPeriodTime).toFixed(0) }} secs left.
+                          </span>
+                      </span>
+                  </span>
+                  <span v-show="(currentPool == 'susdv2' && from_currency == 3 || currentPool == 'sbtc' && from_currency == 2)
+                    && maxBalanceText != '0.00'" 
+                      class='tooltip'> [?]
+                      <span class='tooltiptext long'>
+                          Max transferrable amount is {{ maxSynthText }}. You can free the remaining balance by settling.
+                      </span>
+                  </span>
+                  <span class="float-right" v-show='swapwrapped'>
+                    ≈ {{toFixed(actualFromValue)}} {{Object.keys(currencies)[this.from_currency] | capitalize}}
+                  </span>
+                  <span class="float-right" v-show="['sbtc', 'ren'].includes(currentPool)">
+                    ≈ {{ actualFromValue }}$
+                  </span>
+                </b-form-text>
+              </div>
+              <div class="lists lists-select">
+                <ul>
+                  <li class="d-flex align-items-center" :class="{'coins': true, [currency]: true}" v-for='(currency, i) in Object.keys(currencies)'>
+                    <b-form-radio class="radio-danger" v-model="from_currency" :id="'from_cur_'+i"  name="from_cur" :value='i'></b-form-radio>
+                    <label :for="'from_cur_'+i" class="d-flex align-items-center mb-0">
+                      <img class="mr-2 icon-w-20" :class="{'icon token-icon': true, [currency+'-icon']: true}" :src='getTokenIcon(currency)'>
+                      <span v-show="!swapwrapped && !['tbtc', 'ren', 'sbtc'].includes(currentPool)"> {{currency | capitalize}} </span>
+                      <span v-show="swapwrapped || ['tbtc', 'ren', 'sbtc'].includes(currentPool)"> {{currencies[currency]}} </span>
+                    </label>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div class='col-1 my-3 d-flex justify-content-center align-items-center'>
+              <b-button class="iconcontainer" @click='swapInputs' variant="light"><img :src="publicPath + 'res/icons/base/exchange.svg'" id='exchangeicon'/></b-button>
+            </div>
+
+            <div class="d-flex-column col-12 col-md">
+              <div role="group" class="mb-2">
+                <label for="to-val" class="text-black-65">{{ $t('instantSwap.to') }}</label>
+                <div class="currentInput d-flex">
+                  <span class="coin d-flex align-items-center">
+                    <img class="icon-w-20 mr-2" :class="{'icon token-icon': true, [getCurrTo+'-icon']: true}" :src='getTokenIcon(getCurrTo)'>
+                    <span v-show='!swapwrapped'> {{getCurrTo | capitalize}} </span>
+                    <span v-show='swapwrapped'> {{currencies[getCurrTo]}} </span>
+                  </span>
+                  <!-- <b-form-input
+                    id="to-val"
+                    v-model="toInput"
+                    aria-describedby="to-val-help"
+                    :placeholder="$t('instantSwap.sizePlaceholder')"
+                    @input='set_to_amount'
+                    type="number"
+                    debounce="200"
+                    name="to_currency"
+                    disabled
+                  ></b-form-input> -->
+                  <input class="form-control" type="text" id="to-val" disabled name="to_currency" value='0.00'
+                    :placeholder="$t('instantSwap.sizePlaceholder')"
+                    v-model='toInput'>
+                </div>
+                <b-form-text id="to-val-help" class="text-black-65 mt-0">
+                  {{ $t('instantSwap.max') }}: -
+                  <span class="float-right" v-show='swapwrapped'>
+                    ≈ {{toFixed(actualToValue)}} {{Object.keys(currencies)[this.to_currency] | capitalize}}
+                  </span>
+                  <span class="float-right" v-show="['ren', 'sbtc'].includes(currentPool)">
+                    ≈ {{ actualToValue }}$
+                  </span>
+                </b-form-text>
+              </div>
+              <div class="lists lists-select">
+                <ul>
+                  <li class="d-flex align-items-center" :class="{'coins': true, [currency]: true}" v-for='(currency, i) in Object.keys(currencies)'>
+                    <b-form-radio class="radio-danger" v-model="to_currency" :id="'to_cur_'+i"  name="to_cur" :value='i'></b-form-radio>
+                    <label :for="'to_cur_'+i" class="d-flex align-items-center mb-0">
+                        <img class="mr-2 icon-w-20" :class="{'icon token-icon': true, [currency+'-icon']: true}" :src='getTokenIcon(currency)'>
+                        <span v-show="!swapwrapped && !['tbtc', 'ren'].includes(currentPool)"> {{currency | capitalize}} </span>
+                        <span v-show="swapwrapped || ['tbtc', 'ren'].includes(currentPool)"> {{currencies[currency]}} </span>
+                    </label>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+
+          <div v-show="showadvancedoptions">
+            <div id='max_slippage' class="lists lists-select mt-3 d-flex flex-wrap no-gutters">
+              <b-form-group class="mb-0 col-12 col-md">
+                <ul>
+                  <li>
+                    <h6 class="text-black-65 mb-0">{{ $t('global.maxSlippage') }}</h6>
+                  </li>
+                  <li>
+                    <b-form-radio
+                      v-model="selectMaxSlippageMode"
+                      value=1
+                    >0.5%</b-form-radio>
+                  </li>
+                  <li>
+                    <b-form-radio
+                      v-model="selectMaxSlippageMode"
+                      value=2
+                    >1.0%</b-form-radio>
+                  </li>
+                  <li>
+                    <b-form-radio
+                      v-model="selectMaxSlippageMode"
+                      value=3
+                    >2.0%</b-form-radio>
+                  </li>
+                  <li>
+                    <b-form-radio
+                      v-model="selectMaxSlippageMode"
+                      value=4
+                    >{{ $t('global.customize') }}</b-form-radio>
+                    <span class="d-flex align-items-center ml-4 mt-1">
+                      <b-form-input class="input-append-percentage" id="custom_slippage_input" :disabled="maxSlippageMode != 4" v-model="customMaxSlippageInput" :placeholder="$t('instantSwap.valuePlaceholder')"></b-form-input>
+                      <span class="offset-ml-4 text-black-65">%</span>
+                    </span>
+                  </li>
+                  <li v-show='showSlippageTooLow'>
+                    <span class='tooltip'>
+                      <img class='icon small hoverpointer warning' :src="publicPath + 'exclamation-circle-solid.svg'">
+                      <span class='tooltiptext'>
+                        Max slippage value is likely too low and the transaction may fail
+                      </span>
+                    </span>
+                  </li>
+                </ul>
+              </b-form-group>
+              <div class="col-none col-md-1"></div>
+              <gas-price class="col-12 col-md"></gas-price>
+            </div>
+          </div>
+          <p class="mt-3" v-for="(item, idx) in messages" :key="idx">
+            {{ item.msg }}
+          </p>
+          <b-alert class="mt-3" :show="show_loading" variant="dark" v-html='waitingMessage'></b-alert>
+
+          <div class="mt-4">
+            <b-form-checkbox v-model="inf_approval" name="inf-approval">{{ $t('global.infiniteApproval') }}</b-form-checkbox>
+            <b-form-checkbox v-model="swapwrapped" name="swapw" v-show = "!['susdv2', 'tbtc', 'ren', 'sbtc'].includes(currentPool)">{{ $t('instantSwap.swapWrapped', ['i']) }}</b-form-checkbox>
+          </div>
+
+          <div class="row mt-3 align-items-end text-black-65 flex-wrap">
+            <span class="col-12 col-md mb-2">
+              <h6 class="mb-1">{{ $t('instantSwap.exchangeRate') }}</h6>
+              <text-overlay-loading :show="!checkExchangeRate">
+                <span @click='swapExchangeRate'>{{ exchangeRateSwapped }}</span>
+              </text-overlay-loading>
+            </span>
+            <span class="col-12 col-md mb-2">
+              <h6 class="mb-1">{{ $t('instantSwap.txCost') }}</h6>
+              <text-overlay-loading :show="!estimateGas">
+                ${{ (estimateGas * gasPrice / 1e9 * ethPrice).toFixed(2) }}
+              </text-overlay-loading>
+            </span>
+            <span class="col-12 col-md mb-2">
+              <h6 class="mb-1">{{ $t('instantSwap.routedThrough') }}</h6>
+              <div>
+                {{ bestPoolText }}
+              </div>
+            </span>
+            <span class="col text-right">
+              <b-button size="sm" @click='showadvancedoptions = !showadvancedoptions' variant="light">
+                <template v-if="showadvancedoptions">
+                  {{ $t('global.packUp') }}
+                </template>
+                <template v-else>
+                  {{ $t('global.advancedOptions') }}
+                </template>
+              </b-button>
+            </span>
+            <text-overlay-loading class="col-auto" :show="loadingAction">
+              <b-button id="trade" size="lg" variant="danger" @click='handle_trade' :disabled='selldisabled'>
+                {{ $t('instantSwap.confirm') }}
+              </b-button>
+            </text-overlay-loading>
+          </div>
+        </div>
+      </div>
+    </b-container>
+
+    <balances-info
+      :class = '{[$route.name]: true}'
+      :bal_info = 'bal_info'
+      :total = 'balTotal'
+      :l_info = 'l_info'
+      :totalShare = 'totalShare'
+      :staked_info = 'staked_info'
+      :totalStake = 'totalStake'
+      :fee = 'fee'
+      :admin_fee = 'admin_fee'
+      :currencies = 'currencies'
+      />
+
+      <div class='exchange' v-if=false>
+          <div class='exchangefields'>
+              <fieldset class='item'>
+                  <legend>From:</legend>
+                  <div class='maxbalance' @click='set_max_balance'>
+                      Max:
+                      <span
+                          v-show="(currentPool == 'susdv2' && from_currency == 3 || currentPool == 'sbtc' && from_currency == 2)
+                                    && maxBalanceText != '0.00'"
+                      >
+                          {{maxSynthText}}/
+                      </span>
+                      <span>{{maxBalanceText}}</span>
+                      <span v-show='susdWaitingPeriod' class='susd-waiting-period'>
+                          <span class='tooltip'>
+                              <img src='@/assets/clock-regular.svg' class='icon small'>
+                              <span class='tooltiptext'>
+                                  Cannot transfer during waiting period. {{ (susdWaitingPeriodTime).toFixed(0) }} secs left.
+                              </span>
+                          </span>
+                      </span>
+                      <span v-show="(currentPool == 'susdv2' && from_currency == 3 || currentPool == 'sbtc' && from_currency == 2)
+                                      && maxBalanceText != '0.00'" 
+                          class='tooltip'> [?]
+                          <span class='tooltiptext long'>
+                              Max transferrable amount is {{ maxSynthText }}. You can free the remaining balance by settling.
+                          </span>
+                      </span>
+                  </div>
+                  <ul>
+                      <li>
+                          <input type="text" id="from_currency" :disabled='disabled' name="from_currency" value='0.00'
+                          :style = "{backgroundColor: fromBgColor}"
+                          @input='set_to_amount'
+                          v-model='fromInput'>
+                          <p class='actualvalue' v-show='swapwrapped'>
+                              ≈ {{toFixed(actualFromValue)}} {{Object.keys(currencies)[this.from_currency] | capitalize}}
+                          </p>
+                          <p class='actualvalue' v-show="['sbtc', 'ren'].includes(currentPool)">
+                              ≈ {{ actualFromValue }}$
+                          </p>
+                      </li>
+                      <li class='coins' v-for='(currency, i) in Object.keys(currencies)'>
+                          <input type="radio" :id="'from_cur_'+i" name="from_cur" :value='i' v-model='from_currency'>
+                          <label :for="'from_cur_'+i">
+                              <img 
+                                  :class="{'token-icon': true, [currency+'-icon']: true, 'y': swapwrapped}" 
+                                  :src='getTokenIcon(currency)'>
+                              <span v-show="!swapwrapped && !['tbtc', 'ren', 'sbtc'].includes(currentPool)">{{currency | capitalize}}</span>
+                              <span v-show="swapwrapped || ['tbtc', 'ren', 'sbtc'].includes(currentPool)">{{currencies[currency]}}</span>
+                          </label>
+                      </label>
+                      </li>
+                  </ul>
+              </fieldset>
+              <fieldset class='item iconcontainer' @click='swapInputs'>
+                  <img :src="publicPath + 'exchange-alt-solid.svg'" id='exchangeicon'/>
+              </fieldset>
+              <fieldset class='item'>
+                  <legend>To:</legend>
+                  <div class='maxbalance2'>Max: <span></span> </div>
+                  <ul>
+                      <li>
+                          <input type="text" 
+                          id="to_currency" 
+                          name="to_currency" 
+                          value="0.00" 
+                          disabled
+                          :style = "{backgroundColor: bgColor}"
+                          v-model='toInput'>
+                          <p class='actualvalue' v-show='swapwrapped'>
+                              ≈ {{toFixed(actualToValue)}} {{Object.keys(currencies)[this.to_currency] | capitalize}}
+                          </p>
+                          <p class='actualvalue' v-show="['ren', 'sbtc'].includes(currentPool)">
+                              ≈ {{ actualToValue }}$
+                          </p>
+                      </li>
+                      <li class='coins' v-for='(currency, i) in Object.keys(currencies)'>
+                          <input type="radio" :id="'to_cur_'+i" name="to_cur" :value='i' v-model='to_currency'>
+                          <label :for="'to_cur_'+i">
+                              <img 
+                                  :class="{'token-icon': true, [currency+'-icon']: true, 'y': swapwrapped}" 
+                                  :src='getTokenIcon(currency)'>
+                              <span v-show="!swapwrapped && !['tbtc', 'ren'].includes(currentPool)">{{currency | capitalize}}</span>
+                              <span v-show="swapwrapped || ['tbtc', 'ren'].includes(currentPool)">{{currencies[currency]}}</span>
+                          </label>
+                      </label>
+                      </li>
+                  </ul>
+              </fieldset>
+          </div>
+          <p class='exchange-rate'>
+              Exchange rate
+              <span @click='swapExchangeRate' class='clickable underline'>
+                  {{getPair(swaprate)}}
+                  <img src='@/assets/sync-solid.svg' class='swaprates-icon'>
+              </span> (including fees): 
+              <span id="exchange-rate" @click='swapExchangeRate' class='clickable'>
+                  {{exchangeRateSwapped}}
+              </span>
+          </p>
+          <ul>
+              <li>
+                  <input id="inf-approval" type="checkbox" name="inf-approval" v-model='inf_approval'>
+                  <label for="inf-approval">Infinite approval - trust this contract forever
+                      <span class='tooltip'>[?]
+                          <span class='tooltiptext long'>
+                              Preapprove the contract to to be able to spend any amount of your coins. You will not need to approve again.
+                          </span>
+                      </span>
+                  </label>
+              </li>
+              <li>
+                  <input id='swapw' type='checkbox' name='swapw' v-model = 'swapwrapped'>
+                  <label for='swapw' v-show = "!['susdv2', 'tbtc', 'ren', 'sbtc'].includes(currentPool)">Swap wrapped</label>
+              </li>
+          </ul>
+          <div>
+              <button class='simplebutton advancedoptions' @click='showadvancedoptions = !showadvancedoptions'>
+                  Advanced options
+                  <span v-show='!showadvancedoptions'>▼</span>
+                  <span v-show='showadvancedoptions'>▲</span>
+              </button>
+              <div v-show='showadvancedoptions'>
+                  <fieldset>
+                      <legend>Advanced options:</legend>
+                      <div id='max_slippage'><span>Max slippage:</span> 
+                          <input id="slippage05" type="radio" name="slippage" value='0.005' @click='maxSlippage = 0.5; customSlippageDisabled = true'>
+                          <label for="slippage05">0.5%</label>
+
+                          <input id="slippage1" type="radio" name="slippage" checked value='0.01' @click='maxSlippage = 1; customSlippageDisabled = true'>
+                          <label for="slippage1">1%</label>
+
+                          <input id="custom_slippage" type="radio" name="slippage" value='-' @click='customSlippageDisabled = false'>
+                          <label for="custom_slippage" @click='customSlippageDisabled = false'>
+                              <input type="text" id="custom_slippage_input" :disabled='customSlippageDisabled' name="custom_slippage_input" v-model='maxInputSlippage'> %
+                          </label>
+                          <span class='tooltip' v-show='showSlippageTooLow'>
+                              <img class='icon small hoverpointer warning' :src="publicPath + 'exclamation-circle-solid.svg'">
+                              <span class='tooltiptext'>
+                                  Max slippage value is likely too low and the transaction may fail
+                              </span>
+                          </span>
+                      </div>
+                      <gas-price></gas-price>
+                  </fieldset>
+              </div>
+          </div>
+          <p class='simple-error' v-show="exchangeRate<=0.98 && (to_currency > 0 && !['ren', 'sbtc'].includes(currentPool))">
+              Warning! Exchange rate is too low!
+          </p>
+          <p class='simple-error' v-show="exchangeRate<=0.98 && ['ren', 'sbtc'].includes(currentPool)">
+              Warning! Exchange rate is too low!
+          </p>
+          <p class='simple-error' v-show="exchangeRate<=0.95 && (to_currency == 0 && !['ren', 'sbtc'].includes(currentPool))">
+              Warning! Exchange rate is too low!
+          </p>
+          <p class='trade-buttons' v-show="['ren', 'sbtc'].includes(currentPool)">
+              <a href='https://bridge.renproject.io/'>Mint/redeem renBTC</a>
+          </p>
+          <!-- <p class='simple-error' id='no-balance-synth' v-show='notEnoughBalanceSynth'>
+              Max balance you can use is {{ (+maxSynthBalance).toFixed(2) }}
+          </p> -->
+          <p class='trade-buttons'>
+              <button id="trade" @click='handle_trade'>
+                  Sell <span class='loading line' v-show='loadingAction'></span>
+              </button>
+          </p>
+          <div class='info-message gentle-message waiting-message' v-show='show_loading'>
+              <span v-html='waitingMessage'></span>
+              <span class='loading line'></span>
+          </div>
+          <p class='simple-error' id='no-balance' v-show='selldisabled'>
+              Not enough balance for 
+              <span v-show='!swapwrapped'>{{Object.keys(currencies)[from_currency] | capitalize}}</span>
+              <span v-show='swapwrapped'>{{Object.values(currencies)[from_currency]}}</span>. <span>Swap is not available.</span>
+          </p>
+          <div class='simple-error pulse' v-show="susdWaitingPeriod">
+              Cannot transfer {{ currentPool == 'susdv2' ? 'sUSD' : 'sBTC' }} during waiting period. {{ (susdWaitingPeriodTime).toFixed(0) }} secs left.
+          </div>
+          <div class='info-message gentle-message' v-show='estimateGas'>
+              Estimated tx cost: {{ (estimateGas * gasPrice / 1e9 * ethPrice).toFixed(2) }}$
+          </div>
+
+      </div>
 </div>
 </template>
 
@@ -204,16 +474,25 @@
     import * as errorStore from '../common/errorStore'
 
     import BigNumber from 'bignumber.js'
+    import OneSplit from '../graphs/OneSplit'
+    import RootSub from '../root/RootSub.vue'
+    import TextOverlayLoading from '../../components/common/TextOverlayLoading'
+    import * as volumeStore from '../common/volumeStore'
+
+    import BalancesInfo from '../BalancesInfo'
 
     let { setIntervalAsync, clearIntervalAsync } = require('set-interval-async/dynamic')
 
     var cBN = (val) => new BigNumber(val);
 
-
 	export default {
 
         components: {
             GasPrice,
+            BalancesInfo,
+            OneSplit,
+            TextOverlayLoading,
+            RootSub
         },
 
         data: () => ({
@@ -260,6 +539,9 @@
             loadingAction: false,
 
             interval: null,
+            depositc: false,
+            maxSlippageMode: 2,
+            bestPool: null
         }),
         async created() {
             this.$watch(()=>currentContract.default_account, (val, oldval) => {
@@ -311,10 +593,94 @@
             },
         },
         computed: {
-            precisions() {
-                if(this.swapwrapped) return allabis[currentContract.currentContract].wrapped_precisions;
-                return allabis[currentContract.currentContract].coin_precisions
+          ...getters,
+          customMaxSlippageInput: {
+            get () {
+              return this.maxInputSlippage
             },
+            set (val) {
+              this.maxSlippage = this.maxInputSlippage = val
+            }
+          },
+          selectMaxSlippageMode: {
+            get () {
+              return this.maxSlippageMode
+            },
+            set (val) {
+              const { maxInputSlippage } = this
+              const modes = {
+                1: 0.5,
+                2: 1,
+                3: 2,
+                4: maxInputSlippage
+              }
+
+              this.maxSlippageMode = val
+              this.maxSlippage = modes[val]
+            }
+          },
+          messages () {
+            const { $i18n, selldisabled, susdWaitingPeriod, susdWaitingPeriodTime, maxSynthBalanceText, notEnoughBalanceSynth, exchangeRate, swapwrapped, currencies, from_currency, to_currency, showNoBalanceWarning, warningNoPool, currentPool } = this
+            const result = []
+            const from = swapwrapped
+              ? Object.values(currencies)[from_currency]
+              : Object.keys(currencies)[from_currency]
+            const to = swapwrapped
+              ? Object.values(currencies)[to_currency]
+              : Object.keys(currencies)[to_currency]
+
+            if (exchangeRate<=0.98 && (to_currency > 0 && !['ren', 'sbtc'].includes(currentPool) || ['ren', 'sbtc'].includes(currentPool)) ||
+              exchangeRate<=0.95 && (to_currency == 0 && !['ren', 'sbtc'].includes(currentPool))) {
+              result.push({
+                type: 'error',
+                msg: $i18n.t('instantSwap.exchangeEateLowWarning')
+              })
+            }
+
+            notEnoughBalanceSynth && !susdWaitingPeriod && +maxSynthBalanceText > 0 &&
+              result.push({
+                  type: 'error',
+                  msg: $i18n.t('instantSwap.maxSynthBalance')
+              })
+
+            susdWaitingPeriod &&
+              result.push({
+                type: 'error',
+                msg: $i18n.t('instantSwap.susdWaitingPeriod', [
+                  from_currency == 5 ? 'sUSD' : 'sBTC',
+                  (susdWaitingPeriodTime).toFixed(0)
+                ])
+              })
+
+            // showNoBalanceWarning
+            selldisabled &&
+              result.push({
+                type: 'error',
+                msg: $i18n.t('instantSwap.noBalanceWarning', [
+                  swapwrapped
+                    ? from
+                    : helpers.capitalize(from)
+                ])
+              })
+
+            warningNoPool &&
+              result.push({
+                type: 'info',
+                msg: $i18n.t('instantSwap.warningNoPool', [warningNoPool])
+              })
+
+            return result
+          },
+          poolVolumeUSD() {
+            return volumeStore.state.volumes[this.currentPool == 'iearn' ? 'y' : this.currentPool == 'susdv2' ? 'susd' : this.currentPool][0]
+          },
+          totalBalances() {
+            return this.bal_info && this.bal_info.reduce((a, b) => a + b, 0) || null
+          },
+          precisions() {
+              if(this.swapwrapped) return allabis[currentContract.currentContract].wrapped_precisions;
+              return allabis[currentContract.currentContract].coin_precisions
+          },
             actualFromValue() {
                 if(!this.swapwrapped && !['ren','sbtc'].includes(this.currentPool)) return;
                 if(['ren', 'sbtc'].includes(this.currentPool)) return (this.fromInput * this.btcPrice).toFixed(2)
@@ -325,16 +691,15 @@
                 if(['ren', 'sbtc'].includes(this.currentPool)) return (this.toInput * this.btcPrice).toFixed(2)
                 return (this.toInput * this.c_rates[this.to_currency] * this.toFixed(this.precisions[this.to_currency]))
             },
-            ...getters,
             minAmount() {
                 if(['tbtc', 'ren', 'sbtc'].includes(currentContract.currentContract)) return 1e-8
                 return 0.01
             },
             selldisabled() {
-                return this.maxBalance != -1 && +this.fromInput > +this.maxBalance / this.precisions[this.from_currency] && this.userInteracted
+              return this.maxBalance != -1 && +this.fromInput > +this.maxBalance / this.precisions[this.from_currency] && this.userInteracted
             },
             notEnoughBalanceSynth() {
-                return this.currentPool == 'susdv2' && this.from_currency == 3 && cBN(this.fromInput).gt(cBN(this.maxSynthBalance))
+              return this.currentPool == 'susdv2' && this.from_currency == 3 && cBN(this.fromInput).gt(cBN(this.maxSynthBalance))
             },
             exchangeRateSwapped() {
                 if(this.swaprate)
@@ -344,6 +709,15 @@
             },
             publicPath() {
                 return process.env.BASE_URL
+            },
+            getCurrFrom() {
+              return Object.keys(this.currencies)[this.from_currency]
+            },
+            getCurrTo() {
+              return Object.keys(this.currencies)[this.to_currency]
+            },
+            checkExchangeRate () {
+              return !isNaN(this.exchangeRate)
             },
             gasPrice() {
                 return gasPriceStore.state.gasPrice
@@ -358,13 +732,20 @@
             showSlippageTooLow() {
                 return this.maxInputSlippage != '' && +this.maxInputSlippage < 0.2
             },
+            bestPoolText() {
+              return this.currentPool
+                // if(this.bestPool === null) return 'Not available'
+                // return ['compound', 'y', 'busd', 'susd', 'pax', 'ren', 'sbtc', '1split', 'dfi', 'dusd'][this.bestPool]
+            },
         },
         mounted() {
             if(currentContract.initializedContracts) this.mounted();
         },
         methods: { 
             async mounted() {
-                console.log(currentContract.default_account)
+              if(['susd', 'susdv2', 'tbtc', 'ren', 'sbtc'].includes(currentContract.currentContract)) this.depositc = true;
+                else this.depositc = false;
+
                 if(['ren', 'sbtc'].includes(currentContract.currentContract)) this.btcPrice = await priceStore.getBTCPrice()
                 if(['tbtc', 'ren', 'sbtc'].includes(currentContract.currentContract)) this.fromInput = '0.0001'
                 this.c_rates = currentContract.c_rates
@@ -551,7 +932,7 @@
                 if(this.loadingAction) return;
                 this.userInteracted = true
                 this.setLoadingAction();
-                
+
                 this.show_loading = true;
                 var i = this.from_currency
                 var j = this.to_currency;
@@ -580,7 +961,7 @@
                 var min_dy = BN(await currentContract.swap.methods[min_dy_method](i, j, BN(dx).toFixed(0,1)).call())
                 min_dy = min_dy.times(1-maxSlippage)
                 dx = cBN(dx.toString()).toFixed(0,1);
-                this.waitingMessage = `Please approve ${this.fromInput} ${this.getCurrency(this.from_currency)} for exchange`
+                this.waitingMessage = this.$i18n.t('instantSwap.approveExchange', [this.fromInput, this.getCurrency(this.from_currency)])
                 var { dismiss } = notifyNotification(this.waitingMessage)
                 try {
                     if (this.inf_approval)

@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="statement-banner p-2">
-      {{ $t('statement.noticeTitleHtml') }}
+    <div class="statement-banner p-2" v-show="statementTitle">
+      {{ statementTitle }}
       <a @click="onStatement" href="javascript:void(0);">{{ $t('statement.more') }}</a>
     </div>
     <b-container>
@@ -47,20 +47,27 @@
 
   import SelLanguage from '../common/selLanguage'
 
+  import store from '../../store'
+
   export default {
     components: {
       SelLanguage
     },
+    async mounted () {
+      await store.request.getAllAnnouncements()
+    },
     methods: {
       onStatement () {
         const { $i18n, $router, $createElement } = this
+        const { statement } = store.announcement
+        const { locale } = $i18n
 
         const messageVNode = $createElement('div', { class: [] }, [
-          $createElement('p', { domProps: { innerHTML: $i18n.t('statement.noticeContHtml') } }),
+          $createElement('p', { domProps: { innerHTML: statement[locale].content } }),
         ])
 
         this.$bvModal.msgBoxConfirm([messageVNode], {
-            titleHtml: $i18n.t('statement.noticeTitleHtml'),
+            titleHtml: statement[locale].title,
             hideBackdrop: true,
             size: 'lg',
             okTitle: $i18n.t('statement.ok'),
@@ -83,10 +90,10 @@
         return process.env.BASE_URL
       },
       headerNav () {
-        const { $i18n, $route } = this
+        const { $route } = this
         const result = [
           { name: 'home', to: { name: 'RootIndex' }, i18n: 'global.home' },
-          // { name: 'swap', to: {name: 'Swap', path: '/susdv2/swap'}, i18n: 'global.swap' },
+          { name: 'swap', to: { name: 'Swap' }, i18n: 'global.swap', active: 'Swap' === $route.name },
           { name: 'liquidity', to: { name: 'Liquidity' }, i18n: 'global.liquidity', active: 'Liquidity' === $route.name },
           { name: 'dao', to: { name: 'Dao', path: '/dao' }, i18n: 'global.dao' },
           { name: 'risks', to: { name: 'Risks', path: '/risks' }, i18n: 'global.risks' },
@@ -96,6 +103,14 @@
         ]
 
         return result
+      },
+      statementTitle () {
+        const { $i18n } = this
+        const { statement } = store.announcement
+
+        return statement &&
+          statement[$i18n.locale] &&
+          statement[$i18n.locale].title
       }
     }
   }

@@ -38,10 +38,12 @@ export function getTokenIcon(token, wrapped = false, pool = '') {
         token = '_y' + token
     } else if (wrapped && ['dfi'].includes(pool)) {
       token = '_i' + token
-  }
+    } else if (wrapped && ['dusd'].includes(pool)) {
+      token = '_d' + token
+    }
     let publicPath = process.env.BASE_URL
     let asset
-    let pngs = ['dai', 'busd', 'pax', '_ydai', '_yusdc', '_yusdt', '_ytusd', '_ybusd', '_idai', '_iusdc', '_iusdt']
+    let pngs = ['dai', 'busd', 'pax', '_ydai', '_yusdc', '_yusdt', '_ytusd', '_ybusd', '_idai', '_iusdc', '_iusdt', '_ddai', '_dusdc', '_dusdt', '_dusdx']
     if(pngs.includes(token)) {
         asset = publicPath + 'tokens/' + token + '.png'
     }

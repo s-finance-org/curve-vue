@@ -18,7 +18,7 @@
             <small class="mr-auto">{{ $t('dao.describe', [store.gauges.dfi.mortgagesUnit, store.gauges.dfi.rewardsUnit.join(' ')]) }}</small>
             <text-overlay-loading inline :show="store.gauges.dfi.apy.loading">
               <span class="h5 text-danger-1 mb-0">
-                <small class="text-blank-45">{{ $t('global.apr') }}</small>
+                <small class="text-black-45">{{ $t('global.apr') }}</small>
                 {{ store.gauges.dfi.apy.percent }}%
                 <span v-show=false>{{ store.gauges.dfi.apy }}</span>
               </span>
@@ -81,7 +81,7 @@
                   <b-button class="text-blue-1" to='/liquidity/dfi' size="xsm" variant="light">{{ $t('dao.stakingConfirmTip', [store.gauges.dfi.mortgages.iUSD_LPT.name]) }}</b-button>
                 </small>
                 <!-- FIXME: inf_approval -->
-                <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('dao.infiniteApproval') }}</b-form-checkbox>
+                <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('global.infiniteApproval') }}</b-form-checkbox>
                 <b-alert class="mt-3" :show="dismissCountDown" variant="dark" dismissible fade
                   @dismissed="dismissCountDown=0"
                   @dismiss-count-down="countDownChanged"
@@ -119,7 +119,7 @@
                   <text-overlay-loading :show="store.gauges.dfi.mortgages.iUSD_LPT.userStaking.loading">{{ store.gauges.dfi.mortgages.iUSD_LPT.userStaking.cont }} {{ store.gauges.dfi.mortgages.iUSD_LPT.name }}</text-overlay-loading>
                 </small>
                 <!-- FIXME: inf_approval -->
-                <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('dao.infiniteApproval') }}</b-form-checkbox>
+                <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('global.infiniteApproval') }}</b-form-checkbox>
                 <b-alert class="mt-3" :show="dismissCountDown && waitingMessageTargetId === 'withdraw'" variant="dark" dismissible fade
                   @dismissed="dismissCountDown=0"
                   @dismiss-count-down="countDownChanged"
@@ -182,7 +182,7 @@
             <small class="mr-auto">{{ $t('dao.describe', [currentPool.name + ' LP tokens', currentPool.describeTokensCont]) }}</small>
             <text-overlay-loading inline :show="store.gauges.susdv2.apy.loading">
               <span class="h5 text-danger-1 mb-0">
-                <small class="text-blank-45">{{ $t('global.apr') }}</small>
+                <small class="text-black-45">{{ $t('global.apr') }}</small>
                 {{ store.gauges.susdv2.apy.percent }}%
               </span>
             </text-overlay-loading>
@@ -242,7 +242,7 @@
                   <text-overlay-loading class="mr-2" :show="currentPool.balanceOf.loading">{{ currentPool.balanceOf.cont }} {{ currentPool.name }} LP tokens</text-overlay-loading>
                   <b-button class="text-blue-1" to="/liquidity/susdv2" size="xsm" variant="light">{{ $t('dao.stakingConfirmTip', ['LP tokens']) }}</b-button>
                 </small>
-                <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('dao.infiniteApproval') }}</b-form-checkbox>
+                <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('global.infiniteApproval') }}</b-form-checkbox>
                 <b-alert class="mt-3" :show="dismissCountDown && waitingMessageTargetId === 'deposit'" variant="dark" dismissible fade
                   @dismissed="dismissCountDown=0"
                   @dismiss-count-down="countDownChanged"
@@ -274,7 +274,7 @@
                   {{ $t('dao.redemptionBalance') }}：
                   <text-overlay-loading :show="currentPool.gaugeBalance.loading">{{ currentPool.gaugeBalance.cont }} {{ currentPool.name }} LP tokens</text-overlay-loading>
                 </small>
-                <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('dao.infiniteApproval') }}</b-form-checkbox>
+                <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('global.infiniteApproval') }}</b-form-checkbox>
                 <b-alert class="mt-3" :show="dismissCountDown && waitingMessageTargetId === 'withdraw'" variant="dark" dismissible fade
                   @dismissed="dismissCountDown=0"
                   @dismiss-count-down="countDownChanged"
@@ -401,7 +401,7 @@
             <small class="mr-auto">{{ $t('dao.describe', [store.gauges.bpt.mortgagesUnit, store.gauges.bpt.rewardsUnit.join(' ')]) }}</small>
             <text-overlay-loading inline :show="store.gauges.bpt.apy.loading">
               <span class="h5 text-danger-1 mb-0">
-                <small class="text-blank-45">{{ $t('global.apr') }}</small>
+                <small class="text-black-45">{{ $t('global.apr') }}</small>
                 {{ store.gauges.bpt.apy.percent }}%
                 <span v-show=false>{{ store.gauges.bpt.apy }}</span>
               </span>
@@ -459,7 +459,7 @@
                   <b-button class="text-blue-1" target="_blank" :href=store.gauges.bpt.mortgages.bpt.gainUrl size="xsm" variant="light">{{ $t('dao.stakingConfirmTip', [store.gauges.bpt.mortgages.bpt.name]) }}</b-button>
                 </small>
                 <!-- FIXME: inf_approval -->
-                <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('dao.infiniteApproval') }}</b-form-checkbox>
+                <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('global.infiniteApproval') }}</b-form-checkbox>
                 <b-alert class="mt-3" :show="dismissCountDown" variant="dark" dismissible fade
                   @dismissed="dismissCountDown=0"
                   @dismiss-count-down="countDownChanged"
@@ -497,7 +497,7 @@
                   <text-overlay-loading :show="store.gauges.bpt.mortgages.bpt.userStaking.loading">{{ store.gauges.bpt.mortgages.bpt.userStaking.cont }} {{ store.gauges.bpt.mortgages.bpt.name }}</text-overlay-loading>
                 </small>
                 <!-- FIXME: inf_approval -->
-                <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('dao.infiniteApproval') }}</b-form-checkbox>
+                <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('global.infiniteApproval') }}</b-form-checkbox>
                 <b-alert class="mt-3" :show="dismissCountDown && waitingMessageTargetId === 'withdraw'" variant="dark" dismissible fade
                   @dismissed="dismissCountDown=0"
                   @dismiss-count-down="countDownChanged"
@@ -924,6 +924,9 @@
           })
         },
         async mounted() {
+
+
+
           // Set currentPool confirm
           this.currentPool.tokens.sfg.claimConfirm = this.claim
           // FIXME: 
@@ -1023,8 +1026,6 @@
             let highest = piegauges.map(data=>data.y).indexOf(Math.max(...piegauges.map(data => data.y)))
             piegauges[highest].sliced = true;
             piegauges[highest].selected = true;
-
-
 
             // susdv2
             store.tokens.susdv2LpToken.getBalanceOf(this.currentPool.balanceOf, currentContract.default_account)

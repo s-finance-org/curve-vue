@@ -27,7 +27,13 @@ import abiDfi from '../components/dao/abi/dfi'
 import abi_iUSD_LPT from '../components/dao/abi/iUSD_LPT'
 import swapAbi_iUSD_LPT from '../components/dao/abi/swapAbi_iUSD_LPT'
 import abi_susdv2_swap from '../components/dao/abi/susdv2_swap'
+import abi_dUSD from '../components/dao/abi/dUSD'
 import { ERC20_abi as abiSusdv2LpToken } from '../allabis'
+
+import { TOKEN_USDT_ABI } from './token/abi'
+
+import ModelToken from '../model/token'
+import request from './request'
 
 // FIXME: 
 const approve = (contract, amount, account, toContract) => {
@@ -157,8 +163,47 @@ store.price = {
 
 
 store.tokens = {
-  usdt: {
+  usdt1: ModelToken.create({
     address: process.env.VUE_APP_USDT_TOKEN,
+    abi: TOKEN_USDT_ABI,
+    code: 'usdt',
+    name: 'Tether USD',
+    symbol: 'USDT',
+    decimal: 6,
+  }),
+
+  dusd: ModelToken.create({
+    address: process.env.VUE_APP_DUSD_TOKEN,
+    abi: abi_dUSD,
+    code: 'dusd',
+    name: 'S.finance dDAI/dUSDC/dUSDT/dUSDx',
+    symbol: 'dUSD',
+    decimal: 18
+  }),
+
+  usdt: {
+    code: 'usdt',
+    name: 'Tether USD',
+    symbol: 'USDT',
+    deprecated: false,
+    totalSupply: 0, // XXX:
+    address: process.env.VUE_APP_USDT_TOKEN,
+
+    __contract: null,
+    get contract () {
+      const { __contract, abi, address } = this
+
+      return __contract ||
+        (this.__contract = new web3.eth.Contract(abi, address))
+    },
+    async getBalances (address) {
+    },
+    async getBalanceOf (address) {
+
+    },
+    async doAllowance () {
+
+    }
   },
   dai: {
     address: process.env.VUE_APP_DAI_TOKEN,
@@ -248,7 +293,7 @@ store.tokens = {
     async getBalanceOf (target, accountAddress) {
       const { contract } = this
       const result = await contract.methods.balanceOf(accountAddress).call()
-
+console.log('getBalanceOf', result)
       target.tether = result
 
       return result
@@ -442,9 +487,9 @@ store.tokens = {
       const getalanceSfgInBpt = await contract.methods.getBalance(sfg.address).call() / 1e18
       const getTotalSupply = await contract.methods.totalSupply().call()
 
-      return price.handled = BN(getalanceDaiInBpt)
+      price.handled = BN(getalanceDaiInBpt)
         // FIXME: Dai price
-        .times(1.02)
+        // .times(1.02)
         .plus(
           BN(getalanceSfgInBpt)
           .times(sfg.price.handled)
@@ -452,6 +497,8 @@ store.tokens = {
         .dividedBy(
           getTotalSupply
         ).toString()
+
+      return price.handled
     },
   },
   iUSD_LPT: {
@@ -594,6 +641,9 @@ store.i18n = {
 }
 
 store.gauges = {
+  dusd: {
+    code: 'dusd'
+  },
   bpt: {
     code: 'bpt',
     name: 'BPT',
@@ -1158,5 +1208,13 @@ store.gauges = {
     }
   }
 }
+
+store.announcement = {
+  /** @type {Object} */
+  statement: null,
+  notices: [],
+}
+
+store.request = request
 
 export default Vue.observable(store)

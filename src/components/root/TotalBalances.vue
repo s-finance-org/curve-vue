@@ -52,6 +52,7 @@
         const converts = {
           'iearn': 'y',
           'dfi': 'dfi',
+          'dusd': 'dusd',
           'susdv2': 'susd'
         }
 

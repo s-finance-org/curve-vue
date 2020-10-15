@@ -129,7 +129,8 @@
       tbtc: 'TBTC',
       ren: 'renBTC',
       sbtc: 'sBTC',
-      dfi: 'DFI'
+      dfi: 'DFI',
+      dusd: 'dUSD'
     }
 
   export default {
@@ -152,6 +153,7 @@
         ren: 'ren',
         sbtc: 'renbtc_sbtc',
         dfi: 'dfi',
+        dusd: 'dusd'
       }
     }),
     components: {
@@ -204,28 +206,6 @@
   }
 </script>
 
-<style>
-  /* #changeAccounts {
-    margin-top: 0.3em;
-  }
-  a.showmobile {
-    display: none;
-  }
-  @media only screen and (min-device-width : 320px) and (max-device-width : 730px) {
-    #hamburger:checked ~ a.showmobile {
-      display: block;
-    }
-    .blue.window.half-width, .info-message.window.half-width {
-      width: 90%;
-    }
-  }
-  h1 > img {
-    height: 52.125px;
-  }
-  .simple-error.window {
-    box-shadow: none;
-  }
-  .CRV a:hover, .CRV a:visited {
-    color: white;
-  } */
+<style scoped>
+
 </style>

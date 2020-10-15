@@ -48,14 +48,6 @@ export default {
     more: 'more',
     ok: 'Ok',
     toMore: 'More',
-    noticeTitleHtml: 'dfi (yfii) pool has launched',
-    noticeDateHtml: '2020/10/10 23:00',
-    noticeContHtml: `S.Finance has launched dfi (yfii) pool at 2020-10-10 23:00 SGT. 2020-10-11 01:00 Open liquidity mining. Users could get iUSD LP tokens by depositing stable coins (DAI, USDC, USDT) or i token of yfii vault (iDAI, iUSDC, iUSDT). Users could get SFG reward by staking iUSD LP tokens.<br/>
-    Users can obtain triple rewards by providing liquidity in the DFI pool:<br/>
-    YFII vault reward<br/>
-    SFG reward by staking<br/>
-    Fee of DFI pool<br/>
-    DFI pool rewarding weight will be up to 30%.`
   },
   wallet: {
     notConnected: "You haven't connected wallet",
@@ -83,7 +75,9 @@ export default {
     exchangeEateLowWarning: 'Warning! Exchange rate is too low!',
     maxSynthBalance: 'Max balance you can use is {0}',
     susdWaitingPeriod: 'Cannot transfer {0} during waiting period {1} secs left',
-    warningNoPool: 'Swap not available. Please select {0} in pool select'
+    warningNoPool: 'Swap not available. Please select {0} in pool select',
+    swapWrapped: 'Swap wrapped',
+    approveExchange: 'Please approve {0} {1} for exchange',
   },
   balancesInfo: {
     name: 'Currency reserves',
@@ -94,7 +88,9 @@ export default {
     adminFeeRate: 'Admin fee',
     avgAssetPrice: 'Average asset price',
     amplificationCoefficient: 'AmplificationCoefficient',
-    fundingFeeRate: 'FundingFeeRate'
+    fundingFeeRate: 'FundingFeeRate',
+    liquidityAPY: 'Liquidity APY',
+    lpTokenPrice: 'LP Token Price'
   },
   risk: {
     title: 'Risks Warning',

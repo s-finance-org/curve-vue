@@ -71,7 +71,7 @@ export default {
 	        		this.ADDRESSES[symbol] = allabis[this.currentPool].coins[i]
 	        	}
 			    let [available, availableUSD, stakedBalanceUSD, stakedBalance] = await this.getAvailableAmount()
-			    if(['susdv2', 'sbtc', 'y', 'iearn', 'dfi'].includes(this.currentPool)) {
+			    if(['susdv2', 'sbtc', 'y', 'iearn', 'dfi', 'dusd'].includes(this.currentPool)) {
 			    	this.getStakedBalance = stakedBalance
 			    	this.getStakedBalanceUSD = stakedBalanceUSD
 			    	this.stakedTokens = currentContract.curveStakedBalance
@@ -96,7 +96,7 @@ export default {
 	    		let usdShare = currentContract.usdShare
 	    		if(!['tbtc', 'ren', 'sbtc'].includes(this.currentPool)) this.btcPrice = 1
 	    		console.log(currentContract.curveStakedBalance, currentContract.virtual_price, this.btcPrice)
-	    		if(['y', 'iearn', 'dfi'].includes(this.currentPool)) {
+	    		if(['y', 'iearn', 'dfi', 'dusd'].includes(this.currentPool)) {
 	    			let vault = '0x5dbcF33D8c2E976c6b560249878e6F1491Bca25c'
 	    			let vaultContract = new currentContract.web3.eth.Contract(yERC20_abi, '0x5dbcF33D8c2E976c6b560249878e6F1491Bca25c')
 	    			let calls = [
@@ -123,7 +123,7 @@ export default {
 	    	let calls = [
 	    		[this.CURVE_TOKEN, '0x70a08231000000000000000000000000' + this.account.slice(2)],
 	    	]
-	    	if(['susdv2', 'sbtc', 'y', 'iearn', 'dfi'].includes(currentContract.currentContract))
+	    	if(['susdv2', 'sbtc', 'y', 'iearn', 'dfi', 'dusd'].includes(currentContract.currentContract))
 	    		calls.push([currentContract.curveRewards._address, '0x70a08231000000000000000000000000' + this.account.slice(2)])
 	    	let aggcalls = await currentContract.multicall.methods.aggregate(calls).call();
 	    	let [tokenBalance, stakedBalance] = aggcalls[1].map(hex => +currentContract.web3.eth.abi.decodeParameter('uint256', hex))
@@ -213,7 +213,7 @@ export default {
 			if(curr == 'sUSD') {
 				return +value.div(BN(1e16));
 			}
-			const decimals = ['yUSDC', 'yUSDT', 'iUSDC', 'iUSDT'].includes(curr) ? 6 : 18;
+			const decimals = ['yUSDC', 'yUSDT', 'iUSDC', 'iUSDT', 'dUSDC', 'dUSDT'].includes(curr) ? 6 : 18;
 		    if (decimals === 18) {
 		        return Number(currentContract.web3.utils.fromWei(value.toString(0)));
 		    }
@@ -414,14 +414,14 @@ export default {
 		            const tokenIndex = Object.values(this.ADDRESSES)[i]
 		            let curr = Object.keys(this.ADDRESSES)[i]
 		            let address = currentContract.coins[i]._address
-		          	if(['iearn','busd','pax', 'dfi'].includes(currentContract.currentContract)) address = currentContract.underlying_coins[i]._address
+		          	if(['iearn','busd','pax', 'dfi', 'dusd'].includes(currentContract.currentContract)) address = currentContract.underlying_coins[i]._address
 		            let exchangeRate = await this.getExchangeRate(block, address, '', type)
 		        	if(exchangeRate == -1) continue;
 		            let usd;
 		          	if(currentContract.currentContract == 'usdt' && i ==2) {
 		            	usd = BN(tokens).div(BN(1e4)).toNumber();
 		          	}
-		          	if(['iearn','busd', 'pax', 'dfi'].includes(currentContract.currentContract)) {
+		          	if(['iearn','busd', 'pax', 'dfi', 'dusd'].includes(currentContract.currentContract)) {
 		          		if(i == 0 || i == 3) tokens /= 1e16;
 		          		else tokens /= 1e4
 		          		usd = tokens * exchangeRate

@@ -38,7 +38,8 @@ export default {
     withdraw: '取款',
     all: '全部',
     poolProfit: '流动性奖励',
-    totalPoolsDeposits: '兑换池资金'
+    totalPoolsDeposits: '兑换池资金',
+    infiniteApproval: '信任此合约使用最佳矿工费，后续将无需再次批准',
   },
   beta: {
     slogan: '项目还在测试阶段，请注意风险，更多功能敬请期待~',
@@ -84,7 +85,9 @@ export default {
     exchangeEateLowWarning: '警告！汇率太低！',
     maxSynthBalance: '您可以使用的最大余额是 {0}',
     susdWaitingPeriod: '在等待时间 {1} 秒内无法转移 {0}',
-    warningNoPool: '兑换不可用。请在池中选择 {0}。'
+    warningNoPool: '兑换不可用。请在池中选择 {0}。',
+    swapWrapped: '兑换 {0} 代币',
+    approveExchange: '请批准兑换 {0} {1}',
   },
   balancesInfo: {
     name: '兑换池概念',
@@ -95,7 +98,9 @@ export default {
     adminFeeRate: '管理员费',
     avgAssetPrice: '资产均价',
     amplificationCoefficient: '放大系数',
-    fundingFeeRate: '资金费用率'
+    fundingFeeRate: '资金费用率',
+    liquidityAPY: '流动性年化',
+    lpTokenPrice: 'LP Token 价格'
   },
   risk: {
     title: '使用 S.Finance 的风险',
@@ -145,7 +150,6 @@ export default {
     miningReward: '挖矿奖励',
     stakingAmountPlaceholder: '输入抵押数量',
     stakingBalance: '当前可抵押',
-    infiniteApproval: '信任此合约使用最佳矿工费，后续将无需再次批准',
     stakingConfirmTip: '存款获得 {0}',
     stakingConfirm: '确认抵押',
     redemptionBalance: '可赎回数量',

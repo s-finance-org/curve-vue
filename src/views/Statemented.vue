@@ -12,10 +12,10 @@
 
       <div class="box mt-5 mb-4 px-4" v-for="(item, i) of notices" :key="'notice-'+ i">
         <h4 class="my-3 pb-3 line-bottom d-flex flex-wrap align-items-end">
-          <span class="mr-auto" v-html="$t(item.title)"></span>
-          <small class="text-black-65">{{ $t(item.date) }}</small>
+          <span class="mr-auto" v-html="item[$i18n.locale].title"></span>
+          <small class="text-black-65">{{ item[$i18n.locale].createAt }}</small>
         </h4>
-        <p class="text-black-65" v-html="$t(item.cont)"></p>
+        <p class="text-black-65" v-html="item[$i18n.locale].content"></p>
       </div>
     </b-container>
   </div>
@@ -24,6 +24,7 @@
 <script>
   import { getters } from '../contract'
   import RootSub from '../components/root/RootSub.vue'
+  import store from '../store'
 
   export default {
     components: {
@@ -32,12 +33,10 @@
     computed: {
       ...getters,
       notices () {
-        return [
-          { title: 'statement.noticeTitleHtml', date: 'statement.noticeDateHtml', cont: 'statement.noticeContHtml' },
-          { title: 'statemented.notice3.titleHtml', date: 'statemented.notice3.dateHtml', cont: 'statemented.notice3.contHtml' },
-          { title: 'statemented.notice2.titleHtml', date: 'statemented.notice2.dateHtml', cont: 'statemented.notice2.contHtml' },
-          { title: 'statemented.notice1.titleHtml', date: 'statemented.notice1.dateHtml', cont: 'statemented.notice1.contHtml' }
-        ]
+        const { $i18n } = this
+        const { notices } = store.announcement
+
+        return notices
       }
     },
   }

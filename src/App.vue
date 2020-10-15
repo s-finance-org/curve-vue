@@ -27,7 +27,8 @@
     tbtc: 'TBTC',
     ren: 'renBTC',
     sbtc: 'sBTC',
-    dfi: 'dfi'
+    dfi: 'dfi',
+    dusd: 'dUSD'
   }
 
 	export default {

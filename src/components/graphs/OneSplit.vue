@@ -608,7 +608,8 @@
                     pax: 0x80000000,
                     ren: 0x100000000,
                     sbtc: 0x40000000000,
-                    dfi: 0x4000
+                    // dfi: 0x4000,
+                    // dusd: 0x4000,
                 }
                 let addPoolFlag = Object.keys(curveFlags).filter(pool=>this.pools.includes(pool)).map(pool=>curveFlags[pool])
                 addPoolFlag = addPoolFlag.reduce((a, b) => a + b, 0)
@@ -664,10 +665,8 @@
                 return (this.toInput * this.c_rates(this.to_currency)[this.to_currency] * this.precisions(this.to_currency)).toFixed(2)
             },
             bestPoolText() {
-                // if((this.from_currency == 6 && [3,4,5].includes(this.to_currency)) 
-                //     || (this.to_currency == 6 && [3,4,5].includes(this.from_currency))) return 'Not Available'
                 if(this.bestPool === null) return 'Not available'
-                return ['compound', 'y', 'busd', 'susd', 'pax', 'ren', 'sbtc', '1split'][this.bestPool]
+                return ['compound', 'y', 'busd', 'susd', 'pax', 'ren', 'sbtc', '1split', 'dfi', 'dusd'][this.bestPool]
             },
             selldisabled() {
                 if([7,8,9].includes(this.from_currency) && ![7,8,9].includes(this.to_currency) 
@@ -951,10 +950,12 @@
                 if(this.loadingAction) return;
                 this.userInteracted = true
                 this.setLoadingAction();
+
                 this.show_loading = true;
                 //handle allowances
                 var i = this.from_currency
                 var j = this.to_currency;
+                
                 let amount = BN(this.fromInput).times(this.precisions(i)).toFixed(0)
                 let maxSlippage = this.maxSlippage / 100;
                 if(this.maxInputSlippage) maxSlippage = this.maxInputSlippage / 100;
@@ -1319,7 +1320,7 @@
                         this.estimateGas = txPrice1split
                     }
                     else {
-                        let pools = ['compound', 'iearn', 'busd', 'susdv2', 'pax', 'ren', 'sbtc', '1split', 'dfi']
+                        let pools = ['compound', 'iearn', 'busd', 'susdv2', 'pax', 'ren', 'sbtc', '1split', 'dfi', 'dusd']
                         this.swapPromise.cancel()
                         let promises = [this.realComparePools()]
                         if(this.fromInput > 100 || [7,8].includes(this.from_currency) && [7,8].includes(this.to_currency)) {
@@ -1442,70 +1443,5 @@
 </script>
 
 <style scoped>
-  .iconcontainer {
-    width: 48px;
-    height: 48px;
-    background: #ffffff;
-    border-radius: 50%;
-    box-shadow: 0px 4px 8px 0px rgba(0,0,0,0.15);
-    cursor: pointer;
-    line-height: 20px;
-  }
-  
 
-  
-   /* #poolselect {
-        margin-bottom: 1em;
-    }
-    #poolselect > label:nth-of-type(1) {
-        margin-left: 0;
-    }
-    #poolselect > label {
-        margin-left: 1em;
-    }
-    .actualvalue {
-        margin: 0.5em 0 0 0;
-        text-align: right;
-        font-size: 0.9em;
-    }
-    .exchange {
-        width: 60%;
-    }
-    #best-pool .tooltiptext {
-        text-align: left;
-        padding-left: 1em;
-    }
-    .maxbalance.loading.line {
-        display: block;
-    }
-    .coins.renbtc {
-        margin-top: 1em;
-    }
-    .pulse {
-        animation: pulse 1s 3;
-        margin-bottom: 8px;
-    }
-    #no-balance-synth {
-        margin-bottom: 0.3em;
-    }
-    .advancedoptions {
-        margin-top: 1em;
-    }
-    .advancedoptions + div fieldset {
-        margin-top: 1em;
-    }
-    .advancedoptions + div legend {
-        text-align: center;
-    }
-    #trade {
-        margin-top: 1em;
-    }
-    label[for='compoundpool1'] {
-        margin-left: -2px;
-    }
-    @media only screen and (max-device-width: 1200px) {
-        .exchange {
-            width: 80%;
-        }
-    } */
 </style>

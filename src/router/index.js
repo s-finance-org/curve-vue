@@ -287,7 +287,7 @@ let routes = [
     component: RootDefault,
     children: [
       {
-        path: ':pool(susdv2|dfi)?',
+        path: ':pool(susdv2|dfi|dusd)?',
         name: 'Liquidity',
         beforeEnter: (to, from, next) => {
           !to.params.pool
@@ -299,17 +299,34 @@ let routes = [
     ]
   },
   {
+    path: '/swap',
+    name: 'RootSwap',
+    component: RootDefault,
+    children: [
+      {
+        path: ':pool(dfi)?',
+        name: 'Swap',
+        beforeEnter: (to, from, next) => {
+          !to.params.pool
+            ? next('/swap/' + defaultPool)
+            : next()
+        },
+        component: Swap,
+      }
+    ]
+  },
+  {
     // path: '/:pool(compound|usdt|y|iearn|busd|susdv2|pax|tbtc|ren|sbtc)/',
-    path: '/:pool(susdv2|dfi)/',
+    path: '/:pool(susdv2|dfi|dusd)/',
     name: 'PoolIndex',
     // component: PoolApp,
     component: RootDefault,
     children: [
-      {
-        path: '',
-        name: 'Swap',
-        component: SwapRouter,
-      },
+      // {
+      //   path: 'swap',
+      //   name: 'Swap',
+      //   component: Swap,
+      // },
       // {
       //   path: 'liquidity',
       //   name: 'Liquidity',
@@ -390,7 +407,8 @@ const pools = [
   // 'tbtc',
   // 'ren',
   // 'sbtc'
-  'dfi'
+  'dfi',
+  'dusd'
 ]
 
 router.beforeEach(async (to, from, next) => {

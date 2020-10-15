@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="error" v-if='errMsg'>
+    <div v-if='errMsg'>
       {{ errMsg }}
     </div>
     <div class='mt-4' v-if='hasConnectedWallet'>
@@ -9,6 +9,13 @@
         {{ $t('wallet.connect') }}
       </button>
     </div>
+    <!-- <div>
+      <button @click = 'changeWallets'>Change wallet</button>
+      <button id='changeAccounts'
+        v-show="['ledger', 'trezor'].includes(walletName)" 
+        @click = 'changeAccounts'
+        >Change accounts</button>
+    </div> -->
   </div>
 </template>
 
@@ -28,6 +35,9 @@
       async changeWallets() {
         changeWallets()
       },
+      async changeAccounts() {
+        return onboard.accountSelect();
+      }
     },
     computed: {
       ...getters,

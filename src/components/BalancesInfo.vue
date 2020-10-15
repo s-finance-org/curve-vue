@@ -1,5 +1,5 @@
 <template>
-  <div class="blue window half-width info">
+  <div>
 
     <b-container>
       <h4 class="mt-4 mb-2">{{ $t('balancesInfo.name') }}</h4>
@@ -8,7 +8,7 @@
           <h6 class="text-black-65 mb-3">{{ $t('balancesInfo.assetDistribution') }}</h6>
           <div class="row">
             <span class="col-3" v-for='(currency, i) in Object.keys(currencies)'>
-              {{currency | capitalize}}：
+              <h6 class="mb-0 text-black-65">{{currency | capitalize}}：</h6>
               <text-overlay-loading inline :show="!(bal_info && bal_info[i])">
                 {{bal_info && toFixed(bal_info[i]) }} ({{((bal_info && bal_info[i] * 100) / totalBalances) | toFixed2}}%) 
               </text-overlay-loading>
@@ -18,24 +18,28 @@
         <div class="px-4 py-3 line-bottom">
           <h6 class="text-black-65 mb-3">{{ $t('global.fee') }}</h6>
           <div class="row">
-            <span class="col-3">{{ $t('balancesInfo.swapFeeRate') }}：?</span>
-            <span class="col-3">{{ $t('balancesInfo.depositFeeRate') }}：?</span>
-            <span class="col-3">{{ $t('balancesInfo.withdrawalFeeRate') }}：?</span>
-            <span class="col-3">{{ $t('balancesInfo.adminFeeRate') }}：?</span>
+            <span class="col-3">
+              <h6 class="mb-0 text-black-65">{{ $t('balancesInfo.swapFeeRate') }}</h6>
+              {{ fee && fee.toFixed(3) }}%
+            </span>
+            <span class="col-3">
+              <h6 class="mb-0 text-black-65">{{ $t('balancesInfo.adminFeeRate') }}</h6>
+              {{ admin_fee && admin_fee.toFixed(3) }}%
+            </span>
           </div>
         </div>
-        <div class="px-4 py-3">
+        <!-- <div class="px-4 py-3">
           <h6 class="text-black-65 mb-3">{{ $t('global.norm') }}</h6>
            <div class="row">
-            <span>{{ $t('balancesInfo.avgAssetPrice') }}：?</span>
-            <span>{{ $t('balancesInfo.amplificationCoefficient') }}：?</span>
-            <span>{{ $t('balancesInfo.fundingFeeRate') }}：?</span>
+            <span class="col-3">{{ $t('balancesInfo.lpTokenPrice') }}：?</span>
+            <span class="col-3">{{ $t('balancesInfo.liquidityAPY') }}：?</span>
+            <span class="col-3">{{ $t('balancesInfo.fundingFeeRate') }}：?</span>
           </div>
-        </div>
+        </div> -->
       </div>
     </b-container>
 
-    <fieldset id="lp-info-currency">
+    <!-- <fieldset id="lp-info-currency">
       <legend>Currency reserves</legend>
       <ul id='balances-info'>
           <li v-for='(currency, i) in Object.keys(currencies)'>
@@ -100,7 +104,7 @@
         </li>
         <li v-show='isRampingUp'>
           <b>
-           Ramping up A:
+          Ramping up A:
             <span class='tooltip'>[?]
               <span class='tooltiptext long'>Slowly changing up A so that it doesn't negatively change virtual price growth of shares</span>
             </span> 
@@ -173,7 +177,7 @@
             <b>USD balance:</b> 
 
             <span>
-               <span :class="{'loading line': realShare === null}"> 
+              <span :class="{'loading line': realShare === null}"> 
                 <span v-show="realShare !== null">
                   {{realShare | toFixed2 | formatNumber}}
                 </span>
@@ -185,7 +189,7 @@
           </li>
       </ul>
     </fieldset>
-    <fieldset id="lp-info-container" v-show="totalStake > 0 && initializedContracts && ['susdv2', 'sbtc', 'y', 'iearn', 'dfi'].includes(currentPool)">
+    <fieldset  id="lp-info-container" v-show="totalStake > 0 && initializedContracts && ['susdv2', 'sbtc', 'y', 'iearn', 'dfi', 'dusd'].includes(currentPool)">
       <legend>Staked share: ( {{(totalStake / totalSupply * 100).toFixed(3)}}% of pool)</legend>
       <ul id='stakelp-info'>
           <li v-for='(currency, i) in Object.keys(currencies)'>
@@ -212,8 +216,7 @@
           </li>
 
       </ul>
-    </fieldset>
-
+    </fieldset> -->
   </div>
 </template>
 
@@ -261,7 +264,7 @@
         return helpers.formatNumber(number, dec)
       },
       async updateShares() {
-        if(!(this.usdShare1 > 0 || (['susdv2', 'sbtc', 'y', 'iearn', 'dfi'].includes(this.currentPool) && this.usdStake1) > 0)) return;
+        if(!(this.usdShare1 > 0 || (['susdv2', 'sbtc', 'y', 'iearn', 'dfi', 'dusd'].includes(this.currentPool) && this.usdStake1) > 0)) return;
         let pool = this.currentPool
         pool = pool == 'iearn' ? 'y' : pool == 'susdv2' ? 'susd' : pool == 'ren' ? 'ren2' : pool == 'sbtc' ? 'rens' : pool  
         let req = await fetch(`${window.domain}/raw-stats/${pool}-1m.json`)

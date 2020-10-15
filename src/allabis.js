@@ -1,3 +1,4 @@
+import ABI from './constant/abi'
 
 export var infura_url = `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`
 
@@ -2021,7 +2022,7 @@ var compound = {
   infura_url: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`,
   underlying_coins: [
     process.env.VUE_APP_DAI_TOKEN,
-    '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
+    process.env.VUE_APP_USDC_TOKEN
   ],
   coins: [
     '0x5d3a536E4D6DbD6114cc1Ead35777bAB948E3643',
@@ -3845,7 +3846,7 @@ var usdt = {
   infura_url: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`,
   underlying_coins: [
     process.env.VUE_APP_DAI_TOKEN,
-    '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+    process.env.VUE_APP_USDC_TOKEN,
     process.env.VUE_APP_USDT_TOKEN
   ],
   coins: [
@@ -4906,7 +4907,7 @@ var iearn = {
   infura_url: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`,
   underlying_coins: [
     process.env.VUE_APP_DAI_TOKEN,
-    '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+    process.env.VUE_APP_USDC_TOKEN,
     process.env.VUE_APP_USDT_TOKEN,
     '0x0000000000085d4780B73119b644AE5ecd22b376'
   ],
@@ -6373,7 +6374,7 @@ var busd = {
   infura_url: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`,
   underlying_coins: [
     process.env.VUE_APP_DAI_TOKEN,
-    '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+    process.env.VUE_APP_USDC_TOKEN,
     process.env.VUE_APP_USDT_TOKEN,
     '0x4Fabb145d64652a948d72533023f6E7A623C7C53'
   ],
@@ -9291,13 +9292,13 @@ var susdv2 = {
   deposit_address: '0xFCBa3E75865d2d561BE8D220616520c171F12851',
   underlying_coins: [
     process.env.VUE_APP_DAI_TOKEN,
-    '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+    process.env.VUE_APP_USDC_TOKEN,
     process.env.VUE_APP_USDT_TOKEN,
     '0x57Ab1ec28D129707052df4dF418D58a2D46d5f51'
   ],
   coins: [
     process.env.VUE_APP_DAI_TOKEN,
-    '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+    process.env.VUE_APP_USDC_TOKEN,
     process.env.VUE_APP_USDT_TOKEN,
     '0x57Ab1ec28D129707052df4dF418D58a2D46d5f51'
   ],
@@ -10737,7 +10738,7 @@ var pax = {
   deposit_address: '0xA50cCc70b6a011CffDdf45057E39679379187287',
   underlying_coins: [
     process.env.VUE_APP_DAI_TOKEN,
-    '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+    process.env.VUE_APP_USDC_TOKEN,
     process.env.VUE_APP_USDT_TOKEN,
     '0x8E870D67F660D95d5be530380D0eC0bd388289E1'
   ],
@@ -13851,10 +13852,10 @@ var sbtc = {
 
 var dfi = {
   N_COINS: 3,
-  coin_precisions: [1e18, 1e6, 1e6],
-  wrapped_precisions: [1e18, 1e6, 1e6],
+  coin_precisions: process.env.VUE_APP_DEF_TEST ? [1e6, 1e18, 1e6] : [1e18, 1e6, 1e6],
+  wrapped_precisions: process.env.VUE_APP_DEF_TEST ? [1e6, 1e18, 1e6] : [1e18, 1e6, 1e6],
   use_lending: [true, true, true],
-  tethered: [false, false, true],
+  tethered: process.env.VUE_APP_DEF_TEST ? [true, false, false] : [false, false, true],
   is_plain: [false, false, false],
   swap_address: process.env.VUE_APP_DFI_SWAP, // curve 0x45F783CCE6B7FF23B2ab2D70e416cdb7D6055f51
   swap_abi: [
@@ -14673,16 +14674,28 @@ var dfi = {
   ],
   token_address: process.env.VUE_APP_DFI_TOKEN, // curve 0xdF5e0e81Dff6FAF3A7e52BA697820c5e32D806A8
   infura_url: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`,
-  underlying_coins: [
-    process.env.VUE_APP_DAI_TOKEN, // DAI
-    '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', // USDC
-    process.env.VUE_APP_USDT_TOKEN, // USDT
-  ],
-  coins: [
-    '0x1e0DC67aEa5aA74718822590294230162B5f2064', // iDAI
-    '0x23B4dB3a435517fd5f2661a9c5a16f78311201c1', // iUSDC
-    '0x72Cf258c852Dc485a853370171d46B9D29fD3184', // iUSDT
-  ],
+  underlying_coins: process.env.VUE_APP_DEF_TEST
+    ? [
+      process.env.VUE_APP_USDT_TOKEN, // USDT
+      process.env.VUE_APP_DAI_TOKEN, // DAI
+      process.env.VUE_APP_USDC_TOKEN, // USDC
+    ]
+    : [
+      process.env.VUE_APP_DAI_TOKEN, // DAI
+      process.env.VUE_APP_USDC_TOKEN, // USDC
+      process.env.VUE_APP_USDT_TOKEN, // USDT
+    ],
+  coins: process.env.VUE_APP_DEF_TEST
+    ? [
+      '0x72Cf258c852Dc485a853370171d46B9D29fD3184', // iUSDT
+      '0x1e0DC67aEa5aA74718822590294230162B5f2064', // iDAI
+      '0x23B4dB3a435517fd5f2661a9c5a16f78311201c1', // iUSDC
+    ]
+    : [
+      '0x1e0DC67aEa5aA74718822590294230162B5f2064', // iDAI
+      '0x23B4dB3a435517fd5f2661a9c5a16f78311201c1', // iUSDC
+      '0x72Cf258c852Dc485a853370171d46B9D29fD3184', // iUSDT
+    ],
   deposit_address: process.env.VUE_APP_DFI_DEPOSIT, // curve 0xbBC81d23Ea2c3ec7e56D39296F0cbB648873a5d3
   deposit_abi: [
     {
@@ -15312,6 +15325,438 @@ var dfi = {
     }
   ],
   // NOTE: not required
+  aRewards_address: '0xcc9efea3ac5df6ad6a656235ef955fbfef65b862'
+}
+
+
+var dusd = {
+  N_COINS: 4,
+  coin_precisions: [1e18, 1e6, 1e6, 1e18],
+  wrapped_precisions: [1e18, 1e6, 1e6, 1e18],
+  use_lending: [true, true, true, true],
+  tethered: [false, false, true, false],
+  is_plain: [false, false, false, false],
+  underlying_coins: [
+    process.env.VUE_APP_DAI_TOKEN,
+    process.env.VUE_APP_USDC_TOKEN,
+    process.env.VUE_APP_USDT_TOKEN,
+    process.env.VUE_APP_USDX_TOKEN,
+  ],
+  coins: [
+    process.env.VUE_APP_DDAI_TOKEN,
+    process.env.VUE_APP_DUSDC_TOKEN,
+    process.env.VUE_APP_DUSDT_TOKEN,
+    process.env.VUE_APP_DUSDX_TOKEN
+  ],
+  token_address: process.env.VUE_APP_DUSD_TOKEN,
+  swap_address: process.env.VUE_APP_DUSD_SWAP,
+  swap_abi: ABI.DUSD.SWAP,
+  deposit_address: process.env.VUE_APP_DUSD_DEPOSIT,
+  deposit_abi: ABI.DUSD.DEPOSIT,
+  infura_url: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`,
+  sCurveRewards_abi: [
+    {
+      'anonymous': false,
+      'inputs': [
+        {
+          'indexed': true,
+          'internalType': 'address',
+          'name': 'previousOwner',
+          'type': 'address'
+        },
+        {
+          'indexed': true,
+          'internalType': 'address',
+          'name': 'newOwner',
+          'type': 'address'
+        }
+      ],
+      'name': 'OwnershipTransferred',
+      'type': 'event'
+    },
+    {
+      'anonymous': false,
+      'inputs': [
+        {
+          'indexed': false,
+          'internalType': 'uint256',
+          'name': 'reward',
+          'type': 'uint256'
+        }
+      ],
+      'name': 'RewardAdded',
+      'type': 'event'
+    },
+    {
+      'anonymous': false,
+      'inputs': [
+        {
+          'indexed': true,
+          'internalType': 'address',
+          'name': 'user',
+          'type': 'address'
+        },
+        {
+          'indexed': false,
+          'internalType': 'uint256',
+          'name': 'reward',
+          'type': 'uint256'
+        }
+      ],
+      'name': 'RewardPaid',
+      'type': 'event'
+    },
+    {
+      'anonymous': false,
+      'inputs': [
+        {
+          'indexed': true,
+          'internalType': 'address',
+          'name': 'user',
+          'type': 'address'
+        },
+        {
+          'indexed': false,
+          'internalType': 'uint256',
+          'name': 'amount',
+          'type': 'uint256'
+        }
+      ],
+      'name': 'Staked',
+      'type': 'event'
+    },
+    {
+      'anonymous': false,
+      'inputs': [
+        {
+          'indexed': true,
+          'internalType': 'address',
+          'name': 'user',
+          'type': 'address'
+        },
+        {
+          'indexed': false,
+          'internalType': 'uint256',
+          'name': 'amount',
+          'type': 'uint256'
+        }
+      ],
+      'name': 'Withdrawn',
+      'type': 'event'
+    },
+    {
+      'constant': true,
+      'inputs': [],
+      'name': 'DURATION',
+      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
+      'payable': false,
+      'stateMutability': 'view',
+      'type': 'function'
+    },
+    {
+      'constant': true,
+      'inputs': [
+        { 'internalType': 'address', 'name': 'account', 'type': 'address' }
+      ],
+      'name': 'balanceOf',
+      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
+      'payable': false,
+      'stateMutability': 'view',
+      'type': 'function'
+    },
+    {
+      'constant': true,
+      'inputs': [
+        { 'internalType': 'address', 'name': 'account', 'type': 'address' }
+      ],
+      'name': 'earned',
+      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
+      'payable': false,
+      'stateMutability': 'view',
+      'type': 'function'
+    },
+    {
+      'constant': false,
+      'inputs': [],
+      'name': 'exit',
+      'outputs': [],
+      'payable': false,
+      'stateMutability': 'nonpayable',
+      'type': 'function'
+    },
+    {
+      'constant': false,
+      'inputs': [],
+      'name': 'getReward',
+      'outputs': [],
+      'payable': false,
+      'stateMutability': 'nonpayable',
+      'type': 'function'
+    },
+    {
+      'constant': true,
+      'inputs': [],
+      'name': 'isOwner',
+      'outputs': [{ 'internalType': 'bool', 'name': '', 'type': 'bool' }],
+      'payable': false,
+      'stateMutability': 'view',
+      'type': 'function'
+    },
+    {
+      'constant': true,
+      'inputs': [],
+      'name': 'lastTimeRewardApplicable',
+      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
+      'payable': false,
+      'stateMutability': 'view',
+      'type': 'function'
+    },
+    {
+      'constant': true,
+      'inputs': [],
+      'name': 'lastUpdateTime',
+      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
+      'payable': false,
+      'stateMutability': 'view',
+      'type': 'function'
+    },
+    {
+      'constant': false,
+      'inputs': [
+        { 'internalType': 'uint256', 'name': 'reward', 'type': 'uint256' }
+      ],
+      'name': 'notifyRewardAmount',
+      'outputs': [],
+      'payable': false,
+      'stateMutability': 'nonpayable',
+      'type': 'function'
+    },
+    {
+      'constant': true,
+      'inputs': [],
+      'name': 'owner',
+      'outputs': [{ 'internalType': 'address', 'name': '', 'type': 'address' }],
+      'payable': false,
+      'stateMutability': 'view',
+      'type': 'function'
+    },
+    {
+      'constant': true,
+      'inputs': [],
+      'name': 'periodFinish',
+      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
+      'payable': false,
+      'stateMutability': 'view',
+      'type': 'function'
+    },
+    {
+      'constant': false,
+      'inputs': [],
+      'name': 'renounceOwnership',
+      'outputs': [],
+      'payable': false,
+      'stateMutability': 'nonpayable',
+      'type': 'function'
+    },
+    {
+      'constant': true,
+      'inputs': [],
+      'name': 'rewardPerToken',
+      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
+      'payable': false,
+      'stateMutability': 'view',
+      'type': 'function'
+    },
+    {
+      'constant': true,
+      'inputs': [],
+      'name': 'rewardPerTokenStored',
+      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
+      'payable': false,
+      'stateMutability': 'view',
+      'type': 'function'
+    },
+    {
+      'constant': true,
+      'inputs': [],
+      'name': 'rewardRate',
+      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
+      'payable': false,
+      'stateMutability': 'view',
+      'type': 'function'
+    },
+    {
+      'constant': true,
+      'inputs': [{ 'internalType': 'address', 'name': '', 'type': 'address' }],
+      'name': 'rewards',
+      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
+      'payable': false,
+      'stateMutability': 'view',
+      'type': 'function'
+    },
+    {
+      'constant': false,
+      'inputs': [
+        {
+          'internalType': 'address',
+          'name': '_rewardDistribution',
+          'type': 'address'
+        }
+      ],
+      'name': 'setRewardDistribution',
+      'outputs': [],
+      'payable': false,
+      'stateMutability': 'nonpayable',
+      'type': 'function'
+    },
+    {
+      'constant': false,
+      'inputs': [
+        { 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }
+      ],
+      'name': 'stake',
+      'outputs': [],
+      'payable': false,
+      'stateMutability': 'nonpayable',
+      'type': 'function'
+    },
+    {
+      'constant': true,
+      'inputs': [],
+      'name': 'totalSupply',
+      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
+      'payable': false,
+      'stateMutability': 'view',
+      'type': 'function'
+    },
+    {
+      'constant': false,
+      'inputs': [
+        { 'internalType': 'address', 'name': 'newOwner', 'type': 'address' }
+      ],
+      'name': 'transferOwnership',
+      'outputs': [],
+      'payable': false,
+      'stateMutability': 'nonpayable',
+      'type': 'function'
+    },
+    {
+      'constant': true,
+      'inputs': [{ 'internalType': 'address', 'name': '', 'type': 'address' }],
+      'name': 'userRewardPerTokenPaid',
+      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
+      'payable': false,
+      'stateMutability': 'view',
+      'type': 'function'
+    },
+    {
+      'constant': false,
+      'inputs': [
+        { 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }
+      ],
+      'name': 'withdraw',
+      'outputs': [],
+      'payable': false,
+      'stateMutability': 'nonpayable',
+      'type': 'function'
+    },
+    {
+      'constant': true,
+      'inputs': [],
+      'name': 'y',
+      'outputs': [
+        { 'internalType': 'contract IERC20', 'name': '', 'type': 'address' }
+      ],
+      'payable': false,
+      'stateMutability': 'view',
+      'type': 'function'
+    },
+    {
+      'constant': true,
+      'inputs': [],
+      'name': 'yfi',
+      'outputs': [
+        { 'internalType': 'contract IERC20', 'name': '', 'type': 'address' }
+      ],
+      'payable': false,
+      'stateMutability': 'view',
+      'type': 'function'
+    }
+  ],
+  sCurveRewards_address: '0x0001FB050Fe7312791bF6475b96569D83F695C9f',
+  aRewards_abi: [
+    {
+      'inputs': [],
+      'payable': false,
+      'stateMutability': 'nonpayable',
+      'type': 'constructor'
+    },
+    {
+      'constant': true,
+      'inputs': [],
+      'name': 'adai',
+      'outputs': [
+        { 'internalType': 'contract IERC20', 'name': '', 'type': 'address' }
+      ],
+      'payable': false,
+      'stateMutability': 'view',
+      'type': 'function'
+    },
+    {
+      'constant': false,
+      'inputs': [
+        { 'internalType': 'uint256', 'name': '_amount', 'type': 'uint256' }
+      ],
+      'name': 'claim',
+      'outputs': [],
+      'payable': false,
+      'stateMutability': 'nonpayable',
+      'type': 'function'
+    },
+    {
+      'constant': true,
+      'inputs': [
+        { 'internalType': 'address', 'name': '_claimer', 'type': 'address' }
+      ],
+      'name': 'claimable',
+      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
+      'payable': false,
+      'stateMutability': 'view',
+      'type': 'function'
+    },
+    {
+      'constant': true,
+      'inputs': [],
+      'name': 'governance',
+      'outputs': [{ 'internalType': 'address', 'name': '', 'type': 'address' }],
+      'payable': false,
+      'stateMutability': 'view',
+      'type': 'function'
+    },
+    {
+      'constant': false,
+      'inputs': [
+        { 'internalType': 'address', 'name': '_token', 'type': 'address' },
+        { 'internalType': 'uint256', 'name': '_amount', 'type': 'uint256' }
+      ],
+      'name': 'seize',
+      'outputs': [],
+      'payable': false,
+      'stateMutability': 'nonpayable',
+      'type': 'function'
+    },
+    {
+      'constant': true,
+      'inputs': [],
+      'name': 'yfi',
+      'outputs': [
+        { 'internalType': 'contract IERC20', 'name': '', 'type': 'address' }
+      ],
+      'payable': false,
+      'stateMutability': 'view',
+      'type': 'function'
+    }
+  ],
   aRewards_address: '0xcc9efea3ac5df6ad6a656235ef955fbfef65b862'
 }
 
@@ -18932,5 +19377,6 @@ export default {
   tbtc,
   ren,
   sbtc,
-  dfi
+  dfi,
+  dusd
 }

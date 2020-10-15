@@ -77,7 +77,13 @@ const currencies = {
     dai: 'iDAI',
     usdc: 'iUSDC',
     usdt: 'iUSDT',
-  }
+  },
+  dusd: {
+		dai: 'dDAI',
+		usdc: 'dUSDC',
+		usdt: 'dUSDT',
+		usdx: 'dUSDx'
+	},
 }
 
 export const allCurrencies = currencies
@@ -93,7 +99,8 @@ export const poolMenu = {
 	tbtc: 'TBTC',
 	ren: 'renBTC',
   sbtc: 'sBTC',
-  dfi: 'DFI'
+  dfi: 'DFI',
+  dusd: 'dUSD'
 }
 
 export const gas = {
@@ -141,6 +148,10 @@ export const gas = {
     dfi: {
 			exchange: (i, j) => 800000,
 			exchange_underlying: (i, j) => 1600000
+    },
+    dusd: {
+			exchange: (i, j) => 800000,
+			exchange_underlying: (i, j) => 1600000
 		},
 	},
 	deposit: {
@@ -155,6 +166,7 @@ export const gas = {
 		ren: 300000,
 		sbtc: 600000,
 		dfi: 1300000,
+		dusd: 1300000,
 	},
 	withdraw: {
 		compound: {
@@ -188,6 +200,9 @@ export const gas = {
 			imbalance: x => 800000,
     },
     dfi: {
+			imbalance: x => (12642*x + 474068)*2.5 | 0,
+    },
+    dusd: {
 			imbalance: x => (12642*x + 474068)*2.5 | 0,
 		},
 	},
@@ -251,6 +266,12 @@ export const gas = {
 			withdrawImbalance: x => 800000,
     },
     dfi: {
+			deposit: x => (225377*x + 522674)*2 | 0,
+			withdraw: 3500000 / 1.4,
+			withdrawShare: 3000000,
+			withdrawImbalance: x => (276069*x + 516861)*2.5 | 0,
+    },
+    dusd: {
 			deposit: x => (225377*x + 522674)*2 | 0,
 			withdraw: 3500000 / 1.4,
 			withdrawShare: 3000000,
@@ -347,6 +368,11 @@ const state = Vue.observable({
     },
     dfi: {
 			currentContract: 'dfi',
+			aRewards: null,
+			...initState(),
+    },
+    dusd: {
+			currentContract: 'dusd',
 			aRewards: null,
 			...initState(),
 		},
@@ -536,7 +562,7 @@ export async function init(contract, refresh = false) {
     	contract.curveRewards = new state.web3.eth.Contract(allabis.iearn.sCurveRewards_abi, allabis.iearn.sCurveRewards_address)
 		  calls.push([contract.curveRewards._address, contract.curveRewards.methods.balanceOf(state.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
     }
-    if(['dfi'].includes(contract.currentContract)) {
+    if(['dfi', 'dusd'].includes(contract.currentContract)) {
     	contract.curveRewards = new state.web3.eth.Contract(allabis.iearn.sCurveRewards_abi, allabis.iearn.sCurveRewards_address)
 		  calls.push([contract.curveRewards._address, contract.curveRewards.methods.balanceOf(state.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
     }
