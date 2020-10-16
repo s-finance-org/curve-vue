@@ -71,7 +71,11 @@
                           </span>
                           <span v-show='!depositc'>{{currency | capitalize}}</span>
                         </span>
-                        <input class="form-control" type="text" :id="'currency_'+i" :disabled='disabled' name="from_cur" value='0.00'
+                        <input class="form-control" type="text"
+                          :id="'currency_'+i"
+                          :disabled='disabled'
+                          name="from_cur"
+                          value='0.00'
                           :placeholder="$t('liquidity.depositWrappedPlaceholder')"
                           @input='change_currency(i, true)'
                           v-model = 'deposit_inputs[i]'>
@@ -305,7 +309,6 @@
                             :disabled = "currentPool == 'susd'"
                             :ref="`withdraw_inputs${i}`"
                             @input='handle_change_amounts(i)'
-                            @focus='handle_change_amounts(i)'
                             >
                         </div>
                       <!-- <b-form-text class="text-black-65 mt-0">
@@ -678,14 +681,14 @@
                           <span v-show="!withdrawc && ['susdv2', 'tbtc', 'ren', 'sbtc'].includes(currentPool)">{{currencies[currency]}}</span>
                         </label>
                         <input type="text" 
-                        :id="'currency_'+i" 
-                        name="from_cur" 
-                        v-model = 'withdraw_inputs[i]'
-                        :style = "inputStyles[i]"
-                        :disabled = "currentPool == 'susd'"
-                        :ref="`withdraw_inputs${i}`"
-                        @input='handle_change_amounts(i)'
-                        @focus='handle_change_amounts(i)'>
+                          :id="'currency_'+i" 
+                          name="from_cur" 
+                          v-model = 'withdraw_inputs[i]'
+                          :style = "inputStyles[i]"
+                          :disabled = "currentPool == 'susd'"
+                          :ref="`withdraw_inputs${i}`"
+                          @input='handle_change_amounts(i)'
+                          @focus='handle_change_amounts(i)'>
                     </li>
                     <li v-show = "!['susd','susdv2','tbtc','ren', 'sbtc'].includes(currentPool)">
                         <input id="withdrawc" type="checkbox" name="withdrawc" v-model='withdrawc'>
@@ -1051,6 +1054,10 @@
       },
       computed: {
         ...getters,
+        currentContract () {
+          return currentContract
+        },
+
         currentPoolTokenName () {
           const conversions = {
             'dfi': 'iUSD',
@@ -1083,7 +1090,12 @@
           return result
         },
         poolVolumeUSD() {
-          return volumeStore.state.volumes[this.currentPool == 'iearn' ? 'y' : this.currentPool == 'susdv2' ? 'susd' : this.currentPool][0]
+          return volumeStore.state.volumes[
+            this.currentPool == 'iearn'
+              ? 'y'
+              : this.currentPool == 'susdv2'
+                ? 'susd' : this.currentPool
+              ][0]
         },
         totalBalances() {
           return this.bal_info && this.bal_info.reduce((a, b) => a + b, 0) || null
@@ -1147,7 +1159,7 @@
         },
 
         showSlippageTooLow() {
-            return this.maxInputSlippage != '' && +this.maxInputSlippage < 0.2
+          return this.maxInputSlippage != '' && +this.maxInputSlippage < 0.2
         },
 
 
@@ -1259,7 +1271,7 @@
                         dismiss()
                         notifyHandler(hash)
                     })
-				    currentContract.totalShare -= tokens
+				            currentContract.totalShare -= tokens
                     common.update_fee_info()
                 }
                 catch(err) {
@@ -1267,9 +1279,9 @@
                     dismiss()
                     errorStore.handleError(err)
                 }
-				this.waitingMessage = ''
-				this.show_loading = false;
-			},
+            this.waitingMessage = ''
+            this.show_loading = false;
+          },
 
           async mounted(oldContract) {
 
@@ -1798,59 +1810,59 @@
           this.token_supply = +decoded[decoded.length-1]
         },
         async handle_change_amounts(i, event) {
-                this.showWithdrawSlippage = true;
-                this.show_nobalance = false
-				if(event) {
-					this.withdraw_inputs[i] = event.target.value
-					return;
-				}
-				if(this.currentPool == 'susd') return;
-				this.to_currency = null
-		        var values = this.withdraw_inputs.map((x,i) => x / currentContract.c_rates[i])
-		        values = values.map(v=>BN(Math.floor(v).toString()).toFixed(0))
-		        this.show_nobalance = false;
-		        this.show_nobalance_i = 0;
-		        let calls = [...Array(currentContract.N_COINS).keys()].map(i=>[currentContract.swap._address, currentContract.swap.methods.balances(i).encodeABI()])
-		        calls.push([currentContract.swap._address ,currentContract.swap.methods.calc_token_amount(values, false).encodeABI()])
-		        calls.push([currentContract.swap_token._address, currentContract.swap_token.methods.balanceOf(currentContract.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
-		        try {
-                    let aggcalls = await currentContract.multicall.methods.aggregate(calls).call()
-                    let decoded = aggcalls[1].map(hex => currentContract.web3.eth.abi.decodeParameter('uint256', hex))
-                    decoded.slice(0, currentContract.N_COINS).forEach((v, i) => {
-                        let coin_balance = +v * currentContract.c_rates[i]
-                        if(coin_balance < this.withdraw_inputs[i]) {
-                            this.show_nobalance |= true;
-                            this.show_nobalance_i = i;
-                        }
-                        else
-                            this.show_nobalance |= false;
-                    })
-		            var availableAmount = BN(decoded[decoded.length-2])
-		            availableAmount = availableAmount.div(BN(1 - currentContract.fee * currentContract.N_COINS / (4 * (currentContract.N_COINS - 1))))
-		            var maxAvailableAmount = BN(decoded[decoded.length-1]);
-		            if(availableAmount.gt(maxAvailableAmount.plus(BN(this.staked_balance)))) {
-		                this.setAllInputBackground('red')
-		            }
-		            else {
-		                this.setAllInputBackground('blue')
-		            }
-		            this.calcSlippage(this.withdraw_inputs, false);
+          // FIXME:
+          this.showWithdrawSlippage = true;
+          this.show_nobalance = false
+          if(event) {
+            this.withdraw_inputs[i] = event.target.value
+            return;
+          }
+				  if(this.currentPool == 'susd') return;
+				  this.to_currency = null
+          var values = this.withdraw_inputs.map((x,i) => x / currentContract.c_rates[i])
+          values = values.map(v=>BN(Math.floor(v).toString()).toFixed(0))
+          this.show_nobalance = false;
+          this.show_nobalance_i = 0;
+          let calls = [...Array(currentContract.N_COINS).keys()].map(i=>[currentContract.swap._address, currentContract.swap.methods.balances(i).encodeABI()])
+          calls.push([currentContract.swap._address ,currentContract.swap.methods.calc_token_amount(values, false).encodeABI()])
+          calls.push([currentContract.swap_token._address, currentContract.swap_token.methods.balanceOf(currentContract.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
+          try {
+            let aggcalls = await currentContract.multicall.methods.aggregate(calls).call()
+            let decoded = aggcalls[1].map(hex => currentContract.web3.eth.abi.decodeParameter('uint256', hex))
+            decoded.slice(0, currentContract.N_COINS).forEach((v, i) => {
+              let coin_balance = +v * currentContract.c_rates[i]
+              if(coin_balance < this.withdraw_inputs[i]) {
+                  this.show_nobalance |= true;
+                  this.show_nobalance_i = i;
+              } else {
+                this.show_nobalance |= false;
+              }
+            })
+            var availableAmount = BN(decoded[decoded.length-2])
+            availableAmount = availableAmount.div(BN(1 - currentContract.fee * currentContract.N_COINS / (4 * (currentContract.N_COINS - 1))))
+            var maxAvailableAmount = BN(decoded[decoded.length-1]);
+            if(availableAmount.gt(maxAvailableAmount.plus(BN(this.staked_balance)))) {
+                this.setAllInputBackground('red')
+            }
+            else {
+                this.setAllInputBackground('blue')
+            }
+            this.calcSlippage(this.withdraw_inputs, false);
 
-		            this.share = '---';
-		            this.shareStyles = {
-		            	backgroundColor: '#707070',
-		            	color: '#d0d0d0'
-		            }
-		        }
-		        catch(err) {
-		            console.error(err)
-                    this.show_nobalance = true;
-                    this.show_nobalance_i = currentContract.bal_info.findIndex((balance, i) => {
-                        return +this.withdraw_inputs[i] > +balance
-                    });
-		            this.setAllInputBackground('red')
-		        }
-      },
+            this.share = '---';
+            this.shareStyles = {
+              backgroundColor: '#707070',
+              color: '#d0d0d0'
+            }
+          } catch (err) {
+            console.error(err)
+            this.show_nobalance = true;
+            this.show_nobalance_i = currentContract.bal_info.findIndex((balance, i) => {
+                return +this.withdraw_inputs[i] > +balance
+            });
+            this.setAllInputBackground('red')
+          }
+        },
       async getMinAmounts() {
 				//use update rates instead
 				await common.update_fee_info();

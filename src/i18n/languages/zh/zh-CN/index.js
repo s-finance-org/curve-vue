@@ -101,7 +101,8 @@ export default {
     amplificationCoefficient: '放大系数',
     fundingFeeRate: '资金费用率',
     liquidityAPY: '流动性年化',
-    lpTokenPrice: 'LP Token 价格'
+    lpTokenPrice: 'LP Token 价格',
+    reserveSwapFee: '预留兑换费 {0}'
   },
   risk: {
     title: '使用 S.Finance 的风险',
@@ -139,7 +140,7 @@ export default {
     dailyProfit: '今日存款收益',
     approveStakingTokens: '请批准您的 {0} 代币',
     approveLptokenWithdrawal: '请批准取出 {0} {1}',
-    confirmWithdrawalTransaction: '请确认取出交易 {0}',
+    confirmWithdrawalTransaction: '请确认取出交易',
     confirmUnstakingToken: '请确认取消抵押 {0} 代币',
     UnstakingTokenWithdrawal: `还差 {0} LP token方可取款成功，请减少取款数额，否则可能造成交易异常`
   },
@@ -216,5 +217,5 @@ export default {
       S.Finance 将于近期上线链上投票治理工具，由社区讨论决定是否进行SFG挖矿减产以及减产方案。`,
     }
   },
-  temp: '* 如果只想取单个币种可将其他币种数量修改为0',
+  temp: '* 如果只想取单个币种，请点选该币种',
 }

@@ -479,6 +479,7 @@
     import RootSub from '../root/RootSub.vue'
     import TextOverlayLoading from '../../components/common/TextOverlayLoading'
     import * as volumeStore from '../common/volumeStore'
+    import { floor } from '../../utils/math/round'
 
     import BalancesInfo from '../BalancesInfo'
 
@@ -703,10 +704,12 @@
               return this.currentPool == 'susdv2' && this.from_currency == 3 && cBN(this.fromInput).gt(cBN(this.maxSynthBalance))
             },
             exchangeRateSwapped() {
-                if(this.swaprate)
-                    return (1 / this.exchangeRate).toFixed(4)
-                else
-                    return this.exchangeRate
+              let from = !this.swapwrapped ? helpers.capitalize(Object.keys(this.currencies)[this.from_currency]) : Object.values(this.currencies)[this.from_currency]
+              let to = !this.swapwrapped ? helpers.capitalize(Object.keys(this.currencies)[this.to_currency]) : Object.values(this.currencies)[this.to_currency]
+
+              return this.swaprate
+                ? `1 ${to} = ${(1 / this.exchangeRate).toFixed(4)} ${from}`
+                : `1 ${from} = ${this.exchangeRate} ${to}`
             },
             publicPath() {
                 return process.env.BASE_URL
@@ -772,8 +775,8 @@
             toFixed(num) {
                 if(num == '' || num == undefined || +num == 0) return '0.00'
                 if(!BigNumber.isBigNumber(num)) num = +num
-                if(['tbtc', 'ren', 'sbtc'].includes(currentContract.currentContract)) return num.toFixed(8)
-                return num.toFixed(2)
+                if(['tbtc', 'ren', 'sbtc'].includes(currentContract.currentContract)) return floor(num, 8).toFixed(8)
+                return floor(num, 2).toFixed(2)
             },
             getCurrency(i) {
                 if(!this.swapwrapped && !['susdv2', 'tbtc', 'ren', 'sbtc'].includes(this.currentPool)) return (Object.keys(this.currencies)[i]).toUpperCase()

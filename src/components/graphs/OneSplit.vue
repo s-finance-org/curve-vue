@@ -820,12 +820,6 @@
                     this.exchangeRate = this.$i18n.t('global.notAvailable')
                 }
             },
-            exchangeRateSwapped() {
-                if(this.swaprate)
-                    return (1 / this.exchangeRate).toFixed(4)
-                else
-                    return this.exchangeRate
-            },
             gasPrice() {
                 this.set_to_amount()
             },

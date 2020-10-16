@@ -91,7 +91,8 @@ export default {
     amplificationCoefficient: 'AmplificationCoefficient',
     fundingFeeRate: 'FundingFeeRate',
     liquidityAPY: 'Liquidity APY',
-    lpTokenPrice: 'LP Token Price'
+    lpTokenPrice: 'LP Token Price',
+    reserveSwapFee: 'Reserve swap fee of {0}'
   },
   risk: {
     title: 'Risks Warning',

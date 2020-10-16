@@ -24,7 +24,8 @@
             </span>
             <span class="col-3">
               <h6 class="mb-0 text-black-65">{{ $t('balancesInfo.adminFeeRate') }}</h6>
-              {{ admin_fee && admin_fee.toFixed(3) }}%
+              <!-- {{ $t('balancesInfo.reserveSwapFee', [`${admin_fee && admin_fee.toFixed(3)}%`]) }} -->
+              {{ $t('balancesInfo.reserveSwapFee', [`50%`]) }}
             </span>
           </div>
         </div>
