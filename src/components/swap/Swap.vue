@@ -57,7 +57,9 @@
                     name="from_currency"
                     :disabled='disabled || selldisabled'
                   ></b-form-input> -->
-                  <input class="form-control" type="text" id="from_currency" :disabled='disabled || selldisabled' name="from_currency" value='0.00'
+                  <input class="form-control" type="text" id="from_currency"
+                    :disabled='disabled'
+                    name="from_currency" value='0.00'
                     :placeholder="$t('instantSwap.sizePlaceholder')"
                     @input='set_to_amount'
                     v-model='fromInput'>
@@ -160,7 +162,6 @@
             </div>
           </div>
 
-
           <div v-show="showadvancedoptions">
             <div id='max_slippage' class="lists lists-select mt-3 d-flex flex-wrap no-gutters">
               <b-form-group class="mb-0 col-12 col-md">
@@ -211,7 +212,7 @@
             </div>
           </div>
           <p class="mt-3" v-for="(item, idx) in messages" :key="idx">
-            {{ item.msg }}
+            <b-alert class="mt-3" :show="item.msg" variant="dark" v-html='item.msg'></b-alert>
           </p>
           <b-alert class="mt-3" :show="show_loading" variant="dark" v-html='waitingMessage'></b-alert>
 
@@ -977,9 +978,10 @@
                     throw err;
                 }
                 dismiss()
-                this.waitingMessage = `Please confirm swap 
-                                        from ${this.fromInput} ${this.getCurrency(this.from_currency)}
-                                        for min ${this.toFixed(min_dy / this.precisions[j])} ${this.getCurrency(this.to_currency)}`
+
+                this.waitingMessage = this.$i18n.t('instantSwap.confirmSwapFromFor',
+                  [`${this.fromInput} ${this.getCurrency(this.from_currency)}`, `${this.toFixed(min_dy / this.precisions[j])} ${this.getCurrency(this.to_currency)}`])
+
                 var { dismiss } = notifyNotification(this.waitingMessage)
                 min_dy = cBN(min_dy).toFixed(0);
                 let exchangeMethod = currentContract.swap.methods.exchange_underlying

@@ -88,6 +88,7 @@ export default {
     warningNoPool: '兑换不可用。请在池中选择 {0}。',
     swapWrapped: '兑换 {0} 代币',
     approveExchange: '请批准兑换 {0} {1}',
+    confirmSwapFromFor: '请确认将 {0} 交换为最小 {1}'
   },
   balancesInfo: {
     name: '兑换池概念',
@@ -138,7 +139,9 @@ export default {
     dailyProfit: '今日存款收益',
     approveStakingTokens: '请批准您的 {0} 代币',
     approveLptokenWithdrawal: '请批准取出 {0} {1}',
-    confirmWithdrawalTransaction: '请确认取出交易',
+    confirmWithdrawalTransaction: '请确认取出交易 {0}',
+    confirmUnstakingToken: '请确认取消抵押 {0} 代币',
+    UnstakingTokenWithdrawal: `还差 {0} LP token方可取款成功，请减少取款数额，否则可能造成交易异常`
   },
   dao: {
     standTitle: '稳定币流动性矿池',

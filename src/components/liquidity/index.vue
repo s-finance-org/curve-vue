@@ -6,7 +6,7 @@
         <b-navbar-nav class="navbar-tabs flex-row">
           <b-nav-item :to="{ name: 'Liquidity', params: { pool: 'dfi' } }">dfi</b-nav-item>
           <b-nav-item :to="{ name: 'Liquidity', params: { pool: 'susdv2' } }">sUSD</b-nav-item>
-          <b-nav-item :to="{ name: 'Liquidity', params: { pool: 'dusd' } }">dUSD</b-nav-item>
+          <!-- <b-nav-item :to="{ name: 'Liquidity', params: { pool: 'dusd' } }">dUSD</b-nav-item> -->
         </b-navbar-nav>
       </b-container>
       <b-container class="d-flex py-4 total-cont align-items-center">
@@ -1016,9 +1016,6 @@
             }
           }
           this.hasLoadedInfo && this.updateShares()
-
-
-          
         },
       watch: {
         async depositc(val, oldval) {
@@ -1420,7 +1417,6 @@
             }
           },
           async handle_sync_balances() {
-            return false
             await common.update_fee_info();
             let calls = []
             for (let i = 0; i < currentContract.N_COINS; i++) {
@@ -1745,20 +1741,20 @@
         common.handle_migrate_new('new')
       },
 
-          // withdraw
-          handleCheck(idx) {
-            if(idx === this.to_currency) {
-              if(this.withdrawc == false) this.withdrawc = true
-              this.to_currency = null
+      // withdraw
+      handleCheck(idx) {
+        if(idx === this.to_currency) {
+          // if(this.withdrawc == false) this.withdrawc = true
+          this.to_currency = null
 
-              currentContract.slippage = 0
-              currentContract.showSlippage = false
-            }
-            else {
-              this.withdrawc = false
-              this.to_currency = idx
-            }
-          },
+          currentContract.slippage = 0
+          currentContract.showSlippage = false
+        }
+        else {
+          // this.withdrawc = false
+          this.to_currency = idx
+        }
+      },
           setCalcBalances() {
             for (let i = 0; i < currentContract.N_COINS; i++) {
                 let token_balance = this.showstaked ? this.token_balance.plus(this.staked_balance) : this.token_balance
@@ -1976,19 +1972,12 @@
                 this.unstake(amount, false, true)
             },
 			async unstake(amount, exit = false, unstake_only = false) {
-                if(unstake_only)
-                    this.waitingMessage = `
-                        Please confirm unstaking ${this.toFixed(amount.div(BN(1e18)))} tokens
-                    `
-                else 
-                    this.waitingMessage = `
-                    Unstaking ${this.toFixed(amount.div(BN(1e18)))} tokens for withdrawal.
-                    <br>
-                    A bit more tokens are needed to unstake to ensure that withdrawal is successful.
-                    You'll see them in your unstaked balance afterwards.
-                        
-                `;
-                
+        this.waitingMessage = this.$i18n.t(unstake_only
+            ? 'liquidity.confirmUnstakingToken'
+            : 'liquidity.UnstakingTokenWithdrawal'
+          , [this.toFixed(amount.div(BN(1e18)))]
+        )
+
                 var { dismiss } = notifyNotification(this.waitingMessage)
 
                 let stakedAmount = BN(await currentContract.curveRewards.methods.balanceOf(currentContract.default_account).call())
@@ -2096,67 +2085,74 @@
 
 			    if (this.share == '---') {
 			    	var token_amount;
-			        try {
-			        	token_amount = await currentContract.swap.methods.calc_token_amount(this.amounts, false).call();
-			        }
-			        catch(err) {
-			        	console.error(err)
-						this.show_nobalance = true;
-						this.show_nobalance_i = this.to_currency;
-			        }
-              token_amount = BN(token_amount).times(BN(1).plus(this.calcFee))
-			        token_amount = BN(Math.floor(token_amount * this.getWithdrawMaxSlippage).toString()).toFixed(0,1)
-                    if((this.token_balance.lt(BN(token_amount)) || unstake) && ['susdv2', 'sbtc','y','iearn', 'dfi', 'dusd'].includes(this.currentPool)) {
-                        let unstakeAmount = BN(token_amount).minus(BN(this.token_balance))
-                        if(unstake) unstakeAmount = BN(token_amount) 
-                        await this.unstake(unstakeAmount, unstake && !unstake_only, unstake_only)
-                    }
-                    if(unstake_only) return;
-			        let nonZeroInputs = this.withdraw_inputs.filter(Number).length
-			        if(this.withdrawc || ['susdv2', 'sbtc'].includes(this.currentPool)) {
-			        	let gas = contractGas.withdraw[this.currentPool].imbalance(nonZeroInputs) | 0
-                        try {
-                            this.waitingMessage = this.$i18n.t('liquidity.confirmWithdrawalTransaction')
-                            var { dismiss } = notifyNotification(this.waitingMessage)
+            try {
+              token_amount = await currentContract.swap.methods.calc_token_amount(this.amounts, false).call();
+            }
+            catch(err) {
+              console.error(err)
+              this.show_nobalance = true;
+              this.show_nobalance_i = this.to_currency;
+            }
 
-                            try {
-                                this.estimateGas = await currentContract.swap.methods.remove_liquidity_imbalance(this.amounts, token_amount)
-                                                    .estimateGas({
-                                                        from: currentContract.default_account,
-                                                        gasPrice: this.gasPriceWei,
-                                                        // gas: gas,
-                                                    })
-                            }
-                            catch(err) {
-                                this.estimateGas = gas / 2;
-                            }
-                            await helpers.setTimeoutPromise(100)
-    			        	await currentContract.swap.methods.remove_liquidity_imbalance(this.amounts, token_amount).send({
-    				        	from: currentContract.default_account, 
-                                gasPrice: this.gasPriceWei,
-                                // gas: gas,
-    				        }).once('transactionHash', hash => {
-                                dismiss()
-                                notifyHandler(hash)
-                                this.waitingMessage = 'Waiting for withdrawal to confirm: no further action needed'
-                            })
-                        }
-                        catch(err) {
-                            console.error(err)
-                            dismiss()
-                            errorStore.handleError(err)
-                            this.waitingMessage = ''
-                            this.show_loading = false
-                            throw err;
-                        }
+            token_amount = BN(token_amount).times(BN(1).plus(this.calcFee))
+            token_amount = BN(Math.floor(token_amount * this.getWithdrawMaxSlippage).toString()).toFixed(0,1)
+            if((this.token_balance.lt(BN(token_amount)) || unstake) && ['susdv2', 'sbtc','y','iearn', 'dfi', 'dusd'].includes(this.currentPool)) {
+                let unstakeAmount = BN(token_amount).minus(BN(this.token_balance))
+                if(unstake) unstakeAmount = BN(token_amount) 
+                await this.unstake(unstakeAmount, unstake && !unstake_only, unstake_only)
+            }
+            if(unstake_only) return;
+
+            let nonZeroInputs = this.withdraw_inputs.filter(Number).length
+
+			        if(this.withdrawc || ['susdv2', 'sbtc'].includes(this.currentPool)) {
+                let gas = contractGas.withdraw[this.currentPool].imbalance(nonZeroInputs) | 0
+
+                try {
+                  console.log(this.amounts, token_amount)
+                  this.waitingMessage = this.$i18n.t('liquidity.confirmWithdrawalTransaction', [])
+                  var { dismiss } = notifyNotification(this.waitingMessage)
+
+                  try {
+                    this.estimateGas = await currentContract.swap.methods
+                      .remove_liquidity_imbalance(this.amounts, token_amount)
+                      .estimateGas({
+                          from: currentContract.default_account,
+                          gasPrice: this.gasPriceWei,
+                          // gas: gas,
+                      })
+                  }
+                  catch(err) {
+                    this.estimateGas = gas / 2;
+                  }
+
+                  await helpers.setTimeoutPromise(100)
+                  await currentContract.swap.methods.remove_liquidity_imbalance(this.amounts, token_amount).send({
+                    from: currentContract.default_account,
+                    gasPrice: this.gasPriceWei,
+                    // gas: gas,
+                  }).once('transactionHash', hash => {
+                    dismiss()
+                    notifyHandler(hash)
+                    this.waitingMessage = 'Waiting for withdrawal to confirm: no further action needed'
+                  })
+                }
+                catch(err) {
+                  console.error(err)
+                  dismiss()
+                  errorStore.handleError(err)
+                  this.waitingMessage = ''
+                  this.show_loading = false
+                  throw err;
+                }
 			    	  } else {
 			        	let withdraw_inputs = this.withdraw_inputs;
                 withdraw_inputs = withdraw_inputs.map(v => v || 0)
 			        	let amounts = this.withdraw_inputs.map((v, i) => {
-                            if(!v) v = 0
-                            let maxDiff = BN(this.calc_balances[i]).minus(BN(v))
-                            return this.calc_balances[i] > 0 && maxDiff.lte(BN(this.minAmount)) && maxDiff > 0 ? this.calc_balances[i].times(currentContract.coin_precisions[i]).toFixed(0, 1) : BN(v).times(currentContract.coin_precisions[i]).toFixed(0, 1)
-                        })
+                    if(!v) v = 0
+                    let maxDiff = BN(this.calc_balances[i]).minus(BN(v))
+                    return this.calc_balances[i] > 0 && maxDiff.lte(BN(this.minAmount)) && maxDiff > 0 ? this.calc_balances[i].times(currentContract.coin_precisions[i]).toFixed(0, 1) : BN(v).times(currentContract.coin_precisions[i]).toFixed(0, 1)
+                  })
                         amounts = amounts.map(amount => amount || 0)
                         let gas = contractGas.depositzap[this.currentPool].withdrawImbalance(nonZeroInputs) | 0
                         this.waitingMessage = this.$i18n.t('liquidity.approveLptokenWithdrawal', [this.toFixed(token_amount / 1e18), 'LP tokens'])
@@ -2170,8 +2166,8 @@
                             await helpers.setTimeoutPromise(100)
     			        	await inOneCoin.methods.remove_liquidity_imbalance(amounts, token_amount).send({
     				        	from: currentContract.default_account, 
-                                gasPrice: this.gasPriceWei,
-                                // gas: gas,
+                      gasPrice: this.gasPriceWei,
+                      // gas: gas,
     				        }).once('transactionHash', hash => {
                                 dismiss()
                                 notifyHandler(hash)
@@ -2179,12 +2175,12 @@
                             })
                         }
                         catch(err) {
-                            console.error(err)
-                            dismiss()
-                            errorStore.handleError(err)
-                            this.waitingMessage = ''
-                            this.show_loading = false;
-                            throw err;
+                          console.error(err)
+                          dismiss()
+                          errorStore.handleError(err)
+                          this.waitingMessage = ''
+                          this.show_loading = false;
+                          throw err;
                         }
 			        }
 			    }
@@ -2342,27 +2338,29 @@
 	        	currentContract.showSlippage = false;
         		currentContract.slippage = 0;
         		if(this.to_currency !== null && this.to_currency < 10) {
-                    var amount = BN(this.share).div(BN(100)).times(token_balance).toFixed(0,1);
-                    if (this.share == 100) {
-                        amount = await currentContract.swap_token.methods.balanceOf(currentContract.default_account || '0x0000000000000000000000000000000000000000').call();
-                        if(this.showstaked) amount = BN(amount).plus(BN(this.staked_balance)).toFixed(0,1)
-                    }
+              var amount = BN(this.share).div(BN(100)).times(token_balance).toFixed(0,1);
+              if (this.share == 100) {
+                amount = await currentContract.swap_token.methods.balanceOf(currentContract.default_account || '0x0000000000000000000000000000000000000000').call();
+                if(this.showstaked) amount = BN(amount).plus(BN(this.staked_balance)).toFixed(0,1)
+              }
 
-	                let precision = allabis[currentContract.currentContract].coin_precisions[this.to_currency]
-					let zap_values = Array(currentContract.N_COINS).fill(0)
+              let precision = allabis[currentContract.currentContract].coin_precisions[this.to_currency]
+          let zap_values = Array(currentContract.N_COINS).fill(0)
+    console.log('amount', amount)
 					try {
-                        this.warninglow = false
+            this.warninglow = false
 						zap_values[this.to_currency] = BN(await inOneCoin.methods.calc_withdraw_one_coin(amount, this.to_currency).call())
-                        if(zap_values[this.to_currency].eq(BN(0))) this.warninglow = true
+            if(zap_values[this.to_currency].eq(BN(0))) this.warninglow = true
 					}
 					catch(err) {
 						console.error(err)
-                        if(this.share != '') {
-    						this.show_nobalance = true;
-    						this.show_nobalance_i = this.to_currency;
-                        }
+            if(this.share != '') {
+              this.show_nobalance = true;
+              this.show_nobalance_i = this.to_currency;
+            }
 					}
-			        let real_values = Array(currentContract.N_COINS).fill(0)
+              let real_values = Array(currentContract.N_COINS).fill(0)
+    console.log('zap_values', zap_values, this.to_currency)
 			        real_values[this.to_currency] = zap_values[this.to_currency].div(precision)
 			        this.withdraw_inputs = this.withdraw_inputs.map(v=>0)
 			        this.withdraw_inputs[this.to_currency] = this.toFixed(BN(real_values[this.to_currency]), 2,1)

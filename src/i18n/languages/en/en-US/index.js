@@ -78,6 +78,7 @@ export default {
     warningNoPool: 'Swap not available. Please select {0} in pool select',
     swapWrapped: 'Swap wrapped',
     approveExchange: 'Please approve {0} {1} for exchange',
+    confirmSwapFromFor: 'Please confirm swap from {0} for min {1}'
   },
   balancesInfo: {
     name: 'Currency reserves',
@@ -128,7 +129,12 @@ export default {
     dailyProfit: 'Daily profit',
     approveStakingTokens: 'Please approve staking {0} of your tokens',
     approveLptokenWithdrawal: 'Please approve {0} {1} for withdrawal',
-    confirmWithdrawalTransaction: 'Please confirm withdrawal transaction',
+    confirmWithdrawalTransaction: 'Please confirm withdrawal transaction {0}',
+    confirmUnstakingToken: 'Please confirm unstaking {0} tokens',
+    UnstakingTokenWithdrawal: `Unstaking {0} tokens for withdrawal.
+    <br />
+    A bit more tokens are needed to unstake to ensure that withdrawal is successful.
+    You'll see them in your unstaked balance afterwards.`
   },
   dao: {
     standTitle: 'Stablecoin liquidity pool',
