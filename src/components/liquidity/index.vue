@@ -1756,14 +1756,14 @@
       // withdraw
       handleCheck(idx) {
         if(idx === this.to_currency) {
-          // if(this.withdrawc == false) this.withdrawc = true
+          if(this.withdrawc == false) this.withdrawc = true
           this.to_currency = null
 
           currentContract.slippage = 0
           currentContract.showSlippage = false
         }
         else {
-          // this.withdrawc = false
+          this.withdrawc = false
           this.to_currency = idx
         }
       },
