@@ -180,5 +180,5 @@ export default {
     incorrectValue: '无效的数值',
     approveOperation: '请先授权，并在授权完成后再继续操作'
   },
-  temp: '* 如果只想取单个币种，请点选该币种',
+  temp: '* 如果要全部取款为一个币种，请点选该币种',
 }
