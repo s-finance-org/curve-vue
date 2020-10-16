@@ -202,7 +202,7 @@ fieldset {
 
 /* Sidebar */
 .b-sidebar .navbar-expand .navbar-nav .nav-link:hover,
-.b-sidebar .navbar-expand .navbar-nav .router-link-exact-active {
+.b-sidebar .navbar-expand .navbar-nav .router-link-active {
   color: #EB3C00;
   box-shadow: inset 2px 0 0 0 #eb3c00;
 }

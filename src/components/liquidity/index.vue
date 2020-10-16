@@ -22,12 +22,12 @@
             <h4 class="mb-0">${{ totalBalances | formatNumber(2) }}</h4>
           </text-overlay-loading>
         </div>
-        <!-- <div class="total-box col-3 px-4 py-3 d-none d-lg-block">
+        <div class="total-box col-3 px-4 py-3 d-none d-lg-block">
           <h6 class="text-black-65">{{ $t('global.dailyVol') }}</h6>
           <text-overlay-loading :show="poolVolumeUSD == -1">
             <h4 class="mb-0">${{ poolVolumeUSD && poolVolumeUSD | formatNumber(2) }}</h4>
           </text-overlay-loading>
-        </div> -->
+        </div>
       </b-container>
     </div>
 
@@ -1016,6 +1016,9 @@
             }
           }
           this.hasLoadedInfo && this.updateShares()
+
+
+          
         },
       watch: {
         async depositc(val, oldval) {
@@ -1067,7 +1070,6 @@
             // valueModel
             balanceOf: ModelValueTether.create()
           }
-// store.tokens.dusd.getBalanceOf(result.balanceOf, currentContract.default_account)
 
           const tokenKeys = {
             susdv2: 'susdv2LpToken',
@@ -1076,7 +1078,6 @@
           }
 
           if (tokenKeys[currentPool]) {
-            console.log('111----1111')
             store.tokens[tokenKeys[currentPool]].getBalanceOf(result.balanceOf, currentContract.default_account)
           } else {
             result.balanceOf.tether = currentContract.swap_token.methods.balanceOf(currentContract.default_account).call()

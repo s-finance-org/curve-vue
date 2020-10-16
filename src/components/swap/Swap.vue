@@ -20,12 +20,12 @@
             <h4 class="mb-0">${{ totalBalances | formatNumber(2) }}</h4>
           </text-overlay-loading>
         </div>
-        <!-- <div class="total-box col-3 px-4 py-3 d-none d-lg-block">
+        <div class="total-box col-3 px-4 py-3 d-none d-lg-block">
           <h6 class="text-black-65">{{ $t('global.dailyVol') }}</h6>
           <text-overlay-loading :show="poolVolumeUSD == -1">
             <h4 class="mb-0">${{ poolVolumeUSD && poolVolumeUSD | formatNumber(2) }}</h4>
           </text-overlay-loading>
-        </div> -->
+        </div>
       </b-container>
     </div>
 

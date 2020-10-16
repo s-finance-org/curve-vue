@@ -73,7 +73,13 @@ const currencies = {
 		wbtc: 'wBTC',
 		sbtc: 'sBTC',
   },
-  dfi: {
+  dfi: process.env.VUE_APP_DEF_TEST
+    ? {
+      usdt: 'iUSDT',
+      dai: 'iDAI',
+      usdc: 'iUSDC',
+    }
+    : {
     dai: 'iDAI',
     usdc: 'iUSDC',
     usdt: 'iUSDT',
