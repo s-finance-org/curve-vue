@@ -211,10 +211,8 @@
               <gas-price class="col-12 col-md"></gas-price>
             </div>
           </div>
-          <p class="mt-3" v-for="(item, idx) in messages" :key="idx">
-            <b-alert class="mt-3" :show="item.msg" variant="dark" v-html='item.msg'></b-alert>
-          </p>
-          <b-alert class="mt-3" :show="show_loading" variant="dark" v-html='waitingMessage'></b-alert>
+          <b-alert class="mt-3" v-for="(item, idx) in messages" :key="idx" :show="item.msg" variant="dark" v-html='item.msg'></b-alert>
+          <b-alert class="mt-3" :show="waitingMessage" variant="dark" v-html='waitingMessage'></b-alert>
 
           <div class="mt-4">
             <b-form-checkbox v-model="inf_approval" name="inf-approval">{{ $t('global.infiniteApproval') }}</b-form-checkbox>
@@ -983,7 +981,7 @@
                 dismiss()
 
                 this.waitingMessage = this.$i18n.t('instantSwap.confirmSwapFromFor',
-                  [`${this.fromInput} ${this.getCurrency(this.from_currency)}`, `${this.toFixed(min_dy / this.precisions[j])} ${this.getCurrency(this.to_currency)}`])
+                  [`${this.fromInput} ${this.getCurrency(this.from_currency)}`, `${this.toFixed(BN(min_dy).div(this.precisions[j]).toString())} ${this.getCurrency(this.to_currency)}`])
 
                 var { dismiss } = notifyNotification(this.waitingMessage)
                 min_dy = cBN(min_dy).toFixed(0);
