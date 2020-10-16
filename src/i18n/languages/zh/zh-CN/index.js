@@ -82,7 +82,7 @@ export default {
     confirmSwapFromFor: '请确认将 {0} 交换为最小 {1}'
   },
   balancesInfo: {
-    name: '兑换池概念',
+    name: '矿池概览',
     assetDistribution: '资产分布',
     swapFeeRate: '兑换费',
     depositFeeRate: '存款费',

@@ -81,7 +81,7 @@ export default {
     confirmSwapFromFor: 'Please confirm swap from {0} for min {1}'
   },
   balancesInfo: {
-    name: 'Currency reserves',
+    name: 'Pool overview',
     assetDistribution: 'Asset distribution',
     swapFeeRate: 'Swap fee',
     depositFeeRate: 'Deposit fee',
