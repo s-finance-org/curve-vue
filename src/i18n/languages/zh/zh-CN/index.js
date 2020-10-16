@@ -49,15 +49,6 @@ export default {
     more: '查看详情',
     ok: '知道了',
     toMore: '了解更多',
-    noticeTitleHtml: 'dfi (yfii) 流动性矿池已上线',
-    noticeDateHtml: '2020/10/10 23:00',
-    noticeContHtml: `S.Finance 已于新加坡时间 2020-10-10 23:00 上线 dfi 流动性矿池，2020-10-11 01:00 开启流动性挖矿。<br/>
-    在 dfi 池存入稳定币（DAI、USDC、USDT）或者 yfii 机枪池 i 代币（ iDAI、iUSDC、iUSDT）即可获得流动性凭证 iUSD LP tokens，抵押 iUSD LP tokens 即可获得 S.Finance 治理代币 SFG。<br/>
-    用户在 dfi 池提供流动性可获得三重收益：<br/>
-    yfii 机枪池产生的收益<br/>
-    抵押挖矿获得的 SFG<br/>
-    dfi 池兑换产生的手续费<br/>
-    dfi 流动性矿池挖矿奖励 3 倍速。`,
   },
   wallet: {
     notConnected: '你还没有连接钱包',
@@ -188,34 +179,6 @@ export default {
     valueOutValidRange: '值不在有效范围内',
     incorrectValue: '无效的数值',
     approveOperation: '请先授权，并在授权完成后再继续操作'
-  },
-  statemented: {
-    notice1: {
-      titleHtml: 'S.Finance 即将开启流动性挖矿',
-      dateHtml: '2020/09/22 22:22:22',
-      contHtml: `S.Finance 将于新加坡时间 2020-09-23 00:00:00 开启 susd 流动性矿池抵押挖矿。 抵押 susdv2 LP tokens 即可获得 S.Finance 治理代币 SFG、Curve 治理代币 CRV 以及 Synthetix 平台代币 SNX。<br/>
-      SFG 总发行量 2100 万，遵循 100%基于贡献分配，无私募，无预挖。每日挖矿产出剩余部分的 0.2%，开启挖矿后的24 小时内 SFG 产出速率为 10%，即首日挖矿产出 0.02%，24 小时后挖矿速率恢复正常（CRV 和 SNX 的挖矿速率不受影响）。挖矿开启后的第三日将上线 SFG 流动性矿池，届时SFG 流动性矿池挖矿奖励权重将为稳定币矿池权重三倍。<br/>
-      S.Finance 智能合约已由知道创宇完成安全审计，然而，安全审计并不能完全消除风险，请在能力承受范围内谨慎操作，SFG 有可能一文不值。`
-    },
-    notice2: {
-      titleHtml: 'S.Finance 已开启 SFG 流动性挖矿',
-      dateHtml: '2020/09/25 20:00',
-      contHtml: `S.Finance 已于新加坡时间 2020-09-25 20:00 开启 SFG 流动性矿池抵押挖矿，抵押 BPT 即可获得 S.Finance 治理代币 SFG 奖励。SFG 兑换以及存取款服务由 Balancer 提供，其中：<br/>
-      *兑换地址：<a href="https://legacy.balancer.exchange/#/swap/0x8a6ACA71A218301c7081d4e96D64292D3B275ce0" target="_blank">https://legacy.balancer.exchange/#/swap/0x8a6ACA71A218301c7081d4e96D64292D3B275ce0</a><br/>
-      *流动性地址：<a href="https://pools.balancer.exchange/#/pool/0x2f49eea1efc1b04e9ecd3b81321060e29db26a19/" target="_blank">https://pools.balancer.exchange/#/pool/0x2f49eea1efc1b04e9ecd3b81321060e29db26a19/</a><br/>
-      *SFG 合约（谨防假币）: <a href="https://etherscan.io/token/0x8a6ACA71A218301c7081d4e96D64292D3B275ce0" target="_blank">https://etherscan.io/token/0x8a6ACA71A218301c7081d4e96D64292D3B275ce0</a><br/>
-      SFG 流动性挖矿开启后，SFG 流动性矿池区奖励当前权重为 30%。<br/>
-      S.Finance 流动性挖矿已开启 3 日，按照 SFG 挖矿释放规则，目前流通数量较少，通常价格波动比较剧烈，请谨慎操作注意风险。<br/>
-      S.Finance 即将在稳定币流动性矿池区上线 Y （yfi）流动性矿池，抵押 iearn LP tokens  挖矿可获得 SFG 和 CRV 奖励。<br/>
-      S.Finance 即将在稳定币流动性矿池区上线 iusd（yfii）流动性矿池，抵押 iearn LP tokens  挖矿可获得 SFG 和 iusd 奖励。`,
-    },
-    notice3: {
-      titleHtml: '关于调整SFG流动性矿池挖矿奖励权重的公告',
-      dateHtml: '2020/09/29 00:00',
-      contHtml: `S.Finance 将于新加坡时间 2020-09-29 00:00 提升SFG流动性矿池挖矿奖励权重至40%。<br/>
-      S.Finance 即将在稳定币矿池区与YFII社区合作上线独有 dfi稳定币矿池，50%手续费奖励流动性提供用户，50%手续费将未来分享给SFG持有用户。同时抵押iUSD（dfi流动性矿池lp token）挖矿可获得SFG奖励。<br/>
-      S.Finance 将于近期上线链上投票治理工具，由社区讨论决定是否进行SFG挖矿减产以及减产方案。`,
-    }
   },
   temp: '* 如果只想取单个币种，请点选该币种',
 }

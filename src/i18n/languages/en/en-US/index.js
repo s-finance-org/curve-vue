@@ -183,33 +183,5 @@ export default {
     incorrectValue: 'Incorrect value',
     approveOperation: 'Please authorize first, and then continue after authorization is completed'
   },
-  statemented: {
-    notice1: {
-      titleHtml: 'S.Finance liquidity pool is coming ！',
-      dateHtml: '2020/09/22 22:22:22',
-      contHtml: `S.Finance liquidity pool is going to start at 00:00:00 (SGT) 23th September, 2020. Staking susdv2 LP tokens could get 3 kinds of token for reward，including SFG (governance token of S.finance) 、CRV （governance token of Curve) and SNX (governance token of Synthetix).<br/>
-      Total amount of SFG is 21 million, with 100% contribution-based distribution, no private placement, no pre-dig. Minted SFG per day is 0.2% of the remaining, and the output rate of SFG is 10% in the first 24 hours (0.02% minted SFG on the first day, while the rate of minted CRV and SNX is unaffected), and the mining rate will return to normal 24 hours later. SFG liquidity pool will start on the third day after the opening of S.Finance, and the rewarding weight of SFG liquidity pool will be three times that of the stable coin pool.<br/>
-      The S.finance smart contract has been scrutinized by KNOWNSEC. However, it cannot completely eliminate the risk, the price of SFG possibly get 0. Please invest within your capacity. `
-    },
-    notice2: {
-      titleHtml: 'S. Finance has started liquidity mining！',
-      dateHtml: '2020/09/25 20:00',
-      contHtml: `S.finance will open the SFG liquidity pool at 2020-09-25 20:00 Singapore time. Mortgaging BPT will obtain the S.Finance governance token SFG award. SFG exchange and deposit/withdrawal services are provided by Balancer:<br/>
-      * Exchange Address: <a href="https://legacy.balancer.exchange/#/swap/0x8a6ACA71A218301c7081d4e96D64292D3B275ce0" target="_blank">https://legacy.balancer.exchange/#/swap/0x8a6ACA71A218301c7081d4e96D64292D3B275ce0</a><br/>
-      * Liquidity Pool Address：<a href="https://pools.balancer.exchange/#/pool/0x2f49eea1efc1b04e9ecd3b81321060e29db26a19/" target="_blank">https://pools.balancer.exchange/#/pool/0x2f49eea1efc1b04e9ecd3b81321060e29db26a19/</a><br/>
-      * SFG smart contract （please make sure the contract address is right before trading）：<a href="https://etherscan.io/token/0x8a6ACA71A218301c7081d4e96D64292D3B275ce0" target="_blank">https://etherscan.io/token/0x8a6ACA71A218301c7081d4e96D64292D3B275ce0</a><br/>
-      After SFG liquidity pool opening, the reward weight of SFG liquidity pool is 30% .<br/>
-      S. Finance has been opened for 3 days. According to the SFG mint rules. In view of the small amount of current circulation, the price fluctuation could be quite violent, please pay attention to the risks.<br/>
-      S.Finance will soon launch Y (YFI) liquidity pool in the stable currency liquidity pool area, users could obtain SFG and CRV rewards by mining iearn LP tokens.<br/>
-      S. Finance will soon launch iusd (YFII) liquidity pool in the stable currency liquidity pool area, users could obtain SFG and iusd rewards for mining iearn LP tokens.`,
-    },
-    notice3: {
-      titleHtml: 'Announcement of adjusting the rewarding weight of SFG liquidity pool ',
-      dateHtml: '2020/09/29 00:00',
-      contHtml: `S.finance will increase the rewarding  weight of SFG liquidity pool to 40% at 2020-09-29 00:00 Singapore time.<br/>
-      S.Finance will launch a unique DeFi stable coin liquidity pool，cooperating with YFII community. In this liquidity pool，50% of the fee will be given to liquidity providers and SFG holders could share another 50% of the fee. At the same time，users can gain SFG rewarding by staking iUSD (LP Token of DeFi liquidity pool ).<br/>
-      S.Finance voting function will be launched as soon as possible. The plan of halving SFG mint rate will be decided by the community.`
-    }
-  },
   temp: '* If you only want to withdraw a single currency, you can modify the number of other currencies to 0'
 }
