@@ -304,7 +304,7 @@ let routes = [
     component: RootDefault,
     children: [
       {
-        path: ':pool(dfi)?',
+        path: ':pool(dfi|dusd)?',
         name: 'Swap',
         beforeEnter: (to, from, next) => {
           !to.params.pool

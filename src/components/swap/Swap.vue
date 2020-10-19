@@ -5,6 +5,7 @@
       <b-container class="d-flex py-4 total-cont">
         <b-navbar-nav class="navbar-tabs flex-row">
           <b-nav-item :to="{ name: 'Swap', params: { pool: 'dfi' } }">dfi</b-nav-item>
+          <b-nav-item :to="{ name: 'Swap', params: { pool: 'dusd' } }">dusd</b-nav-item>
         </b-navbar-nav>
       </b-container>
       <b-container class="d-flex py-4 total-cont align-items-center">
@@ -212,7 +213,7 @@
             </div>
           </div>
           <b-alert class="mt-3" v-for="(item, idx) in messages" :key="idx" :show="item.msg" variant="dark" v-html='item.msg'></b-alert>
-          <b-alert class="mt-3" :show="waitingMessage" variant="dark" v-html='waitingMessage'></b-alert>
+          <b-alert class="mt-3" :show="!!waitingMessage" variant="dark" v-html='waitingMessage'></b-alert>
 
           <div class="mt-4">
             <b-form-checkbox v-model="inf_approval" name="inf-approval">{{ $t('global.infiniteApproval') }}</b-form-checkbox>

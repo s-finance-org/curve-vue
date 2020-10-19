@@ -568,8 +568,12 @@ export async function init(contract, refresh = false) {
     	contract.curveRewards = new state.web3.eth.Contract(allabis.iearn.sCurveRewards_abi, allabis.iearn.sCurveRewards_address)
 		  calls.push([contract.curveRewards._address, contract.curveRewards.methods.balanceOf(state.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
     }
-    if(['dfi', 'dusd'].includes(contract.currentContract)) {
-    	contract.curveRewards = new state.web3.eth.Contract(allabis.iearn.sCurveRewards_abi, allabis.iearn.sCurveRewards_address)
+    if(['dfi'].includes(contract.currentContract)) {
+    	contract.curveRewards = new state.web3.eth.Contract(allabis.dfi.sCurveRewards_abi, allabis.dfi.sCurveRewards_address)
+		  calls.push([contract.curveRewards._address, contract.curveRewards.methods.balanceOf(state.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
+    }
+    if(['dusd'].includes(contract.currentContract)) {
+    	contract.curveRewards = new state.web3.eth.Contract(allabis.dusd.sCurveRewards_abi, allabis.dusd.sCurveRewards_address)
 		  calls.push([contract.curveRewards._address, contract.curveRewards.methods.balanceOf(state.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
     }
     if(['tbtc', 'ren', 'sbtc'].includes(contract.currentContract)) {
@@ -600,7 +604,8 @@ export async function init(contract, refresh = false) {
 	  	let coinsCall = contract.swap.methods.coins(i).encodeABI()
 	  	let underlyingCoinsCall = ['tbtc', 'ren', 'sbtc'].includes(contract.currentContract) ?
 	  								contract.swap.methods.coins(i).encodeABI()
-	  								: contract.swap.methods.underlying_coins(i).encodeABI();
+                    : contract.swap.methods.underlying_coins(i).encodeABI();
+
     	calls.push([contract.swap._address, coinsCall])
     	calls.push([contract.swap._address, underlyingCoinsCall])
     }
