@@ -1,4 +1,41 @@
 import web3 from '../web3'
+import BN from 'bignumber.js'
+
+
+// FIXME: temp
+import store from '../../store'
+import * as errorStore from '../../components/common/errorStore'
+import { notifyHandler, notifyNotification } from '../../init'
+
+import ModelValueTether from '../value/tether'
+import ModelValueError from '../value/error'
+
+
+
+// FIXME: 
+const approve = (contract, amount, account, toContract) => {
+  // if(!toContract) toContract = currentContract.swap_address
+  return new Promise((resolve, reject) => {
+      contract.methods.approve(toContract, BN(amount).toFixed(0,1))
+      .send({
+          from: account,
+          // gasPrice: gasPriceStore.state.gasPriceWei,
+          // gas: 100000,
+      })
+      .once('transactionHash', hash => {
+        notifyHandler(hash)
+        resolve(true)
+      })
+      .on('error', err => {
+        errorStore.handleError(err)
+        reject(err)
+      })
+      .catch(err => {
+        errorStore.handleError(err)
+        reject(err)
+      });
+    })
+}
 
 const ModelToken = {
   /**
@@ -62,10 +99,29 @@ const ModelToken = {
         const { contract } = this
 
         const result = target.tether = await contract.methods.balanceOf(address).call()
-        console.log('target.tether', target.tether)
 
         return result
-      }
+      },
+
+      price: ModelValueTether.create(),
+
+
+      // ------------------------------
+      // FIXME: TEMP
+      priceUnitAddress: process.env.VUE_APP_DAI_TOKEN, // DAI
+      // // TODO: priceUnit
+      // async getPrice (priceUnit) {
+      //   const { address, priceUnitAddress, price } = this
+      //   const result = await storeprice.getPrice(priceUnitAddress, address)
+
+      //   // XXX: tether?
+      //   price.tether = result
+
+      //   return result
+      // },
+
+      error: ModelValueError.create(),
+
     }
   }
 }

@@ -487,17 +487,17 @@
             'operating'
           ],
           items: [
-            // {
-            //   id: 2,
-            //   toDeposit: '/liquidity/dusd',
-            //   toDao: '/dao',
-            //   pooltext: 'dUSD',
-            //   pools: '(d)DAI (d)USDC (d)USDT (d)USDx',
-            //   volData: null,
-            //   currencies: {dai: 'DAI', usdc: 'USDC', usdt: 'USDT', usdx: 'USDx'},
-            //   funds: '-',
-            //   link: '/dusd'
-            // },
+            {
+              id: 2,
+              toDeposit: '/liquidity/dusd',
+              toDao: '/dao',
+              pooltext: 'dUSD',
+              pools: '(d)DAI (d)USDC (d)USDT (d)USDx',
+              volData: null,
+              currencies: {dai: 'DAI', usdc: 'USDC', usdt: 'USDT', usdx: 'USDx'},
+              funds: '-',
+              link: '/dusd'
+            },
             {
               id: 2,
               toDeposit: '/liquidity/dfi',

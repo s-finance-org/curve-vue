@@ -13,7 +13,7 @@ const ModelValueTether = {
   } = {}) {
     const __store__ = {
       tether: '000000000000000000',
-      handled: '-1',
+      handled: '',
       wrapped: '-'
     }
 
