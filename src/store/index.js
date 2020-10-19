@@ -29,9 +29,9 @@ import swapAbi_iUSD_LPT from '../components/dao/abi/swapAbi_iUSD_LPT'
 import abi_susdv2_swap from '../components/dao/abi/susdv2_swap'
 import { ERC20_abi as abiSusdv2LpToken } from '../allabis'
 
-import TOKEN_USDT_ABI from './token/abi/USDT'
-import TOKEN_DF_ABI from './token/abi/DF'
-import TOKEN_DUSD_ABI from './token/abi/dUSD'
+// import TOKEN_USDT_ABI from './token/abi/USDT'
+// import TOKEN_DF_ABI from './token/abi/DF'
+// import TOKEN_DUSD_ABI from './token/abi/dUSD'
 
 
 import { GAUGE_DUSD_ABI } from './gauge'
