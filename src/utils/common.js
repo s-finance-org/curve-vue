@@ -279,16 +279,16 @@ export async function update_fee_info(version = 'new', contract, update = true) 
     }
 
     var default_account = contract.default_account || '0x0000000000000000000000000000000000000000';
-    let calls = [   
-                    //.fee()
-                    [swap_address_stats, swap_stats.methods.fee().encodeABI()],
-                    //.admin_fee()
-                    [swap_address_stats, swap_stats.methods.admin_fee().encodeABI()],
-                    //balanceOf(default_account)
-                    [swap_token_address, swap_token_stats.methods.balanceOf(default_account).encodeABI()],
-                    //token_supply()
-                    [swap_token_address, swap_token_stats.methods.totalSupply().encodeABI()],
-                    ]
+    let calls = [
+      //.fee()
+      [swap_address_stats, swap_stats.methods.fee().encodeABI()],
+      //.admin_fee()
+      [swap_address_stats, swap_stats.methods.admin_fee().encodeABI()],
+      //balanceOf(default_account)
+      [swap_token_address, swap_token_stats.methods.balanceOf(default_account).encodeABI()],
+      //token_supply()
+      [swap_token_address, swap_token_stats.methods.totalSupply().encodeABI()],
+    ]
     let rates_calls = update_rates(version, contract);
 
     let swap = new web3.eth.Contract(swap_abi_stats, swap_address_stats);
@@ -297,12 +297,12 @@ export async function update_fee_info(version = 'new', contract, update = true) 
         calls.push([swap_address_stats, swap.methods.balances(i).encodeABI()])
     }
     calls.push(...rates_calls)
-    if(['susdv2','sbtc', 'iearn', 'y', 'dfi', 'dusd'].includes(contract.currentContract) && update)
+    if(['susdv2','sbtc', 'iearn', 'y', 'dfi'].includes(contract.currentContract) && update)
         calls.push([allabis[contract.currentContract].sCurveRewards_address, contract.curveRewards.methods.balanceOf(default_account).encodeABI()])
     if(update)
         await multiInitState(calls, contract)
     return calls
-    
+
     console.timeEnd('updatefeeinfo')
 }
 
@@ -330,8 +330,11 @@ export async function multiInitState(calls, contract, initContracts = false) {
     var block = +aggcalls[0]
     //initContracts && contract.currentContract == 'compound' && i == 0 || 
     let decoded = aggcalls[1].map((hex, i) =>
-        (i >= aggcalls[1].length-allabis[contract.currentContract].N_COINS*2) ? web3.eth.abi.decodeParameter('address', hex) : web3.eth.abi.decodeParameter('uint256', hex)
+        (i >= aggcalls[1].length-allabis[contract.currentContract].N_COINS*2)
+          ? web3.eth.abi.decodeParameter('address', hex)
+          : web3.eth.abi.decodeParameter('uint256', hex)
     )
+
     contract.oldBalance = 0
     if(initContracts) {
         contract.virtual_price = decoded[0] / 1e18;
@@ -405,7 +408,7 @@ export async function multiInitState(calls, contract, initContracts = false) {
             if(checkTethered(contract, i) || contract.currentContract == 'susdv2') {
                 Vue.set(contract.c_rates, i, 1 / allabis[contract.currentContract].coin_precisions[i]);
             }
-            else {            
+            else {
                 let rate = +v[0] / 1e18 / allabis[contract.currentContract].coin_precisions[i]
                 let supply_rate = +v[1]
                 let old_block = +v[2]

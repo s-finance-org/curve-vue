@@ -602,13 +602,14 @@ export async function init(contract, refresh = false) {
       calls.push(...(await common.update_fee_info('new', contract, false)));
     for (let i = 0; i < allabis[contract.currentContract].N_COINS; i++) {
 	  	let coinsCall = contract.swap.methods.coins(i).encodeABI()
-	  	let underlyingCoinsCall = ['tbtc', 'ren', 'sbtc'].includes(contract.currentContract) ?
-	  								contract.swap.methods.coins(i).encodeABI()
-                    : contract.swap.methods.underlying_coins(i).encodeABI();
+	  	let underlyingCoinsCall = ['tbtc', 'ren', 'sbtc'].includes(contract.currentContract)
+        ? contract.swap.methods.coins(i).encodeABI()
+        : contract.swap.methods.underlying_coins(i).encodeABI()
 
     	calls.push([contract.swap._address, coinsCall])
     	calls.push([contract.swap._address, underlyingCoinsCall])
     }
+    console.log('calls', JSON.stringify(calls))
     await common.multiInitState(calls, contract, true)
   	contract.initializedContracts = true;
   	console.timeEnd('init')
