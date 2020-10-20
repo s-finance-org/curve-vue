@@ -512,104 +512,118 @@ export async function init(contract, refresh = false) {
 	console.time('init')
 	//contract = contracts.compound for example
 	if(state.initializedContracts && contract.currentContract == state.currentContract && !refresh) return Promise.resolve();
-	if(contract && (contract.currentContract == state.currentContract || state.contracts[contract.currentContract].initializedContracts) && !refresh) return Promise.resolve();
-	if(!contract) contract = state
+  if(contract && (contract.currentContract == state.currentContract || state.contracts[contract.currentContract].initializedContracts) && !refresh) return Promise.resolve();
+  if(!contract) contract = state
+
+  const default_account = state.default_account || '0x0000000000000000000000000000000000000000'
+
 	try {
-    let networkId = await state.web3.eth.net.getId();
-    if(networkId != 1) {
-        this.error = 'Error: wrong network type. Please switch to mainnet';
+    let networkId = await state.web3.eth.net.getId()
+
+    if(networkId !== 1) {
+      this.error = 'Error: wrong network type. Please switch to mainnet';
     }
   }
-  catch(err) {
-      console.error(err);
-      this.error = 'There was an error connecting. Please refresh page';
+  catch (err) {
+    console.error(err);
+    this.error = 'There was an error connecting. Please refresh page';
   }
 
-	if(['ren', 'sbtc'].includes(contract.currentContract))
-		state.chi = state.chi || new web3.eth.Contract(ERC20_abi, CHI_address)
+	if(['ren', 'sbtc'].includes(contract.currentContract)) {
+    state.chi = state.chi || new web3.eth.Contract(ERC20_abi, CHI_address)
+  }
 
-    let calls  = [
-    	//get_virtual_price
-    	[allabis[contract.currentContract].swap_address, '0xbb7b8b80'],
-    	//A
-    	[allabis[contract.currentContract].swap_address, '0xf446c1d0'],
-    	//future_A
-      [allabis[contract.currentContract].swap_address, '0xb4b577ad'],
-      //admin_actions_deadline
-      [allabis[contract.currentContract].swap_address, '0x405e28f8'],
-    ];
+  let calls  = [
+    //get_virtual_price
+    [allabis[contract.currentContract].swap_address, '0xbb7b8b80'],
+    //A
+    [allabis[contract.currentContract].swap_address, '0xf446c1d0'],
+    //future_A
+    [allabis[contract.currentContract].swap_address, '0xb4b577ad'],
+    //admin_actions_deadline
+    [allabis[contract.currentContract].swap_address, '0x405e28f8'],
+  ];
 
-    if(contract.currentContract == 'compound') {
-	    state.old_swap = new state.web3.eth.Contract(allabis.compound.old_swap_abi, old_swap_address);
-	    state.old_swap_token = new state.web3.eth.Contract(ERC20_abi, old_token_address);
-    	calls.push([state.old_swap_token._address, state.old_swap_token.methods.balanceOf(state.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
-    }
-    if(['ren', 'sbtc'].includes(contract.currentContract)) {
-    	state.adapterContract = new state.web3.eth.Contract(allabis[contract.currentContract].adapterABI, allabis[contract.currentContract].adapterBiconomyAddress)
-    }
-    if(contract.currentContract == 'susdv2') {
-    	//balanceOf(address)
-    	let default_account = state.default_account || '0x0000000000000000000000000000000000000000'
-    	calls.push([allabis.susd.token_address, '0x70a08231000000000000000000000000'+default_account.slice(2)])
+  if(contract.currentContract == 'compound') {
+    state.old_swap = new state.web3.eth.Contract(allabis.compound.old_swap_abi, old_swap_address);
+    state.old_swap_token = new state.web3.eth.Contract(ERC20_abi, old_token_address);
+    calls.push([state.old_swap_token._address, state.old_swap_token.methods.balanceOf(default_account).encodeABI()])
+  }
+  if(['ren', 'sbtc'].includes(contract.currentContract)) {
+    state.adapterContract = new state.web3.eth.Contract(allabis[contract.currentContract].adapterABI, allabis[contract.currentContract].adapterBiconomyAddress)
+  }
+  if(contract.currentContract == 'susdv2') {
+    //balanceOf(address)
+    calls.push([allabis.susd.token_address, '0x70a08231000000000000000000000000'+default_account.slice(2)])
 
-      contract.curveRewards = new state.web3.eth.Contract(allabis.susdv2.sCurveRewards_abi, allabis.susdv2.sCurveRewards_address)
-      calls.push([contract.curveRewards._address, contract.curveRewards.methods.balanceOf(state.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
+    contract.curveRewards = new state.web3.eth.Contract(allabis.susdv2.sCurveRewards_abi, allabis.susdv2.sCurveRewards_address)
+    calls.push([contract.curveRewards._address, contract.curveRewards.methods.balanceOf(default_account).encodeABI()])
 
-    	contract.snxExchanger = new state.web3.eth.Contract(synthetixExchanger_ABI, synthetixExchanger_address)
-    }
-    if(contract.currentContract == 'sbtc') {
-    	contract.curveRewards = new state.web3.eth.Contract(allabis.sbtc.sCurveRewards_abi, allabis.sbtc.sCurveRewards_address)
-		  calls.push([contract.curveRewards._address, contract.curveRewards.methods.balanceOf(state.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
+    contract.snxExchanger = new state.web3.eth.Contract(synthetixExchanger_ABI, synthetixExchanger_address)
+  }
+  if(contract.currentContract == 'sbtc') {
+    contract.curveRewards = new state.web3.eth.Contract(allabis.sbtc.sCurveRewards_abi, allabis.sbtc.sCurveRewards_address)
+    calls.push([contract.curveRewards._address, contract.curveRewards.methods.balanceOf(default_account).encodeABI()])
 
-    	contract.snxExchanger = new state.web3.eth.Contract(synthetixExchanger_ABI, synthetixExchanger_address)
-    }
-    if(['iearn','y'].includes(contract.currentContract)) {
-    	contract.aRewards = new state.web3.eth.Contract(allabis.iearn.aRewards_abi, allabis.iearn.aRewards_address)
-    	contract.curveRewards = new state.web3.eth.Contract(allabis.iearn.sCurveRewards_abi, allabis.iearn.sCurveRewards_address)
-		  calls.push([contract.curveRewards._address, contract.curveRewards.methods.balanceOf(state.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
-    }
-    if(['dfi'].includes(contract.currentContract)) {
-    	contract.curveRewards = new state.web3.eth.Contract(allabis.dfi.sCurveRewards_abi, allabis.dfi.sCurveRewards_address)
-		  calls.push([contract.curveRewards._address, contract.curveRewards.methods.balanceOf(state.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
-    }
-    if(['dusd'].includes(contract.currentContract)) {
-    	contract.curveRewards = new state.web3.eth.Contract(allabis.dusd.sCurveRewards_abi, allabis.dusd.sCurveRewards_address)
-		  calls.push([contract.curveRewards._address, contract.curveRewards.methods.balanceOf(state.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
-    }
-    if(['tbtc', 'ren', 'sbtc'].includes(contract.currentContract)) {
-    	//initial_A
-    	calls.push([allabis[contract.currentContract].swap_address, '0x5409491a'])
-    	//initial_A_time
-    	calls.push([allabis[contract.currentContract].swap_address, '0x2081066c'])
-    	//future_A_time
-    	calls.push([allabis[contract.currentContract].swap_address, '0x14052288'])
-    }
-    if(!['susd', 'tbtc', 'ren', 'sbtc'].includes(contract.currentContract))
-    	state.deposit_zap = new state.web3.eth.Contract(allabis[state.currentContract].deposit_abi, allabis[state.currentContract].deposit_address)
-    contract.swap = new state.web3.eth.Contract(allabis[contract.currentContract].swap_abi, allabis[contract.currentContract].swap_address);
-    contract.swap_token = new state.web3.eth.Contract(ERC20_abi, allabis[contract.currentContract].token_address);
-    window[contract.currentContract] = {};
-    window[contract.currentContract].swap = contract.swap
-    window[contract.currentContract].swap_token = contract.swap_token
-    window[contract.currentContract].deposit_zap = contract.deposit_zap
-    window[contract.currentContract].rewards = contract.curveRewards
-    window[contract.currentContract].aRewards = contract.aRewards
-    contract.coins = []
-    contract.underlying_coins = []
-    if(window.location.href.includes('withdraw_old')) 
-      calls.push(...(await common.update_fee_info('old', contract, false)))
-  	else 
-      calls.push(...(await common.update_fee_info('new', contract, false)));
+    contract.snxExchanger = new state.web3.eth.Contract(synthetixExchanger_ABI, synthetixExchanger_address)
+  }
+  if(['iearn','y'].includes(contract.currentContract)) {
+    contract.aRewards = new state.web3.eth.Contract(allabis.iearn.aRewards_abi, allabis.iearn.aRewards_address)
+    contract.curveRewards = new state.web3.eth.Contract(allabis.iearn.sCurveRewards_abi, allabis.iearn.sCurveRewards_address)
+    calls.push([contract.curveRewards._address, contract.curveRewards.methods.balanceOf(default_account).encodeABI()])
+  }
+  // FIXME: 
+  if(['dfi'].includes(contract.currentContract)) {
+    contract.curveRewards = new state.web3.eth.Contract(allabis.dfi.sCurveRewards_abi, allabis.dfi.sCurveRewards_address)
+    calls.push([contract.curveRewards._address, contract.curveRewards.methods.balanceOf(default_account).encodeABI()])
+  }
+  if(['dusd'].includes(contract.currentContract)) {
+    contract.curveRewards = new state.web3.eth.Contract(allabis.dusd.sCurveRewards_abi, allabis.dusd.sCurveRewards_address)
+    calls.push([contract.curveRewards._address, contract.curveRewards.methods.balanceOf(default_account).encodeABI()])
+  }
+  if(['tbtc', 'ren', 'sbtc'].includes(contract.currentContract)) {
+    //initial_A
+    calls.push([allabis[contract.currentContract].swap_address, '0x5409491a'])
+    //initial_A_time
+    calls.push([allabis[contract.currentContract].swap_address, '0x2081066c'])
+    //future_A_time
+    calls.push([allabis[contract.currentContract].swap_address, '0x14052288'])
+  }
+  if(!['susd', 'tbtc', 'ren', 'sbtc'].includes(contract.currentContract)) {
+    state.deposit_zap = new state.web3.eth.Contract(allabis[state.currentContract].deposit_abi, allabis[state.currentContract].deposit_address)
+  }
+
+  contract.swap = new state.web3.eth.Contract(allabis[contract.currentContract].swap_abi, allabis[contract.currentContract].swap_address);
+  contract.swap_token = new state.web3.eth.Contract(ERC20_abi, allabis[contract.currentContract].token_address);
+  window[contract.currentContract] = {};
+  window[contract.currentContract].swap = contract.swap
+  window[contract.currentContract].swap_token = contract.swap_token
+  window[contract.currentContract].deposit_zap = contract.deposit_zap
+  window[contract.currentContract].rewards = contract.curveRewards
+  window[contract.currentContract].aRewards = contract.aRewards
+
+  contract.coins = []
+  contract.underlying_coins = []
+console.log('------------calls', calls)
+
+  // Curver old 
+  // if(window.location.href.includes('withdraw_old'))
+  //   calls.push(...(await common.update_fee_info('old', contract, false)))
+  // else 
+  const update_fee_info = await common.update_fee_info('new', contract, false)
+console.log('update_fee_info', update_fee_info)
+  calls.push(...update_fee_info)
+console.log('window--', allabis[contract.currentContract].N_COINS)
     for (let i = 0; i < allabis[contract.currentContract].N_COINS; i++) {
 	  	let coinsCall = contract.swap.methods.coins(i).encodeABI()
 	  	let underlyingCoinsCall = ['tbtc', 'ren', 'sbtc'].includes(contract.currentContract)
         ? contract.swap.methods.coins(i).encodeABI()
         : contract.swap.methods.underlying_coins(i).encodeABI()
 
-    	calls.push([contract.swap._address, coinsCall])
+      calls.push([contract.swap._address, coinsCall])
     	calls.push([contract.swap._address, underlyingCoinsCall])
     }
-    console.log('calls', JSON.stringify(calls))
+    console.log('calls', calls)
     await common.multiInitState(calls, contract, true)
   	contract.initializedContracts = true;
   	console.timeEnd('init')

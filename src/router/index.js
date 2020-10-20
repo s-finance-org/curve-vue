@@ -56,7 +56,7 @@ import * as common from '../utils/common.js'
 
 Vue.use(VueRouter)
 
-const defaultPool = 'dfi'
+const defaultPool = 'dusd'
 
 let routes = [
   {
@@ -412,7 +412,7 @@ const pools = [
 ]
 
 router.beforeEach(async (to, from, next) => {
-  if(from.path.includes('/compound/withdraw_old')) await common.update_fee_info()
+  // if(from.path.includes('/compound/withdraw_old')) await common.update_fee_info()
   //if(from.path.includes('profit') && to.path.includes('profit')) return window.location.href = to.path
   if(['Donate', 'StatsDaily', 'Audits'].includes(to.name)) return next();
   if(to.name == 'RootIndex') {

@@ -29,6 +29,8 @@ import swapAbi_iUSD_LPT from '../components/dao/abi/swapAbi_iUSD_LPT'
 import abi_susdv2_swap from '../components/dao/abi/susdv2_swap'
 import { ERC20_abi as abiSusdv2LpToken } from '../allabis'
 
+import uniswapV2Router2 from './swap/uniswapV2Router2'
+
 // import TOKEN_USDT_ABI from './token/abi/USDT'
 // import TOKEN_DF_ABI from './token/abi/DF'
 // import TOKEN_DUSD_ABI from './token/abi/dUSD'
@@ -38,6 +40,8 @@ import { GAUGE_DUSD_ABI } from './gauge'
 
 import ModelToken from '../model/token'
 import request from './request'
+
+
 
 // FIXME: 
 const approve = (contract, amount, account, toContract) => {
@@ -167,6 +171,40 @@ store.price = {
 
 
 store.tokens = {
+  usdt: {
+    code: 'usdt',
+    name: 'Tether USD',
+    symbol: 'USDT',
+    deprecated: false,
+    totalSupply: 0, // XXX:
+    address: process.env.VUE_APP_USDT_TOKEN,
+
+    decimal: 6,
+    /**
+     *  @type {number}
+     */
+    get precision () {
+      const { decimal } = this
+
+      return Math.pow(10, decimal)
+    },
+
+    __contract: null,
+    get contract () {
+      const { __contract, abi, address } = this
+
+      return __contract ||
+        (this.__contract = new web3.eth.Contract(abi, address))
+    },
+    async getBalances (address) {
+    },
+    async getBalanceOf (address) {
+
+    },
+    async doAllowance () {
+
+    }
+  },
   // df: ModelToken.create({
   //   address: process.env.VUE_APP_DF_TOKEN,
   //   // abi: TOKEN_DF_ABI,
@@ -186,7 +224,7 @@ store.tokens = {
   // }),
 
   df: {
-    name: 'dForce',
+    name: 'DF',
     address: process.env.VUE_APP_DF_TOKEN,
     // abi: TOKEN_DF_ABI,
     abi: abiSFG,
@@ -196,6 +234,16 @@ store.tokens = {
 
       return __contract ||
         (this.__contract = new web3.eth.Contract(abi, address))
+    },
+
+    decimal: 18,
+    /**
+     *  @type {number}
+     */
+    get precision () {
+      const { decimal } = this
+
+      return Math.pow(10, decimal)
     },
 
     userBalanceOf: valueModel.create(),
@@ -211,11 +259,20 @@ store.tokens = {
     error: errorModel.create(),
 
     price: valueModel.create(),
+    priceUnit: 'USDT',
+    // FIXME: 
     async getPrice () {
-      const { contractSwap, price } = this
-      const result = await contractSwap.methods.get_virtual_price().call()
+      const { address, price } = this
 
-      price.tether = result
+
+
+      // let amountsTether = await uniswapV2Router2.getAmountsOut(BN(1).times(1e18).toString(), [address, process.env.VUE_APP_USDT_TOKEN])
+      let amountsTether = await uniswapV2Router2.getPrice(this, store.tokens.usdt)
+      // FIXME: try
+      // amountsTether = BN(amountsTether[1]).dividedBy(1e6).times(1e18).toString()
+      amountsTether = BN(amountsTether).times(1e18).toString()
+console.log('amountsTether', amountsTether)
+      price.tether = amountsTether
 
       return price.handled
     },
@@ -399,30 +456,7 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
     },
   },
 
-  usdt: {
-    code: 'usdt',
-    name: 'Tether USD',
-    symbol: 'USDT',
-    deprecated: false,
-    totalSupply: 0, // XXX:
-    address: process.env.VUE_APP_USDT_TOKEN,
 
-    __contract: null,
-    get contract () {
-      const { __contract, abi, address } = this
-
-      return __contract ||
-        (this.__contract = new web3.eth.Contract(abi, address))
-    },
-    async getBalances (address) {
-    },
-    async getBalanceOf (address) {
-
-    },
-    async doAllowance () {
-
-    }
-  },
   dai: {
     address: process.env.VUE_APP_DAI_TOKEN,
     // TEMP: 
@@ -1715,6 +1749,10 @@ store.announcement = {
   /** @type {Object} */
   statement: null,
   notices: [],
+}
+
+store.swap = {
+  uniswapV2Router2
 }
 
 store.request = request

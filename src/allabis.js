@@ -15335,7 +15335,7 @@ var dusd = {
   wrapped_precisions: [1e18, 1e6, 1e6, 1e18],
   use_lending: [true, true, true, true],
   tethered: [false, false, true, false],
-  is_plain: [false, false, false, false],
+  is_plain: [true, true, true, true],
   underlying_coins: [
     process.env.VUE_APP_DAI_TOKEN,
     process.env.VUE_APP_USDC_TOKEN,
@@ -15684,80 +15684,6 @@ var dusd = {
     }
   ],
   sCurveRewards_address: '0x0001FB050Fe7312791bF6475b96569D83F695C9f',
-  aRewards_abi: [
-    {
-      'inputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'constructor'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'adai',
-      'outputs': [
-        { 'internalType': 'contract IERC20', 'name': '', 'type': 'address' }
-      ],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [
-        { 'internalType': 'uint256', 'name': '_amount', 'type': 'uint256' }
-      ],
-      'name': 'claim',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [
-        { 'internalType': 'address', 'name': '_claimer', 'type': 'address' }
-      ],
-      'name': 'claimable',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'governance',
-      'outputs': [{ 'internalType': 'address', 'name': '', 'type': 'address' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [
-        { 'internalType': 'address', 'name': '_token', 'type': 'address' },
-        { 'internalType': 'uint256', 'name': '_amount', 'type': 'uint256' }
-      ],
-      'name': 'seize',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'yfi',
-      'outputs': [
-        { 'internalType': 'contract IERC20', 'name': '', 'type': 'address' }
-      ],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    }
-  ],
-  aRewards_address: '0xcc9efea3ac5df6ad6a656235ef955fbfef65b862'
 }
 
 export let iearnAPR_abi = [

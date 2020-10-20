@@ -234,15 +234,17 @@ export function update_rates(version = 'new', contract) {
         */
         //for usdt pool
         if(checkTethered(contract, i)) {
-            Vue.set(contract.c_rates, i, 1 / allabis[contract.currentContract].coin_precisions[i]);
+          Vue.set(contract.c_rates, i, 1 / allabis[contract.currentContract].coin_precisions[i]);
         }
         else if(['iearn', 'busd', 'susd', 'pax', 'dfi', 'dusd'].includes(contract.currentContract)) {
             if(contract.currentContract == 'susd' && i == 1) {
                 calls.push(['0xeDf54bC005bc2Df0Cc6A675596e843D28b16A966', '0xbb7b8b80'])
             }
-            else
-                //getPricePerFullShare
-                calls.push([address, '0x77c7b8fc'])
+            else {
+              //getPricePerFullShare
+              calls.push([address, '0x77c7b8fc'])
+            }
+
             callscoins.push({pool: 'ys', i: i})
         }
         else {
@@ -270,6 +272,7 @@ export async function update_fee_info(version = 'new', contract, update = true) 
     var swap_token_address = allabis[contract.currentContract].token_address
     var swap_stats = contract.swap;
     var swap_token_stats = contract.swap_token;
+
     if(version == 'old') {
         swap_abi_stats = allabis[contract.currentContract].old_swap_abi;
         swap_address_stats = allabis[contract.currentContract].old_swap_address;
@@ -289,15 +292,15 @@ export async function update_fee_info(version = 'new', contract, update = true) 
       //token_supply()
       [swap_token_address, swap_token_stats.methods.totalSupply().encodeABI()],
     ]
-    let rates_calls = update_rates(version, contract);
 
     let swap = new web3.eth.Contract(swap_abi_stats, swap_address_stats);
     for (let i = 0; i < allabis[contract.currentContract].N_COINS; i++) {
         //swap.methods.balances(i)
         calls.push([swap_address_stats, swap.methods.balances(i).encodeABI()])
     }
+    let rates_calls = update_rates(version, contract);
     calls.push(...rates_calls)
-    if(['susdv2','sbtc', 'iearn', 'y', 'dfi'].includes(contract.currentContract) && update)
+    if(['susdv2','sbtc', 'iearn', 'y', 'dfi', 'dusd'].includes(contract.currentContract) && update)
         calls.push([allabis[contract.currentContract].sCurveRewards_address, contract.curveRewards.methods.balanceOf(default_account).encodeABI()])
     if(update)
         await multiInitState(calls, contract)
@@ -318,7 +321,7 @@ export async function multiInitState(calls, contract, initContracts = false) {
     var default_account = currentContract.default_account;
     let aggcalls;
     try {
-      console.log('multicall----' )
+      console.log('multicall----', calls)
         aggcalls = await multicall.methods.aggregate(calls).call()
         console.log('multicall----1', aggcalls )
     }
@@ -370,38 +373,38 @@ export async function multiInitState(calls, contract, initContracts = false) {
     contract.totalSupply = token_supply
     let ratesDecoded = decoded.slice(4+allabis[contract.currentContract].N_COINS)
     if(initContracts) {
-        let contractsDecoded = decoded.slice(-allabis[contract.currentContract].N_COINS*2)
-        chunkArr(contractsDecoded, 2).map((v, i) => {
-            var addr = v[0];
-            var underlying_addr = v[1];
-            let coin_abi = cERC20_abi
-            var underlying_addr = v[1];
-            let underlying_abi = ERC20_abi
-            if(contract.currentContract == 'susdv2' && i == 3 || contract.currentContract == 'sbtc' && i == 2) {
-                coin_abi = synthERC20_abi
-                underlying_abi = synthERC20_abi
-            }
-            if(['iearn', 'busd', 'susd', 'pax', 'dfi', 'dusd'].includes(contract.currentContract)) coin_abi = yERC20_abi
-            contract.coins.push(new web3.eth.Contract(coin_abi, addr));
-            contract.underlying_coins.push(new web3.eth.Contract(underlying_abi, underlying_addr));
-        })
-        window[contract.currentContract].coins = contract.coins
-        window[contract.currentContract].underlying_coins = contract.underlying_coins
-        ratesDecoded = decoded.slice(4+allabis[contract.currentContract].N_COINS, decoded.length-allabis[contract.currentContract].N_COINS*2)
+      let contractsDecoded = decoded.slice(-allabis[contract.currentContract].N_COINS*2)
+      chunkArr(contractsDecoded, 2).map((v, i) => {
+          var addr = v[0];
+          var underlying_addr = v[1];
+          let coin_abi = cERC20_abi
+          var underlying_addr = v[1];
+          let underlying_abi = ERC20_abi
+          if(contract.currentContract == 'susdv2' && i == 3 || contract.currentContract == 'sbtc' && i == 2) {
+              coin_abi = synthERC20_abi
+              underlying_abi = synthERC20_abi
+          }
+          if(['iearn', 'busd', 'susd', 'pax', 'dfi'].includes(contract.currentContract)) coin_abi = yERC20_abi
+          contract.coins.push(new web3.eth.Contract(coin_abi, addr));
+          contract.underlying_coins.push(new web3.eth.Contract(underlying_abi, underlying_addr));
+      })
+      console.log('window---1')
+      window[contract.currentContract].coins = contract.coins
+      window[contract.currentContract].underlying_coins = contract.underlying_coins
+      ratesDecoded = decoded.slice(4+allabis[contract.currentContract].N_COINS, decoded.length-allabis[contract.currentContract].N_COINS*2)
     }
 
 
     if(['iearn', 'busd', 'susd', 'pax', 'dfi', 'dusd'].includes(contract.currentContract)) {
-        ratesDecoded.map((v, i) => {
-            if(checkTethered(contract, i)) {
-                Vue.set(contract.c_rates, i, 1 / allabis[contract.currentContract].coin_precisions[i]);
-            }
-            else {
-                let rate = v / 1e18 / allabis[contract.currentContract].coin_precisions[i]
-                if(contract.currentContract == 'susd' && i == 1) rate =  v / 1e36
-                Vue.set(contract.c_rates, i, rate)
-            }
-        })
+      ratesDecoded.map((v, i) => {
+        if(checkTethered(contract, i)) {
+          Vue.set(contract.c_rates, i, 1 / allabis[contract.currentContract].coin_precisions[i]);
+        } else {
+          let rate = v / 1e18 / allabis[contract.currentContract].coin_precisions[i]
+          if(contract.currentContract == 'susd' && i == 1) rate =  v / 1e36
+          Vue.set(contract.c_rates, i, rate)
+        }
+      })
     }
     else {
         chunkArr(ratesDecoded ,3).map((v, i) => {

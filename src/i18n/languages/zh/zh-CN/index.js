@@ -79,7 +79,7 @@ export default {
     warningNoPool: '兑换不可用。请在池中选择 {0}。',
     swapWrapped: '兑换 {0} 代币',
     approveExchange: '请批准兑换 {0} {1}',
-    confirmSwapFromFor: '请确认将 {0} 交换为最小 {1}'
+    confirmSwapFromFor: '请确认将 {0} 兑换成至少 {1}'
   },
   balancesInfo: {
     name: '矿池概览',

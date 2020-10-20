@@ -36,7 +36,6 @@ const ModelValueTether = {
         if (loading) {
           this.loading = false
         }
-        console.log('this.loading', this.loading)
       },
 
       /** @type {string} */

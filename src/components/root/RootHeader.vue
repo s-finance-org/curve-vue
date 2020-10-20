@@ -14,7 +14,8 @@
           <b-navbar-nav>
             <b-nav-item v-for="item in headerNav"
               :key="'nav_'+item.name"
-              :to=item.to :href=item.href
+              :to=item.to
+              :href=item.href
               :target=item.target
               :active=item.active
               >{{ $t(item.i18n) }}</b-nav-item>

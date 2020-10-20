@@ -823,7 +823,6 @@
 				  "0xB1F2cdeC61db658F091671F5f199635aEF202CAC",
 				  process.env.VUE_APP_PSS_GAUGE,
           "0x705350c4BcD35c9441419DdD5d2f097d7a55410F",
-          
 				]
 
 				let gaugeController_address = '0x2F50D538606Fa9EDD2B11E2446BEb18C9D5846bB'

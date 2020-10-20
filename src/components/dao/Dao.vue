@@ -48,7 +48,7 @@
                   </span>
                   <span class="h4 mb-0">
                     {{ store.tokens.dusd.price.cont }}
-                    <span class="text-black-65 h6">?</span>
+                    <span class="text-black-65 h6">USDT</span>
                   </span>
                 </text-overlay-loading>
               </span>
@@ -200,7 +200,7 @@
                         <em class="px-3 text-black-15">/</em>
                       </span>
                       <text-overlay-loading class="col-12 col-lg-auto"  inline :show="store.tokens.df.price.loading">
-                        1 {{ store.tokens.df.name }} = {{ store.tokens.df.price.cont }} {{ store.tokens.df.priceUnit }}
+                        1 {{ store.gauges.dusd.rewards.df.name }} = {{ store.tokens.df.price.cont }} {{ store.tokens.df.priceUnit }}
                       </text-overlay-loading>
                     </small>
                     <text-overlay-loading :show="loadingAction">
@@ -1126,9 +1126,6 @@
           })
         },
         async mounted() {
-
-
-
           // Set currentPool confirm
           this.currentPool.tokens.sfg.claimConfirm = this.claim
           // FIXME: 
@@ -1294,12 +1291,12 @@
             // dusd
             store.gauges.dusd.rewards.sfg.weighting.handled = 0.2
 
-            // store.gauges.dusd.getAPY(
+            store.gauges.dusd.getAPY(
               store.tokens.sfg.getPrice(),
               store.tokens.sfg.getDailyYield(),
               dusd.getTotalStaking(dusd.mortgages.dusd.totalStaking),
-              // store.tokens.dusd.getPrice(),
-            // )
+              store.tokens.dusd.getPrice(),
+            )
 
             store.tokens.dusd.getBalanceOf(dusd.mortgages.dusd.userBalanceOf, currentContract.default_account)
 
@@ -1316,6 +1313,8 @@
               dusd.getUserPendingReward_DF(dusd.rewards.df.userPendingReward, currentContract.default_account),
               dusd.getUserPaidReward_DF(dusd.rewards.df.userPaidReward, currentContract.default_account)
             )
+
+            store.tokens.df.getPrice()
 
             // dfi
             store.gauges.dfi.rewards.sfg.weighting.handled = 0.3

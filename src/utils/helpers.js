@@ -17,6 +17,7 @@ export function capitalize(value) {
     wbtc: 'wBTC',
     renbtc: 'renBTC',
     sbtc: 'sBTC',
+    usdx: 'USDx'
   }
   if(capitalizations[value]) return capitalizations[value]
   return value.toUpperCase();
