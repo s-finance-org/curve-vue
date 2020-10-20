@@ -14,7 +14,7 @@
             :class="{'token-icon': true, [currency+'-icon']: true, 'y': depositc && !isPlain}" 
             :src='getTokenIcon(currency)'>
         </div>
-        <h3 class="mb-0">{{ currentPool }}<br/>{{ $t('liquidity.name') }}</h3>
+        <h3 class="mb-0">{{ currentPoolName }}<br/>{{ $t('liquidity.name') }}</h3>
         <div class="total-box col-3 px-4 py-3 ml-auto mr-4 d-none d-lg-block">
           <h6 class="text-black-65">{{ $t('global.totalBalances') }}</h6>
           <text-overlay-loading :show="totalBalances === null">
@@ -236,7 +236,7 @@
             <span class="col-12 col-md mb-2">
               <h6 class="mb-1">{{ $t('instantSwap.routedThrough') }}</h6>
               <div>
-                {{ bestPoolText }}
+                {{ currentPoolName }}
               </div>
             </span>
             <span class="col text-right">
@@ -595,6 +595,11 @@
         },
         computed: {
           ...getters,
+          currentPoolName () {
+            return this.currentPool === 'dusd'
+              ? 'dForce'
+              : this.currentPool
+          },
           customMaxSlippageInput: {
             get () {
               return this.maxInputSlippage
@@ -735,11 +740,11 @@
             showSlippageTooLow() {
                 return this.maxInputSlippage != '' && +this.maxInputSlippage < 0.2
             },
-            bestPoolText() {
-              return this.currentPool
-                // if(this.bestPool === null) return 'Not available'
-                // return ['compound', 'y', 'busd', 'susd', 'pax', 'ren', 'sbtc', '1split', 'dfi', 'dusd'][this.bestPool]
-            },
+            // bestPoolText() {
+            //   return this.currentPool
+            //     // if(this.bestPool === null) return 'Not available'
+            //     // return ['compound', 'y', 'busd', 'susd', 'pax', 'ren', 'sbtc', '1split', 'dfi', 'dusd'][this.bestPool]
+            // },
         },
         mounted() {
             if(currentContract.initializedContracts) this.mounted();
@@ -800,6 +805,7 @@
                 try {
                     let [dy, dy_, dx_, balance] = await promise
                     this.toInput = dy;
+                    console.log('dy dx ', dy_ , dx_)
                     this.exchangeRate = (dy_ / dx_).toFixed(4);
                     if(this.swapwrapped) {
                         let cdy_ = (dy_ * this.c_rates[this.to_currency] * allabis[currentContract.currentContract].wrapped_precisions[this.to_currency])
@@ -909,19 +915,25 @@
                     let calls = [
                         [currentContract.swap._address, currentContract.swap.methods.balances(i).encodeABI()],
                     ]
-                    if(!this.swapwrapped && !['susdv2', 'tbtc', 'ren'].includes(this.currentPool))
-                        calls.push([currentContract.swap._address, currentContract.swap.methods.get_dy_underlying(i, j, dx).encodeABI()])
+                    if(!this.swapwrapped && !['susdv2', 'tbtc', 'ren', 'dusd'].includes(this.currentPool))
+                      calls.push([currentContract.swap._address, currentContract.swap.methods.get_dy_underlying(i, j, dx).encodeABI()])
                     else {
-                        //dx = cBN(dx).times(currentContract.c_rates[i])
-                        calls.push([currentContract.swap._address, currentContract.swap.methods.get_dy(i, j, dx).encodeABI()])
+                      //dx = cBN(dx).times(currentContract.c_rates[i])
+                      calls.push([currentContract.swap._address, currentContract.swap.methods.get_dy(i, j, dx).encodeABI()])
                     }
+                    console.log('get_dy_underlying----', i, j, dx)
+                    console.log('get_dy_underlying---', await currentContract.swap.methods.get_dy_underlying(i, j, dx).call() )
+                    console.log('get_dy_underlying--', await currentContract.swap.methods.get_dy(i, j, dx).call() )
                     calls.push([this.coins[this.to_currency]._address , this.coins[this.to_currency].methods.balanceOf(currentContract.default_account).encodeABI()])
+
+
                     let aggcalls = await currentContract.multicall.methods.aggregate(calls).call(undefined, 'pending')
                     let decoded = aggcalls[1].map(hex => currentContract.web3.eth.abi.decodeParameter('uint256', hex))
                     let [b, get_dy_underlying, balance] = decoded
                     b = +b * currentContract.c_rates[i];
                     // In c-units
                     var dy_ = +get_dy_underlying / this.precisions[j];
+                    console.log('get_dy_underlying', get_dy_underlying)
                     var dy = this.toFixed(dy_);
                     resolve([dy, dy_, dx_, balance])
                 })

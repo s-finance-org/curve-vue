@@ -4,7 +4,7 @@
     <div class="total-bg">
       <b-container class="d-flex py-4 total-cont">
         <b-navbar-nav class="navbar-tabs flex-row">
-          <b-nav-item :to="{ name: 'Liquidity', params: { pool: 'dusd' } }">dUSD</b-nav-item>
+          <b-nav-item :to="{ name: 'Liquidity', params: { pool: 'dusd' } }">dForce</b-nav-item>
           <b-nav-item :to="{ name: 'Liquidity', params: { pool: 'dfi' } }">dfi</b-nav-item>
           <b-nav-item :to="{ name: 'Liquidity', params: { pool: 'susdv2' } }">sUSD</b-nav-item>
         </b-navbar-nav>
@@ -15,7 +15,7 @@
             :class="{'token-icon': true, [currency+'-icon']: true, 'y': depositc && !isPlain}" 
             :src='getTokenIcon(currency)'>
         </div>
-        <h3 class="mb-0">{{ currentPool }}<br/>{{ $t('liquidity.name') }}</h3>
+        <h3 class="mb-0">{{ currentPoolName }}<br/>{{ $t('liquidity.name') }}</h3>
         <div class="total-box col-3 px-4 py-3 ml-auto mr-4 d-none d-lg-block">
           <h6 class="text-black-65">{{ $t('global.totalBalances') }}</h6>
           <text-overlay-loading :show="totalBalances === null">
@@ -1057,7 +1057,11 @@
         currentContract () {
           return currentContract
         },
-
+        currentPoolName () {
+          return this.currentPool === 'dusd'
+            ? 'dForce'
+            : this.currentPool
+        },
         currentPoolTokenName () {
           const conversions = {
             'dfi': 'iUSD',

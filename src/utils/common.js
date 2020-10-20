@@ -310,9 +310,12 @@ export async function update_fee_info(version = 'new', contract, update = true) 
 }
 
 function checkTethered(contract, i) {
-    return allabis[contract.currentContract].tethered && allabis[contract.currentContract].tethered[i] &&
-        allabis[contract.currentContract].use_lending && !allabis[contract.currentContract].use_lending[i]
-        || allabis[contract.currentContract].is_plain[i] || contract.currentContract == 'susdv2';
+  return allabis[contract.currentContract].tethered
+    && allabis[contract.currentContract].tethered[i]
+    && allabis[contract.currentContract].use_lending
+    && !allabis[contract.currentContract].use_lending[i]
+    || allabis[contract.currentContract].is_plain[i]
+    || contract.currentContract == 'susdv2';
 }
 
 export async function multiInitState(calls, contract, initContracts = false) {
@@ -539,7 +542,6 @@ export async function calc_slippage(values, deposit, zap_values, to_currency) {
         slippage = Sr / (Sv * 1e18)
     slippage = slippage - 1;
     slippage = slippage || 0
-    console.log(slippage)
     currentContract.slippage = slippage;
     currentContract.showSlippage = true;
 }
