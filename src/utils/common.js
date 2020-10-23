@@ -70,8 +70,9 @@ export async function ensure_allowance_zap_out(amount, fromContract, toContract,
     if(!fromContract) fromContract = currentContract.swap_token;
     if(!toContract) toContract = allabis[currentContract.currentContract].deposit_address
     let allowance = cBN(await currentContract.swap_token.methods.allowance(default_account, toContract).call())
+console.log('allowance', allowance.toString(), 'amount', amount)
     if(!infinite) {
-        if(allowance.lt(cBN(amount))) {    
+        if(allowance.lt(cBN(amount))) {
             if(allowance > 0) await approve(fromContract, 0, default_account, toContract)
             await approve(fromContract, amount, default_account, toContract)
         }
