@@ -217,7 +217,7 @@
 
           <div class="mt-4">
             <b-form-checkbox v-model="inf_approval" name="inf-approval">{{ $t('global.infiniteApproval') }}</b-form-checkbox>
-            <b-form-checkbox v-model="swapwrapped" name="swapw" v-show = "!['susdv2', 'tbtc', 'ren', 'sbtc'].includes(currentPool)">{{ $t('instantSwap.swapWrapped', ['i']) }}</b-form-checkbox>
+            <b-form-checkbox v-model="swapwrapped" name="swapw" v-show = "!['susdv2', 'tbtc', 'ren', 'sbtc'].includes(currentPool)">{{ $t('instantSwap.swapWrapped', [currentPoolTokenCoinMark]) }}</b-form-checkbox>
           </div>
 
           <div class="row mt-3 align-items-end text-black-65 flex-wrap">
@@ -584,8 +584,9 @@
                     let j = this.to_currency
                     let promises = await Promise.all([helpers.getETHPrice()])
                     this.ethPrice = promises[0]
-                    this.estimateGas = this.swapwrapped ? 
-                                            contractGas.swap[this.currentPool].exchange(i, j) / 2 : contractGas.swap[this.currentPool].exchange_underlying(i, j) / 2
+                    this.estimateGas = this.swapwrapped
+                      ? contractGas.swap[this.currentPool].exchange(i, j) / 2
+                      : contractGas.swap[this.currentPool].exchange_underlying(i, j) / 2
                 },
                 immediate: true
             },
@@ -599,6 +600,14 @@
             return this.currentPool === 'dusd'
               ? 'dForce'
               : this.currentPool
+          },
+          currentPoolTokenCoinMark () {
+            const conversions = {
+              'dfi': 'i',
+              'dusd': 'd'
+            }
+
+            return conversions[this.currentPool] || ''
           },
           customMaxSlippageInput: {
             get () {
@@ -805,7 +814,6 @@
                 try {
                     let [dy, dy_, dx_, balance] = await promise
                     this.toInput = dy;
-                    console.log('dy dx ', dy_ , dx_)
                     this.exchangeRate = (dy_ / dx_).toFixed(4);
                     if(this.swapwrapped) {
                         let cdy_ = (dy_ * this.c_rates[this.to_currency] * allabis[currentContract.currentContract].wrapped_precisions[this.to_currency])
@@ -816,8 +824,8 @@
                     else this.bgColor= '#505070'
                     if(isNaN(this.exchangeRate)) this.exchangeRate = "Not available"
                     let amount = Math.floor(
-                            100 * parseFloat(balance) / this.precisions[this.to_currency]
-                        ) / 100
+                        100 * parseFloat(balance) / this.precisions[this.to_currency]
+                      ) / 100
 
                     this.disabled = false;
                 }
@@ -921,11 +929,7 @@
                       //dx = cBN(dx).times(currentContract.c_rates[i])
                       calls.push([currentContract.swap._address, currentContract.swap.methods.get_dy(i, j, dx).encodeABI()])
                     }
-                    console.log('get_dy_underlying----', i, j, dx)
-                    console.log('get_dy_underlying---', await currentContract.swap.methods.get_dy_underlying(i, j, dx).call() )
-                    console.log('get_dy_underlying--', await currentContract.swap.methods.get_dy(i, j, dx).call() )
                     calls.push([this.coins[this.to_currency]._address , this.coins[this.to_currency].methods.balanceOf(currentContract.default_account).encodeABI()])
-
 
                     let aggcalls = await currentContract.multicall.methods.aggregate(calls).call(undefined, 'pending')
                     let decoded = aggcalls[1].map(hex => currentContract.web3.eth.abi.decodeParameter('uint256', hex))
@@ -933,7 +937,6 @@
                     b = +b * currentContract.c_rates[i];
                     // In c-units
                     var dy_ = +get_dy_underlying / this.precisions[j];
-                    console.log('get_dy_underlying', get_dy_underlying)
                     var dy = this.toFixed(dy_);
                     resolve([dy, dy_, dx_, balance])
                 })
@@ -1013,9 +1016,7 @@
                         .once('transactionHash', hash => {
                             dismiss()
                             notifyHandler(hash)
-                            this.waitingMessage = `Waiting for swap 
-                                                    <a href='https://etherscan.io/tx/${hash}'>transaction</a>
-                                                    to confirm: no further action needed`
+                            this.waitingMessage = this.$i18n.t('instantSwap.waitingSwapTransactionNoFurther', [hash])
                         })
                 }
                 catch(err) {

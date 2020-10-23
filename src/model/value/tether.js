@@ -8,13 +8,13 @@ const ModelValueTether = {
    */
   create ({
     decimal = 18,
-    wrappedDecimal = 6,
-    wrappedMethod = floor
+    contDecimal = 6,
+    contMethod = floor
   } = {}) {
     const __store__ = {
       tether: '000000000000000000',
       handled: '',
-      wrapped: '-'
+      cont: '-'
     }
 
     return {
@@ -59,15 +59,15 @@ const ModelValueTether = {
         this._update()
       },
 
-      wrappedDecimal,
+      contDecimal,
       /** @type {string} */
-      get wrapped () {
-        const { handled, wrappedDecimal, loading } = this
+      get cont () {
+        const { handled, contDecimal, loading } = this
 
         // FIXME: formatNumber toFixed -> round()
         return !loading
-          ? helpers.formatNumber(wrappedMethod(handled, wrappedDecimal), wrappedDecimal)
-          : __store__.wrapped
+          ? helpers.formatNumber(contMethod(handled, contDecimal), contDecimal)
+          : __store__.cont
       }
     }
   }

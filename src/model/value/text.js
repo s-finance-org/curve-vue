@@ -4,7 +4,7 @@ const ModelValueText = {
   create () {
     const __store__ = {
       text: '',
-      defaultWrapped: '-'
+      defaultCont: '-'
     }
 
     return {
@@ -31,12 +31,12 @@ const ModelValueText = {
 
       /** @type {string} */
       get wrapped () {
-        const { defaultWrapped } = __store__
+        const { defaultCont } = __store__
         const { text, loading } = this
 
         return !loading
           ? text
-          : defaultWrapped
+          : defaultCont
       }
     }
   }

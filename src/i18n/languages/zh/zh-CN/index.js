@@ -79,7 +79,8 @@ export default {
     warningNoPool: '兑换不可用。请在池中选择 {0}。',
     swapWrapped: '兑换 {0} 代币',
     approveExchange: '请批准兑换 {0} {1}',
-    confirmSwapFromFor: '请确认将 {0} 兑换成至少 {1}'
+    confirmSwapFromFor: '请确认将 {0} 兑换成至少 {1}',
+    waitingSwapTransactionNoFurther: `等待兑换<a href='http://etherscan.io/tx/{0}'>交易</a>确认完毕，无需采取进一步措施`
   },
   balancesInfo: {
     name: '矿池概览',
@@ -117,7 +118,7 @@ export default {
     depositBalancedProportion: '均衡添加所有代币',
     depositUseMaximumAvailable: '使用最大数量的代币',
     depositWrapped: '存入 {0} 代币',
-    depositWrappedPlaceholder: '存入抵押凭据',
+    depositWrappedPlaceholder: '存入抵押数量',
     willLeastReceive: '你将至少收到',
     willReceive: '你将收到',
     bonus: '额外奖励',
@@ -136,7 +137,6 @@ export default {
     UnstakingTokenWithdrawal: `还差 {0} LP token方可取款成功，请减少取款数额，否则可能造成交易异常`,
     waitingDepositTransactionBeforeStaking: `抵押前请等待当前<a href='http://etherscan.io/tx/{0}'>交易</a>完成`,
     waitingDepositTransactionNoFurther: `等待存款<a href='http://etherscan.io/tx/{0}'>交易</a>确认完毕，无需采取进一步措施`
-    
   },
   dao: {
     standTitle: '稳定币流动性矿池',

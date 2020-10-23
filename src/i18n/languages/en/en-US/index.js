@@ -78,7 +78,8 @@ export default {
     warningNoPool: 'Swap not available. Please select {0} in pool select',
     swapWrapped: 'Swap wrapped',
     approveExchange: 'Please approve {0} {1} for exchange',
-    confirmSwapFromFor: 'Please confirm swap from {0} for min {1}'
+    confirmSwapFromFor: 'Please confirm swap from {0} for min {1}',
+    waitingSwapTransactionNoFurther: `Waiting for swap <a href='https://etherscan.io/tx/{0}'>transaction</a>to confirm: no further action needed`
   },
   balancesInfo: {
     name: 'Pool overview',

@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <title>-mockplus-</title>
-    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="挖矿-挖矿奖励" transform="translate(-60.000000, -366.000000)">
-            <g id="编组-4" transform="translate(48.000000, 354.000000)">
-                <g id="icon/coins/sfg" transform="translate(12.000000, 12.000000)">
-                    <path d="M23.9897771,12.0238679 C23.9766043,18.6494929 18.5984095,24.0106476 11.9755955,24 C5.35278155,23.9893206 -0.00813589248,18.6108747 3.05533373e-14,11.9852415 C0.00815443105,5.35960836 5.38227952,-0.00562931212 12.0050997,-1.70530255e-14 C15.1863451,-1.70530255e-14 18.2372949,1.26428649 20.486775,3.514723 C22.7362552,5.7651595 24,8.8174064 24,12" id="Fill-1-Copy-3-Copy" fill="#EB3C00" fill-rule="nonzero"></path>
-                    <path d="M12,12 L14.728,13.488 L11.9998114,14.97792 L10.4097664,14.1100544 L9.2697664,14.7320544 L12,16.2219456 L15.869,14.11 L18.6,15.6 L12,19.2 L5.4,15.6 L12,12 Z M12,4.8 L18.6,8.4 L12,12 L9.269,10.51 L12,9.0219 L13.5937664,9.8910544 L14.7337664,9.2690544 L12,7.7780544 L8.129,9.889 L5.4,8.4 L12,4.8 Z" id="形状结合" fill="#FFFFFF"></path>
+    <g id="页面" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="dForce池-挖矿奖励" transform="translate(-68.000000, -396.000000)">
+            <g id="编组" transform="translate(24.000000, 20.000000)">
+                <g id="编组-4" transform="translate(24.000000, 356.000000)">
+                    <g id="icon/coins/sfg" transform="translate(20.000000, 20.000000)">
+                        <circle id="椭圆形" stroke="#DADEDF" fill="#FFFFFF" cx="12" cy="12" r="11.5"></circle>
+                        <path d="M12,12 L14.728,13.488 L11.9998114,14.97792 L10.4097664,14.1100544 L9.2697664,14.7320544 L12,16.2219456 L15.869,14.11 L18.6,15.6 L12,19.2 L5.4,15.6 L12,12 Z M12,4.8 L18.6,8.4 L12,12 L9.269,10.51 L12,9.0219 L13.5937664,9.8910544 L14.7337664,9.2690544 L12,7.7780544 L8.129,9.889 L5.4,8.4 L12,4.8 Z" id="形状结合" fill="#EB3C00"></path>
+                    </g>
                 </g>
             </g>
         </g>

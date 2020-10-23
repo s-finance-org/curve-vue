@@ -27,7 +27,7 @@ const ModelLpToken = {
     abi = [],
     code = '',
     decimal = 18,
-    wrappedDecimal = 4,
+    contDecimal = 4,
     getBalanceOfMethod = 'balanceOf',
     getDecimalMethod = 'decimals'
   } = {}) {
@@ -36,7 +36,7 @@ const ModelLpToken = {
       name: '',
       symbol: '',
       decimal,
-      wrappedDecimal
+      contDecimal
     }
 
     return {
@@ -104,12 +104,13 @@ const ModelLpToken = {
       },
 
       getBalance (tokenAddress) {
-        
+
       },
-      tokens: {
-        SFG: {},
-        DAI: {}
-      },
+
+      underlyingCoins: {},
+
+      hasTokensCoins: false,
+      tokensCoins: {},
 
 
 
