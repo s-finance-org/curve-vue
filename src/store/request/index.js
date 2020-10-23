@@ -32,7 +32,10 @@ export default {
   },
   getAllInfo: async () => {
     const res = await requests.get('https://api.s.finance/v1/sfinance')
+  },
+  getDforceApy: async () => {
+    const res = await requests.get('https://markets.dforce.network/api/v2/getApy/')
 
-
+    return res
   }
 }

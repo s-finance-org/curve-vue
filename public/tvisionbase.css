@@ -409,6 +409,7 @@ input[type="text"]::-moz-placeholder, textarea::-moz-placeholder {
   line-height: 22px;
   max-width: 360px;
   padding: 8px 12px;
+  text-align: left;
 }
 .tooltip.b-tooltip {
   opacity: 1;

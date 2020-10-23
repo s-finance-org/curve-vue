@@ -184,4 +184,5 @@ export default {
     approveOperation: '请先授权，并在授权完成后再继续操作'
   },
   temp: '* 如果要全部取款为一个币种，请点选该币种',
+  dforceTemp: 'dForce 池流动性挖矿即将开启。当前可正常抵押赎回 dUSD LP tokens，但是无法获得代币奖励'
 }

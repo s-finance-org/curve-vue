@@ -13,17 +13,19 @@
       <b-tabs pills nav-class="tabs-nav" class="mt-4">
         <b-tab :title="$t('dao.standTitle')" class="pt-3" active>
           <!-- dUSD -->
-        <div v-if=false>
           <h4 class="mb-2 d-flex flex-wrap align-items-end">
             <span class="mr-3">{{ $t('dao.tokenTitle', [store.gauges.dusd.propagateMark]) }}</span>
             <small class="mr-auto">{{ $t('dao.describe', [store.gauges.dusd.mortgagesUnit, store.gauges.dusd.rewardsUnit.join(' + ')]) }}</small>
-            <text-overlay-loading inline :show="store.gauges.dusd.apy.loading">
+            <!-- <text-overlay-loading inline :show="store.gauges.dusd.apy.loading">
               <span class="h5 text-danger-1 mb-0">
                 <small class="text-black-45">{{ $t('global.apr') }}</small>
                 {{ store.gauges.dusd.apy.percent }}%
-                <span v-show=false>{{ store.gauges.dusd.apy }}</span>
               </span>
-            </text-overlay-loading>
+            </text-overlay-loading> -->
+            <span class="h5 text-danger-1 mb-0">
+                <small class="text-black-45">{{ $t('global.apr') }}</small>
+                0%
+              </span>
           </h4>
           <div class="box mb-4 px-4 py-3">
             <div class="row mb-3 line-bottom">
@@ -57,6 +59,8 @@
                 <h6 class="mb-0 text-black-65">{{ $t('dao.rewardWeight', ['SFG']) }}</h6>
                 <text-overlay-loading inline :show="store.gauges.dfi.rewards.sfg.weighting.loading">
                   <span class="h4">{{ store.gauges.dusd.rewards.sfg.weighting.percent }}%</span>
+                  <b-avatar text="!" class="iconTip iconTip-warning ml-2" id="tooltip-mining-paid-reward-tip1"></b-avatar>
+                  <b-tooltip placement="topright" target="tooltip-mining-paid-reward-tip1" variant="success">{{ $t('dforceTemp') }}</b-tooltip>
                 </text-overlay-loading>
               </span>
             </div>
@@ -214,7 +218,6 @@
               </b-tab>
             </b-tabs>
           </div>
-        </div>
 
           <!-- dfi -->
           <h4 class="mb-2 d-flex flex-wrap align-items-end">
@@ -224,7 +227,6 @@
               <span class="h5 text-danger-1 mb-0">
                 <small class="text-black-45">{{ $t('global.apr') }}</small>
                 {{ store.gauges.dfi.apy.percent }}%
-                <span v-show=false>{{ store.gauges.dfi.apy }}</span>
               </span>
             </text-overlay-loading>
           </h4>
@@ -607,7 +609,6 @@
               <span class="h5 text-danger-1 mb-0">
                 <small class="text-black-45">{{ $t('global.apr') }}</small>
                 {{ store.gauges.bpt.apy.percent }}%
-                <span v-show=false>{{ store.gauges.bpt.apy }}</span>
               </span>
             </text-overlay-loading>
           </h4>
@@ -828,7 +829,6 @@
 						<div class='label'>
 							<label for='zoom'>{{ withdrawSlider }}%</label>
 						</div>
-
 					</div>
 					<button @click='withdraw'>Withdraw</button>
 				</div>
@@ -1298,32 +1298,32 @@
             const { dfi, bpt, dusd } = store.gauges
 
             // dusd
-            // store.gauges.dusd.rewards.sfg.weighting.handled = 0.2
+            store.gauges.dusd.rewards.sfg.weighting.handled = 0
 
-            // store.gauges.dusd.getAPY(
-            //   store.tokens.sfg.getPrice(),
-            //   store.tokens.sfg.getDailyYield(),
-            //   dusd.getTotalStaking(dusd.mortgages.dusd.totalStaking),
-            //   store.tokens.dusd.getPrice(),
-            // )
+            store.gauges.dusd.getAPY(
+              store.tokens.sfg.getPrice(),
+              store.tokens.sfg.getDailyYield(),
+              dusd.getTotalStaking(dusd.mortgages.dusd.totalStaking),
+              store.tokens.dusd.getPrice(),
+            )
 
-            // store.tokens.dusd.getBalanceOf(dusd.mortgages.dusd.userBalanceOf, currentContract.default_account)
+            store.tokens.dusd.getBalanceOf(dusd.mortgages.dusd.userBalanceOf, currentContract.default_account)
 
-            // dusd.getBalanceOf(dusd.mortgages.dusd.userStaking, currentContract.default_account)
+            dusd.getBalanceOf(dusd.mortgages.dusd.userStaking, currentContract.default_account)
 
-            // dusd.getUserTotalReward_SFG(
-            //   dusd.rewards.sfg.userTotalReward,
-            //   dusd.getUserPendingReward_SFG(dusd.rewards.sfg.userPendingReward, currentContract.default_account),
-            //   dusd.getUserPaidReward_SFG(dusd.rewards.sfg.userPaidReward, currentContract.default_account)
-            // )
+            dusd.getUserTotalReward_SFG(
+              dusd.rewards.sfg.userTotalReward,
+              dusd.getUserPendingReward_SFG(dusd.rewards.sfg.userPendingReward, currentContract.default_account),
+              dusd.getUserPaidReward_SFG(dusd.rewards.sfg.userPaidReward, currentContract.default_account)
+            )
 
-            // dusd.getUserTotalReward_DF(
-            //   dusd.rewards.df.userTotalReward,
-            //   dusd.getUserPendingReward_DF(dusd.rewards.df.userPendingReward, currentContract.default_account),
-            //   dusd.getUserPaidReward_DF(dusd.rewards.df.userPaidReward, currentContract.default_account)
-            // )
+            dusd.getUserTotalReward_DF(
+              dusd.rewards.df.userTotalReward,
+              dusd.getUserPendingReward_DF(dusd.rewards.df.userPendingReward, currentContract.default_account),
+              dusd.getUserPaidReward_DF(dusd.rewards.df.userPaidReward, currentContract.default_account)
+            )
 
-            // store.tokens.df.getPrice()
+            store.tokens.df.getPrice()
 
             // dfi
             store.gauges.dfi.rewards.sfg.weighting.handled = 0.3
