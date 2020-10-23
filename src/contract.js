@@ -604,16 +604,13 @@ export async function init(contract, refresh = false) {
 
   contract.coins = []
   contract.underlying_coins = []
-console.log('------------calls', calls)
 
   // Curver old 
   // if(window.location.href.includes('withdraw_old'))
   //   calls.push(...(await common.update_fee_info('old', contract, false)))
   // else 
   const update_fee_info = await common.update_fee_info('new', contract, false)
-console.log('update_fee_info', update_fee_info)
   calls.push(...update_fee_info)
-console.log('window--', allabis[contract.currentContract].N_COINS)
     for (let i = 0; i < allabis[contract.currentContract].N_COINS; i++) {
 	  	let coinsCall = contract.swap.methods.coins(i).encodeABI()
 	  	let underlyingCoinsCall = ['tbtc', 'ren', 'sbtc'].includes(contract.currentContract)
@@ -623,7 +620,6 @@ console.log('window--', allabis[contract.currentContract].N_COINS)
       calls.push([contract.swap._address, coinsCall])
     	calls.push([contract.swap._address, underlyingCoinsCall])
     }
-    console.log('calls', calls)
     await common.multiInitState(calls, contract, true)
   	contract.initializedContracts = true;
   	console.timeEnd('init')

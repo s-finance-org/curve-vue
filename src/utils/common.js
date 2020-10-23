@@ -324,9 +324,7 @@ export async function multiInitState(calls, contract, initContracts = false) {
     var default_account = currentContract.default_account;
     let aggcalls;
     try {
-      console.log('multicall----', calls)
         aggcalls = await multicall.methods.aggregate(calls).call()
-        console.log('multicall----1', aggcalls )
     }
     catch(err) {
         console.error(err)

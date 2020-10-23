@@ -1532,25 +1532,24 @@
                 let aggcalls = await currentContract.multicall.methods.aggregate(calls).call()
                 let decoded = aggcalls[1].map(hex=>currentContract.web3.eth.abi.decodeParameter('uint256',hex))
                 decoded.slice(0, decoded.length-endOffset).forEach((balance, i) => {
-                    console.log('currentContract.currentContract', currentContract.currentContract)
-                    let abi = allabis[currentContract.currentContract]
-                    let precisions = this.depositc ? abi.wrapped_precisions[i] : abi.coin_precisions[i]
-                    let bal = BN(balance)
-                    if(this.depositc) bal = BN(bal).times(currentContract.c_rates[i])
-                    else bal = BN(bal).div(precisions)
-                    if((this.currentPool == 'susdv2' && i == 3 || this.currentPool == 'sbtc' && i == 2)
-                        && +decoded[decoded.length - 1] != 0) bal = BN(0)
-                    let maxDiff = BN(bal).minus(BN(this.deposit_inputs[i]))
-                    if(!this.deposit_inputs[i]) {
-                        return Vue.set(this.amounts, i, 0)
-                    }
-                    if(BN(bal).gt(0) && maxDiff.lt(0) && BN(maxDiff).lt(BN(this.minAmount))) {
-                        if(!this.depositc) balance = BN(balance).div(precisions).div(currentContract.c_rates[i])
-                        Vue.set(this.amounts, i, BN(balance).toFixed(0,1))
-                    }
-                    else {
-                        Vue.set(this.amounts, i, BN(this.deposit_inputs[i]).div(currentContract.c_rates[i]).toFixed(0,1))
-                    }
+                  let abi = allabis[currentContract.currentContract]
+                  let precisions = this.depositc ? abi.wrapped_precisions[i] : abi.coin_precisions[i]
+                  let bal = BN(balance)
+                  if(this.depositc) bal = BN(bal).times(currentContract.c_rates[i])
+                  else bal = BN(bal).div(precisions)
+                  if((this.currentPool == 'susdv2' && i == 3 || this.currentPool == 'sbtc' && i == 2)
+                      && +decoded[decoded.length - 1] != 0) bal = BN(0)
+                  let maxDiff = BN(bal).minus(BN(this.deposit_inputs[i]))
+                  if(!this.deposit_inputs[i]) {
+                      return Vue.set(this.amounts, i, 0)
+                  }
+                  if(BN(bal).gt(0) && maxDiff.lt(0) && BN(maxDiff).lt(BN(this.minAmount))) {
+                      if(!this.depositc) balance = BN(balance).div(precisions).div(currentContract.c_rates[i])
+                      Vue.set(this.amounts, i, BN(balance).toFixed(0,1))
+                  }
+                  else {
+                      Vue.set(this.amounts, i, BN(this.deposit_inputs[i]).div(currentContract.c_rates[i]).toFixed(0,1))
+                  }
                 })
                 this.amounts = this.amounts.map(v => v || 0)
                 let total_supply = +decoded[decoded.length-endOffset];
@@ -1602,10 +1601,10 @@
 				    }).once('transactionHash', hash => {
                 dismiss()
                 notifyHandler(hash)
-                this.waitingMessage = 
-                `Waiting for deposit 
-                    <a href='http://etherscan.io/tx/${hash}'>transaction</a> 
-                    to confirm ${stake ? 'before staking' : 'no further action required'}`
+                this.waitingMessage = this.$i18n.t(stake
+                    ? 'liquidity.waitingDepositTransactionBeforeStaking'
+                    : 'liquidity.waitingDepositTransactionNoFurther',
+                    [hash])
             })
 				    try {
 				    	receipt = await add_liquidity

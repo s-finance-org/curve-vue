@@ -4,7 +4,7 @@
     <div class="total-bg">
       <b-container class="d-flex py-4 total-cont">
         <b-navbar-nav class="navbar-tabs flex-row">
-          <b-nav-item :to="{ name: 'Swap', params: { pool: 'dusd' } }">dusd</b-nav-item>
+          <b-nav-item :to="{ name: 'Swap', params: { pool: 'dusd' } }">dForce</b-nav-item>
           <b-nav-item :to="{ name: 'Swap', params: { pool: 'dfi' } }">dfi</b-nav-item>
         </b-navbar-nav>
       </b-container>

@@ -1,11 +1,12 @@
 import store from '../../store'
 
-import request from './helpers/get'
+import requests from '../../utils/requests'
 
 export default {
   getAllAnnouncements: async () => {
-    const res = await request.get('https://api.s.finance/f/a/all')
+    const res = await requests.get('https://api.s.finance/f/a/all')
 
+    // sync
     const { announcement } = store
     res.data.forEach((item, idx) => {
       const result = {
@@ -28,5 +29,10 @@ export default {
       // First item
       !idx && (announcement.statement = result)
     })
+  },
+  getAllInfo: async () => {
+    const res = await requests.get('https://api.s.finance/v1/sfinance')
+
+
   }
 }

@@ -33,15 +33,25 @@ import uniswapV2Router2 from './swap/uniswapV2Router2'
 
 // import TOKEN_USDT_ABI from './token/abi/USDT'
 // import TOKEN_DF_ABI from './token/abi/DF'
-// import TOKEN_DUSD_ABI from './token/abi/dUSD'
+import TOKEN_DUSD_ABI from './token/abi/dUSD'
 
 
 import { GAUGE_DUSD_ABI } from './gauge'
 
 import ModelToken from '../model/token'
+import ModelLpToken from '../model/lptoken'
+import ModelValueTether from '../model/value/tether'
+
 import request from './request'
 
-
+const requiresResetAllowance = [
+  process.env.VUE_APP_USDT_TOKEN, // USDT
+  '0xC25a3A3b969415c80451098fa907EC722572917F', // Curve.fi DAI/USDC/USDT/sUSD
+  '0x075b1bb99792c9E1041bA13afEf80C91a1e70fB3', // Curve.fi renBTC/wBTC/sBTC
+  '0xdF5e0e81Dff6FAF3A7e52BA697820c5e32D806A8', // Curve.fi yDAI/yUSDC/yUSDT/yTUSD
+  process.env.VUE_APP_DFI_TOKEN, // s.finance iUSDT/iDAI/iUSDC
+  process.env.VUE_APP_DUSD_TOKEN, // s.finance dDAI/dUSDC/dUSDT/dUSDx
+]
 
 // FIXME: 
 const approve = (contract, amount, account, toContract) => {
@@ -168,7 +178,6 @@ store.price = {
 //       (this.__address = new web3.eth.defaultAccount) 
 //   }
 // }
-
 
 store.tokens = {
   usdt: {
@@ -327,29 +336,31 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
         // allowance < maxAllowance / 2 && amount > 0
         // TODO: div(2) why?
         if (allowance.lt(maxAllowance.div(2))) {
-          // TODO: ?
-          // if (allowance.gt(0) && requiresResetAllowance.includes(contract._address))
-          //   await approve(contract, 0, account, toContract)
-          await approve(contract, maxAllowance, accountAddress, toContract)
+          if (allowance.gt(0) && requiresResetAllowance.includes(contract._address)) {
+            await approve(contract, 0, accountAddress, toContract)
+          } else {
+            await approve(contract, maxAllowance, accountAddress, toContract)
+          }
         }
       } else {
         // allowance < amount && amount > 0
         if (allowance.lt(_amount)) {
-          // TODO: ?
-          // if (allowance.gt(0) && requiresResetAllowance.includes(contract._address))
-          //   await approve(contract, 0, account, toContract)
-          await approve(contract, _amount, accountAddress, toContract)
+          if (allowance.gt(0) && requiresResetAllowance.includes(contract._address)) {
+            await approve(contract, 0, accountAddress, toContract)
+          } else {
+            await approve(contract, _amount, accountAddress, toContract)
+          }
         }
       }
     },
   },
 
   dusd: {
-    name: 'dUSD LP toke',
+    name: 'dUSD LP tokens',
     address: process.env.VUE_APP_DUSD_TOKEN,
     swapAddress: process.env.VUE_APP_DUSD_SWAP,
-    // abi: TOKEN_DUSD_ABI,
-    abi: abiSFG,
+    abi: TOKEN_DUSD_ABI,
+    // abi: abiSFG,
     swapAbi: swapAbi_iUSD_LPT,
     __contract: null,
     get contract () {
@@ -415,7 +426,8 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
       const _amount = BN(amount).times(1e18)
       // FIXME:
       const allowance = BN(await contract.methods.allowance(accountAddress, toContract).call())
-console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->', _amount.toString(), _amount.toString() / 1e18 )
+
+      console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->', _amount.toString(), _amount.toString() / 1e18 )
       // allowance >= amount && amount > 0
       const result = allowance.gte(_amount) && BN(_amount).gt(0)
 
@@ -439,18 +451,20 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
         // allowance < maxAllowance / 2 && amount > 0
         // TODO: div(2) why?
         if (allowance.lt(maxAllowance.div(2))) {
-          // TODO: ?
-          // if (allowance.gt(0) && requiresResetAllowance.includes(contract._address))
-          //   await approve(contract, 0, account, toContract)
-          await approve(contract, maxAllowance, accountAddress, toContract)
+          if (allowance.gt(0) && requiresResetAllowance.includes(contract._address)) {
+            await approve(contract, 0, accountAddress, toContract)
+          } else {
+            await approve(contract, maxAllowance, accountAddress, toContract)
+          }
         }
       } else {
         // allowance < amount && amount > 0
         if (allowance.lt(_amount)) {
-          // TODO: ?
-          // if (allowance.gt(0) && requiresResetAllowance.includes(contract._address))
-          //   await approve(contract, 0, account, toContract)
-          await approve(contract, _amount, accountAddress, toContract)
+          if (allowance.gt(0) && requiresResetAllowance.includes(contract._address)) {
+            await approve(contract, 0, accountAddress, toContract)
+          } else {
+            await approve(contract, _amount, accountAddress, toContract)
+          }
         }
       }
     },
@@ -603,18 +617,20 @@ console.log('getBalanceOf', result)
         // allowance < maxAllowance / 2 && amount > 0
         // TODO: div(2) why?
         if (allowance.lt(maxAllowance.div(2))) {
-          // TODO: ?
-          // if (allowance.gt(0) && requiresResetAllowance.includes(contract._address))
-          //   await approve(contract, 0, account, toContract)
-          await approve(contract, maxAllowance, accountAddress, toContract)
+          if (allowance.gt(0) && requiresResetAllowance.includes(contract._address)) {
+            await approve(contract, 0, accountAddress, toContract)
+          } else {
+            await approve(contract, maxAllowance, accountAddress, toContract)
+          }
         }
       } else {
         // allowance < amount && amount > 0
         if (allowance.lt(_amount)) {
-          // TODO: ?
-          // if (allowance.gt(0) && requiresResetAllowance.includes(contract._address))
-          //   await approve(contract, 0, account, toContract)
-          await approve(contract, _amount, accountAddress, toContract)
+          if (allowance.gt(0) && requiresResetAllowance.includes(contract._address)) {
+            await approve(contract, 0, accountAddress, toContract)
+          } else {
+            await approve(contract, _amount, accountAddress, toContract)
+          }
         }
       }
     },
@@ -712,18 +728,20 @@ console.log('getBalanceOf', result)
         // allowance < maxAllowance / 2 && amount > 0
         // TODO: div(2) why?
         if (allowance.lt(maxAllowance.div(2))) {
-          // TODO: ?
-          // if (allowance.gt(0) && requiresResetAllowance.includes(contract._address))
-          //   await approve(contract, 0, account, toContract)
-          await approve(contract, maxAllowance, accountAddress, toContract)
+          if (allowance.gt(0) && requiresResetAllowance.includes(contract._address)) {
+            await approve(contract, 0, accountAddress, toContract)
+          } else {
+            await approve(contract, maxAllowance, accountAddress, toContract)
+          }
         }
       } else {
         // allowance < amount && amount > 0
         if (allowance.lt(_amount)) {
-          // TODO: ?
-          // if (allowance.gt(0) && requiresResetAllowance.includes(contract._address))
-          //   await approve(contract, 0, account, toContract)
-          await approve(contract, _amount, accountAddress, toContract)
+          if (allowance.gt(0) && requiresResetAllowance.includes(contract._address)) {
+            await approve(contract, 0, accountAddress, toContract)
+          } else {
+            await approve(contract, _amount, accountAddress, toContract)
+          }
         }
       }
     },
@@ -847,18 +865,20 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
         // allowance < maxAllowance / 2 && amount > 0
         // TODO: div(2) why?
         if (allowance.lt(maxAllowance.div(2))) {
-          // TODO: ?
-          // if (allowance.gt(0) && requiresResetAllowance.includes(contract._address))
-          //   await approve(contract, 0, account, toContract)
-          await approve(contract, maxAllowance, accountAddress, toContract)
+          if (allowance.gt(0) && requiresResetAllowance.includes(contract._address)) {
+            await approve(contract, 0, accountAddress, toContract)
+          } else {
+            await approve(contract, maxAllowance, accountAddress, toContract)
+          }
         }
       } else {
         // allowance < amount && amount > 0
         if (allowance.lt(_amount)) {
-          // TODO: ?
-          // if (allowance.gt(0) && requiresResetAllowance.includes(contract._address))
-          //   await approve(contract, 0, account, toContract)
-          await approve(contract, _amount, accountAddress, toContract)
+          if (allowance.gt(0) && requiresResetAllowance.includes(contract._address)) {
+            await approve(contract, 0, accountAddress, toContract)
+          } else {
+            await approve(contract, _amount, accountAddress, toContract)
+          }
         }
       }
     },
@@ -1075,7 +1095,7 @@ store.gauges = {
       const { tokens } = store
       const { name, address, contract, mortgages } = this
 
-      const deposit = BN(mortgages.bpt.userStake.revised).times(1e18)
+      const deposit = BN(mortgages.dusd.userStake.revised).times(1e18)
 
       // await common.approveAmount(tokens.bpt.contract, deposit, accountAddress, address, infApproval)
 
@@ -1756,5 +1776,67 @@ store.swap = {
 }
 
 store.request = request
+
+
+
+// {
+//   pools
+//     deposit? -> exchange
+//     mining?
+//   tokens
+//   lptokens
+// }
+store.lptokens = {
+  BPT: ModelLpToken.create({
+    code: 'BPT',
+    address: process.env.VUE_APP_BPT_TOKEN,
+    abi: abiBpt,
+  }),
+  dUSD: {
+    name: 'dUSD LP tokens',
+    address: process.env.VUE_APP_DUSD_TOKEN,
+    swapAddress: process.env.VUE_APP_DUSD_SWAP,
+    abi: TOKEN_DUSD_ABI,
+    // abi: abiSFG,
+    swapAbi: swapAbi_iUSD_LPT,
+    __contract: null,
+    get contract () {
+      const { __contract, abi, address } = this
+
+      return __contract ||
+        (this.__contract = new web3.eth.Contract(abi, address))
+    },
+
+    __contractSwap: null,
+    get contractSwap () {
+      const { __contractSwap, swapAbi, swapAddress } = this
+
+      return __contractSwap ||
+        (this.__contractSwap = new web3.eth.Contract(swapAbi, swapAddress))
+    },
+
+    userBalanceOf: valueModel.create(),
+    async getBalanceOf (target, accountAddress) {
+      const { contract, userBalanceOf } = this
+      const result = await contract.methods.balanceOf(accountAddress).call()
+
+      userBalanceOf.tether = target.tether = result
+
+      return result
+    },
+
+    error: errorModel.create(),
+
+    price: valueModel.create(),
+    async getPrice () {
+      const { contractSwap, price } = this
+      const result = await contractSwap.methods.get_virtual_price().call()
+
+      price.tether = result
+
+      return price.handled
+    }
+  }
+}
 
 export default Vue.observable(store)

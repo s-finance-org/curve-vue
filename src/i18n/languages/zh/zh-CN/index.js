@@ -133,7 +133,10 @@ export default {
     approveLptokenWithdrawal: '请批准取出 {0} {1}',
     confirmWithdrawalTransaction: '请确认取出交易',
     confirmUnstakingToken: '请确认取消抵押 {0} 代币',
-    UnstakingTokenWithdrawal: `还差 {0} LP token方可取款成功，请减少取款数额，否则可能造成交易异常`
+    UnstakingTokenWithdrawal: `还差 {0} LP token方可取款成功，请减少取款数额，否则可能造成交易异常`,
+    waitingDepositTransactionBeforeStaking: `抵押前请等待当前<a href='http://etherscan.io/tx/{0}'>交易</a>完成`,
+    waitingDepositTransactionNoFurther: `等待存款<a href='http://etherscan.io/tx/{0}'>交易</a>确认完毕，无需采取进一步措施`
+    
   },
   dao: {
     standTitle: '稳定币流动性矿池',

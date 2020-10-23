@@ -1249,6 +1249,13 @@
             piegauges[highest].sliced = true;
             piegauges[highest].selected = true;
 
+            // TEST:
+            // store.lptokens.BPT.getAccountBalanceOf(currentContract.default_account)
+
+
+
+
+
             // susdv2
             store.tokens.susdv2LpToken.getBalanceOf(this.currentPool.balanceOf, currentContract.default_account)
 
