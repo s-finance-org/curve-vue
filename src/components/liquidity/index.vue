@@ -1069,7 +1069,7 @@
           }
           const result = conversions[this.currentPool] || this.currentPool
 
-          return `${result} LP tokens`
+          return `${result} LP token`
         },
         currentPoolTokenCoinMark () {
           const conversions = {
@@ -2177,7 +2177,7 @@
                   })
                         amounts = amounts.map(amount => amount || 0)
                         let gas = contractGas.depositzap[this.currentPool].withdrawImbalance(nonZeroInputs) | 0
-                        this.waitingMessage = this.$i18n.t('liquidity.approveLptokenWithdrawal', [this.toFixed(token_amount / 1e18), 'LP tokens'])
+                        this.waitingMessage = this.$i18n.t('liquidity.approveLptokenWithdrawal', [this.toFixed(token_amount / 1e18), 'LP token'])
                         var { dismiss } = notifyNotification(this.waitingMessage)
                         try {
                             this.estimateGas = gas / (['compound', 'usdt'].includes(currentContract.currentContract) ? 1.5 : 2.5)
@@ -2220,7 +2220,7 @@
             if(unstake_only) return;
             amount = amount.toFixed(0,1)
             if(this.to_currency !== null && this.to_currency < 10) {
-              this.waitingMessage = this.$i18n.t('liquidity.approveLptokenWithdrawal', [this.toFixed(amount / 1e18), 'LP tokens'])
+              this.waitingMessage = this.$i18n.t('liquidity.approveLptokenWithdrawal', [this.toFixed(amount / 1e18), 'LP token'])
               var { dismiss } = notifyNotification(this.waitingMessage)
               this.estimateGas = contractGas.depositzap[this.currentPool].withdraw / 2
               if(!['tbtc','ren','sbtc'].includes(currentContract.currentContract)) await common.ensure_allowance_zap_out(amount, undefined, undefined, this.inf_approval)
@@ -2262,7 +2262,7 @@
                   }
 			        }
 			        else if(this.to_currency == 10) {
-                        this.waitingMessage = this.$i18n.t('liquidity.approveLptokenWithdrawal', [this.toFixed(amount / 1e18), 'LP tokens'])
+                        this.waitingMessage = this.$i18n.t('liquidity.approveLptokenWithdrawal', [this.toFixed(amount / 1e18), 'LP token'])
                         var { dismiss } = notifyNotification(this.waitingMessage)
                         try {
                             this.estimateGas = contractGas.depositzap[this.currentPool].withdrawShare / 2

@@ -78,7 +78,7 @@
                 <small class="d-flex mt-1 flex-wrap">
                   {{ $t('dao.stakingBalance') }}：
                   <text-overlay-loading class="mr-2" :show="store.gauges.dusd.mortgages.dusd.userBalanceOf.loading">{{ store.gauges.dusd.mortgages.dusd.userBalanceOf.cont }} {{ store.gauges.dusd.mortgages.dusd.name }}</text-overlay-loading>
-                  <b-button class="text-blue-1" to='/liquidity/dfi' size="xsm" variant="light">{{ $t('dao.stakingConfirmTip', [store.gauges.dusd.mortgages.dusd.name]) }}</b-button>
+                  <b-button class="text-blue-1" to='/liquidity/dusd' size="xsm" variant="light">{{ $t('dao.stakingConfirmTip', [store.gauges.dusd.mortgages.dusd.name]) }}</b-button>
                 </small>
                 <!-- FIXME: inf_approval -->
                 <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('global.infiniteApproval') }}</b-form-checkbox>
@@ -381,7 +381,7 @@
           <!-- sUSD -->
           <h4 class="mb-2 d-flex flex-wrap align-items-end">
             <span class="mr-3">{{ $t('dao.tokenTitle', [currentPool.nameCont]) }}</span>
-            <small class="mr-auto">{{ $t('dao.describe', [currentPool.name + ' LP tokens', currentPool.describeTokensCont]) }}</small>
+            <small class="mr-auto">{{ $t('dao.describe', [currentPool.name + ' LP token', currentPool.describeTokensCont]) }}</small>
             <text-overlay-loading inline :show="store.gauges.susdv2.apy.loading">
               <span class="h5 text-danger-1 mb-0">
                 <small class="text-black-45">{{ $t('global.apr') }}</small>
@@ -395,21 +395,21 @@
                 <h6 class="mb-0 text-black-65">{{ $t('dao.totalStaking') }}</h6>
                 <text-overlay-loading inline :show="currentPool.totalSupply.loading">
                   <span class="h4 mr-2">{{ currentPool.totalSupply.cont }}</span>
-                  <span class="inline-block text-black-65">{{ currentPool.name }} LP tokens</span>
+                  <span class="inline-block text-black-65">{{ currentPool.name }} LP token</span>
                 </text-overlay-loading>
               </span>
               <span class="col-12 col-md-6 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.myStaking') }}</h6>
                 <text-overlay-loading inline :show="currentPool.gaugeBalance.loading">
                   <span class="h4 mr-2">{{ currentPool.gaugeBalance.cont }}</span>
-                  <span class="inline-block text-black-65">{{ currentPool.name }} LP tokens</span>
+                  <span class="inline-block text-black-65">{{ currentPool.name }} LP token</span>
                 </text-overlay-loading>
               </span>
               <span class="col-12 col-md-6 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.virtualPrice') }}</h6>
                 <text-overlay-loading inline :show="store.tokens.susdv2LpToken.price.loading">
                   <span class="h4 mb-0">
-                    1 <span class="h6 text-black-65">{{ currentPool.name }} LP tokens = </span>
+                    1 <span class="h6 text-black-65">{{ currentPool.name }} LP token = </span>
                   </span>
                   <span class="h4 mb-0">
                     {{ store.tokens.susdv2LpToken.price.cont }}<span class="text-black-65 h6"> USD</span>
@@ -441,8 +441,8 @@
                 </div>
                 <small class="d-flex mt-1 flex-wrap">
                   {{ $t('dao.stakingBalance') }}：
-                  <text-overlay-loading class="mr-2" :show="currentPool.balanceOf.loading">{{ currentPool.balanceOf.cont }} {{ currentPool.name }} LP tokens</text-overlay-loading>
-                  <b-button class="text-blue-1" to="/liquidity/susdv2" size="xsm" variant="light">{{ $t('dao.stakingConfirmTip', ['LP tokens']) }}</b-button>
+                  <text-overlay-loading class="mr-2" :show="currentPool.balanceOf.loading">{{ currentPool.balanceOf.cont }} {{ currentPool.name }} LP token</text-overlay-loading>
+                  <b-button class="text-blue-1" to="/liquidity/susdv2" size="xsm" variant="light">{{ $t('dao.stakingConfirmTip', ['LP token']) }}</b-button>
                 </small>
                 <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('global.infiniteApproval') }}</b-form-checkbox>
                 <b-alert class="mt-3" :show="dismissCountDown && waitingMessageTargetId === 'deposit'" variant="dark" dismissible fade
@@ -474,7 +474,7 @@
                 </div>
                 <small class="d-flex mt-1">
                   {{ $t('dao.redemptionBalance') }}：
-                  <text-overlay-loading :show="currentPool.gaugeBalance.loading">{{ currentPool.gaugeBalance.cont }} {{ currentPool.name }} LP tokens</text-overlay-loading>
+                  <text-overlay-loading :show="currentPool.gaugeBalance.loading">{{ currentPool.gaugeBalance.cont }} {{ currentPool.name }} LP token</text-overlay-loading>
                 </small>
                 <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('global.infiniteApproval') }}</b-form-checkbox>
                 <b-alert class="mt-3" :show="dismissCountDown && waitingMessageTargetId === 'withdraw'" variant="dark" dismissible fade
@@ -1264,7 +1264,7 @@
             // TODO: temp
             this.gaugeContract = store.gauges.susdv2.contract
 
-            store.gauges.susdv2.rewards.sfg.weighting.handled = 0.1
+            store.gauges.susdv2.rewards.sfg.weighting.handled = 0.2
 
             store.gauges.susdv2.getAPY(
               store.tokens.sfg.getPrice(),
@@ -1324,7 +1324,7 @@
             store.tokens.df.getPrice()
 
             // dfi
-            store.gauges.dfi.rewards.sfg.weighting.handled = 0.3
+            store.gauges.dfi.rewards.sfg.weighting.handled = 0.2
 
             store.gauges.dfi.getAPY(
               store.tokens.sfg.getPrice(),

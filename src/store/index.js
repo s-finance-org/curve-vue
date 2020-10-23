@@ -356,7 +356,7 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
   },
 
   dusd: {
-    name: 'dUSD LP tokens',
+    name: 'dUSD LP token',
     address: process.env.VUE_APP_DUSD_TOKEN,
     swapAddress: process.env.VUE_APP_DUSD_SWAP,
     abi: TOKEN_DUSD_ABI,
@@ -772,7 +772,7 @@ console.log('getBalanceOf', result)
     },
   },
   iUSD_LPT: {
-    name: 'iUSD LP tokens',
+    name: 'iUSD LP token',
     address: process.env.VUE_APP_DFI_TOKEN,
     swapAddress: process.env.VUE_APP_DFI_SWAP,
     abi: abi_iUSD_LPT,
@@ -936,7 +936,7 @@ store.gauges = {
     mortgages: {
       dusd: {
         code: 'dusd',
-        name: 'dUSD',
+        name: 'dUSD LP token',
         priceDecimal: 4,
 
         totalStaking: valueModel.create(),
@@ -1434,7 +1434,7 @@ store.gauges = {
     code: 'dfi',
     name: 'DFI',
     propagateMark: 'dfi',
-    mortgagesUnit: 'iUSD LP tokens',
+    mortgagesUnit: 'iUSD LP token',
     address: process.env.VUE_APP_DFI_GAUGE,
     // abi: abiDfi, // FIXME: ???
     abi: abiSUSDv2,
@@ -1449,7 +1449,7 @@ store.gauges = {
     mortgages: {
       iUSD_LPT: {
         code: 'iUSD_LPT',
-        name: 'iUSD LP tokens',
+        name: 'iUSD LP token',
         priceDecimal: 5,
 
         totalStaking: valueModel.create(),
@@ -1793,7 +1793,7 @@ store.lptokens = {
     abi: abiBpt,
   }),
   dUSD: {
-    name: 'dUSD LP tokens',
+    name: 'dUSD LP token',
     address: process.env.VUE_APP_DUSD_TOKEN,
     swapAddress: process.env.VUE_APP_DUSD_SWAP,
     abi: TOKEN_DUSD_ABI,
