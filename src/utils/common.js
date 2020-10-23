@@ -109,6 +109,9 @@ export async function ensure_allowance(amounts, plain = false, contractName, N_C
     }
     let aggcalls = await currentContract.multicall.methods.aggregate(calls).call();
     allowances = aggcalls[1].map(hex => currentContract.web3.eth.abi.decodeParameter('uint256', hex));
+
+    console.log('allowances', allowances, 'amounts', amounts)
+
     if (!infinite) {
         // Non-infinite
         for (let i=0; i < N_COINS; i++) {
@@ -139,6 +142,8 @@ export async function ensure_underlying_allowance(i, _amount, underlying_coins =
     var default_account = currentContract.default_account
     var amount = cBN(_amount);
     var current_allowance = cBN(await coins[i].methods.allowance(default_account, contract.swap._address).call());
+console.log('current_allowance', current_allowance.toString(), 'amount', amount)
+
     if (current_allowance.gte(amount))
         return false;
     if ((cBN(_amount).isEqualTo(currentContract.max_allowance)) & (current_allowance.isGreaterThan(currentContract.max_allowance.div(cBN(2)))))
@@ -204,6 +209,8 @@ export async function ensure_stake_allowance(amount, stakeContract, infinite = f
     var default_account = currentContract.default_account;
     if(!stakeContract) stakeContract = currentContract.curveRewards
     let allowance = cBN(await currentContract.swap_token.methods.allowance(default_account, stakeContract._address).call());
+    
+console.log('allowance', allowance.toString(), 'amount', amount)
     if(!infinite) {
         if(allowance.lt(amount)) {
             if(allowance.gt(0))
@@ -479,7 +486,7 @@ export async function handle_migrate_new(page) {
     await migration.methods.migrate().send({
         from: default_account,
         gasPrice: gasPriceStore.state.gasPriceWei,
-        gas: 1500000,
+        // gas: 1500000,
     })
     .once('transactionHash', hash => {
         notifyHandler(hash)
