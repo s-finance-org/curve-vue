@@ -13,6 +13,7 @@
       <b-tabs pills nav-class="tabs-nav" class="mt-4">
         <b-tab :title="$t('dao.standTitle')" class="pt-3" active>
           <!-- dUSD -->
+        <div v-if=false>
           <h4 class="mb-2 d-flex flex-wrap align-items-end">
             <span class="mr-3">{{ $t('dao.tokenTitle', [store.gauges.dusd.propagateMark]) }}</span>
             <small class="mr-auto">{{ $t('dao.describe', [store.gauges.dusd.mortgagesUnit, store.gauges.dusd.rewardsUnit.join(' + ')]) }}</small>
@@ -213,6 +214,7 @@
               </b-tab>
             </b-tabs>
           </div>
+        </div>
 
           <!-- dfi -->
           <h4 class="mb-2 d-flex flex-wrap align-items-end">
@@ -1264,7 +1266,7 @@
             // TODO: temp
             this.gaugeContract = store.gauges.susdv2.contract
 
-            store.gauges.susdv2.rewards.sfg.weighting.handled = 0.2
+            store.gauges.susdv2.rewards.sfg.weighting.handled = 0.3
 
             store.gauges.susdv2.getAPY(
               store.tokens.sfg.getPrice(),
@@ -1296,35 +1298,35 @@
             const { dfi, bpt, dusd } = store.gauges
 
             // dusd
-            store.gauges.dusd.rewards.sfg.weighting.handled = 0.2
+            // store.gauges.dusd.rewards.sfg.weighting.handled = 0.2
 
-            store.gauges.dusd.getAPY(
-              store.tokens.sfg.getPrice(),
-              store.tokens.sfg.getDailyYield(),
-              dusd.getTotalStaking(dusd.mortgages.dusd.totalStaking),
-              store.tokens.dusd.getPrice(),
-            )
+            // store.gauges.dusd.getAPY(
+            //   store.tokens.sfg.getPrice(),
+            //   store.tokens.sfg.getDailyYield(),
+            //   dusd.getTotalStaking(dusd.mortgages.dusd.totalStaking),
+            //   store.tokens.dusd.getPrice(),
+            // )
 
-            store.tokens.dusd.getBalanceOf(dusd.mortgages.dusd.userBalanceOf, currentContract.default_account)
+            // store.tokens.dusd.getBalanceOf(dusd.mortgages.dusd.userBalanceOf, currentContract.default_account)
 
-            dusd.getBalanceOf(dusd.mortgages.dusd.userStaking, currentContract.default_account)
+            // dusd.getBalanceOf(dusd.mortgages.dusd.userStaking, currentContract.default_account)
 
-            dusd.getUserTotalReward_SFG(
-              dusd.rewards.sfg.userTotalReward,
-              dusd.getUserPendingReward_SFG(dusd.rewards.sfg.userPendingReward, currentContract.default_account),
-              dusd.getUserPaidReward_SFG(dusd.rewards.sfg.userPaidReward, currentContract.default_account)
-            )
+            // dusd.getUserTotalReward_SFG(
+            //   dusd.rewards.sfg.userTotalReward,
+            //   dusd.getUserPendingReward_SFG(dusd.rewards.sfg.userPendingReward, currentContract.default_account),
+            //   dusd.getUserPaidReward_SFG(dusd.rewards.sfg.userPaidReward, currentContract.default_account)
+            // )
 
-            dusd.getUserTotalReward_DF(
-              dusd.rewards.df.userTotalReward,
-              dusd.getUserPendingReward_DF(dusd.rewards.df.userPendingReward, currentContract.default_account),
-              dusd.getUserPaidReward_DF(dusd.rewards.df.userPaidReward, currentContract.default_account)
-            )
+            // dusd.getUserTotalReward_DF(
+            //   dusd.rewards.df.userTotalReward,
+            //   dusd.getUserPendingReward_DF(dusd.rewards.df.userPendingReward, currentContract.default_account),
+            //   dusd.getUserPaidReward_DF(dusd.rewards.df.userPaidReward, currentContract.default_account)
+            // )
 
-            store.tokens.df.getPrice()
+            // store.tokens.df.getPrice()
 
             // dfi
-            store.gauges.dfi.rewards.sfg.weighting.handled = 0.2
+            store.gauges.dfi.rewards.sfg.weighting.handled = 0.3
 
             store.gauges.dfi.getAPY(
               store.tokens.sfg.getPrice(),
