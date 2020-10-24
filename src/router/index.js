@@ -304,7 +304,7 @@ let routes = [
     component: RootDefault,
     children: [
       {
-        path: ':pool(dfi|dusd)?',
+        path: ':pool(dfi|dusd|okuu)?',
         name: 'Swap',
         beforeEnter: (to, from, next) => {
           !to.params.pool
@@ -408,7 +408,8 @@ const pools = [
   // 'ren',
   // 'sbtc'
   'dfi',
-  'dusd'
+  'dusd',
+  'okuu'
 ]
 
 router.beforeEach(async (to, from, next) => {

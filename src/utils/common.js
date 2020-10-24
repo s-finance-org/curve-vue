@@ -19,6 +19,7 @@ let requiresResetAllowance = [
   '0xdF5e0e81Dff6FAF3A7e52BA697820c5e32D806A8', // Curve.fi yDAI/yUSDC/yUSDT/yTUSD
   process.env.VUE_APP_DFI_TOKEN, // s.finance iUSDT/iDAI/iUSDC
   process.env.VUE_APP_DUSD_TOKEN, // s.finance dDAI/dUSDC/dUSDT/dUSDx
+  process.env.VUE_APP_OKUU_TOKEN, // s.finance OKU/USDT
 ]
 
 export function approve(contract, amount, account, toContract) {
@@ -244,7 +245,7 @@ export function update_rates(version = 'new', contract) {
         if(checkTethered(contract, i)) {
           Vue.set(contract.c_rates, i, 1 / allabis[contract.currentContract].coin_precisions[i]);
         }
-        else if(['iearn', 'busd', 'susd', 'pax', 'dfi', 'dusd'].includes(contract.currentContract)) {
+        else if(['iearn', 'busd', 'susd', 'pax', 'dfi', 'dusd', 'okuu'].includes(contract.currentContract)) {
             if(contract.currentContract == 'susd' && i == 1) {
                 calls.push(['0xeDf54bC005bc2Df0Cc6A675596e843D28b16A966', '0xbb7b8b80'])
             }
@@ -308,7 +309,7 @@ export async function update_fee_info(version = 'new', contract, update = true) 
     }
     let rates_calls = update_rates(version, contract);
     calls.push(...rates_calls)
-    if(['susdv2','sbtc', 'iearn', 'y', 'dfi', 'dusd'].includes(contract.currentContract) && update)
+    if(['susdv2','sbtc', 'iearn', 'y', 'dfi', 'dusd', 'okuu'].includes(contract.currentContract) && update)
         calls.push([allabis[contract.currentContract].sCurveRewards_address, contract.curveRewards.methods.balanceOf(default_account).encodeABI()])
     if(update)
         await multiInitState(calls, contract)
@@ -364,7 +365,7 @@ export async function multiInitState(calls, contract, initContracts = false) {
         contract.curveStakedBalance = decoded[1]
         decoded = decoded.slice(2);
     }
-    if(initContracts && ['sbtc', 'iearn', 'y', 'dfi', 'dusd'].includes(contract.currentContract)) {
+    if(initContracts && ['sbtc', 'iearn', 'y', 'dfi', 'dusd', 'okuu'].includes(contract.currentContract)) {
         contract.curveStakedBalance = decoded[0]
         decoded = decoded.slice(1);
     }
@@ -404,7 +405,7 @@ export async function multiInitState(calls, contract, initContracts = false) {
     }
 
 
-    if(['iearn', 'busd', 'susd', 'pax', 'dfi', 'dusd'].includes(contract.currentContract)) {
+    if(['iearn', 'busd', 'susd', 'pax', 'dfi', 'dusd', 'okuu'].includes(contract.currentContract)) {
       ratesDecoded.map((v, i) => {
         if(checkTethered(contract, i)) {
           Vue.set(contract.c_rates, i, 1 / allabis[contract.currentContract].coin_precisions[i]);
@@ -440,7 +441,7 @@ export async function multiInitState(calls, contract, initContracts = false) {
         contract.total += balances[i] * contract.c_rates[i];
     })
 
-    if(!initContracts && ['susdv2', 'sbtc', 'iearn', 'y', 'dfi', 'dusd'].includes(contract.currentContract))
+    if(!initContracts && ['susdv2', 'sbtc', 'iearn', 'y', 'dfi', 'dusd', 'okuu'].includes(contract.currentContract))
         contract.curveStakedBalance = decoded[decoded.length-1]
 
     if (default_account) {

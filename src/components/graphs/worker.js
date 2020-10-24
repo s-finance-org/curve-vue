@@ -71,6 +71,10 @@ const currencies = {
 		usdc: 'dUSDC',
 		usdt: 'dUSDT',
 		usdx: 'dUSDx'
+  },
+  okuu: {
+		oku: 'OKU',
+		usdt: 'USDT',
 	},
 }
 

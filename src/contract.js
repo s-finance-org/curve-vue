@@ -89,7 +89,11 @@ const currencies = {
 		usdc: 'dUSDC',
 		usdt: 'dUSDT',
 		usdx: 'dUSDx'
-	},
+  },
+  okuu: {
+		oku: 'OKU',
+    usdt: 'USDT',
+  }
 }
 
 export const allCurrencies = currencies
@@ -106,7 +110,8 @@ export const poolMenu = {
 	ren: 'renBTC',
   sbtc: 'sBTC',
   dfi: 'DFI',
-  dusd: 'dUSD'
+  dusd: 'dUSD',
+  okuu: 'OKUU'
 }
 
 export const gas = {
@@ -159,6 +164,10 @@ export const gas = {
 			exchange: (i, j) => 800000,
 			exchange_underlying: (i, j) => 1600000
 		},
+    okuu: {
+			exchange: (i, j) => 800000,
+			exchange_underlying: (i, j) => 1600000
+		},
 	},
 	deposit: {
 		compound: 1300000,
@@ -173,6 +182,7 @@ export const gas = {
 		sbtc: 600000,
 		dfi: 1300000,
 		dusd: 1300000,
+		okuu: 1300000,
 	},
 	withdraw: {
 		compound: {
@@ -209,6 +219,9 @@ export const gas = {
 			imbalance: x => (12642*x + 474068)*2.5 | 0,
     },
     dusd: {
+			imbalance: x => (12642*x + 474068)*2.5 | 0,
+		},
+    okuu: {
 			imbalance: x => (12642*x + 474068)*2.5 | 0,
 		},
 	},
@@ -278,6 +291,12 @@ export const gas = {
 			withdrawImbalance: x => (276069*x + 516861)*2.5 | 0,
     },
     dusd: {
+			deposit: x => (225377*x + 522674)*2 | 0,
+			withdraw: 3500000 / 1.4,
+			withdrawShare: 3000000,
+			withdrawImbalance: x => (276069*x + 516861)*2.5 | 0,
+		},
+    okuu: {
 			deposit: x => (225377*x + 522674)*2 | 0,
 			withdraw: 3500000 / 1.4,
 			withdrawShare: 3000000,
@@ -379,6 +398,11 @@ const state = Vue.observable({
     },
     dusd: {
 			currentContract: 'dusd',
+			aRewards: null,
+			...initState(),
+		},
+    okuu: {
+			currentContract: 'okuu',
 			aRewards: null,
 			...initState(),
 		},
@@ -579,6 +603,10 @@ export async function init(contract, refresh = false) {
   }
   if(['dusd'].includes(contract.currentContract)) {
     contract.curveRewards = new state.web3.eth.Contract(allabis.dusd.sCurveRewards_abi, allabis.dusd.sCurveRewards_address)
+    calls.push([contract.curveRewards._address, contract.curveRewards.methods.balanceOf(default_account).encodeABI()])
+  }
+  if(['okuu'].includes(contract.currentContract)) {
+    contract.curveRewards = new state.web3.eth.Contract(allabis.okuu.sCurveRewards_abi, allabis.okuu.sCurveRewards_address)
     calls.push([contract.curveRewards._address, contract.curveRewards.methods.balanceOf(default_account).encodeABI()])
   }
   if(['tbtc', 'ren', 'sbtc'].includes(contract.currentContract)) {

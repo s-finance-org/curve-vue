@@ -51,6 +51,7 @@ const requiresResetAllowance = [
   '0xdF5e0e81Dff6FAF3A7e52BA697820c5e32D806A8', // Curve.fi yDAI/yUSDC/yUSDT/yTUSD
   process.env.VUE_APP_DFI_TOKEN, // s.finance iUSDT/iDAI/iUSDC
   process.env.VUE_APP_DUSD_TOKEN, // s.finance dDAI/dUSDC/dUSDT/dUSDx
+  process.env.VUE_APP_OKUU_TOKEN, // s.finance OKU/USDT
 ]
 
 // FIXME: 
@@ -273,7 +274,126 @@ store.tokens = {
     async getPrice () {
       const { address, price } = this
 
+      // let amountsTether = await uniswapV2Router2.getAmountsOut(BN(1).times(1e18).toString(), [address, process.env.VUE_APP_USDT_TOKEN])
+      let amountsTether = await uniswapV2Router2.getPrice(this, store.tokens.usdt)
+      // FIXME: try
+      // amountsTether = BN(amountsTether[1]).dividedBy(1e6).times(1e18).toString()
+      amountsTether = BN(amountsTether).times(1e18).toString()
+console.log('amountsTether', amountsTether)
+      price.tether = amountsTether
 
+      return price.handled
+    },
+
+    // amount: 0,
+    // approveAmount: 0,
+    // TODO: common & format type
+    // tether
+    minAllowance: 1,
+    // tether
+    maxAllowance: BN(2).pow(256).minus(1),
+    async hasValidAmount (val) {
+      const { minAllowance, maxAllowance, error } = this
+      const _val = BN(val).times(1e18)
+      // FIXME: balance Of
+      const result = _val.gte(minAllowance) &&
+        // TODO: div(2) why?
+        _val.lte(maxAllowance.div(2))
+
+      if (!result) {
+        error.message = store.i18n.$i18n.t('model.valueOutValidRange')
+      }
+
+      return result
+    },
+    async hasApprove (amount, accountAddress, toContract) {
+      const { contract, error } = this
+      const _amount = BN(amount).times(1e18)
+      // FIXME:
+      const allowance = BN(await contract.methods.allowance(accountAddress, toContract).call())
+console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->', _amount.toString(), _amount.toString() / 1e18 )
+      // allowance >= amount && amount > 0
+      const result = allowance.gte(_amount) && BN(_amount).gt(0)
+
+      if (!result) {
+        error.message = store.i18n.$i18n.t('model.approveOperation')
+      }
+
+      return result
+    },
+    async onApproveAmount (amount, accountAddress, toContract, infinite = false) {
+      const { contract, maxAllowance } = this
+      const _amount = BN(amount).times(1e18)
+
+      console.log('amount', amount)
+      if (!await this.hasValidAmount(amount)) return false
+
+      // FIXME:
+      const allowance = BN(await contract.methods.allowance(accountAddress, toContract).call())
+
+      if (infinite) {
+        // allowance < maxAllowance / 2 && amount > 0
+        // TODO: div(2) why?
+        if (allowance.lt(maxAllowance.div(2))) {
+          if (allowance.gt(0) && requiresResetAllowance.includes(contract._address)) {
+            await approve(contract, 0, accountAddress, toContract)
+          } else {
+            await approve(contract, maxAllowance, accountAddress, toContract)
+          }
+        }
+      } else {
+        // allowance < amount && amount > 0
+        if (allowance.lt(_amount)) {
+          if (allowance.gt(0) && requiresResetAllowance.includes(contract._address)) {
+            await approve(contract, 0, accountAddress, toContract)
+          } else {
+            await approve(contract, _amount, accountAddress, toContract)
+          }
+        }
+      }
+    },
+  },
+
+  okuu: {
+    name: 'OKUU',
+    address: process.env.VUE_APP_OKUU_TOKEN,
+    // abi: TOKEN_DF_ABI,
+    abi: abiSFG,
+    __contract: null,
+    get contract () {
+      const { __contract, abi, address } = this
+
+      return __contract ||
+        (this.__contract = new web3.eth.Contract(abi, address))
+    },
+
+    decimal: 18,
+    /**
+     *  @type {number}
+     */
+    get precision () {
+      const { decimal } = this
+
+      return Math.pow(10, decimal)
+    },
+
+    userBalanceOf: valueModel.create(),
+    async getBalanceOf (target, accountAddress) {
+      const { contract, userBalanceOf } = this
+      const result = await contract.methods.balanceOf(accountAddress).call()
+
+      userBalanceOf.tether = target.tether = result
+
+      return result
+    },
+
+    error: errorModel.create(),
+
+    price: valueModel.create(),
+    priceUnit: 'USDT',
+    // FIXME: 
+    async getPrice () {
+      const { address, price } = this
 
       // let amountsTether = await uniswapV2Router2.getAmountsOut(BN(1).times(1e18).toString(), [address, process.env.VUE_APP_USDT_TOKEN])
       let amountsTether = await uniswapV2Router2.getPrice(this, store.tokens.usdt)
@@ -1575,6 +1695,232 @@ store.gauges = {
       const req = await fetch('https://api.dfi.money/apy.json')
       let daiDailyAPY = BN((await req.json()).dai.replace('%','')).dividedBy(100 * 365)
       dailyAPY.handled = BN(await price / 1e18).times(await dailyYield / 1e18).times(rewards.sfg.weighting.handled).dividedBy(BN(await totalStaking).times(await lpTokenPrice / 1e18)).plus(daiDailyAPY).toString()
+      apy.handled = +dailyAPY.handled * 365
+    },
+
+    async getBalanceOf (target, accountAddress) {
+      const { contract } = this
+      const result = await contract.methods.balanceOf(accountAddress).call()
+
+      target.tether = result
+      return result
+    },
+    async getUserPendingReward_SFG (target, accountAddress) {
+      const { contract } = this
+
+      return target.tether = await contract.methods.claimable_tokens(accountAddress).call()
+    },
+    async getUserPaidReward_SFG (target, accountAddress) {
+      const { contract } = this
+
+      // return target.tether = await contract.methods.integrate_fraction(accountAddress).call()
+      return target.tether = await gaugeStore.state.minter.methods.minted(accountAddress, this.address).call()
+    },
+    async getUserTotalReward_SFG (target, pendingReward, paidReward) {
+      return target.tether = BN(await pendingReward).plus(await paidReward).toString()
+    },
+
+    async onStake (accountAddress, infApproval) {
+      const { tokens } = store
+      const { name, address, contract, mortgages } = this
+      // TODO: target
+      const deposit = BN(mortgages.iUSD_LPT.userStake.revised).times(1e18)
+
+      // await common.approveAmount(tokens.bpt.contract, deposit, accountAddress, address, infApproval)
+
+      var { dismiss } = notifyNotification(`Please confirm depositing into ${name} gauge`)
+
+      await contract.methods.deposit(deposit.toFixed(0,1)).send({
+        from: accountAddress,
+        // gasPrice: gasPriceStore.gasPriceWei,
+        // gas: this.currentPool.deposit.gas,
+      })
+      .once('transactionHash', hash => {
+        dismiss()
+        notifyHandler(hash)
+      })
+    },
+
+    async onRedemption (accountAddress, infApproval) {
+      const { name, address, contract, mortgages } = this
+      // TODO: target
+      let withdraw = BN(mortgages.iUSD_LPT.userRedemption.revised).times(1e18)
+      let balance = BN(await contract.methods.balanceOf(accountAddress).call())
+
+      console.log('withdraw', withdraw, 'balance', balance)
+
+      if(withdraw.gt(balance))
+        withdraw = balance
+
+      // let gas = this.currentPool.deposit.gas
+      let withdrawMethod = contract.methods.withdraw(withdraw.toFixed(0,1))
+
+      // try {
+      //   // update
+      //   gas = await withdrawMethod.estimateGas()
+      // }
+      // catch(err) { }
+
+      var { dismiss } = notifyNotification(`Please confirm withdrawing from ${name} gauge`)
+
+      await withdrawMethod.send({
+        from: accountAddress,
+        // gasPrice: gasPriceStore.gasPriceWei,
+        // gas: gas * 1.5 | 0,
+      })
+      .once('transactionHash', hash => {
+        dismiss()
+        notifyHandler(hash)
+      })
+    },
+
+    async onHarvest (accountAddress) {
+      const { name, address, contract, mortgages, rewards } = this
+      // let minter = new web3.eth.Contract(daoabis.minter_abi, process.env.VUE_APP_PS_MINTER)
+
+      const mint = await gaugeStore.state.minter.methods.mint(address)
+      // let gas = await mint.estimateGas()
+
+      var { dismiss } = notifyNotification(`Please confirm claiming ${rewards.sfg.name} from ${name} gauge`)
+
+      await mint.send({
+        from: accountAddress,
+        // gasPrice: gasPriceStore.gasPriceWei,
+        // gas: gas * 1.5 | 0,
+      })
+      .once('transactionHash', hash => {
+        dismiss()
+        notifyHandler(hash)
+      })
+    }
+  },
+  okuu: {
+    code: 'okuu',
+    name: 'OKUU',
+    propagateMark: 'okuu',
+    mortgagesUnit: 'OKUU LP token',
+    address: process.env.VUE_APP_DUSD_GAUGE,
+    // abi: abiDfi, // FIXME: ???
+    abi: abiSUSDv2,
+    __contract: null,
+    get contract () {
+      const { __contract, abi, address } = this
+
+      return __contract ||
+        (this.__contract = new web3.eth.Contract(abi, address))
+    },
+
+    mortgages: {
+      okuu: {
+        code: 'okuu',
+        name: 'OKUU LP token',
+        priceDecimal: 5,
+
+        totalStaking: valueModel.create(),
+        userStaking: valueModel.create(),
+        userBalanceOf: valueModel.create(),
+
+        userStake: valueModel.create(),
+        stakeSliderSelected: 0,
+        // FIXME: common
+        stakeSliderOptions: [
+          { text: '25%', value: 0.25 },
+          { text: '50%', value: 0.5 },
+          { text: '75%', value: 0.75 },
+          { text: '100%', value: 1 }
+        ],
+        get stakeAmountInput () {
+          const { userStake } = this
+
+          return userStake.revised || ''
+        },
+        set stakeAmountInput (val) {
+          const { userStake } = this
+
+          userStake.revised = val
+          this.stakeSliderSelected = 0
+        },
+
+        get stakeSliderSelectedRadio () {
+          return this.stakeSliderSelected
+        },
+        set stakeSliderSelectedRadio (val) {
+          const { userStake, priceDecimal, userBalanceOf } = this
+
+          if (val === 0) return false
+
+          // FIXME: format
+          userStake.revised = +userBalanceOf.handled > 0
+            ? floor(BN(val).times(userBalanceOf.handled).toString(), priceDecimal)
+            : 0
+          this.stakeSliderSelected = val
+        },
+
+        userRedemption: valueModel.create(),
+        redemptionSliderSelected: 0,
+        // FIXME: common
+        redemptionSliderOptions: [
+          { text: '25%', value: 0.25 },
+          { text: '50%', value: 0.5 },
+          { text: '75%', value: 0.75 },
+          { text: '100%', value: 1 }
+        ],
+        get redemptionAmountInput () {
+          const { userRedemption } = this
+
+          return userRedemption.revised || ''
+        },
+        set redemptionAmountInput (val) {
+          const { userRedemption } = this
+
+          userRedemption.revised = val
+          this.redemptionSliderSelected = 0
+        },
+
+        get redemptionSliderSelectedRadio () {
+          return this.redemptionSliderSelected
+        },
+        set redemptionSliderSelectedRadio (val) {
+          const { userRedemption, priceDecimal, userStaking } = this
+
+          if (val === 0) return false
+
+          // FIXME: format
+          userRedemption.revised = +userStaking.handled > 0
+            ? floor(BN(val).times(userStaking.handled).toString(), priceDecimal)
+            : 0
+          this.stakeSliderSelected = val
+        }
+      }
+    },
+
+    // FIXME: auto create
+    rewardsUnit: ['SFG'],
+    rewards: {
+      sfg: {
+        code: 'sfg',
+        name: 'SFG',
+        weighting: valueModel.create(),
+
+        userPendingReward: valueModel.create(),
+        userPaidReward: valueModel.create(),
+        userTotalReward: valueModel.create(),
+      }
+    },
+
+    async getTotalStaking (target) {
+      const { contract } = this
+
+      return target.tether = await contract.methods.totalSupply().call()
+    },
+
+    dailyAPY: valueModel.create(),
+    apy: valueModel.create(),
+    // TEMP: 
+    async getAPY (price, dailyYield, totalStaking, lpTokenPrice) {
+      const { contract, dailyAPY, apy, rewards } = this
+
+      dailyAPY.handled = BN(await price / 1e18).times(await dailyYield / 1e18).times(rewards.sfg.weighting.handled).dividedBy(BN(await totalStaking).times(await lpTokenPrice / 1e18)).toString()
       apy.handled = +dailyAPY.handled * 365
     },
 

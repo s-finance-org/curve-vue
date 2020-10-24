@@ -28,7 +28,8 @@
     ren: 'renBTC',
     sbtc: 'sBTC',
     dfi: 'dfi',
-    dusd: 'dUSD'
+    dusd: 'dUSD',
+    okuu: 'OKUU'
   }
 
 	export default {

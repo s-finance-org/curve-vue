@@ -53,6 +53,7 @@
           'iearn': 'y',
           'dfi': 'dfi',
           'dusd': 'dusd',
+          'okuu': 'okuu',
           'susdv2': 'susd'
         }
 

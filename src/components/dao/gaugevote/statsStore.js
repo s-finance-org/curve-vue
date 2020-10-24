@@ -13,6 +13,7 @@ export let state = Vue.observable({
     [process.env.VUE_APP_SBTC]: 'sbtc',
     [process.env.VUE_APP_DFI_TOKEN]: 'dfi',
     [process.env.VUE_APP_DUSD_TOKEN]: 'dusd',
+    [process.env.VUE_APP_OKUU_TOKEN]: 'okuu',
 	},
 
 	gaugesWeights: {

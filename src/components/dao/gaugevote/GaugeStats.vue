@@ -135,6 +135,7 @@
         [process.env.VUE_APP_SBTC]: 'sbtc',
         [process.env.VUE_APP_DFI_TOKEN]: 'dfi',
         [process.env.VUE_APP_DUSD_TOKEN]: 'dusd',
+        [process.env.VUE_APP_OKUU_TOKEN]: 'okuu',
 			},
 			selectedGauge: "0x0000000000000000000000000000000000000000",
 			weight: 1,
@@ -251,6 +252,12 @@
 						swap_token: process.env.VUE_APP_DUSD_SWAP,
 						name: store.gauges.dusd.code,
 						gauge: process.env.VUE_APP_DUSD_GAUGE
+          },
+          okuu: {
+						swap: process.env.VUE_APP_OKUU_TOKEN,
+						swap_token: process.env.VUE_APP_OKUU_SWAP,
+						name: store.gauges.okuu.code,
+						gauge: process.env.VUE_APP_DUSD_GAUGE
 					},
 				}
 		}),
@@ -338,7 +345,7 @@
 				let gaugeController_address = process.env.VUE_APP_GAUGE_CONTROLLER
 				let gauge_relative_weight = '0x6207d866000000000000000000000000'
 
-				let pools = ['compound','usdt','iearn','busd','susdv2','pax','ren','sbtc', 'dfi', 'dusd']
+				let pools = ['compound','usdt','iearn','busd','susdv2','pax','ren','sbtc', 'dfi', 'dusd', 'okuu']
 
 				let prices = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,curve-dao-token&vs_currencies=usd')
 				prices = await prices.json()
