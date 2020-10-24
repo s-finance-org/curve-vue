@@ -1054,10 +1054,10 @@ store.gauges = {
       // 0.1*DAI APY + 0.4*USDC APY +0.4*USDT APY + 0.1*USDx APY
       const { dDAI, dUSDC, dUSDT, dUSDx} = await request.getDforceApy()
 
-      const dDAI_apy = BN(dDAI.now_apy).dividedBy(100).times(0.1)
-      const dUSDC_apy = BN(dUSDC.now_apy).dividedBy(100).times(0.4)
-      const dUSDT_apy = BN(dUSDT.now_apy).dividedBy(100).times(0.4)
-      const dUSDx_apy = BN(dUSDx.now_apy).dividedBy(100).times(0.1)
+      const dDAI_apy = BN(dDAI.now_apy).dividedBy(100 * 365).times(0.1)
+      const dUSDC_apy = BN(dUSDC.now_apy).dividedBy(100 * 365).times(0.4)
+      const dUSDT_apy = BN(dUSDT.now_apy).dividedBy(100 * 365).times(0.4)
+      const dUSDx_apy = BN(dUSDx.now_apy).dividedBy(100 * 365).times(0.1)
 
       dailyAPY.handled = BN(await price / 1e18)
         .times(await dailyYield / 1e18)
