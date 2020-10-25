@@ -302,17 +302,28 @@ export async function update_fee_info(version = 'new', contract, update = true) 
       [swap_token_address, swap_token_stats.methods.totalSupply().encodeABI()],
     ]
 
+
     let swap = new web3.eth.Contract(swap_abi_stats, swap_address_stats);
     for (let i = 0; i < allabis[contract.currentContract].N_COINS; i++) {
         //swap.methods.balances(i)
         calls.push([swap_address_stats, swap.methods.balances(i).encodeABI()])
+        console.log('balances', i, await swap.methods.balances(i).call())
     }
+
+    // let swap_token_ = new web3.eth.Contract([{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"spender","type":"address"},{"name":"value","type":"uint256"}],"name":"approve","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_owner","type":"address"}],"name":"nominateNewOwner","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"from","type":"address"},{"name":"to","type":"address"},{"name":"value","type":"uint256"}],"name":"transferFrom","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"nominatedOwner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_target","type":"address"}],"name":"setTarget","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"acceptOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"callData","type":"bytes"},{"name":"numTopics","type":"uint256"},{"name":"topic1","type":"bytes32"},{"name":"topic2","type":"bytes32"},{"name":"topic3","type":"bytes32"},{"name":"topic4","type":"bytes32"}],"name":"_emit","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"useDELEGATECALL","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"to","type":"address"},{"name":"value","type":"uint256"}],"name":"transfer","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"value","type":"bool"}],"name":"setUseDELEGATECALL","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"target","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"owner","type":"address"},{"name":"spender","type":"address"}],"name":"allowance","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[{"name":"_owner","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"payable":true,"stateMutability":"payable","type":"fallback"},{"anonymous":false,"inputs":[{"indexed":true,"name":"from","type":"address"},{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"},{"indexed":true,"name":"spender","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"newTarget","type":"address"}],"name":"TargetUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"newOwner","type":"address"}],"name":"OwnerNominated","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"oldOwner","type":"address"},{"indexed":false,"name":"newOwner","type":"address"}],"name":"OwnerChanged","type":"event"}], swap_token_address);
+    // console.log('fee', await swap.methods.fee().call())
+    // console.log('admin_fee', await swap.methods.admin_fee().call())
+    // console.log('balanceOf', await swap_token_.methods.balanceOf(default_account).call())
+    // console.log('totalSupply', await swap_token_.methods.totalSupply().call())
+
     let rates_calls = update_rates(version, contract);
     calls.push(...rates_calls)
     if(['susdv2','sbtc', 'iearn', 'y', 'dfi', 'dusd', 'okuu'].includes(contract.currentContract) && update)
         calls.push([allabis[contract.currentContract].sCurveRewards_address, contract.curveRewards.methods.balanceOf(default_account).encodeABI()])
-    if(update)
-        await multiInitState(calls, contract)
+    if(update) {
+      console.log('multiInitState--' )
+      await multiInitState(calls, contract)
+    }
     return calls
 
     console.timeEnd('updatefeeinfo')
@@ -332,6 +343,7 @@ export async function multiInitState(calls, contract, initContracts = false) {
     let multicall = new web3.eth.Contract(multicall_abi, multicall_address)
     var default_account = currentContract.default_account;
     let aggcalls;
+    console.log('calls', calls)
     try {
         aggcalls = await multicall.methods.aggregate(calls).call()
     }
@@ -394,7 +406,7 @@ export async function multiInitState(calls, contract, initContracts = false) {
               coin_abi = synthERC20_abi
               underlying_abi = synthERC20_abi
           }
-          if(['iearn', 'busd', 'susd', 'pax', 'dfi'].includes(contract.currentContract)) coin_abi = yERC20_abi
+          if(['iearn', 'busd', 'susd', 'pax', 'dfi', 'okuu'].includes(contract.currentContract)) coin_abi = yERC20_abi
           contract.coins.push(new web3.eth.Contract(coin_abi, addr));
           contract.underlying_coins.push(new web3.eth.Contract(underlying_abi, underlying_addr));
       })

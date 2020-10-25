@@ -367,7 +367,7 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
         (this.__contract = new web3.eth.Contract(abi, address))
     },
 
-    decimal: 18,
+    decimal: 6,
     /**
      *  @type {number}
      */

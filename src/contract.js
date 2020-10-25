@@ -388,7 +388,6 @@ const state = Vue.observable({
 		},
 		sbtc: {
 			currentContract: 'sbtc',
-
 			...initState(),
     },
     dfi: {
@@ -639,20 +638,21 @@ export async function init(contract, refresh = false) {
   // else 
   const update_fee_info = await common.update_fee_info('new', contract, false)
   calls.push(...update_fee_info)
-    for (let i = 0; i < allabis[contract.currentContract].N_COINS; i++) {
-	  	let coinsCall = contract.swap.methods.coins(i).encodeABI()
-	  	let underlyingCoinsCall = ['tbtc', 'ren', 'sbtc'].includes(contract.currentContract)
-        ? contract.swap.methods.coins(i).encodeABI()
-        : contract.swap.methods.underlying_coins(i).encodeABI()
+  for (let i = 0; i < allabis[contract.currentContract].N_COINS; i++) {
+    let coinsCall = contract.swap.methods.coins(i).encodeABI()
+    let underlyingCoinsCall = ['tbtc', 'ren', 'sbtc', 'okuu'].includes(contract.currentContract)
+      ? contract.swap.methods.coins(i).encodeABI()
+      : contract.swap.methods.underlying_coins(i).encodeABI()
 
-      calls.push([contract.swap._address, coinsCall])
-    	calls.push([contract.swap._address, underlyingCoinsCall])
-    }
-    await common.multiInitState(calls, contract, true)
-  	contract.initializedContracts = true;
-  	console.timeEnd('init')
-  	state.allInitContracts = new Set(state.allInitContracts.add(contract.currentContract))
-  	console.log([...state.allInitContracts])
+    calls.push([contract.swap._address, coinsCall])
+    calls.push([contract.swap._address, underlyingCoinsCall])
+  }
+  console.log('multiInitState-- true' )
+  await common.multiInitState(calls, contract, true)
+  contract.initializedContracts = true;
+  console.timeEnd('init')
+  state.allInitContracts = new Set(state.allInitContracts.add(contract.currentContract))
+  console.log([...state.allInitContracts])
 }
 
 export const allState = Vue.observable({
@@ -666,9 +666,9 @@ export async function getAllUnderlying() {
 		allState.swap[key] = new state.web3.eth.Contract(contract.swap_abi, contract.swap_address);
         allState.underlying_coins[key] = [];
 		for(let i = 0; i < contract.N_COINS; i++) {
-			var addr = await allState.swap[key].methods.coins(i).call();
-	        var underlying_addr = await allState.swap[key].swap.methods.underlying_coins(i).call();
-	        allState.underlying_coins[key][i] = new state.web3.eth.Contract(ERC20_abi, underlying_addr);
+      var addr = await allState.swap[key].methods.coins(i).call();
+      var underlying_addr = await allState.swap[key].swap.methods[key == 'okuu' ? coins : underlying_coins](i).call();
+      allState.underlying_coins[key][i] = new state.web3.eth.Contract(ERC20_abi, underlying_addr);
 		}
 	}
 }
