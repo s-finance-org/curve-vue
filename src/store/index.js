@@ -366,6 +366,15 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
       return __contract ||
         (this.__contract = new web3.eth.Contract(abi, address))
     },
+    swapAddress: process.env.VUE_APP_OKUU_SWAP,
+    swapAbi: swapAbi_iUSD_LPT,
+    __contractSwap: null,
+    get contractSwap () {
+      const { __contractSwap, swapAbi, swapAddress } = this
+
+      return __contractSwap ||
+        (this.__contractSwap = new web3.eth.Contract(swapAbi, swapAddress))
+    },
 
     decimal: 6,
     /**
@@ -393,15 +402,11 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
     priceUnit: 'USDT',
     // FIXME: 
     async getPrice () {
-      const { address, price } = this
+      const { price, contractSwap } = this
 
-      // let amountsTether = await uniswapV2Router2.getAmountsOut(BN(1).times(1e18).toString(), [address, process.env.VUE_APP_USDT_TOKEN])
-      let amountsTether = await uniswapV2Router2.getPrice(this, store.tokens.usdt)
-      // FIXME: try
-      // amountsTether = BN(amountsTether[1]).dividedBy(1e6).times(1e18).toString()
-      amountsTether = BN(amountsTether).times(1e18).toString()
-console.log('amountsTether', amountsTether)
-      price.tether = amountsTether
+      const result = await contractSwap.methods.get_virtual_price().call()
+
+      price.tether = result
 
       return price.handled
     },
@@ -1796,9 +1801,9 @@ store.gauges = {
   },
   okuu: {
     code: 'okuu',
-    name: 'OKUU',
-    propagateMark: 'okuu',
-    mortgagesUnit: 'OKUU LP token',
+    name: 'OKU',
+    propagateMark: 'oku',
+    mortgagesUnit: 'OKUsdt LP token',
     address: process.env.VUE_APP_DUSD_GAUGE,
     // abi: abiDfi, // FIXME: ???
     abi: abiSUSDv2,
@@ -1950,7 +1955,7 @@ store.gauges = {
       const { tokens } = store
       const { name, address, contract, mortgages } = this
       // TODO: target
-      const deposit = BN(mortgages.iUSD_LPT.userStake.revised).times(1e18)
+      const deposit = BN(mortgages.okuu.userStake.revised).times(1e18)
 
       // await common.approveAmount(tokens.bpt.contract, deposit, accountAddress, address, infApproval)
 
@@ -1970,7 +1975,7 @@ store.gauges = {
     async onRedemption (accountAddress, infApproval) {
       const { name, address, contract, mortgages } = this
       // TODO: target
-      let withdraw = BN(mortgages.iUSD_LPT.userRedemption.revised).times(1e18)
+      let withdraw = BN(mortgages.okuu.userRedemption.revised).times(1e18)
       let balance = BN(await contract.methods.balanceOf(accountAddress).call())
 
       console.log('withdraw', withdraw, 'balance', balance)

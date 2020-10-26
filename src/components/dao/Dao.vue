@@ -47,7 +47,7 @@
                   </span>
                   <span class="h4 mb-0">
                     {{ store.tokens.okuu.price.cont }}
-                    <span class="text-black-65 h6">USDT</span>
+                    <span class="text-black-65 h6">USD</span>
                   </span>
                 </text-overlay-loading>
               </span>

@@ -4,13 +4,13 @@
     <div class="total-bg">
       <b-container class="d-flex py-4 total-cont">
         <b-navbar-nav class="navbar-tabs flex-row">
+          <b-nav-item :to="{ name: 'Swap', params: { pool: 'okuu' } }">oku</b-nav-item>
           <b-nav-item :to="{ name: 'Swap', params: { pool: 'dusd' } }">dForce</b-nav-item>
           <b-nav-item :to="{ name: 'Swap', params: { pool: 'dfi' } }">dfi</b-nav-item>
-          <b-nav-item :to="{ name: 'Swap', params: { pool: 'okuu' } }">okuu</b-nav-item>
         </b-navbar-nav>
       </b-container>
       <b-container class="d-flex py-4 total-cont align-items-center">
-        <div class="total-box p-2 mr-4 col-auto box-98 d-flex flex-wrap">
+        <div class="total-box p-2 mr-4 col-auto box-98 d-flex flex-wrap" :class="{ 'icons-box-2': Object.keys(currencies).length === 2 }">
           <img v-for='(currency, i) in Object.keys(currencies)' :key="'icon-'+currency" class="icon-w-40"
             :class="{'token-icon': true, [currency+'-icon']: true, 'y': depositc && !isPlain}" 
             :src='getTokenIcon(currency)'>
@@ -218,7 +218,7 @@
 
           <div class="mt-4">
             <b-form-checkbox v-model="inf_approval" name="inf-approval">{{ $t('global.infiniteApproval') }}</b-form-checkbox>
-            <b-form-checkbox v-model="swapwrapped" name="swapw" v-show = "!['susdv2', 'tbtc', 'ren', 'sbtc'].includes(currentPool)">{{ $t('instantSwap.swapWrapped', [currentPoolTokenCoinMark]) }}</b-form-checkbox>
+            <b-form-checkbox v-model="swapwrapped" name="swapw" v-show = "!['susdv2', 'tbtc', 'ren', 'sbtc', 'okuu'].includes(currentPool)">{{ $t('instantSwap.swapWrapped', [currentPoolTokenCoinMark]) }}</b-form-checkbox>
           </div>
 
           <div class="row mt-3 align-items-end text-black-65 flex-wrap">
@@ -585,7 +585,7 @@
                     let j = this.to_currency
                     let promises = await Promise.all([helpers.getETHPrice()])
                     this.ethPrice = promises[0]
-                    this.estimateGas = this.swapwrapped
+                    this.estimateGas = (this.swapwrapped || ['okuu'].includes(this.currentPool))
                       ? contractGas.swap[this.currentPool].exchange(i, j) / 2
                       : contractGas.swap[this.currentPool].exchange_underlying(i, j) / 2
                 },
@@ -598,9 +598,12 @@
         computed: {
           ...getters,
           currentPoolName () {
-            return this.currentPool === 'dusd'
-              ? 'dForce'
-              : this.currentPool
+            const poolName = {
+              dusd: 'dForce',
+              okuu: 'oku'
+            }
+
+            return poolName[this.currentPool] || this.currentPool
           },
           currentPoolTokenCoinMark () {
             const conversions = {
@@ -764,16 +767,15 @@
               if(['susd', 'susdv2', 'tbtc', 'ren', 'sbtc'].includes(currentContract.currentContract)) this.depositc = true;
                 else this.depositc = false;
 
-                if(['ren', 'sbtc'].includes(currentContract.currentContract)) this.btcPrice = await priceStore.getBTCPrice()
-                if(['tbtc', 'ren', 'sbtc'].includes(currentContract.currentContract)) this.fromInput = '0.0001'
-                this.c_rates = currentContract.c_rates
-                this.coins = currentContract.underlying_coins
-                if(this.swapwrapped) {
-                    this.coins = currentContract.coins
-                }
-                this.disabled = false;
-                this.from_cur_handler()
-
+              if(['ren', 'sbtc'].includes(currentContract.currentContract)) this.btcPrice = await priceStore.getBTCPrice()
+              if(['tbtc', 'ren', 'sbtc'].includes(currentContract.currentContract)) this.fromInput = '0.0001'
+              this.c_rates = currentContract.c_rates
+              this.coins = currentContract.underlying_coins
+              if(this.swapwrapped) {
+                  this.coins = currentContract.coins
+              }
+              this.disabled = false;
+              this.from_cur_handler()
             },
             getTokenIcon(token) {
                 return helpers.getTokenIcon(token, this.swapwrapped, this.currentPool)
@@ -810,8 +812,11 @@
                 this.promise.cancel()
                 let promise = this.setAmountPromise()
                 this.interval && !this.interval.stopped && clearIntervalAsync(this.interval)
-                if(typeof (+this.fromInput) === 'number' && !isNaN(+this.fromInput))
-                    this.interval = setIntervalAsync(this.set_to_amount, 3000)
+
+                if (typeof (+this.fromInput) === 'number' && !isNaN(+this.fromInput)) {
+                  this.interval = setIntervalAsync(this.set_to_amount, 3000)
+                }
+
                 try {
                     let [dy, dy_, dx_, balance] = await promise
                     this.toInput = dy;
@@ -916,32 +921,34 @@
                     this.fromBgColor = 'blue'
             },
             setAmountPromise() {
-                let promise = new Promise(async (resolve, reject) => {
-                    var i = this.from_currency;
-                    var j = this.to_currency;
-                    var dx_ = this.fromInput;
-                    var dx = cBN(Math.round(dx_ * this.precisions[i])).toFixed(0,1);
-                    let calls = [
-                        [currentContract.swap._address, currentContract.swap.methods.balances(i).encodeABI()],
-                    ]
-                    if(!this.swapwrapped && !['susdv2', 'tbtc', 'ren', 'dusd', 'okuu'].includes(this.currentPool))
-                      calls.push([currentContract.swap._address, currentContract.swap.methods.get_dy_underlying(i, j, dx).encodeABI()])
-                    else {
-                      //dx = cBN(dx).times(currentContract.c_rates[i])
-                      calls.push([currentContract.swap._address, currentContract.swap.methods.get_dy(i, j, dx).encodeABI()])
-                    }
-                    calls.push([this.coins[this.to_currency]._address , this.coins[this.to_currency].methods.balanceOf(currentContract.default_account).encodeABI()])
+              let promise = new Promise(async (resolve, reject) => {
+                  var i = this.from_currency;
+                  var j = this.to_currency;
+                  var dx_ = this.fromInput;
+                  var dx = cBN(Math.round(dx_ * this.precisions[i])).toFixed(0,1);
+                  let calls = [
+                    [currentContract.swap._address, currentContract.swap.methods.balances(i).encodeABI()],
+                  ]
+  console.log('setAmountPromise', !this.swapwrapped && !['susdv2', 'tbtc', 'ren', 'dusd', 'okuu'].includes(this.currentPool))
+                  if(!this.swapwrapped && !['susdv2', 'tbtc', 'ren', 'dusd', 'okuu'].includes(this.currentPool))
+                    calls.push([currentContract.swap._address, currentContract.swap.methods.get_dy_underlying(i, j, dx).encodeABI()])
+                  else {
+                    //dx = cBN(dx).times(currentContract.c_rates[i])
+                    calls.push([currentContract.swap._address, currentContract.swap.methods.get_dy(i, j, dx).encodeABI()])
+                  }
+                  calls.push([this.coins[this.to_currency]._address , this.coins[this.to_currency].methods.balanceOf(currentContract.default_account).encodeABI()])
 
-                    let aggcalls = await currentContract.multicall.methods.aggregate(calls).call(undefined, 'pending')
-                    let decoded = aggcalls[1].map(hex => currentContract.web3.eth.abi.decodeParameter('uint256', hex))
-                    let [b, get_dy_underlying, balance] = decoded
-                    b = +b * currentContract.c_rates[i];
-                    // In c-units
-                    var dy_ = +get_dy_underlying / this.precisions[j];
-                    var dy = this.toFixed(dy_);
-                    resolve([dy, dy_, dx_, balance])
-                })
-                return helpers.makeCancelable(promise);
+                  let aggcalls = await currentContract.multicall.methods.aggregate(calls).call(undefined, 'pending')
+                  let decoded = aggcalls[1].map(hex => currentContract.web3.eth.abi.decodeParameter('uint256', hex))
+                  let [b, get_dy_underlying, balance] = decoded
+          console.log('decoded', decoded)
+                  b = +b * currentContract.c_rates[i];
+                  // In c-units
+                  var dy_ = +get_dy_underlying / this.precisions[j];
+                  var dy = this.toFixed(dy_);
+                  resolve([dy, dy_, dx_, balance])
+              })
+              return helpers.makeCancelable(promise);
             },
             setLoadingAction() {
                 this.loadingAction = true
@@ -974,19 +981,20 @@
                     dx = BN(this.maxSynthBalance).times(1e18).toFixed(0,1)
                 }
                 let min_dy_method = 'get_dy_underlying'
-                if(this.swapwrapped || ['susdv2', 'tbtc', 'ren', 'sbtc'].includes(this.currentPool)) {
+                if(this.swapwrapped || ['susdv2', 'tbtc', 'ren', 'sbtc', 'okuu'].includes(this.currentPool)) {
                     min_dy_method = 'get_dy'
                 }
+
                 var min_dy = BN(await currentContract.swap.methods[min_dy_method](i, j, BN(dx).toFixed(0,1)).call())
                 min_dy = min_dy.times(1-maxSlippage)
                 dx = cBN(dx.toString()).toFixed(0,1);
                 this.waitingMessage = this.$i18n.t('instantSwap.approveExchange', [this.fromInput, this.getCurrency(this.from_currency)])
                 var { dismiss } = notifyNotification(this.waitingMessage)
                 try {
-                    if (this.inf_approval)
-                        await common.ensure_underlying_allowance(i, currentContract.max_allowance, [], undefined, this.swapwrapped)
-                    else
-                        await common.ensure_underlying_allowance(i, dx, [], undefined, this.swapwrapped);
+                  if (this.inf_approval)
+                    await common.ensure_underlying_allowance(i, currentContract.max_allowance, [], undefined, this.swapwrapped)
+                  else
+                    await common.ensure_underlying_allowance(i, dx, [], undefined, this.swapwrapped);
                 }
                 catch(err) {
                     console.error(err)
@@ -1002,7 +1010,11 @@
 
                 var { dismiss } = notifyNotification(this.waitingMessage)
                 min_dy = cBN(min_dy).toFixed(0);
-                let exchangeMethod = currentContract.swap.methods.exchange_underlying
+                let exchangeMethod = currentContract.swap.methods[
+                  ['okuu'].includes(this.currentPool)
+                    ? 'exchange'
+                    : 'exchange_underlying'
+                ]
                 if(this.swapwrapped || ['susdv2', 'tbtc', 'ren', 'sbtc'].includes(this.currentPool)) exchangeMethod = currentContract.swap.methods.exchange
                 try {
                     await helpers.setTimeoutPromise(100)
