@@ -6,6 +6,7 @@ export default {
   global: {
     sFinance: 'S.Finance',
     home: 'Home',
+    more: 'More',
     swap: 'Swap',
     liquidity: 'Liquidity',
     stats: 'Stats',

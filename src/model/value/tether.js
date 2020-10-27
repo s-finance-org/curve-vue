@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import * as helpers from '../../utils/helpers'
 import { floor } from '../../utils/math/round'
 
@@ -46,7 +47,7 @@ const ModelValueTether = {
         const { precision } = this
         const result = __store__.tether = val
 
-        this.handled = result / precision
+        this.handled = BigNumber(result).div(precision).toString()
       },
 
       /** @type {string|number} */

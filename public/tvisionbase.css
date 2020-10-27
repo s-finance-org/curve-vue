@@ -200,6 +200,27 @@ fieldset {
   outline-color: #eb3c00;
 }
 
+
+.nav-item.dropdown.show > .nav-link,
+.nav-item.dropdown.active > .nav-link,
+.nav-item.dropdown.nav-link.show,
+.nav-item.dropdown.nav-link.active {
+  color: #eb3c00;
+}
+.nav-item .dropdown-menu {
+  padding: 4px 0;
+}
+.nav-item .dropdown-menu .dropdown-item {
+  color: rgba(0,0,0,0.65);
+  line-height: 22px;
+  padding: 7px 0 7px 12px;
+  font-size: 14px;
+}
+.nav-item .dropdown-menu .dropdown-item:hover {
+  background-color: transparent;
+  color: #eb3c00;
+}
+
 /* Sidebar */
 .b-sidebar .navbar-expand .navbar-nav .nav-link:hover,
 .b-sidebar .navbar-expand .navbar-nav .nav-link.active,

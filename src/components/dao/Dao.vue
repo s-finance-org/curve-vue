@@ -1482,6 +1482,7 @@
               store.tokens.sfg.getDailyYield(),
               dusd.getTotalStaking(dusd.mortgages.dusd.totalStaking),
               store.tokens.dusd.getPrice(),
+              store.tokens.df.getPrice()
             )
 
             store.tokens.dusd.getBalanceOf(dusd.mortgages.dusd.userBalanceOf, currentContract.default_account)
@@ -1499,8 +1500,6 @@
               dusd.getUserPendingReward_DF(dusd.rewards.df.userPendingReward, currentContract.default_account),
               dusd.getUserPaidReward_DF(dusd.rewards.df.userPaidReward, currentContract.default_account)
             )
-
-            store.tokens.df.getPrice()
 
             // dfi
             store.gauges.dfi.rewards.sfg.weighting.handled = 0.15

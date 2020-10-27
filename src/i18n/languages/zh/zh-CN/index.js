@@ -6,6 +6,7 @@ export default {
   global: {
     sFinance: 'S.Finance',
     home: '首页',
+    more: '更多',
     swap: '兑换',
     liquidity: '存取款',
     stats: '统计',
