@@ -443,7 +443,7 @@
                       id="remove-liquidity"
                       @click='handle_remove_liquidity()'
                       v-show="currentPool != 'susd'"
-                      :disabled="['susdv2', 'sbtc', 'okuu'].includes(currentPool) && slippage < -0.03 && !warninglow || show_nobalance == true"
+                      :disabled="['susdv2', 'sbtc'].includes(currentPool) && slippage < -0.03 && !warninglow || show_nobalance == true"
                       >
                       {{ $t('global.withdraw') }}
                     </b-button>
