@@ -1,7 +1,7 @@
 <template>
 	<div>
     <div class="total-bg">
-      <b-container class="d-flex py-4 total-cont align-items-center">
+      <b-container class="d-flex py-4  align-items-center">
         <img class="logo_lg mr-4" :src="publicPath + 'res/icons/logo/logo_sm.svg'">
         <h3 class="mb-0">{{ $t('global.sFinance') }}<br/>{{ $t('global.risks') }}</h3>
       </b-container>

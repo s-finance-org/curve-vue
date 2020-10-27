@@ -195,6 +195,7 @@ fieldset {
   background-color: transparent;
   border-color: #eb3c00;
   color: #eb3c00;
+  box-shadow: 0px 4px 8px 0px rgba(235,60,0,0.3); 
 }
 .navbar-tabs .nav-link:active, .navbar-tabs .nav-link:focus {
   outline-color: #eb3c00;
@@ -511,6 +512,7 @@ input[type="text"]::-moz-placeholder, textarea::-moz-placeholder {
   background-color: transparent;
   border-color: #eb3c00;
   color: #eb3c00;
+  box-shadow: 0px 4px 8px 0px rgba(235,60,0,0.3);
 }
 .tabs-nav .nav-link:active, .tabs-nav .nav-link:focus {
   outline-color: #eb3c00;

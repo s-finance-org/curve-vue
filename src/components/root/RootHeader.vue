@@ -100,7 +100,7 @@
             contentClass: 'normal-modal',
           })
           .then(data => {
-            !data &&
+            data === false &&
               $router.push({ name: 'Statemented', path: '/statemented' })
           })
       }

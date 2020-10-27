@@ -1,6 +1,6 @@
 <template>
   <div class="total-bg">
-    <b-container class="d-flex py-4 total-cont justify-content-center">
+    <b-container class="d-flex py-4  justify-content-center">
       <img class="logo_orgin" :src="publicPath + 'res/icons/logo/logo_orgin.svg'">
       <!-- <div class="total-box px-4 py-3 w-270 mr-4 ml-auto">
         <h6 class="text-black-65">{{ $t('global.totalPoolsDeposits') }}</h6>
