@@ -4,7 +4,6 @@
     <div class="total-bg">
       <b-container class="d-flex py-4 px-md-5">
         <b-navbar-nav class="navbar-tabs flex-row flex-wrap px-md-5">
-          <b-nav-item :to="{ name: 'Liquidity', params: { pool: 'okuu' } }">oku</b-nav-item>
           <b-nav-item :to="{ name: 'Liquidity', params: { pool: 'dusd' } }">dForce</b-nav-item>
           <b-nav-item :to="{ name: 'Liquidity', params: { pool: 'dfi' } }">dfi</b-nav-item>
           <b-nav-item :to="{ name: 'Liquidity', params: { pool: 'susdv2' } }">sUSD</b-nav-item>

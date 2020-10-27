@@ -56,7 +56,7 @@ import * as common from '../utils/common.js'
 
 Vue.use(VueRouter)
 
-const defaultPool = 'okuu'
+const defaultPool = 'dusd'
 
 let routes = [
   {
@@ -287,7 +287,7 @@ let routes = [
     component: RootDefault,
     children: [
       {
-        path: ':pool(susdv2|dfi|dusd|okuu)?',
+        path: ':pool(susdv2|dfi|dusd)?',
         name: 'Liquidity',
         beforeEnter: (to, from, next) => {
           !to.params.pool

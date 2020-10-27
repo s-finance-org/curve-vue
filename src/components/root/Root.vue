@@ -486,7 +486,7 @@
         const now = new Date().getTime()
 
         const apys = {
-          okuu: (+store.tokens.okuu.price.handled - 1) / ((now - 1603800000000) / 86400000) * 365 * 100,
+          // okuu: (+store.tokens.okuu.price.handled - 1) / ((now - 1603800000000) / 86400000) * 365 * 100,
           dusd: (+store.tokens.dusd.price.handled - 1) / ((now - 1603468800000) / 86400000) * 365 * 100,
           dfi: (+store.tokens.iUSD_LPT.price.handled - 1) / ((now - 1602345600000) / 86400000) * 365 * 100
         }
@@ -507,18 +507,18 @@
             'operating'
           ],
           items: [
-            {
-              id: -1,
-              toDeposit: '/liquidity/okuu',
-              toDao: '/dao',
-              pooltext: 'OKU',
-              pools: 'OKU USDT',
-              volData: null,
-              currencies: {oku: 'OKU', usdt: 'USDT'},
-              funds: '-',
-              apy: apyCont(apys.okuu),
-              link: '/okuu'
-            },
+            // {
+            //   id: -1,
+            //   toDeposit: '/liquidity/okuu',
+            //   toDao: '/dao',
+            //   pooltext: 'OKU',
+            //   pools: 'OKU USDT',
+            //   volData: null,
+            //   currencies: {oku: 'OKU', usdt: 'USDT'},
+            //   funds: '-',
+            //   apy: apyCont(apys.okuu),
+            //   link: '/okuu'
+            // },
             {
               id: -1,
               toDeposit: '/liquidity/dusd',
