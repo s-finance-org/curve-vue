@@ -2,33 +2,35 @@
 	<div>
     <!-- FIXME: common -->
     <div class="total-bg">
-      <b-container class="d-flex py-4 px-sm-5">
-        <b-navbar-nav class="navbar-tabs flex-row flex-wrap px-sm-5">
+      <b-container class="d-flex py-4 px-md-5">
+        <b-navbar-nav class="navbar-tabs flex-row flex-wrap px-md-5">
           <b-nav-item :to="{ name: 'Liquidity', params: { pool: 'okuu' } }">oku</b-nav-item>
           <b-nav-item :to="{ name: 'Liquidity', params: { pool: 'dusd' } }">dForce</b-nav-item>
           <b-nav-item :to="{ name: 'Liquidity', params: { pool: 'dfi' } }">dfi</b-nav-item>
           <b-nav-item :to="{ name: 'Liquidity', params: { pool: 'susdv2' } }">sUSD</b-nav-item>
         </b-navbar-nav>
       </b-container>
-      <b-container class="py-4 px-sm-5">
-        <div class="d-flex align-items-center px-sm-5">
-          <div class="total-box p-2 mr-4 col-auto box-98 d-flex flex-wrap" :class="{ 'icons-box-2': Object.keys(currencies).length === 2 }">
+      <b-container class="py-4 px-md-5">
+        <div class="d-flex align-items-center px-md-5 flex-wrap">
+          <div class="total-box p-2 mr-4 d-none d-lg-flex box-98 flex-wrap" :class="{ 'icons-box-2': Object.keys(currencies).length === 2 }">
             <img v-for='(currency, i) in Object.keys(currencies)' :key="'icon-'+currency" class="icon-w-40"
               :class="{'token-icon': true, [currency+'-icon']: true, 'y': depositc && !isPlain}"
               :src='getTokenIcon(currency)'>
           </div>
-          <h3 class="mb-0">{{ currentPoolName }}<br/>{{ $t('liquidity.name') }}</h3>
-          <div class="total-box col-3 px-4 py-3 ml-auto mr-4 d-none d-lg-block">
-            <h6 class="text-black-65">{{ $t('global.totalBalances') }}</h6>
-            <text-overlay-loading :show="totalBalances === null">
-              <h4 class="mb-0">${{ totalBalances | formatNumber(2) }}</h4>
-            </text-overlay-loading>
-          </div>
-          <div class="total-box col-3 px-4 py-3 d-none d-lg-block">
-            <h6 class="text-black-65">{{ $t('global.dailyVol') }}</h6>
-            <text-overlay-loading :show="poolVolumeUSD == -1">
-              <h4 class="mb-0">${{ poolVolumeUSD && poolVolumeUSD | formatNumber(2) }}</h4>
-            </text-overlay-loading>
+          <h3 class="mb-0 col-4 py-3">{{ currentPoolName }}<br/>{{ $t('liquidity.name') }}</h3>
+          <div class="col-12 col-md d-flex px-0">
+            <div class="total-box col px-4 py-3 mr-4">
+              <h6 class="text-black-65">{{ $t('global.totalBalances') }}</h6>
+              <text-overlay-loading :show="totalBalances === null">
+                <h4 class="mb-0">${{ totalBalances | formatNumber(2) }}</h4>
+              </text-overlay-loading>
+            </div>
+            <!-- <div class="total-box col px-4 py-3">
+              <h6 class="text-black-65">{{ $t('global.dailyVol') }}</h6>
+              <text-overlay-loading :show="poolVolumeUSD == -1">
+                <h4 class="mb-0">${{ poolVolumeUSD && poolVolumeUSD | formatNumber(2) }}</h4>
+              </text-overlay-loading>
+            </div> -->
           </div>
         </div>
       </b-container>
@@ -1609,6 +1611,7 @@
 
                 var { dismiss } = notifyNotification(this.waitingMessage)
                 await helpers.setTimeoutPromise(100)
+        console.log('add_liquidity', this.amounts, token_amount)
                 let add_liquidity = currentContract.swap.methods.add_liquidity(this.amounts, token_amount).send({
                     from: currentContract.default_account,
                     gasPrice: this.gasPriceWei,

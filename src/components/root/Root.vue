@@ -491,6 +491,12 @@
           dfi: (+store.tokens.iUSD_LPT.price.handled - 1) / ((now - 1602345600000) / 86400000) * 365 * 100
         }
 
+        const apyCont = (apy) => {
+          return apy > 0
+            ? apy.toFixed(2)
+            : '-'
+        }
+
         return {
           fields: [
             { key: 'name', stickyColumn: true, isRowHeader: true },
@@ -510,7 +516,7 @@
               volData: null,
               currencies: {oku: 'OKU', usdt: 'USDT'},
               funds: '-',
-              apy: apys.okuu.toFixed(2),
+              apy: apyCont(apys.okuu),
               link: '/okuu'
             },
             {
@@ -522,7 +528,7 @@
               volData: null,
               currencies: {dai: 'DAI', usdc: 'USDC', usdt: 'USDT', usdx: 'USDx'},
               funds: '-',
-              apy: apys.dusd.toFixed(2),
+              apy: apyCont(apys.dusd),
               link: '/dusd'
             },
             {
@@ -534,7 +540,7 @@
               volData: null, // volData.dfi
               currencies: {dai: 'DAI', usdc: 'USDC', usdt: "USDT"},
               funds: '-',
-              apy: apys.dfi.toFixed(2),
+              apy: apyCont(apys.dfi),
               link: '/dfi'
             },
             // {
