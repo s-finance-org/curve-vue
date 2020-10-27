@@ -1611,7 +1611,7 @@
 
                 var { dismiss } = notifyNotification(this.waitingMessage)
                 await helpers.setTimeoutPromise(100)
-        console.log('add_liquidity', this.amounts, token_amount)
+
                 let add_liquidity = currentContract.swap.methods.add_liquidity(this.amounts, token_amount).send({
                     from: currentContract.default_account,
                     gasPrice: this.gasPriceWei,

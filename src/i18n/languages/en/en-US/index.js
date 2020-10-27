@@ -188,5 +188,5 @@ export default {
     approveOperation: 'Please authorize first, and then continue after authorization is completed'
   },
   temp: '* If you only want to withdraw a single currency, you can modify the number of other currencies to 0',
-  dforceTemp: 'dForce liquidity gauge is about to open. Currently, deposits and withdrawals can be done normally, but no token reward is available.'
+  dforceTemp: 'oku liquidity gauge is about to open. Currently, deposits and withdrawals can be done normally, but no token reward is available.'
 }
