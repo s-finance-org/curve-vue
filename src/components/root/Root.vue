@@ -486,7 +486,7 @@
         const now = new Date().getTime()
 
         const apys = {
-          okuu: (+store.tokens.okuu.price.handled - 1) / ((now - 1603728000000) / 86400000) * 365 * 100,
+          okuu: (+store.tokens.okuu.price.handled - 1) / ((now - 1603800000000) / 86400000) * 365 * 100,
           dusd: (+store.tokens.dusd.price.handled - 1) / ((now - 1603468800000) / 86400000) * 365 * 100,
           dfi: (+store.tokens.iUSD_LPT.price.handled - 1) / ((now - 1602345600000) / 86400000) * 365 * 100
         }
