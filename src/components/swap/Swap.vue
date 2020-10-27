@@ -929,7 +929,6 @@
                   let calls = [
                     [currentContract.swap._address, currentContract.swap.methods.balances(i).encodeABI()],
                   ]
-  console.log('setAmountPromise', !this.swapwrapped && !['susdv2', 'tbtc', 'ren', 'dusd', 'okuu'].includes(this.currentPool))
                   if(!this.swapwrapped && !['susdv2', 'tbtc', 'ren', 'dusd', 'okuu'].includes(this.currentPool))
                     calls.push([currentContract.swap._address, currentContract.swap.methods.get_dy_underlying(i, j, dx).encodeABI()])
                   else {

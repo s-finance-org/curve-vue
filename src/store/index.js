@@ -1809,7 +1809,7 @@ store.gauges = {
     code: 'okuu',
     name: 'OKU',
     propagateMark: 'oku',
-    mortgagesUnit: 'OKUsdt LP token',
+    mortgagesUnit: 'OKUU LP token',
     address: process.env.VUE_APP_OKUU_GAUGE,
     // abi: abiDfi, // FIXME: ???
     abi: abiSUSDv2,

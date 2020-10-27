@@ -1070,7 +1070,7 @@
           const conversions = {
             'dfi': 'iUSD',
             'dusd': 'dUSD',
-            'okuu': 'OKUsdt'
+            'okuu': 'OKUU'
           }
           const result = conversions[this.currentPool] || this.currentPool
 
