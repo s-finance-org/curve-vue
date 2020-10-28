@@ -274,12 +274,9 @@ store.tokens = {
     async getPrice () {
       const { address, price } = this
 
-      // let amountsTether = await uniswapV2Router2.getAmountsOut(BN(1).times(1e18).toString(), [address, process.env.VUE_APP_USDT_TOKEN])
       let amountsTether = await uniswapV2Router2.getPrice(this, store.tokens.usdt)
       // FIXME: try
-      // amountsTether = BN(amountsTether[1]).dividedBy(1e6).times(1e18).toString()
       amountsTether = BN(amountsTether).times(1e18).toString()
-console.log('amountsTether', amountsTether)
       price.tether = amountsTether
 
       return price.handled

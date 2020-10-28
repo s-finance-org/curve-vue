@@ -7,6 +7,7 @@
           <b-nav-item :to="{ name: 'Liquidity', params: { pool: 'dusd' } }">dForce</b-nav-item>
           <b-nav-item :to="{ name: 'Liquidity', params: { pool: 'dfi' } }">dfi</b-nav-item>
           <b-nav-item :to="{ name: 'Liquidity', params: { pool: 'susdv2' } }">sUSD</b-nav-item>
+          <b-nav-item :to="{ name: 'Liquidity', params: { pool: 'okuu' } }">oku</b-nav-item>
         </b-navbar-nav>
       </b-container>
       <b-container class="py-4 px-md-5">
