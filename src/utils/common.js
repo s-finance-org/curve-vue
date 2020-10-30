@@ -237,27 +237,25 @@ export function update_rates(version = 'new', contract) {
     for (let i = 0; i < allabis[contract.currentContract].N_COINS; i++) {
         let address = allabis[contract.currentContract].coins[i]
         /*
-        rate: uint256 = cERC20(self.coins[i]).exchangeRateStored()
-        supply_rate: uint256 = cERC20(self.coins[i]).supplyRatePerBlock()
-        old_block: uint256 = cERC20(self.coins[i]).accrualBlockNumber()
-        rate += rate * supply_rate * (block.number - old_block) / 10 ** 18
+          rate: uint256 = cERC20(self.coins[i]).exchangeRateStored()
+          supply_rate: uint256 = cERC20(self.coins[i]).supplyRatePerBlock()
+          old_block: uint256 = cERC20(self.coins[i]).accrualBlockNumber()
+          rate += rate * supply_rate * (block.number - old_block) / 10 ** 18
         */
         //for usdt pool
         if(checkTethered(contract, i)) {
           Vue.set(contract.c_rates, i, 1 / allabis[contract.currentContract].coin_precisions[i]);
         }
-        else if(['iearn', 'busd', 'susd', 'pax', 'dfi', 'dusd', 'okuu', 'pool5usd'].includes(contract.currentContract)) {
+        else if(['iearn', 'busd', 'susd', 'pax', 'dfi', 'dusd', 'okuu'].includes(contract.currentContract)) {
             if(contract.currentContract == 'susd' && i == 1) {
                 calls.push(['0xeDf54bC005bc2Df0Cc6A675596e843D28b16A966', '0xbb7b8b80'])
-            }
-            else {
+            } else {
               //getPricePerFullShare
               calls.push([address, '0x77c7b8fc'])
             }
 
             callscoins.push({pool: 'ys', i: i})
-        }
-        else {
+        } else {
             calls.push(
                 //exchangeRateStored
                 [address, '0x182df0f5'],
