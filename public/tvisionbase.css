@@ -314,6 +314,45 @@ fieldset {
   width: 98px;
   height: 98px;
 }
+.box-98 img:nth-last-child(n+5) ~ img,
+.box-98 img:nth-last-child(n+5):first-child {
+  width: 31px;
+  height: 31px;
+}
+.box-98 img:nth-last-child(n+5) ~ img:nth-child(2) {
+  margin-left: 18px;
+}
+.box-98 img:nth-last-child(n+5) ~ img:nth-child(3) {
+  margin-left: 25px;
+  margin-top: -5px;
+}
+.box-98 img:nth-last-child(n+5) ~ img:nth-child(4) {
+  margin-top: -5px;
+}
+.box-98 img:nth-last-child(n+5) ~ img:nth-child(5) {
+  margin-top: -5px;
+  margin-left: 18px;
+}
+
+.icon-box-20 img:nth-last-child(n+5) ~ img,
+.icon-box-20 img:nth-last-child(n+5):first-child {
+  width: 6px;
+  height: 6px;
+}
+.icon-box-20 img:nth-last-child(n+5) ~ img:nth-child(2) {
+  margin-left: 5px;
+}
+.icon-box-20 img:nth-last-child(n+5) ~ img:nth-child(3) {
+  margin-left: 4px;
+  margin-top: -1px;
+}
+.icon-box-20 img:nth-last-child(n+5) ~ img:nth-child(4) {
+  margin-top: -1px;
+}
+.icon-box-20 img:nth-last-child(n+5) ~ img:nth-child(5) {
+  margin-top: -1px;
+  margin-left: 4px;
+}
 
 /* Width */
 .w-270 {

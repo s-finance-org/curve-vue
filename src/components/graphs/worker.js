@@ -75,7 +75,14 @@ const currencies = {
   okuu: {
 		oku: 'OKU',
 		usdt: 'USDT',
-	},
+  },
+  pool5usd: {
+		dai: 'DAI',
+		usdc: 'USDC',
+    usdt: 'USDT',
+    tusd: 'TUSD',
+    pax: 'PAX',
+  }
 }
 
 let calcPrice = (config, fromCurrency, toCurrency, precisions, usefee = false) => {

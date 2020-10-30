@@ -7,6 +7,7 @@ const Deposit = () => import('../components/deposit/Deposit.vue')
 const DepositRouter = () => import('../components/deposit/DepositRouter.vue')
 const Liquidity = () => import('../components/liquidity/index.vue')
 const Dao = () => import('../components/dao/Dao.vue')
+const __test__ = () => import('../components/test/index.vue')
 const DepositRen = () => import('../components/ren/Deposit.vue')
 const Withdraw = () => import('../components/withdraw/Withdraw.vue')
 const WithdrawRouter = () => import('../components/withdraw/WithdrawRouter.vue')
@@ -195,7 +196,12 @@ let routes = [
         path: '/statemented',
         name: 'Statemented',
         component: Statemented
-      }
+      },
+      {
+        path: '/__test__',
+        name: '__test__',
+        component: __test__
+      },
     ]
   },
   // {
@@ -287,7 +293,7 @@ let routes = [
     component: RootDefault,
     children: [
       {
-        path: ':pool(susdv2|dfi|dusd|okuu)?',
+        path: ':pool(susdv2|dfi|dusd|okuu|pool5usd)?',
         name: 'Liquidity',
         beforeEnter: (to, from, next) => {
           !to.params.pool
@@ -304,7 +310,7 @@ let routes = [
     component: RootDefault,
     children: [
       {
-        path: ':pool(dfi|dusd|okuu)?',
+        path: ':pool(dfi|dusd|okuu|pool5usd)?',
         name: 'Swap',
         beforeEnter: (to, from, next) => {
           !to.params.pool
@@ -409,7 +415,8 @@ const pools = [
   // 'sbtc'
   'dfi',
   'dusd',
-  'okuu'
+  'okuu',
+  'pool5usd'
 ]
 
 router.beforeEach(async (to, from, next) => {

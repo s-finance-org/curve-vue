@@ -54,7 +54,8 @@
           'dfi': 'dfi',
           'dusd': 'dusd',
           'okuu': 'okuu',
-          'susdv2': 'susd'
+          'susdv2': 'susd',
+          'pool5usd': 'pool5usd'
         }
 
         return volumeStore.state.volumes[

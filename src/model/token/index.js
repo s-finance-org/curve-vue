@@ -7,7 +7,7 @@ import store from '../../store'
 import * as errorStore from '../../components/common/errorStore'
 import { notifyHandler, notifyNotification } from '../../init'
 
-import ModelValueTether from '../value/tether'
+import ModelValueEther from '../value/ether'
 import ModelValueError from '../value/error'
 
 
@@ -98,12 +98,12 @@ const ModelToken = {
       async getBalanceOf (target, address) {
         const { contract } = this
 
-        const result = target.tether = await contract.methods.balanceOf(address).call()
+        const result = target.ether = await contract.methods.balanceOf(address).call()
 
         return result
       },
 
-      price: ModelValueTether.create(),
+      price: ModelValueEther.create(),
 
 
       // ------------------------------
@@ -114,8 +114,8 @@ const ModelToken = {
       //   const { address, priceUnitAddress, price } = this
       //   const result = await storeprice.getPrice(priceUnitAddress, address)
 
-      //   // XXX: tether?
-      //   price.tether = result
+      //   // XXX: ether?
+      //   price.ether = result
 
       //   return result
       // },

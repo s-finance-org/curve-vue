@@ -4,6 +4,7 @@
     <div class="total-bg">
       <b-container class="d-flex py-4 px-md-5">
         <b-navbar-nav class="navbar-tabs flex-row flex-wrap px-md-5">
+          <b-nav-item :to="{ name: 'Swap', params: { pool: 'pool5usd' } }">5pool</b-nav-item>
           <b-nav-item :to="{ name: 'Swap', params: { pool: 'dusd' } }">dForce</b-nav-item>
           <b-nav-item :to="{ name: 'Swap', params: { pool: 'dfi' } }">dfi</b-nav-item>
           <b-nav-item :to="{ name: 'Swap', params: { pool: 'okuu' } }">oku</b-nav-item>
@@ -222,7 +223,7 @@
 
           <div class="mt-4">
             <b-form-checkbox v-model="inf_approval" name="inf-approval">{{ $t('global.infiniteApproval') }}</b-form-checkbox>
-            <b-form-checkbox v-model="swapwrapped" name="swapw" v-show = "!['susdv2', 'tbtc', 'ren', 'sbtc', 'okuu'].includes(currentPool)">{{ $t('instantSwap.swapWrapped', [currentPoolTokenCoinMark]) }}</b-form-checkbox>
+            <b-form-checkbox v-model="swapwrapped" name="swapw" v-show = "!['susdv2', 'tbtc', 'ren', 'sbtc', 'okuu', 'pool5usd'].includes(currentPool)">{{ $t('instantSwap.swapWrapped', [currentPoolTokenCoinMark]) }}</b-form-checkbox>
           </div>
 
           <div class="row mt-3 align-items-end text-black-65 flex-wrap">
@@ -589,7 +590,7 @@
                     let j = this.to_currency
                     let promises = await Promise.all([helpers.getETHPrice()])
                     this.ethPrice = promises[0]
-                    this.estimateGas = (this.swapwrapped || ['okuu'].includes(this.currentPool))
+                    this.estimateGas = (this.swapwrapped || ['okuu', 'pool5usd'].includes(this.currentPool))
                       ? contractGas.swap[this.currentPool].exchange(i, j) / 2
                       : contractGas.swap[this.currentPool].exchange_underlying(i, j) / 2
                 },
@@ -604,7 +605,8 @@
           currentPoolName () {
             const poolName = {
               dusd: 'dForce',
-              okuu: 'oku'
+              okuu: 'oku',
+              pool5usd: '5pool'
             }
 
             return poolName[this.currentPool] || this.currentPool
@@ -933,7 +935,7 @@
                   let calls = [
                     [currentContract.swap._address, currentContract.swap.methods.balances(i).encodeABI()],
                   ]
-                  if(!this.swapwrapped && !['susdv2', 'tbtc', 'ren', 'okuu'].includes(this.currentPool))
+                  if(!this.swapwrapped && !['susdv2', 'tbtc', 'ren', 'okuu', 'pool5usd'].includes(this.currentPool))
                     calls.push([currentContract.swap._address, currentContract.swap.methods.get_dy_underlying(i, j, dx).encodeABI()])
                   else {
                     //dx = cBN(dx).times(currentContract.c_rates[i])
@@ -983,7 +985,7 @@
                     dx = BN(this.maxSynthBalance).times(1e18).toFixed(0,1)
                 }
                 let min_dy_method = 'get_dy_underlying'
-                if(this.swapwrapped || ['susdv2', 'tbtc', 'ren', 'sbtc', 'okuu'].includes(this.currentPool)) {
+                if(this.swapwrapped || ['susdv2', 'tbtc', 'ren', 'sbtc', 'okuu', 'pool5usd'].includes(this.currentPool)) {
                     min_dy_method = 'get_dy'
                 }
 
@@ -1013,7 +1015,7 @@
                 var { dismiss } = notifyNotification(this.waitingMessage)
                 min_dy = cBN(min_dy).toFixed(0);
                 let exchangeMethod = currentContract.swap.methods[
-                  ['okuu'].includes(this.currentPool)
+                  ['okuu', 'pool5usd'].includes(this.currentPool)
                     ? 'exchange'
                     : 'exchange_underlying'
                 ]

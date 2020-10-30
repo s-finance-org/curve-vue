@@ -5,7 +5,7 @@ const valueModelStore = {
   create () {
     return {
       loading: true,
-      tether: -1,
+      ether: -1,
       revised: 0,
       defaultRevised: '',
       handled: -1,
@@ -31,7 +31,7 @@ export const valueModel = {
     const __store__ = valueModelStore.create()
     const keys = {
       loading: name + 'loading',
-      tether: name + 'tether',
+      ether: name + 'ether',
       revised: name + 'revised',
       handled: name + 'handled',
       percent: name + 'percent',
@@ -59,11 +59,11 @@ export const valueModel = {
        *  TODO: typeNumber?
        *  @type {number}
        */
-      get [keys.tether] () {
-        return __store__.tether
+      get [keys.ether] () {
+        return __store__.ether
       },
-      set [keys.tether] (val) {
-        const result = __store__.tether = val
+      set [keys.ether] (val) {
+        const result = __store__.ether = val
 
         this[keys.handled] = result / notationDecimal
       },

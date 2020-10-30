@@ -2,23 +2,24 @@ import BigNumber from 'bignumber.js'
 import * as helpers from '../../utils/helpers'
 import { floor } from '../../utils/math/round'
 
-const ModelValueTether = {
+const ModelValueEther = {
   /**
-
    *  @return {!Object}
    */
   create ({
     decimal = 18,
+    ether = null,
     contDecimal = 6,
+    contDefault = '-',
     contMethod = floor
   } = {}) {
     const __store__ = {
-      tether: '000000000000000000',
+      ether: '000000000000000000',
       handled: '',
-      cont: '-'
+      cont: contDefault
     }
 
-    return {
+    const model = {
       /** @type {number} */
       decimal,
       /** @type {number} */
@@ -39,13 +40,24 @@ const ModelValueTether = {
         }
       },
 
-      /** @type {string} */
-      get tether () {
-        return __store__.tether
+      /**
+       *  Universal data
+       *  @type {(string|number)}
+       */
+      get value () {
+        return this.ether
       },
-      set tether (val) {
+      set value (val) {
+        this.ether = val
+      },
+
+      /** @type {string} */
+      get ether () {
+        return __store__.ether
+      },
+      set ether (val) {
         const { precision } = this
-        const result = __store__.tether = val
+        const result = __store__.ether = val
 
         this.handled = BigNumber(result).div(precision).toString()
       },
@@ -65,13 +77,20 @@ const ModelValueTether = {
       get cont () {
         const { handled, contDecimal, loading } = this
 
-        // FIXME: formatNumber toFixed -> round()
-        return !loading
-          ? helpers.formatNumber(contMethod(handled, contDecimal), contDecimal)
-          : __store__.cont
+        if (!loading) {
+          // FIXME: formatNumber toFixed -> round()
+          __store__.cont = helpers.formatNumber(contMethod(handled, contDecimal), contDecimal)
+        }
+
+        return __store__.cont
       }
     }
+
+    ether != null
+      && (model.ether = ether)
+
+    return model
   }
 }
 
-export default ModelValueTether
+export default ModelValueEther

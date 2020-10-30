@@ -20,6 +20,7 @@ let requiresResetAllowance = [
   process.env.VUE_APP_DFI_TOKEN, // s.finance iUSDT/iDAI/iUSDC
   process.env.VUE_APP_DUSD_TOKEN, // s.finance dDAI/dUSDC/dUSDT/dUSDx
   process.env.VUE_APP_OKUU_TOKEN, // s.finance OKU/USDT
+  process.env.VUE_APP_5USD_TOKEN, // s.finance DAI/USDC/USDT/TUSD/PAX
 ]
 
 export function approve(contract, amount, account, toContract) {
@@ -245,7 +246,7 @@ export function update_rates(version = 'new', contract) {
         if(checkTethered(contract, i)) {
           Vue.set(contract.c_rates, i, 1 / allabis[contract.currentContract].coin_precisions[i]);
         }
-        else if(['iearn', 'busd', 'susd', 'pax', 'dfi', 'dusd', 'okuu'].includes(contract.currentContract)) {
+        else if(['iearn', 'busd', 'susd', 'pax', 'dfi', 'dusd', 'okuu', 'pool5usd'].includes(contract.currentContract)) {
             if(contract.currentContract == 'susd' && i == 1) {
                 calls.push(['0xeDf54bC005bc2Df0Cc6A675596e843D28b16A966', '0xbb7b8b80'])
             }
@@ -316,7 +317,7 @@ export async function update_fee_info(version = 'new', contract, update = true) 
 
     let rates_calls = update_rates(version, contract);
     calls.push(...rates_calls)
-    if(['susdv2','sbtc', 'iearn', 'y', 'dfi', 'dusd', 'okuu'].includes(contract.currentContract) && update)
+    if(['susdv2','sbtc', 'iearn', 'y', 'dfi', 'dusd', 'okuu', 'pool5usd'].includes(contract.currentContract) && update)
         calls.push([allabis[contract.currentContract].sCurveRewards_address, contract.curveRewards.methods.balanceOf(default_account).encodeABI()])
     if(update) {
       console.log('multiInitState--' )
@@ -375,7 +376,7 @@ export async function multiInitState(calls, contract, initContracts = false) {
         contract.curveStakedBalance = decoded[1]
         decoded = decoded.slice(2);
     }
-    if(initContracts && ['sbtc', 'iearn', 'y', 'dfi', 'dusd', 'okuu'].includes(contract.currentContract)) {
+    if(initContracts && ['sbtc', 'iearn', 'y', 'dfi', 'dusd', 'okuu', 'pool5usd'].includes(contract.currentContract)) {
         contract.curveStakedBalance = decoded[0]
         decoded = decoded.slice(1);
     }
@@ -404,7 +405,7 @@ export async function multiInitState(calls, contract, initContracts = false) {
               coin_abi = synthERC20_abi
               underlying_abi = synthERC20_abi
           }
-          if(['iearn', 'busd', 'susd', 'pax', 'dfi', 'okuu'].includes(contract.currentContract)) coin_abi = yERC20_abi
+          if(['iearn', 'busd', 'susd', 'pax', 'dfi', 'okuu', 'pool5usd'].includes(contract.currentContract)) coin_abi = yERC20_abi
           contract.coins.push(new web3.eth.Contract(coin_abi, addr));
           contract.underlying_coins.push(new web3.eth.Contract(underlying_abi, underlying_addr));
       })
@@ -415,7 +416,7 @@ export async function multiInitState(calls, contract, initContracts = false) {
     }
 
 
-    if(['iearn', 'busd', 'susd', 'pax', 'dfi', 'dusd', 'okuu'].includes(contract.currentContract)) {
+    if(['iearn', 'busd', 'susd', 'pax', 'dfi', 'dusd', 'okuu', 'pool5usd'].includes(contract.currentContract)) {
       ratesDecoded.map((v, i) => {
         if(checkTethered(contract, i)) {
           Vue.set(contract.c_rates, i, 1 / allabis[contract.currentContract].coin_precisions[i]);
@@ -451,7 +452,7 @@ export async function multiInitState(calls, contract, initContracts = false) {
         contract.total += balances[i] * contract.c_rates[i];
     })
 
-    if(!initContracts && ['susdv2', 'sbtc', 'iearn', 'y', 'dfi', 'dusd', 'okuu'].includes(contract.currentContract))
+    if(!initContracts && ['susdv2', 'sbtc', 'iearn', 'y', 'dfi', 'dusd', 'okuu', 'pool5usd'].includes(contract.currentContract))
         contract.curveStakedBalance = decoded[decoded.length-1]
 
     if (default_account) {
@@ -525,9 +526,7 @@ export async function calc_slippage(values, deposit, zap_values, to_currency) {
         var Sr = zap_values[to_currency]
         zap_values[to_currency] = zap_values[to_currency].div(1e18).div(currentContract.c_rates[to_currency]).toFixed(0);
         calls.push([currentContract.swap._address, currentContract.swap.methods.calc_token_amount(zap_values, to_currency).encodeABI()])
-
-    }
-    else {
+    } else {
         real_values = values.map(v=>+v);
         var Sr = real_values.reduce((a,b) => a+b, 0);
 
@@ -539,24 +538,30 @@ export async function calc_slippage(values, deposit, zap_values, to_currency) {
     let decoded = aggcalls[1].map(hex => currentContract.web3.eth.abi.decodeParameter('uint256', hex))
     let [virtual_price, token_amount, ...balances] = decoded
     let Sv = +virtual_price * (+token_amount) / 1e36;
+// console.log('virtual_price', virtual_price, 'token_amount', token_amount)
     for(let i = 0; i < currentContract.N_COINS; i++) {
-        let coin_balance = +balances[i] * currentContract.c_rates[i];
-        if(!deposit) {
-            if(coin_balance < real_values[i]) {
-                currentContract.showNoBalance = true;
-                currentContract.noBalanceCoin = i;
-            }
-            else
-                currentContract.showNoBalance = false;
+      let coin_balance = +balances[i] * currentContract.c_rates[i];
+      if(!deposit) {
+        if(coin_balance < real_values[i]) {
+            currentContract.showNoBalance = true;
+            currentContract.noBalanceCoin = i;
         }
+        else {
+          currentContract.showNoBalance = false;
+        }
+      }
     }
-    if (deposit)
-        slippage = Sv / Sr
-    else if(to_currency === undefined) {
-        slippage = Sr / Sv;
+// console.log(values, deposit)
+// console.log(await currentContract.swap.methods.calc_token_amount(values, deposit).call())
+console.log('Sr', Sr, 'Sv', Sv)
+    if (deposit) {
+      slippage = Sv / Sr
+    } else if(to_currency === undefined) {
+      slippage = Sr / Sv;
+    } else {
+      slippage = Sr / (Sv * 1e18)
     }
-    else
-        slippage = Sr / (Sv * 1e18)
+
     slippage = slippage - 1;
     slippage = slippage || 0
     currentContract.slippage = slippage;

@@ -462,11 +462,12 @@
 			this.keydownListener = document.addEventListener('keydown', this.handle_pool_change)
       this.getAPY()
 
-        const { okuu, dusd, iUSD_LPT } = store.tokens
+        const { okuu, dusd, iUSD_LPT, pool5usd } = store.tokens
 
         okuu.getPrice()
         dusd.getPrice()
         iUSD_LPT.getPrice()
+        pool5usd.getPrice()
 			// contract.web3 && contract.multicall && this.getCurveRewards() && this.getBalances();
 		},
 		beforeDestroy() {
@@ -482,13 +483,14 @@
 
       stablePools () {
         const { volumes } = this
-        const { okuu, dusd, iUSD_LPT } = store.tokens
+        const { okuu, dusd, iUSD_LPT, pool5usd } = store.tokens
         const now = new Date().getTime()
 
         const apys = {
-          // okuu: (+store.tokens.okuu.price.handled - 1) / ((now - 1603800000000) / 86400000) * 365 * 100,
-          dusd: (+store.tokens.dusd.price.handled - 1) / ((now - 1603468800000) / 86400000) * 365 * 100,
-          dfi: (+store.tokens.iUSD_LPT.price.handled - 1) / ((now - 1602345600000) / 86400000) * 365 * 100
+          // okuu: (+okuu.price.handled - 1) / ((now - 1603800000000) / 86400000) * 365 * 100,
+          dusd: (+dusd.price.handled - 1) / ((now - 1603468800000) / 86400000) * 365 * 100,
+          dfi: (+iUSD_LPT.price.handled - 1) / ((now - 1602345600000) / 86400000) * 365 * 100,
+          pool5usd: (+pool5usd.price.handled - 1) / ((now - 1603800000000) / 86400000) * 365 * 100
         }
 
         const apyCont = (apy) => {
@@ -507,6 +509,18 @@
             'operating'
           ],
           items: [
+            {
+              id: -1,
+              toDeposit: '/liquidity/pool5usd',
+              toDao: '/dao',
+              pooltext: '5pool',
+              pools: 'DAI USDC USDT TUSD PAX',
+              volData: null,
+              currencies: {dai: 'DAI', usdc: 'USDC', usdt: 'USDT', tusd: 'TUSD', pax: 'PAX'},
+              funds: '-',
+              apy: apyCont(apys.pool5usd),
+              link: '/pool5usd'
+            },
             // {
             //   id: -1,
             //   toDeposit: '/liquidity/okuu',

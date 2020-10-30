@@ -1,5 +1,5 @@
-import ModelValueTether from './value/tether'
+import ModelValueEther from './value/ether'
 
 export {
-  ModelValueTether
+  ModelValueEther
 }

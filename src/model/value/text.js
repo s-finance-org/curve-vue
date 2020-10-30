@@ -3,8 +3,8 @@ const ModelValueText = {
    */
   create () {
     const __store__ = {
-      text: '',
-      defaultCont: '-'
+      value: '',
+      cont: '-'
     }
 
     return {
@@ -20,23 +20,24 @@ const ModelValueText = {
       },
 
       /** @type {string} */
-      get text () {
-        return __store__.text
+      get value () {
+        return __store__.value
       },
-      set text (val) {
-        __store__.text = val
+      set value (val) {
+        __store__.value = val
 
         this._update()
       },
 
       /** @type {string} */
-      get wrapped () {
-        const { defaultCont } = __store__
-        const { text, loading } = this
+      get cont () {
+        const { value, loading } = this
 
-        return !loading
-          ? text
-          : defaultCont
+        if (!loading) {
+          __store__.cont = value
+        }
+
+        return __store__.cont
       }
     }
   }

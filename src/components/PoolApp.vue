@@ -131,7 +131,8 @@
       sbtc: 'sBTC',
       dfi: 'DFI',
       dusd: 'dUSD',
-      okuu: 'OKUU'
+      okuu: 'OKUU',
+      pool5usd: '5pool'
     }
 
   export default {
@@ -155,7 +156,8 @@
         sbtc: 'renbtc_sbtc',
         dfi: 'dfi',
         dusd: 'dusd',
-        okuu: 'okuu'
+        okuu: 'okuu',
+        pool5usd: 'pool5usd'
       }
     }),
     components: {

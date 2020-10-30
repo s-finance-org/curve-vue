@@ -29,7 +29,8 @@
     sbtc: 'sBTC',
     dfi: 'dfi',
     dusd: 'dUSD',
-    okuu: 'OKUU'
+    okuu: 'OKUU',
+    pool5usd: 'pool5usd',
   }
 
 	export default {
