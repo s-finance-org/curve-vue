@@ -1619,7 +1619,7 @@
             // TODO: temp
             this.gaugeContract = store.gauges.susdv2.contract
 
-            store.gauges.susdv2.rewards.sfg.weighting.handled = 0.2
+            store.gauges.susdv2.rewards.sfg.weighting.handled = 0.05
 
             store.gauges.susdv2.getAPY(
               store.tokens.sfg.getPrice(),
@@ -1651,7 +1651,7 @@
             const { dfi, bpt, dusd, okuu, pool5usd } = store.gauges
 
             // dusd
-            store.gauges.dusd.rewards.sfg.weighting.handled = 0.2
+            store.gauges.dusd.rewards.sfg.weighting.handled = 0.1
 
             store.gauges.dusd.getAPY(
               store.tokens.sfg.getPrice(),
@@ -1678,7 +1678,7 @@
             )
 
             // dfi
-            store.gauges.dfi.rewards.sfg.weighting.handled = 0.2
+            store.gauges.dfi.rewards.sfg.weighting.handled = 0.15
 
             store.gauges.dfi.getAPY(
               store.tokens.sfg.getPrice(),
@@ -1718,7 +1718,7 @@
             )
 
             // pool5usd
-            store.gauges.pool5usd.rewards.sfg.weighting.handled = 0
+            store.gauges.pool5usd.rewards.sfg.weighting.handled = 0.3
 
             store.gauges.pool5usd.getAPY(
               store.tokens.sfg.getPrice(),
