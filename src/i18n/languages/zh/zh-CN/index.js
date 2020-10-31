@@ -162,6 +162,7 @@ export default {
     totalStaking: '总抵押量',
     myStaking: '我的抵押',
     virtualPrice: 'LP tokens 价格',
+    miningPoolOpeningNotice: '{0} 池流动性挖矿即将开启。当前可正常抵押赎回 {1} LP tokens，但是无法获得代币奖励'
   },
   notice: {
     approveSpending: '请授权钱包进行扣款',
@@ -185,5 +186,4 @@ export default {
     approveOperation: '请先授权，并在授权完成后再继续操作'
   },
   temp: '* 如果要全部取款为一个币种，请点选该币种',
-  dforceTemp: 'oku 池流动性挖矿即将开启。当前可正常抵押赎回 OKUU LP tokens，但是无法获得代币奖励'
 }
