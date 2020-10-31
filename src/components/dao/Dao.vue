@@ -55,8 +55,6 @@
                 <h6 class="mb-0 text-black-65">{{ $t('dao.rewardWeight', ['SFG']) }}</h6>
                 <text-overlay-loading inline :show="store.gauges.usd5.rewards.sfg.weighting.loading">
                   <span class="h4">{{ store.gauges.usd5.rewards.sfg.weighting.percent }}%</span>
-                  <b-avatar text="!" class="iconTip iconTip-warning ml-2" id="tooltip-mining-paid-reward-tip1"></b-avatar>
-                  <b-tooltip placement="topright" target="tooltip-mining-paid-reward-tip1" variant="success">{{ $t('dao.miningPoolOpeningNotice', [store.gauges.usd5.propagateMark, store.gauges.usd5.mortgagesUnit]) }}</b-tooltip>
                 </text-overlay-loading>
               </span>
             </div>
@@ -1437,8 +1435,7 @@
             // TODO: temp
             this.gaugeContract = store.gauges.susdv2.contract
 
-            // store.gauges.susdv2.rewards.sfg.weighting.handled = 0.05
-            store.gauges.susdv2.rewards.sfg.weighting.handled = 0.2
+            store.gauges.susdv2.rewards.sfg.weighting.handled = 0.05
 
             store.gauges.susdv2.getAPY(
               store.tokens.sfg.getPrice(),
@@ -1470,8 +1467,7 @@
             const { dfi, bpt, dusd, okuu, usd5 } = store.gauges
 
             // dusd
-            // store.gauges.dusd.rewards.sfg.weighting.handled = 0.1
-            store.gauges.dusd.rewards.sfg.weighting.handled = 0.2
+            store.gauges.dusd.rewards.sfg.weighting.handled = 0.1
 
             store.gauges.dusd.getAPY(
               store.tokens.sfg.getPrice(),
@@ -1498,8 +1494,7 @@
             )
 
             // dfi
-            // store.gauges.dfi.rewards.sfg.weighting.handled = 0.15
-            store.gauges.dfi.rewards.sfg.weighting.handled = 0.2
+            store.gauges.dfi.rewards.sfg.weighting.handled = 0.15
 
             store.gauges.dfi.getAPY(
               store.tokens.sfg.getPrice(),
@@ -1539,8 +1534,7 @@
             // )
 
             // usd5
-            // store.gauges.usd5.rewards.sfg.weighting.handled = 0.3
-            store.gauges.usd5.rewards.sfg.weighting.handled = 0
+            store.gauges.usd5.rewards.sfg.weighting.handled = 0.3
 
             store.gauges.usd5.getAPY(
               store.tokens.sfg.getPrice(),
