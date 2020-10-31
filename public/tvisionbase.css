@@ -340,10 +340,10 @@ fieldset {
   height: 6px;
 }
 .icon-box-20 img:nth-last-child(n+5) ~ img:nth-child(2) {
-  margin-left: 5px;
+  margin-left: 4px;
 }
 .icon-box-20 img:nth-last-child(n+5) ~ img:nth-child(3) {
-  margin-left: 4px;
+  margin-left: 5px;
   margin-top: -1px;
 }
 .icon-box-20 img:nth-last-child(n+5) ~ img:nth-child(4) {
