@@ -490,7 +490,7 @@
           // okuu: (+okuu.price.handled - 1) / ((now - 1603800000000) / 86400000) * 365 * 100,
           dusd: (+dusd.price.handled - 1) / ((now - 1603468800000) / 86400000) * 365 * 100,
           dfi: (+iUSD_LPT.price.handled - 1) / ((now - 1602345600000) / 86400000) * 365 * 100,
-          usd5: (+usd5.price.handled - 1) / ((now - 1603800000000) / 86400000) * 365 * 100
+          usd5: (+usd5.price.handled - 1) / ((now - 1604160000) / 86400000) * 365 * 100
         }
 
         const apyCont = (apy) => {
