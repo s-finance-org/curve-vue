@@ -136,7 +136,7 @@
         [process.env.VUE_APP_DFI_TOKEN]: 'dfi',
         [process.env.VUE_APP_DUSD_TOKEN]: 'dusd',
         [process.env.VUE_APP_OKUU_TOKEN]: 'okuu',
-        [process.env.VUE_APP_5USD_TOKEN]: 'pool5usd',
+        [process.env.VUE_APP_USD5_TOKEN]: 'usd5',
 			},
 			selectedGauge: "0x0000000000000000000000000000000000000000",
 			weight: 1,
@@ -260,11 +260,11 @@
 						name: store.gauges.okuu.code,
 						gauge: process.env.VUE_APP_DUSD_GAUGE
           },
-          pool5usd: {
-						swap: process.env.VUE_APP_5USD_TOKEN,
-						swap_token: process.env.VUE_APP_5USD_SWAP,
-						name: store.gauges.pool5usd.code,
-						gauge: process.env.VUE_APP_5USD_GAUGE
+          usd5: {
+						swap: process.env.VUE_APP_USD5_TOKEN,
+						swap_token: process.env.VUE_APP_USD5_SWAP,
+						name: store.gauges.usd5.code,
+						gauge: process.env.VUE_APP_USD5_GAUGE
 					},
 				}
 		}),
@@ -352,7 +352,7 @@
 				let gaugeController_address = process.env.VUE_APP_GAUGE_CONTROLLER
 				let gauge_relative_weight = '0x6207d866000000000000000000000000'
 
-				let pools = ['compound','usdt','iearn','busd','susdv2','pax','ren','sbtc', 'dfi', 'dusd', 'okuu', 'pool5usd']
+				let pools = ['compound','usdt','iearn','busd','susdv2','pax','ren','sbtc', 'dfi', 'dusd', 'okuu', 'usd5']
 
 				let prices = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,curve-dao-token&vs_currencies=usd')
 				prices = await prices.json()

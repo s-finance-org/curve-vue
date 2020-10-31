@@ -76,7 +76,7 @@ const currencies = {
 		oku: 'OKU',
 		usdt: 'USDT',
   },
-  pool5usd: {
+  usd5: {
 		dai: 'DAI',
 		usdc: 'USDC',
     usdt: 'USDT',

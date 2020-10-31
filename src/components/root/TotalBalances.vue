@@ -55,7 +55,7 @@
           'dusd': 'dusd',
           'okuu': 'okuu',
           'susdv2': 'susd',
-          'pool5usd': 'pool5usd'
+          'usd5': 'usd5'
         }
 
         return volumeStore.state.volumes[

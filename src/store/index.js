@@ -482,9 +482,9 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
     },
   },
 
-  pool5usd: {
+  usd5: {
     name: '5pool',
-    address: process.env.VUE_APP_5USD_TOKEN,
+    address: process.env.VUE_APP_USD5_TOKEN,
     // abi: TOKEN_DF_ABI,
     abi: abiSFG,
     __contract: null,
@@ -494,7 +494,7 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
       return __contract ||
         (this.__contract = new web3.eth.Contract(abi, address))
     },
-    swapAddress: process.env.VUE_APP_5USD_SWAP,
+    swapAddress: process.env.VUE_APP_USD5_SWAP,
     swapAbi: swapAbi_iUSD_LPT,
     __contractSwap: null,
     get contractSwap () {
@@ -2161,12 +2161,12 @@ store.gauges = {
     }
   },
 
-  pool5usd: {
-    code: 'pool5usd',
+  usd5: {
+    code: 'usd5',
     name: '5pool',
     propagateMark: '5pool',
     mortgagesUnit: '5pool LP token',
-    address: process.env.VUE_APP_5USD_GAUGE,
+    address: process.env.VUE_APP_USD5_GAUGE,
     // abi: abiDfi, // FIXME: ???
     abi: abiSUSDv2,
     __contract: null,
@@ -2178,7 +2178,7 @@ store.gauges = {
     },
 
     mortgages: {
-      pool5usd: {
+      usd5: {
         code: '5pool',
         name: '5pool LP token',
         priceDecimal: 5,
@@ -2317,7 +2317,7 @@ store.gauges = {
       const { tokens } = store
       const { name, address, contract, mortgages } = this
       // TODO: target
-      const deposit = BN(mortgages.pool5usd.userStake.revised).times(1e18)
+      const deposit = BN(mortgages.usd5.userStake.revised).times(1e18)
 
       // await common.approveAmount(tokens.bpt.contract, deposit, accountAddress, address, infApproval)
 
@@ -2337,7 +2337,7 @@ store.gauges = {
     async onRedemption (accountAddress, infApproval) {
       const { name, address, contract, mortgages } = this
       // TODO: target
-      let withdraw = BN(mortgages.pool5usd.userRedemption.revised).times(1e18)
+      let withdraw = BN(mortgages.usd5.userRedemption.revised).times(1e18)
       let balance = BN(await contract.methods.balanceOf(accountAddress).call())
 
       console.log('withdraw', withdraw, 'balance', balance)

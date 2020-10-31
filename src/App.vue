@@ -30,7 +30,7 @@
     dfi: 'dfi',
     dusd: 'dUSD',
     okuu: 'OKUU',
-    pool5usd: 'pool5usd',
+    usd5: 'usd5',
   }
 
 	export default {

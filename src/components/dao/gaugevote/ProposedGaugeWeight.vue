@@ -65,7 +65,7 @@
         [process.env.VUE_APP_DFI_TOKEN]: 'dfi',
         [process.env.VUE_APP_DUSD_TOKEN]: 'dusd',
         [process.env.VUE_APP_OKUU_TOKEN]: 'okuu',
-        [process.env.VUE_APP_5USD_TOKEN]: 'pool5usd',
+        [process.env.VUE_APP_USD5_TOKEN]: 'usd5',
 			},
 			selectedGauge: "0x0000000000000000000000000000000000000000",
 			weight: 1,

@@ -132,7 +132,7 @@
       dfi: 'DFI',
       dusd: 'dUSD',
       okuu: 'OKUU',
-      pool5usd: '5pool'
+      usd5: '5pool'
     }
 
   export default {
@@ -157,7 +157,7 @@
         dfi: 'dfi',
         dusd: 'dusd',
         okuu: 'okuu',
-        pool5usd: 'pool5usd'
+        usd5: 'usd5'
       }
     }),
     components: {

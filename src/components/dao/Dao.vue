@@ -12,14 +12,14 @@
 
       <b-tabs pills nav-class="tabs-nav" class="mt-4">
         <b-tab :title="$t('dao.standTitle')" class="pt-3" active>
-          <!-- pool5usd -->
+          <!-- usd5 -->
           <h4 class="mb-2 d-flex flex-wrap align-items-end">
-            <span class="mr-3">{{ $t('dao.tokenTitle', [store.gauges.pool5usd.propagateMark]) }}</span>
-            <small class="mr-auto">{{ $t('dao.describe', [store.gauges.pool5usd.mortgagesUnit, store.gauges.pool5usd.rewardsUnit.join(' + ')]) }}</small>
-            <text-overlay-loading inline :show="store.gauges.pool5usd.apy.loading">
+            <span class="mr-3">{{ $t('dao.tokenTitle', [store.gauges.usd5.propagateMark]) }}</span>
+            <small class="mr-auto">{{ $t('dao.describe', [store.gauges.usd5.mortgagesUnit, store.gauges.usd5.rewardsUnit.join(' + ')]) }}</small>
+            <text-overlay-loading inline :show="store.gauges.usd5.apy.loading">
               <span class="h5 text-danger-1 mb-0">
                 <small class="text-black-45">{{ $t('global.apr') }}</small>
-                {{ store.gauges.pool5usd.apy.percent }}%
+                {{ store.gauges.usd5.apy.percent }}%
               </span>
             </text-overlay-loading>
           </h4>
@@ -27,34 +27,34 @@
             <div class="row mb-3 line-bottom">
               <span class="col-12 col-md-6 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.totalStaking') }}</h6>
-                <text-overlay-loading inline :show="store.gauges.pool5usd.mortgages.pool5usd.totalStaking.loading">
-                  <span class="h4 mr-2">{{ store.gauges.pool5usd.mortgages.pool5usd.totalStaking.cont }}</span>
-                  <span class="inline-block text-black-65">{{ store.gauges.pool5usd.mortgagesUnit }}</span>
+                <text-overlay-loading inline :show="store.gauges.usd5.mortgages.usd5.totalStaking.loading">
+                  <span class="h4 mr-2">{{ store.gauges.usd5.mortgages.usd5.totalStaking.cont }}</span>
+                  <span class="inline-block text-black-65">{{ store.gauges.usd5.mortgagesUnit }}</span>
                 </text-overlay-loading>
               </span>
               <span class="col-12 col-md-6 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.myStaking') }}</h6>
-                <text-overlay-loading inline :show="store.gauges.pool5usd.mortgages.pool5usd.userStaking.loading">
-                  <span class="h4 mr-2">{{ store.gauges.pool5usd.mortgages.pool5usd.userStaking.cont }}</span>
-                  <span class="inline-block text-black-65">{{ store.gauges.pool5usd.mortgagesUnit }}</span>
+                <text-overlay-loading inline :show="store.gauges.usd5.mortgages.usd5.userStaking.loading">
+                  <span class="h4 mr-2">{{ store.gauges.usd5.mortgages.usd5.userStaking.cont }}</span>
+                  <span class="inline-block text-black-65">{{ store.gauges.usd5.mortgagesUnit }}</span>
                 </text-overlay-loading>
               </span>
               <span class="col-12 col-md-6 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.virtualPrice') }}</h6>
-                <text-overlay-loading inline :show="store.tokens.pool5usd.price.loading">
+                <text-overlay-loading inline :show="store.tokens.usd5.price.loading">
                   <span class="h4 mb-0">
-                    1 <span class="h6 text-black-65">{{ store.tokens.pool5usd.name }} = </span>
+                    1 <span class="h6 text-black-65">{{ store.tokens.usd5.name }} = </span>
                   </span>
                   <span class="h4 mb-0">
-                    {{ store.tokens.pool5usd.price.cont }}
+                    {{ store.tokens.usd5.price.cont }}
                     <span class="text-black-65 h6">USD</span>
                   </span>
                 </text-overlay-loading>
               </span>
               <span class="col-12 col-md-6 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.rewardWeight', ['SFG']) }}</h6>
-                <text-overlay-loading inline :show="store.gauges.pool5usd.rewards.sfg.weighting.loading">
-                  <span class="h4">{{ store.gauges.pool5usd.rewards.sfg.weighting.percent }}%</span>
+                <text-overlay-loading inline :show="store.gauges.usd5.rewards.sfg.weighting.loading">
+                  <span class="h4">{{ store.gauges.usd5.rewards.sfg.weighting.percent }}%</span>
                 </text-overlay-loading>
               </span>
             </div>
@@ -64,20 +64,20 @@
                 <label class="text-black-65 mb-0">{{ $t('dao.staking') }}</label>
                 <div class="row flex-wrap">
                   <div class="col-12 col-lg mt-2">
-                    <b-form-input class="h-38" v-model="store.gauges.pool5usd.mortgages.pool5usd.stakeAmountInput" :placeholder="$t('dao.stakingAmountPlaceholder')"></b-form-input>
+                    <b-form-input class="h-38" v-model="store.gauges.usd5.mortgages.usd5.stakeAmountInput" :placeholder="$t('dao.stakingAmountPlaceholder')"></b-form-input>
                   </div>
                   <b-form-radio-group
                     class="mt-2 col"
-                    v-model="store.gauges.pool5usd.mortgages.pool5usd.stakeSliderSelectedRadio"
-                    :options="store.gauges.pool5usd.mortgages.pool5usd.stakeSliderOptions"
+                    v-model="store.gauges.usd5.mortgages.usd5.stakeSliderSelectedRadio"
+                    :options="store.gauges.usd5.mortgages.usd5.stakeSliderOptions"
                     buttons
                     button-variant="outline-secondary"
                   ></b-form-radio-group>
                 </div>
                 <small class="d-flex mt-1 flex-wrap">
                   {{ $t('dao.stakingBalance') }}：
-                  <text-overlay-loading class="mr-2" :show="store.gauges.pool5usd.mortgages.pool5usd.userBalanceOf.loading">{{ store.gauges.pool5usd.mortgages.pool5usd.userBalanceOf.cont }} {{ store.gauges.pool5usd.mortgages.pool5usd.name }}</text-overlay-loading>
-                  <b-button class="text-blue-1" to='/liquidity/pool5usd' size="xsm" variant="light">{{ $t('dao.stakingConfirmTip', [store.gauges.pool5usd.mortgages.pool5usd.name]) }}</b-button>
+                  <text-overlay-loading class="mr-2" :show="store.gauges.usd5.mortgages.usd5.userBalanceOf.loading">{{ store.gauges.usd5.mortgages.usd5.userBalanceOf.cont }} {{ store.gauges.usd5.mortgages.usd5.name }}</text-overlay-loading>
+                  <b-button class="text-blue-1" to='/liquidity/usd5' size="xsm" variant="light">{{ $t('dao.stakingConfirmTip', [store.gauges.usd5.mortgages.usd5.name]) }}</b-button>
                 </small>
                 <!-- FIXME: inf_approval -->
                 <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('global.infiniteApproval') }}</b-form-checkbox>
@@ -86,14 +86,14 @@
                   @dismiss-count-down="countDownChanged"
                   v-html='waitingMessage'>
                 </b-alert>
-                <b-alert class="mt-3" :show="store.tokens.pool5usd.error.dismissCountDown" variant="dark" dismissible fade
-                  @dismissed="store.tokens.pool5usd.error.dismissCountDown=0"
-                  v-html='store.tokens.pool5usd.error.message'>
+                <b-alert class="mt-3" :show="store.tokens.usd5.error.dismissCountDown" variant="dark" dismissible fade
+                  @dismissed="store.tokens.usd5.error.dismissCountDown=0"
+                  v-html='store.tokens.usd5.error.message'>
                 </b-alert>
 
                 <div class="d-flex align-items-end mt-5 float-right">
                   <text-overlay-loading :show="loadingAction">
-                    <b-button size="lg" variant="danger" @click=onPool5usdStake>
+                    <b-button size="lg" variant="danger" @click=onUsd5Stake>
                       {{ $t('dao.stakingConfirm') }}
                     </b-button>
                   </text-overlay-loading>
@@ -103,19 +103,19 @@
                 <label class="text-black-65 mb-0">{{ $t('dao.redemption') }}</label>
                 <div class="row flex-wrap">
                   <div class="col-12 col-lg mt-2">
-                    <b-form-input class="h-38" v-model="store.gauges.pool5usd.mortgages.pool5usd.redemptionAmountInput" :placeholder="$t('dao.redemptionAmountPlaceholder')"></b-form-input>
+                    <b-form-input class="h-38" v-model="store.gauges.usd5.mortgages.usd5.redemptionAmountInput" :placeholder="$t('dao.redemptionAmountPlaceholder')"></b-form-input>
                   </div>
                   <b-form-radio-group
                     class="mt-2 col"
-                    v-model="store.gauges.pool5usd.mortgages.pool5usd.redemptionSliderSelectedRadio"
-                    :options="store.gauges.pool5usd.mortgages.pool5usd.redemptionSliderOptions"
+                    v-model="store.gauges.usd5.mortgages.usd5.redemptionSliderSelectedRadio"
+                    :options="store.gauges.usd5.mortgages.usd5.redemptionSliderOptions"
                     buttons
                     button-variant="outline-secondary"
                   ></b-form-radio-group>
                 </div>
                 <small class="d-flex mt-1">
                   {{ $t('dao.redemptionBalance') }}：
-                  <text-overlay-loading :show="store.gauges.pool5usd.mortgages.pool5usd.userStaking.loading">{{ store.gauges.pool5usd.mortgages.pool5usd.userStaking.cont }} {{ store.gauges.pool5usd.mortgages.pool5usd.name }}</text-overlay-loading>
+                  <text-overlay-loading :show="store.gauges.usd5.mortgages.usd5.userStaking.loading">{{ store.gauges.usd5.mortgages.usd5.userStaking.cont }} {{ store.gauges.usd5.mortgages.usd5.name }}</text-overlay-loading>
                 </small>
                 <!-- FIXME: inf_approval -->
                 <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('global.infiniteApproval') }}</b-form-checkbox>
@@ -126,7 +126,7 @@
                 </b-alert>
                 <div class="d-flex align-items-end mt-5 float-right">
                   <text-overlay-loading :show="loadingAction">
-                    <b-button size="lg" variant="danger" @click=onPool5usdRedemption>
+                    <b-button size="lg" variant="danger" @click=onUsd5Redemption>
                       {{ $t('dao.redemptionConfirm') }}
                     </b-button>
                   </text-overlay-loading>
@@ -135,28 +135,28 @@
               <b-tab :title="$t('dao.miningReward')" class="pt-3">
                 <div class="area">
                   <h5 class="mb-3 d-flex align-items-center">
-                    <img :src="getTokenIcon(store.gauges.pool5usd.rewards.sfg.code)" class="mr-2 icon-w-20 icon token-icon" :class="[store.gauges.pool5usd.rewards.sfg.code+'-icon']">
-                    {{ store.gauges.pool5usd.rewards.sfg.name }}
+                    <img :src="getTokenIcon(store.gauges.usd5.rewards.sfg.code)" class="mr-2 icon-w-20 icon token-icon" :class="[store.gauges.usd5.rewards.sfg.code+'-icon']">
+                    {{ store.gauges.usd5.rewards.sfg.name }}
                   </h5>
                   <h6 class="mb-0 text-black-65">{{ $t('dao.miningPendingReward') }}</h6>
                   <h4 class="mb-1">
-                    <text-overlay-loading inline :show="store.gauges.pool5usd.rewards.sfg.userPendingReward.loading">
-                      {{ store.gauges.pool5usd.rewards.sfg.userPendingReward.cont }} {{ store.gauges.pool5usd.rewards.sfg.name }}
+                    <text-overlay-loading inline :show="store.gauges.usd5.rewards.sfg.userPendingReward.loading">
+                      {{ store.gauges.usd5.rewards.sfg.userPendingReward.cont }} {{ store.gauges.usd5.rewards.sfg.name }}
                     </text-overlay-loading>
                   </h4>
                   <div class="d-flex no-gutters align-items-end">
                     <small class="col row flex-wrap">
                       <span class="col-12 col-lg-auto">
                         {{ $t('dao.miningPaidReward') }}：
-                        <text-overlay-loading inline :show="store.gauges.pool5usd.rewards.sfg.userPaidReward.loading">
-                          {{ store.gauges.pool5usd.rewards.sfg.userPaidReward.cont }} {{ store.gauges.pool5usd.rewards.sfg.name }}
+                        <text-overlay-loading inline :show="store.gauges.usd5.rewards.sfg.userPaidReward.loading">
+                          {{ store.gauges.usd5.rewards.sfg.userPaidReward.cont }} {{ store.gauges.usd5.rewards.sfg.name }}
                         </text-overlay-loading>
                         <em class="px-3 text-black-15">/</em>
                       </span>
                       <span class="col-12 col-lg-auto">
                         {{ $t('dao.miningTotalReward') }}：
-                        <text-overlay-loading inline :show="store.gauges.pool5usd.rewards.sfg.userTotalReward.loading">
-                          {{ store.gauges.pool5usd.rewards.sfg.userTotalReward.cont }} {{ store.gauges.pool5usd.rewards.sfg.name }}
+                        <text-overlay-loading inline :show="store.gauges.usd5.rewards.sfg.userTotalReward.loading">
+                          {{ store.gauges.usd5.rewards.sfg.userTotalReward.cont }} {{ store.gauges.usd5.rewards.sfg.name }}
                         </text-overlay-loading>
                         <em class="px-3 text-black-15">/</em>
                       </span>
@@ -165,7 +165,7 @@
                       </text-overlay-loading>
                     </small>
                     <text-overlay-loading :show="loadingAction">
-                      <b-button variant="danger" @click="onPool5usdHarvest">
+                      <b-button variant="danger" @click="onUsd5Harvest">
                         {{ $t('dao.miningClaimConfirm') }}
                       </b-button>
                     </text-overlay-loading>
@@ -1554,23 +1554,23 @@
           },
 
           // FIXME:
-          async onPool5usdStake () {
+          async onUsd5Stake () {
             const { gauges, tokens } = store
             // this.alert('notice.approveOperationWarning', 'stake')
 
-            if (!await tokens.pool5usd.hasValidAmount(gauges.pool5usd.mortgages.pool5usd.userStake.revised)) return false
+            if (!await tokens.usd5.hasValidAmount(gauges.usd5.mortgages.usd5.userStake.revised)) return false
 
-            if (await tokens.pool5usd.hasApprove(gauges.pool5usd.mortgages.pool5usd.userStake.revised, currentContract.default_account, gauges.pool5usd.address)) {
-              gauges.pool5usd.onStake(currentContract.default_account, this.inf_approval)
+            if (await tokens.usd5.hasApprove(gauges.usd5.mortgages.usd5.userStake.revised, currentContract.default_account, gauges.usd5.address)) {
+              gauges.usd5.onStake(currentContract.default_account, this.inf_approval)
             } else {
-              tokens.pool5usd.onApproveAmount(gauges.pool5usd.mortgages.pool5usd.userStake.revised, currentContract.default_account, gauges.pool5usd.address, this.inf_approval)
+              tokens.usd5.onApproveAmount(gauges.usd5.mortgages.usd5.userStake.revised, currentContract.default_account, gauges.usd5.address, this.inf_approval)
             }
           },
-          async onPool5usdRedemption () {
-            store.gauges.pool5usd.onRedemption(currentContract.default_account, this.inf_approval)
+          async onUsd5Redemption () {
+            store.gauges.usd5.onRedemption(currentContract.default_account, this.inf_approval)
           },
-          async onPool5usdHarvest () {
-            store.gauges.pool5usd.onHarvest(currentContract.default_account)
+          async onUsd5Harvest () {
+            store.gauges.usd5.onHarvest(currentContract.default_account)
           },
 
           async mounted() {
@@ -1648,7 +1648,7 @@
               store.gauges.susdv2.getSnxPaidReward(snx.paidReward, currentContract.default_account)
             )
 
-            const { dfi, bpt, dusd, okuu, pool5usd } = store.gauges
+            const { dfi, bpt, dusd, okuu, usd5 } = store.gauges
 
             // dusd
             store.gauges.dusd.rewards.sfg.weighting.handled = 0.1
@@ -1717,24 +1717,24 @@
               okuu.getUserPaidReward_SFG(okuu.rewards.sfg.userPaidReward, currentContract.default_account)
             )
 
-            // pool5usd
-            store.gauges.pool5usd.rewards.sfg.weighting.handled = 0.3
+            // usd5
+            store.gauges.usd5.rewards.sfg.weighting.handled = 0.3
 
-            store.gauges.pool5usd.getAPY(
+            store.gauges.usd5.getAPY(
               store.tokens.sfg.getPrice(),
               store.tokens.sfg.getDailyYield(),
-              pool5usd.getTotalStaking(pool5usd.mortgages.pool5usd.totalStaking),
-              store.tokens.pool5usd.getPrice(),
+              usd5.getTotalStaking(usd5.mortgages.usd5.totalStaking),
+              store.tokens.usd5.getPrice(),
             )
 
-            store.tokens.pool5usd.getBalanceOf(pool5usd.mortgages.pool5usd.userBalanceOf, currentContract.default_account)
+            store.tokens.usd5.getBalanceOf(usd5.mortgages.usd5.userBalanceOf, currentContract.default_account)
 
-            pool5usd.getBalanceOf(pool5usd.mortgages.pool5usd.userStaking, currentContract.default_account)
+            usd5.getBalanceOf(usd5.mortgages.usd5.userStaking, currentContract.default_account)
 
-            pool5usd.getUserTotalReward_SFG(
-              pool5usd.rewards.sfg.userTotalReward,
-              pool5usd.getUserPendingReward_SFG(pool5usd.rewards.sfg.userPendingReward, currentContract.default_account),
-              pool5usd.getUserPaidReward_SFG(pool5usd.rewards.sfg.userPaidReward, currentContract.default_account)
+            usd5.getUserTotalReward_SFG(
+              usd5.rewards.sfg.userTotalReward,
+              usd5.getUserPendingReward_SFG(usd5.rewards.sfg.userPendingReward, currentContract.default_account),
+              usd5.getUserPaidReward_SFG(usd5.rewards.sfg.userPaidReward, currentContract.default_account)
             )
 
             // bpt
