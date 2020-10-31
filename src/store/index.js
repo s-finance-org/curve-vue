@@ -2164,7 +2164,7 @@ store.gauges = {
   usd5: {
     code: 'usd5',
     name: 'usd5',
-    propagateMark: 'usd5',
+    propagateMark: 'pool5',
     mortgagesUnit: 'usd5 LP token',
     address: process.env.VUE_APP_USD5_GAUGE,
     // abi: abiDfi, // FIXME: ???
