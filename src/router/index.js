@@ -293,7 +293,7 @@ let routes = [
     component: RootDefault,
     children: [
       {
-        path: ':pool(susdv2|dfi|dusd|okuu|usd5)?',
+        path: ':pool(susdv2|dfi|dusd|usd5)?',
         name: 'Liquidity',
         beforeEnter: (to, from, next) => {
           !to.params.pool
@@ -310,7 +310,7 @@ let routes = [
     component: RootDefault,
     children: [
       {
-        path: ':pool(dfi|dusd|okuu|usd5)?',
+        path: ':pool(dfi|dusd|usd5)?',
         name: 'Swap',
         beforeEnter: (to, from, next) => {
           !to.params.pool
@@ -415,7 +415,6 @@ const pools = [
   // 'sbtc'
   'dfi',
   'dusd',
-  'okuu',
   'usd5'
 ]
 
