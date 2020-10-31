@@ -483,7 +483,7 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
   },
 
   usd5: {
-    name: '5pool',
+    name: 'usd5',
     address: process.env.VUE_APP_USD5_TOKEN,
     // abi: TOKEN_DF_ABI,
     abi: abiSFG,
@@ -2163,9 +2163,9 @@ store.gauges = {
 
   usd5: {
     code: 'usd5',
-    name: '5pool',
-    propagateMark: '5pool',
-    mortgagesUnit: '5pool LP token',
+    name: 'usd5',
+    propagateMark: 'usd5',
+    mortgagesUnit: 'usd5 LP token',
     address: process.env.VUE_APP_USD5_GAUGE,
     // abi: abiDfi, // FIXME: ???
     abi: abiSUSDv2,
@@ -2179,8 +2179,8 @@ store.gauges = {
 
     mortgages: {
       usd5: {
-        code: '5pool',
-        name: '5pool LP token',
+        code: 'usd5',
+        name: 'usd5 LP token',
         priceDecimal: 5,
 
         totalStaking: valueModel.create(),

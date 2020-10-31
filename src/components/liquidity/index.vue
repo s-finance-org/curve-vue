@@ -1077,7 +1077,6 @@
             'dfi': 'iUSD',
             'dusd': 'dUSD',
             'okuu': 'OKUU',
-            'usd5': '5pool'
           }
           const result = conversions[this.currentPool] || this.currentPool
 
