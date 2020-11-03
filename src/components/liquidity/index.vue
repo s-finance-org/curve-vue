@@ -1461,33 +1461,35 @@
               calls.push([this.coins[i]._address, this.coins[i].methods.balanceOf(currentContract.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
               calls.push([currentContract.swap._address, currentContract.swap.methods.balances(i).encodeABI()])
             }
-                if(this.currentPool == 'susdv2' || this.currentPool == 'sbtc') {
-                    let idx = this.currentPool == 'susdv2' ? 3 : 2
-                    let currencyKey = '0x7355534400000000000000000000000000000000000000000000000000000000'
-                    if(this.currentPool == 'sbtc') 
-                        currencyKey = '0x7342544300000000000000000000000000000000000000000000000000000000'
-                    calls.push([this.coins[idx]._address, this.coins[idx].methods.transferableSynths(currentContract.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
-                    calls.push([currentContract.snxExchanger._address, 
-                        currentContract.snxExchanger.methods
-                        .maxSecsLeftInWaitingPeriod(currentContract.default_account, currencyKey)
-                        .encodeABI()])
-                }
-                let aggcalls = await currentContract.multicall.methods.aggregate(calls).call()
-                let decoded = aggcalls[1].map(hex => currentContract.web3.eth.abi.decodeParameter('uint256', hex))
-                      let balances = decoded
-                      if(this.currentPool == 'susdv2' || this.currentPool == 'sbtc') balances = decoded.slice(0, -2)
-                helpers.chunkArr(balances, 2).map((v, i) => {
-                  Vue.set(this.wallet_balances, i, v[0])
-                  if(!currentContract.default_account) Vue.set(this.wallet_balances, i, 0)
-                  Vue.set(this.balances, i, +v[1])
-                })
-                if(this.currentPool == 'susdv2' || this.currentPool == 'sbtc') {
-                    this.transferableBalance = decoded[decoded.length - 2]
-                    this.susdWaitingPeriod = (+decoded[decoded.length - 1] != 0)
-                    this.susdWaitingPeriodTime = +decoded[decoded.length - 1]
-                }
 
-			    if (this.max_balances) {
+            if(this.currentPool == 'susdv2' || this.currentPool == 'sbtc') {
+                let idx = this.currentPool == 'susdv2' ? 3 : 2
+                let currencyKey = '0x7355534400000000000000000000000000000000000000000000000000000000'
+                if(this.currentPool == 'sbtc') 
+                    currencyKey = '0x7342544300000000000000000000000000000000000000000000000000000000'
+                calls.push([this.coins[idx]._address, this.coins[idx].methods.transferableSynths(currentContract.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
+                calls.push([currentContract.snxExchanger._address, 
+                    currentContract.snxExchanger.methods
+                    .maxSecsLeftInWaitingPeriod(currentContract.default_account, currencyKey)
+                    .encodeABI()])
+            }
+            let aggcalls = await currentContract.multicall.methods.aggregate(calls).call()
+            let decoded = aggcalls[1].map(hex => currentContract.web3.eth.abi.decodeParameter('uint256', hex))
+            let balances = decoded
+            if(this.currentPool == 'susdv2' || this.currentPool == 'sbtc') balances = decoded.slice(0, -2)
+
+            helpers.chunkArr(balances, 2).map((v, i) => {
+              Vue.set(this.wallet_balances, i, v[0])
+              if(!currentContract.default_account) Vue.set(this.wallet_balances, i, 0)
+              Vue.set(this.balances, i, +v[1])
+            })
+            if(this.currentPool == 'susdv2' || this.currentPool == 'sbtc') {
+                this.transferableBalance = decoded[decoded.length - 2]
+                this.susdWaitingPeriod = (+decoded[decoded.length - 1] != 0)
+                this.susdWaitingPeriodTime = +decoded[decoded.length - 1]
+            }
+
+			      if (this.max_balances) {
 			        this.disabled = true;
 			        for (let i = 0; i < currentContract.N_COINS; i++) {
 			        	let amount = this.wallet_balances[i] * this.c_rates[i]
@@ -1495,17 +1497,18 @@
 			            var val = amount
 			            var val = this.toFixed(amount);
 			            if(val == 0) val = '0.00'
-			            Vue.set(this.deposit_inputs, i, this.toFixed(val))
-                        if(this.currentPool == 'susdv2' && i == 3 || this.currentPool == 'sbtc' && i == 2) {
-                            let precisions = 2
-                            if(this.currentPool == 'sbtc' && i == 2) precisions = 18
-                            let maxbalance_susd = this.susdWaitingPeriod ? 0 : this.transferableBalance
-                            Vue.set(this.deposit_inputs, i, this.toFixed(BN(this.transferableBalance).div(1e18)))
-                        }
+                  Vue.set(this.deposit_inputs, i, this.toFixed(val))
+
+                  if(this.currentPool == 'susdv2' && i == 3 || this.currentPool == 'sbtc' && i == 2) {
+                      let precisions = 2
+                      if(this.currentPool == 'sbtc' && i == 2) precisions = 18
+                      let maxbalance_susd = this.susdWaitingPeriod ? 0 : this.transferableBalance
+                      Vue.set(this.deposit_inputs, i, this.toFixed(BN(this.transferableBalance).div(1e18)))
+                  }
 			        }
-			    }
-			    else
-              this.disabled = false;
+			    } else {
+            this.disabled = false;
+          }
 
           // FIXME: temp
           this.disabled = false;
