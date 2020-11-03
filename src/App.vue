@@ -31,6 +31,7 @@
     dusd: 'dUSD',
     okuu: 'OKUU',
     usd5: 'usd5',
+    qusd5: 'qusd5',
   }
 
 	export default {

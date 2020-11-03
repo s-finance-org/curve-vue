@@ -26,7 +26,7 @@
 			      :tokenSupply = 'totalTokenSupplies[i]'
 			      :tokenBalance = 'totalTokenBalances[i]'
 			      :usdShare = 'usdShares[i]'
-			      :staked_info = "['susdv2', 'sbtc', 'y', 'iearn', 'dfi', 'dusd', 'okuu', 'usd5'].includes(currency) && staked_infos[currency]"
+			      :staked_info = "['susdv2', 'sbtc', 'y', 'iearn', 'dfi', 'dusd', 'okuu', 'usd5', 'qusd5'].includes(currency) && staked_infos[currency]"
 			      :totalStake = 'totalStakes[currency]'
 			      :usdStake = 'usdStakes[currency]'
 			      :virtual_price = 'virtual_prices[i]'
@@ -155,7 +155,7 @@
 				    for (let i = 0; i < contract.N_COINS; i++) {
 				        var addr = contracts[key].coins[i];
 
-				        let cabi = ['iearn', 'y', 'busd', 'susd', 'pax', 'dfi', 'dusd', 'okuu', 'usd5'].includes(key) ? yERC20_abi : cERC20_abi;
+				        let cabi = ['iearn', 'y', 'busd', 'susd', 'pax', 'dfi', 'dusd', 'okuu', 'usd5', 'qusd5'].includes(key) ? yERC20_abi : cERC20_abi;
 				        if(key == 'susd' && i == 1) {
 				        	cabi = contracts.iearn.swap_abi;
 				        	addr = contracts.iearn.swap_address
@@ -186,7 +186,7 @@
 			            	this.all_c_rates[key].c_rates[i] = 1 / contract.coin_precisions[i]
 			         	}
 			         	else {
-			         		if(key == 'iearn' || key == 'y' || key == 'busd' || key == 'dfi' || key == 'dusd' || key == 'okuu' || key == 'usd5' || (key == 'susd' && i == 0) || (key == 'pax' && i < 3)) {
+			         		if(key == 'iearn' || key == 'y' || key == 'busd' || key == 'dfi' || key == 'dusd' || key == 'okuu' || key == 'usd5' || key == 'qusd5' || (key == 'susd' && i == 0) || (key == 'pax' && i < 3)) {
 			            		calls.push([
 			            			this.all_coins[key].coins[i]._address,
 			            			this.all_coins[key].coins[i].methods.getPricePerFullShare().encodeABI()
@@ -306,7 +306,7 @@
 				    	this.bal_infos[key].push(calcBalance)
 				    	total += this.bal_infos.usdt[0] + this.bal_infos.usdt[1] + calcBalance
 				    }
-				    if(key == 'iearn' || key == 'busd' || key == 'susd' || key == 'susdnew' || key == 'dfi' || key == 'dusd' || key == 'okuu' || key == 'usd5') {
+				    if(key == 'iearn' || key == 'busd' || key == 'susd' || key == 'susdnew' || key == 'dfi' || key == 'dusd' || key == 'okuu' || key == 'usd5' || key == 'qusd5') {
 				    	let slice = decoded.slice(ind, ind+contracts[key].N_COINS*2)
 				    	helpers.chunkArr(slice, 2).map((v, i) => {
 				    		//v is [rate, balance] or just [balance] for PAX in pax pool
@@ -400,10 +400,10 @@
 		            }
 		            this.usdShares.push(decoded[ind+14] * decoded[ind+8] / 1e36)
 	            	this.totalShares.push(totalShare)
-	            	if(['susdv2', 'sbtc', 'y', 'iearn', 'dfi', 'dusd', 'okuu', 'usd5'].includes(key)) {
+	            	if(['susdv2', 'sbtc', 'y', 'iearn', 'dfi', 'dusd', 'okuu', 'usd5', 'qusd5'].includes(key)) {
 	            		let stakedBalance = curveStakedBalance
 	            		if(key == 'sbtc') stakedBalance = sbtcCurveStakedBalance
-	            		if(['y', 'iearn', 'dfi', 'dusd', 'okuu', 'usd5'].includes(key)) stakedBalance = yCurveStakedBalance
+	            		if(['y', 'iearn', 'dfi', 'dusd', 'okuu', 'usd5', 'qusd5'].includes(key)) stakedBalance = yCurveStakedBalance
 	            		this.totalStakes[key] = 0
 	            		this.staked_infos[key] = []
 	            		if(stakedBalance > 0) {

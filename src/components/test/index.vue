@@ -21,7 +21,7 @@
       <root-sub />
 
       <b-tabs pills nav-class="tabs-nav" class="mt-4">
-        <b-tab :title="$t('dao.standTitle')" class="pt-3" active>
+        <b-tab :title="$t('dao.standTitle')" class="pt-3" v-if=false>
           <!-- dUSD -->
           <h4 class="mb-2 d-flex flex-wrap align-items-end">
             <span class="mr-3">{{ $t('dao.tokenTitle', [store.gauges.dusd.propagateMark]) }}</span>
@@ -767,7 +767,7 @@
           </div>
         </b-tab>
 
-        <b-tab :title="$t('dao.tokenTitle', [store.gauges.bpt.propagateMark])" class="pt-3">
+        <b-tab :title="$t('dao.tokenTitle', [store.gauges.bpt.propagateMark])" class="pt-3" active>
           <h4 class="mb-2 d-flex flex-wrap align-items-end">
             <span class="mr-3">{{ $t('dao.tokenTitle', [store.gauges.bpt.propagateMark]) }}</span>
             <small class="mr-auto">{{ $t('dao.describe', [store.gauges.bpt.mortgagesUnit, store.gauges.bpt.rewardsUnit.join(' ')]) }}</small>
@@ -1441,7 +1441,6 @@
             // store.lptoken.BPT.getWalletBalanceOf()
             store.lptoken.BPT.initiate()
 
-            store.lptoken.BPT.getWalletBalanceOf
 
 
 

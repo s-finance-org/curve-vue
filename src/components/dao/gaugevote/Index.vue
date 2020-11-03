@@ -245,6 +245,7 @@
         [process.env.VUE_APP_DUSD_TOKEN]: 'dusd',
         [process.env.VUE_APP_OKUU_TOKEN]: 'okuu',
         [process.env.VUE_APP_USD5_TOKEN]: 'usd5',
+        [process.env.VUE_APP_QUSD5_TOKEN]: 'qusd5',
 			},
 			selectedGauge: "0x0000000000000000000000000000000000000000",
 			weight: 1,

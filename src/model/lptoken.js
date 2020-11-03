@@ -133,8 +133,9 @@ const ModelLpToken = {
       maxAmount: ModelValueEther.create({
         ...valueOpts,
         // TODO: div(2) ?
-        ether: BN(2).pow(256).minus(1).div(2).toString()
+        ether: BN(2).pow(256).minus(1).toString()
       }),
+      // TODO:
       // amount:
 
       /**
@@ -167,7 +168,7 @@ const ModelLpToken = {
        *  @param {boolean=} infinite
        */
       async ensureAllowance (amount, toContractAddress) {
-        // const { precision, error } = this
+        // const { precision, error, maxAmount, infiniteAllowance, needResetAllowance } = this
 
         // const amountEther = BN(amount).times(precision)
         // if (!this.isValidAmount(amountEther)) {
@@ -176,34 +177,51 @@ const ModelLpToken = {
 
         // const allowanceEther = BN(await this.getAllowanceMethod(store.wallet.address, toContractAddress).call())
 
-        // if (allowanceEther)
-
-
-        // if (!allowanceEther.gte(amountEther)) {
-        //   error.message = store.i18n.$i18n.t('model.approveOperation')
-        // }
-
-
-
-
-        
-        // // TEST:
-        // if (infinite) {
-        //   if (allowance.gt(0) && requiresResetAllowance.includes(contract._address)) {
-        //     await approve(contract, 0, accountAddress, toContract)
-        //   } else {
-        //     await approve(contract, maxAllowance, accountAddress, toContract)
-        //   }
+        // if (infiniteAllowance) {
+        //   // allowanceEther < maxAmount.ether / 2
+        //   // Half used
+        //   allowanceEther.lt(BN(maxAmount.ether).div(2))
         // } else {
-        //   // allowance < amount
-        //   if (allowance.lt(_amount)) {
-        //     if (allowance.gt(0) && requiresResetAllowance.includes(contract._address)) {
-        //       await approve(contract, 0, accountAddress, toContract)
-        //     } else {
-        //       await approve(contract, _amount, accountAddress, toContract)
-        //     }
-        //   }
+
         // }
+        // // allowanceEther = 0
+        // // if (allowanceEther)
+
+        // // // allowanceEther < amountEther
+        // // if (allowanceEther.lt(amountEther)) {
+        // //   error.message = store.i18n.$i18n.t('model.approveOperation')
+        // // }
+
+        // // needResetAllowance
+
+
+        // // infiniteAllowance
+        // //   ? maxAmount.ether
+        // //   : amountEther
+
+
+
+        // // await approve(contract, maxAllowance, accountAddress, toContract)
+
+
+        // // // TEST:
+        // // if (infinite) {
+
+        // //   if (allowance.gt(0) && requiresResetAllowance.includes(contract._address)) {
+        // //     await approve(contract, 0, accountAddress, toContract)
+        // //   } else {
+        // //     await approve(contract, maxAllowance, accountAddress, toContract)
+        // //   }
+        // // } else {
+        // //   // allowance < amount
+        // //   if (allowance.lt(_amount)) {
+        // //     if (allowance.gt(0) && requiresResetAllowance.includes(contract._address)) {
+        // //       await approve(contract, 0, accountAddress, toContract)
+        // //     } else {
+        // //       await approve(contract, _amount, accountAddress, toContract)
+        // //     }
+        // //   }
+        // // }
       },
       /** @type {Function} */
       get getAllowanceMethod () {

@@ -182,7 +182,7 @@ export async function getState() {
 	//console.log(decodedGauges, "THE GAUGES")
 
   // 
-	let pools = ['compound','usdt','iearn','busd','susdv2','pax','ren','sbtc', 'dfi', 'dusd', 'okuu', 'usd5']
+	let pools = ['compound','usdt','iearn','busd','susdv2','pax','ren','sbtc', 'dfi', 'dusd', 'okuu', 'usd5', 'qusd5']
 
 	let prices = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,curve-dao-token&vs_currencies=usd')
 

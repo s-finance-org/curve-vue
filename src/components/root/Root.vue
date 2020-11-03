@@ -462,12 +462,13 @@
 			this.keydownListener = document.addEventListener('keydown', this.handle_pool_change)
       this.getAPY()
 
-        const { okuu, dusd, iUSD_LPT, usd5 } = store.tokens
+        const { okuu, dusd, iUSD_LPT, usd5, qusd5 } = store.tokens
 
         okuu.getPrice()
         dusd.getPrice()
         iUSD_LPT.getPrice()
         usd5.getPrice()
+        qusd5.getPrice()
 			// contract.web3 && contract.multicall && this.getCurveRewards() && this.getBalances();
 		},
 		beforeDestroy() {
@@ -483,14 +484,15 @@
 
       stablePools () {
         const { volumes } = this
-        const { okuu, dusd, iUSD_LPT, usd5 } = store.tokens
+        const { okuu, dusd, iUSD_LPT, usd5, qusd5 } = store.tokens
         const now = new Date().getTime()
 
         const apys = {
           // okuu: (+okuu.price.handled - 1) / ((now - 1603800000000) / 86400000) * 365 * 100,
           dusd: (+dusd.price.handled - 1) / ((now - 1603468800000) / 86400000) * 365 * 100,
           dfi: (+iUSD_LPT.price.handled - 1) / ((now - 1602345600000) / 86400000) * 365 * 100,
-          usd5: (+usd5.price.handled - 1) / ((now - 1604149200) / 86400000) * 365 * 100
+          usd5: (+usd5.price.handled - 1) / ((now - 1604149200) / 86400000) * 365 * 100,
+          qusd5: (+qusd5.price.handled - 1) / ((now - 1604149200) / 86400000) * 365 * 100
         }
 
         const apyCont = (apy) => {
@@ -509,6 +511,18 @@
             'operating'
           ],
           items: [
+            {
+              id: -1,
+              toDeposit: '/liquidity/qusd5',
+              toDao: '/dao',
+              pooltext: 'qian',
+              pools: 'QUSD DAI USDC USDT TUSD PAX',
+              volData: null,
+              currencies: {qusd: 'QUSD', dai: 'DAI', usdc: 'USDC', usdt: 'USDT', tusd: 'TUSD', pax: 'PAX'},
+              funds: '-',
+              apy: apyCont(apys.qusd5),
+              link: '/qusd5'
+            },
             {
               id: -1,
               toDeposit: '/liquidity/usd5',

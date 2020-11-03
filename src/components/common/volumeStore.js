@@ -14,7 +14,8 @@ import abis from '../../allabis'
     dfi: [],
     dusd: [],
     okuu: [],
-    usd5: []
+    usd5: [],
+    qusd5: [],
 	})
 
 export const state = Vue.observable({

@@ -4,6 +4,7 @@
     <div class="total-bg">
       <b-container class="d-flex py-4 px-md-5">
         <b-navbar-nav class="navbar-tabs flex-row flex-wrap px-md-5">
+          <b-nav-item :to="{ name: 'Swap', params: { pool: 'qusd5' } }">qian</b-nav-item>
           <b-nav-item :to="{ name: 'Swap', params: { pool: 'usd5' } }">5pool</b-nav-item>
           <b-nav-item :to="{ name: 'Swap', params: { pool: 'dusd' } }">dForce</b-nav-item>
           <b-nav-item :to="{ name: 'Swap', params: { pool: 'dfi' } }">dfi</b-nav-item>
@@ -560,44 +561,44 @@
             })
         },
         watch: {
-            from_currency(val, oldval) {
-                if(val == this.to_currency) {
-                    this.to_currency = oldval;
-                }
-                //this.swapExchangeRate()
-                this.from_cur_handler()
-            },
-            to_currency(val, oldval) {
-                //this.swapExchangeRate()
-                this.to_cur_handler()
-            },
-            swapwrapped() {
-                this.mounted()
-            },
-            maxBalance(val) {
-                let amount = val / this.precisions[this.from_currency]
+          from_currency(val, oldval) {
+              if(val == this.to_currency) {
+                  this.to_currency = oldval;
+              }
+              //this.swapExchangeRate()
+              this.from_cur_handler()
+          },
+          to_currency(val, oldval) {
+              //this.swapExchangeRate()
+              this.to_cur_handler()
+          },
+          swapwrapped() {
+              this.mounted()
+          },
+          maxBalance(val) {
+              let amount = val / this.precisions[this.from_currency]
 
-                this.maxBalanceText = currentContract.default_account ? this.toFixed(amount) : 0;
-            },
-            maxSynthBalance(val) {
-                if(isNaN(val)) return '0.00';
-                this.maxSynthText = this.toFixed(val)
-            },
-            triggerEstimateGas: {
-                handler: async function triggerEstimateGas() {
-                    let i = this.from_currency
-                    let j = this.to_currency
-                    let promises = await Promise.all([helpers.getETHPrice()])
-                    this.ethPrice = promises[0]
-                    this.estimateGas = (this.swapwrapped || ['okuu', 'usd5'].includes(this.currentPool))
-                      ? contractGas.swap[this.currentPool].exchange(i, j) / 2
-                      : contractGas.swap[this.currentPool].exchange_underlying(i, j) / 2
-                },
-                immediate: true
-            },
-            fromInput() {
-                this.userInteracted = true
-            },
+              this.maxBalanceText = currentContract.default_account ? this.toFixed(amount) : 0;
+          },
+          maxSynthBalance(val) {
+              if(isNaN(val)) return '0.00';
+              this.maxSynthText = this.toFixed(val)
+          },
+          triggerEstimateGas: {
+              handler: async function triggerEstimateGas() {
+                  let i = this.from_currency
+                  let j = this.to_currency
+                  let promises = await Promise.all([helpers.getETHPrice()])
+                  this.ethPrice = promises[0]
+                  this.estimateGas = (this.swapwrapped || ['okuu', 'usd5', 'qusd5'].includes(this.currentPool))
+                    ? contractGas.swap[this.currentPool].exchange(i, j) / 2
+                    : contractGas.swap[this.currentPool].exchange_underlying(i, j) / 2
+              },
+              immediate: true
+          },
+          fromInput() {
+              this.userInteracted = true
+          },
         },
         computed: {
           ...getters,
@@ -605,7 +606,8 @@
             const poolName = {
               dusd: 'dForce',
               okuu: 'oku',
-              usd5: '5pool'
+              usd5: '5pool',
+              qusd5: 'qian',
             }
 
             return poolName[this.currentPool] || this.currentPool
@@ -613,7 +615,8 @@
           currentPoolTokenCoinMark () {
             const conversions = {
               'dfi': 'i',
-              'dusd': 'd'
+              'dusd': 'd',
+              'qusd5': 'usd5'
             }
 
             return conversions[this.currentPool] || ''
@@ -764,13 +767,20 @@
             //     // return ['compound', 'y', 'busd', 'susd', 'pax', 'ren', 'sbtc', '1split', 'dfi', 'dusd'][this.bestPool]
             // },
         },
-        mounted() {
-            if(currentContract.initializedContracts) this.mounted();
+        mounted () {
+            if(currentContract.initializedContracts) {
+              if(['qusd5'].includes(currentContract.currentContract)) {
+                this.swapwrapped = true
+              }
+              this.mounted();
+            }
         },
         methods: { 
             async mounted() {
               if(['susd', 'susdv2', 'tbtc', 'ren', 'sbtc'].includes(currentContract.currentContract)) this.depositc = true;
                 else this.depositc = false;
+
+              
 
               if(['ren', 'sbtc'].includes(currentContract.currentContract)) this.btcPrice = await priceStore.getBTCPrice()
               if(['tbtc', 'ren', 'sbtc'].includes(currentContract.currentContract)) this.fromInput = '0.0001'
@@ -934,7 +944,7 @@
                   let calls = [
                     [currentContract.swap._address, currentContract.swap.methods.balances(i).encodeABI()],
                   ]
-                  if(!this.swapwrapped && !['susdv2', 'tbtc', 'ren', 'okuu', 'usd5'].includes(this.currentPool))
+                  if(!this.swapwrapped && !['susdv2', 'tbtc', 'ren', 'okuu', 'usd5', 'qusd5'].includes(this.currentPool))
                     calls.push([currentContract.swap._address, currentContract.swap.methods.get_dy_underlying(i, j, dx).encodeABI()])
                   else {
                     //dx = cBN(dx).times(currentContract.c_rates[i])
@@ -984,7 +994,7 @@
                     dx = BN(this.maxSynthBalance).times(1e18).toFixed(0,1)
                 }
                 let min_dy_method = 'get_dy_underlying'
-                if(this.swapwrapped || ['susdv2', 'tbtc', 'ren', 'sbtc', 'okuu', 'usd5'].includes(this.currentPool)) {
+                if(this.swapwrapped || ['susdv2', 'tbtc', 'ren', 'sbtc', 'okuu', 'usd5', 'qusd5'].includes(this.currentPool)) {
                     min_dy_method = 'get_dy'
                 }
 
@@ -1014,7 +1024,7 @@
                 var { dismiss } = notifyNotification(this.waitingMessage)
                 min_dy = cBN(min_dy).toFixed(0);
                 let exchangeMethod = currentContract.swap.methods[
-                  ['okuu', 'usd5'].includes(this.currentPool)
+                  ['okuu', 'usd5', 'qusd5'].includes(this.currentPool)
                     ? 'exchange'
                     : 'exchange_underlying'
                 ]

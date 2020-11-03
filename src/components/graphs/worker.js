@@ -82,6 +82,10 @@ const currencies = {
     usdt: 'USDT',
     tusd: 'TUSD',
     pax: 'PAX',
+  },
+  qusd5: {
+		qusd: 'QUSD',
+		usd5: 'USD5',
   }
 }
 

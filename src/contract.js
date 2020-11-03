@@ -100,6 +100,18 @@ const currencies = {
     usdt: 'USDT',
     tusd: 'TUSD',
     pax: 'PAX',
+  },
+  qusd5: {
+		qusd: 'QUSD',
+		usd5: 'USD5',
+  },
+  qusd5_wrapped: {
+		qusd: 'QUSD',
+		dai: 'DAI',
+		usdc: 'USDC',
+		usdt: 'USDT',
+		tusd: 'TUSD',
+		pax: 'PAX',
   }
 }
 
@@ -119,7 +131,8 @@ export const poolMenu = {
   dfi: 'DFI',
   dusd: 'dUSD',
   okuu: 'OKUU',
-  usd5: 'usd5'
+  usd5: 'usd5',
+  qusd5: 'qusd5',
 }
 
 export const gas = {
@@ -179,6 +192,10 @@ export const gas = {
     usd5: {
 			exchange: (i, j) => 800000,
 			exchange_underlying: (i, j) => 1600000
+    },
+    qusd5: {
+			exchange: (i, j) => 800000,
+			exchange_underlying: (i, j) => 1600000
 		},
 	},
 	deposit: {
@@ -196,6 +213,7 @@ export const gas = {
 		dusd: 1300000,
 		okuu: 1300000,
 		usd5: 1300000,
+		qusd5: 1300000,
 	},
 	withdraw: {
 		compound: {
@@ -238,6 +256,9 @@ export const gas = {
 			imbalance: x => (12642*x + 474068)*2.5 | 0,
 		},
     usd5: {
+			imbalance: x => (12642*x + 474068)*2.5 | 0,
+    },
+    qusd5: {
 			imbalance: x => (12642*x + 474068)*2.5 | 0,
 		},
 	},
@@ -319,6 +340,12 @@ export const gas = {
 			withdrawImbalance: x => (276069*x + 516861)*2.5 | 0,
 		},
     usd5: {
+			deposit: x => (225377*x + 522674)*2 | 0,
+			withdraw: 3500000 / 1.4,
+			withdrawShare: 3000000,
+			withdrawImbalance: x => (276069*x + 516861)*2.5 | 0,
+    },
+    qusd5: {
 			deposit: x => (225377*x + 522674)*2 | 0,
 			withdraw: 3500000 / 1.4,
 			withdrawShare: 3000000,
@@ -431,13 +458,19 @@ const state = Vue.observable({
 			currentContract: 'usd5',
 			aRewards: null,
 			...initState(),
+    },
+    qusd5: {
+			currentContract: 'qusd5',
+			aRewards: null,
+			...initState(),
 		},
 	},
 	swapbtc: false,
 	adapterContract: null,
   currentContract: 'compound',
   // FIXME:
-	currencies: currencies.compound,
+  currencies: currencies.compound,
+  allCurrencies: currencies,
 	N_COINS: N_COINS,
 	coin_precisions: coin_precisions,
 	wrapped_precisions: [],
@@ -526,6 +559,7 @@ export const getters = {
 	totalBalance: () => state.totalBalance / 1e18,
 	totalSupply: () => state.totalSupply / 1e18,
 	currencies: () => state.currencies,
+	allCurrencies: () => state.allCurrencies,
 	fee: () => state.fee * 100,
 	admin_fee: () => state.admin_fee * 100,
 	A: () => state.A,
@@ -639,6 +673,10 @@ export async function init(contract, refresh = false) {
     contract.curveRewards = new state.web3.eth.Contract(allabis.usd5.sCurveRewards_abi, allabis.usd5.sCurveRewards_address)
     calls.push([contract.curveRewards._address, contract.curveRewards.methods.balanceOf(default_account).encodeABI()])
   }
+  if(['qusd5'].includes(contract.currentContract)) {
+    contract.curveRewards = new state.web3.eth.Contract(allabis.qusd5.sCurveRewards_abi, allabis.qusd5.sCurveRewards_address)
+    calls.push([contract.curveRewards._address, contract.curveRewards.methods.balanceOf(default_account).encodeABI()])
+  }
   if(['tbtc', 'ren', 'sbtc'].includes(contract.currentContract)) {
     //initial_A
     calls.push([allabis[contract.currentContract].swap_address, '0x5409491a'])
@@ -669,15 +707,30 @@ export async function init(contract, refresh = false) {
   // else 
   const update_fee_info = await common.update_fee_info('new', contract, false)
   calls.push(...update_fee_info)
-  for (let i = 0; i < allabis[contract.currentContract].N_COINS; i++) {
-    let coinsCall = contract.swap.methods.coins(i).encodeABI()
-    let underlyingCoinsCall = ['tbtc', 'ren', 'sbtc', 'okuu', 'usd5'].includes(contract.currentContract)
+  // for (let i = 0; i < allabis[contract.currentContract].N_COINS; i++) {
+  //   let coinsCall = contract.swap.methods.coins(i).encodeABI()
+  //   let underlyingCoinsCall = ['tbtc', 'ren', 'sbtc', 'okuu', 'usd5', 'qusd5'].includes(contract.currentContract)
+  //     ? contract.swap.methods.coins(i).encodeABI()
+  //     : contract.swap.methods.underlying_coins(i).encodeABI()
+
+  //   calls.push([contract.swap._address, coinsCall])
+  //   calls.push([contract.swap._address, underlyingCoinsCall])
+  // }
+  for (let i = 0; i < allabis[contract.currentContract].underlying_coins.length; i++) {
+    let underlyingCoinsCall = ['tbtc', 'ren', 'sbtc', 'okuu', 'usd5', 'qusd5'].includes(contract.currentContract)
       ? contract.swap.methods.coins(i).encodeABI()
       : contract.swap.methods.underlying_coins(i).encodeABI()
 
-    calls.push([contract.swap._address, coinsCall])
     calls.push([contract.swap._address, underlyingCoinsCall])
   }
+  for (let i = 0; i < allabis[contract.currentContract].coins.length; i++) {
+    let coinsCall = ['qusd5'].includes(contract.currentContract)
+      ? contract.swap.methods.base_coins(i).encodeABI()
+      : contract.swap.methods.coins(i).encodeABI()
+
+    calls.push([contract.swap._address, coinsCall])
+  }
+
   console.log('multiInitState-- true' )
   await common.multiInitState(calls, contract, true)
   contract.initializedContracts = true;
@@ -698,7 +751,7 @@ export async function getAllUnderlying() {
         allState.underlying_coins[key] = [];
 		for(let i = 0; i < contract.N_COINS; i++) {
       var addr = await allState.swap[key].methods.coins(i).call();
-      var underlying_addr = await allState.swap[key].swap.methods[(key == 'okuu' || key == 'usd5') ? coins : underlying_coins](i).call();
+      var underlying_addr = await allState.swap[key].swap.methods[(key == 'okuu' || key == 'usd5' || key == 'qusd5') ? coins : underlying_coins](i).call();
       allState.underlying_coins[key][i] = new state.web3.eth.Contract(ERC20_abi, underlying_addr);
 		}
 	}
@@ -710,7 +763,8 @@ console.log(!(pool in allabis))
 	if(!(pool in allabis)) return;
 	state.initializedContracts = false;
 	state.currentContract = pool;
-	state.currencies = currencies[pool]
+	state.currencies = currencies[pool];
+	state.allCurrencies = currencies;
 	state.N_COINS = allabis[pool].N_COINS;
 	state.coin_precisions = allabis[pool].coin_precisions;
 	state.wrapped_precisions = allabis[pool].wrapped_precisions;

@@ -666,7 +666,7 @@
             },
             bestPoolText() {
                 if(this.bestPool === null) return 'Not available'
-                return ['compound', 'y', 'busd', 'susd', 'pax', 'ren', 'sbtc', '1split', 'dfi', 'dusd', 'okuu', 'usd5'][this.bestPool]
+                return ['compound', 'y', 'busd', 'susd', 'pax', 'ren', 'sbtc', '1split', 'dfi', 'dusd', 'okuu', 'usd5', 'qusd5'][this.bestPool]
             },
             selldisabled() {
                 if([7,8,9].includes(this.from_currency) && ![7,8,9].includes(this.to_currency) 
@@ -1314,7 +1314,7 @@
                         this.estimateGas = txPrice1split
                     }
                     else {
-                        let pools = ['compound', 'iearn', 'busd', 'susdv2', 'pax', 'ren', 'sbtc', '1split', 'dfi', 'dusd', 'okuu', 'usd5']
+                        let pools = ['compound', 'iearn', 'busd', 'susdv2', 'pax', 'ren', 'sbtc', '1split', 'dfi', 'dusd', 'okuu', 'usd5', 'qusd5']
                         this.swapPromise.cancel()
                         let promises = [this.realComparePools()]
                         if(this.fromInput > 100 || [7,8].includes(this.from_currency) && [7,8].includes(this.to_currency)) {
