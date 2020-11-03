@@ -1023,16 +1023,35 @@
       },
       computed: {
         ...getters,
-        currencie_coins () {
-          // let result = []
-          // if (['qusd5'].includes(this.currentPool)) {
-          //   result = this.allCurrencies[this.currentPool + '_wrapped']
-          // } else {
-            // result = this.currencies
-          // }
-          // return result
+        c_rates () {
+          let result = []
 
-          return this.currencies
+          if (['qusd5'].includes(currentContract.currentContract)) {
+            let underlying_coins_len = currentContract.underlying_coins.length
+
+            result = this.depositc
+              ? currentContract.c_rates.slice(0, underlying_coins_len)
+              : currentContract.c_rates.slice(underlying_coins_len)
+          } else {
+            result = currentContract.c_rates
+          }
+
+          return result
+        },
+        currencie_coins () {
+          let result = []
+
+          if (['qusd5'].includes(currentContract.currentContract)) {
+            if (this.depositc) {
+              result = this.currencies
+            } else {
+              result = this.allCurrencies[currentContract.currentContract + '_base']
+            }
+          } else {
+            result = this.currencies
+          }
+
+          return result
         },
         currentContract () {
           return currentContract
@@ -1285,7 +1304,7 @@
           },
 
           async mounted(oldContract) {
-            this.depositc = ['susd', 'susdv2', 'tbtc', 'ren', 'sbtc', 'qusd5'].includes(currentContract.currentContract);
+            this.depositc = ['susd', 'susdv2', 'tbtc', 'ren', 'sbtc'].includes(currentContract.currentContract);
             this.changeSwapInfo(this.depositc)
             currentContract.showSlippage = false;
             currentContract.slippage = 0;
@@ -1384,15 +1403,28 @@
         	},
           changeSwapInfo(val) {
             if(val) {
-              this.coins = currentContract.coins
-              if(this.currentPool == 'susdv2') Vue.set(this.coins, 3, currentContract.underlying_coins[3])
-              if(this.currentPool == 'sbtc') Vue.set(this.coins, 2, currentContract.underlying_coins[2])
-              this.rates = currentContract.c_rates
-              this.swap_address = currentContract.swap_address
+              if (['qusd5'].includes(currentContract.currentContract)) {
+                this.coins = currentContract.underlying_coins
+                this.rates = this.c_rates
+                this.swap_address = currentContract.swap_address
+              } else {
+                this.coins = currentContract.coins
+                if(this.currentPool == 'susdv2') Vue.set(this.coins, 3, currentContract.underlying_coins[3])
+                if(this.currentPool == 'sbtc') Vue.set(this.coins, 2, currentContract.underlying_coins[2])
+                this.rates = this.c_rates
+                this.swap_address = currentContract.swap_address
+              }
             } else {
-              this.coins = currentContract.underlying_coins
-              this.rates = currentContract.coin_precisions.map(cp=>1/cp)
-              this.swap_address = currentContract.deposit_zap._address
+              if (['qusd5'].includes(currentContract.currentContract)) {
+                this.coins = currentContract.base_coins
+                this.rates = this.c_rates
+                this.swap_address = currentContract.deposit_zap._address
+              } else {
+                this.coins = currentContract.underlying_coins
+                // FIXME: ???
+                this.rates = currentContract.coin_precisions.map(cp=>1/cp)
+                this.swap_address = currentContract.deposit_zap._address
+              }
             }
           },
           setInputStyles(newInputs = false, newContract, oldContract) {
@@ -1458,7 +1490,7 @@
 			    if (this.max_balances) {
 			        this.disabled = true;
 			        for (let i = 0; i < currentContract.N_COINS; i++) {
-			        	let amount = this.wallet_balances[i] * currentContract.c_rates[i]
+			        	let amount = this.wallet_balances[i] * this.c_rates[i]
 			        	if(!this.depositc) amount = this.wallet_balances[i] / allabis[currentContract.currentContract].coin_precisions[i]
 			            var val = amount
 			            var val = this.toFixed(amount);
@@ -1525,7 +1557,7 @@
                       let abi = allabis[currentContract.currentContract]
                       let precisions = this.depositc ? abi.wrapped_precisions[i] : abi.coin_precisions[i]
                       let bal = BN(balance)
-                      if(this.depositc) bal = BN(bal).times(currentContract.c_rates[i])
+                      if(this.depositc) bal = BN(bal).times(this.c_rates[i])
                       else bal = BN(bal).div(precisions)
                       if((this.currentPool == 'susdv2' && i == 3 || this.currentPool == 'sbtc' && i == 2)
                           && +decoded[decoded.length - 1] != 0) bal = BN(0)
@@ -1534,11 +1566,11 @@
                           return Vue.set(this.amounts, i, 0)
                       }
                       if(BN(bal).gt(0) && maxDiff.lt(0) && BN(maxDiff).lt(BN(this.minAmount))) {
-                          if(!this.depositc) balance = BN(balance).div(precisions).div(currentContract.c_rates[i])
+                          if(!this.depositc) balance = BN(balance).div(precisions).div(this.c_rates[i])
                           Vue.set(this.amounts, i, BN(balance).toFixed(0,1))
                       }
                       else {
-                          Vue.set(this.amounts, i, BN(this.deposit_inputs[i]).div(currentContract.c_rates[i]).toFixed(0,1))
+                          Vue.set(this.amounts, i, BN(this.deposit_inputs[i]).div(this.c_rates[i]).toFixed(0,1))
                       }
                     })
                     this.amounts = this.amounts.map(v => v || 0)
@@ -1613,7 +1645,7 @@
                 let gas = contractGas.depositzap[this.currentPool].deposit(nonZeroInputs) | 0
                 console.warn(this.deposit_inputs, 'inputs', amounts, 'uamounts', 
                   this.amounts, 'amounts', currentContract.swap._address, 'swap address', currentContract.coin_precisions, 'coin precisions', 
-                  currentContract.c_rates, 'c rates',
+                  this.c_rates, 'c rates',
                   currentContract.coins.map(c=>c._address), 'coins', currentContract.underlying_coins.map(uc=>uc._address), 'underlying_coins',
                   currentContract.virtual_price, 'virtual_price', token_amount, 'token_amount', Date.now())
                         this.waitingMessage = this.$i18n.t('notice.confirmDepositTransaction')
@@ -1707,7 +1739,7 @@
         let deposit_inputs = this.deposit_inputs.map(v => v || 0);
 
         this.lpCrvReceived = (await currentContract.swap.methods
-            .calc_token_amount(deposit_inputs.map((v, i) => BN(v).div(currentContract.c_rates[i]).toFixed(0,1)
+            .calc_token_amount(deposit_inputs.map((v, i) => BN(v).div(this.c_rates[i]).toFixed(0,1)
             ), true).call() / 1e18) * this.getDepositMaxSlippage
     
       },
@@ -1723,10 +1755,10 @@
                 if (j != i) {
                     var value_j = this.deposit_inputs[j]
 
-                    if (this.balances[i] * currentContract.c_rates[i] > 1) {
+                    if (this.balances[i] * this.c_rates[i] > 1) {
                         // proportional
-                        var newval = value / currentContract.c_rates[i] * this.balances[j] / this.balances[i];
-                        newval = Math.floor(newval * currentContract.c_rates[j] * 100) / 100;
+                        var newval = value / this.c_rates[i] * this.balances[j] / this.balances[i];
+                        newval = Math.floor(newval * this.c_rates[j] * 100) / 100;
                         setInputs && Vue.set(this.deposit_inputs, j, newval);
 
                     } else {
@@ -1766,7 +1798,7 @@
           setCalcBalances() {
             for (let i = 0; i < currentContract.N_COINS; i++) {
                 let token_balance = this.showstaked ? this.token_balance.plus(this.staked_balance) : this.token_balance
-                let value = BN(100 / 100 * this.balances[i] * currentContract.c_rates[i] * token_balance / this.token_supply)
+                let value = BN(100 / 100 * this.balances[i] * this.c_rates[i] * token_balance / this.token_supply)
                 Vue.set(this.calc_balances, i, value)
             }
           },
@@ -1815,7 +1847,7 @@
           }
 				  if(this.currentPool == 'susd') return;
 				  this.to_currency = null
-          var values = this.withdraw_inputs.map((x,i) => x / currentContract.c_rates[i])
+          var values = this.withdraw_inputs.map((x,i) => x / this.c_rates[i])
           values = values.map(v=>BN(Math.floor(v).toString()).toFixed(0))
           this.show_nobalance = false;
           this.show_nobalance_i = 0;
@@ -1826,7 +1858,7 @@
             let aggcalls = await currentContract.multicall.methods.aggregate(calls).call()
             let decoded = aggcalls[1].map(hex => currentContract.web3.eth.abi.decodeParameter('uint256', hex))
             decoded.slice(0, currentContract.N_COINS).forEach((v, i) => {
-              let coin_balance = +v * currentContract.c_rates[i]
+              let coin_balance = +v * this.c_rates[i]
               if(coin_balance < this.withdraw_inputs[i]) {
                   this.show_nobalance |= true;
                   this.show_nobalance_i = i;
@@ -1868,7 +1900,7 @@
 					if(!this.withdrawc) {
 						min_amounts[i] = min_amounts[i]
               .times(allabis[currentContract.currentContract].coin_precisions[i])
-              .times(currentContract.c_rates[i])
+              .times(this.c_rates[i])
 					}
 					min_amounts[i] = min_amounts[i].times(BN(this.token_balance))
             .div(BN(this.token_supply))
@@ -2079,10 +2111,10 @@
           let maxDiff = BN(this.calc_balances[i]).minus(BN(this.withdraw_inputs[i]))
           let useMax = this.calc_balances[i] > 0 && maxDiff.lte(BN(this.minAmount)) && maxDiff > 0
           if(useMax) {
-            Vue.set(this.amounts, i, BN(this.calc_balances[i]).div(currentContract.c_rates[i]).toFixed(0,1))
+            Vue.set(this.amounts, i, BN(this.calc_balances[i]).div(this.c_rates[i]).toFixed(0,1))
           }
           else {
-            Vue.set(this.amounts, i, BN(Math.floor(this.withdraw_inputs[i] / currentContract.c_rates[i]).toString()).toFixed(0,1)); // -> c-tokens
+            Vue.set(this.amounts, i, BN(Math.floor(this.withdraw_inputs[i] / this.c_rates[i]).toString()).toFixed(0,1)); // -> c-tokens
           }
         }
 
@@ -2393,7 +2425,7 @@ console.log('zap_values', zap_values, this.to_currency)
         if(this.to_currency !== null && this.to_currency < 10) return;
         for (let i = 0; i < currentContract.N_COINS; i++) {
             if ((this.share >=0) & (this.share <= 100)) {
-              let value = BN(this.share / 100 * this.balances[i] * currentContract.c_rates[i] * token_balance / this.token_supply)
+              let value = BN(this.share / 100 * this.balances[i] * this.c_rates[i] * token_balance / this.token_supply)
                 Vue.set(this.withdraw_inputs, i, this.toFixed(value, 2, 1))
                 Vue.set(this.withdraw_maxs, i, this.toFixed(value, 2, 1))
             }

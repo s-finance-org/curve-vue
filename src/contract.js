@@ -105,7 +105,7 @@ const currencies = {
 		qusd: 'QUSD',
 		usd5: 'USD5',
   },
-  qusd5_wrapped: {
+  qusd5_base: {
 		qusd: 'QUSD',
 		dai: 'DAI',
 		usdc: 'USDC',
@@ -376,7 +376,8 @@ let initState = () => ({
 	deposit_zap: null,
 	balances: [],
 	wallet_balances: [],
-	underlying_coins: [],
+  underlying_coins: [],
+  base_coins: [],
 	c_rates: [],
 	bal_info: [],
 	total: 0,
@@ -482,7 +483,8 @@ const state = Vue.observable({
 	infura_url: infura_url,
 
 	coins: new Array(N_COINS),
-	underlying_coins: new Array(N_COINS),
+  underlying_coins: new Array(N_COINS),
+  base_coins: new Array(N_COINS),
 	swap: null,
 	old_swap: null,
 	swap_token: null,
@@ -500,7 +502,8 @@ const state = Vue.observable({
 	trade_timeout: 1800,
 	max_allowance: BN(2).pow(BN(256)).minus(BN(1)),
 	coins: [],
-	underlying_coins: [],
+  underlying_coins: [],
+  base_coins: [],
 	c_rates: [],
 	bal_info: [],
 	total: 0,
@@ -691,6 +694,11 @@ export async function init(contract, refresh = false) {
 
   contract.swap = new state.web3.eth.Contract(allabis[contract.currentContract].swap_abi, allabis[contract.currentContract].swap_address);
   contract.swap_token = new state.web3.eth.Contract(ERC20_abi, allabis[contract.currentContract].token_address);
+
+  if (allabis[contract.currentContract].base_pool_address && ['qusd5'].includes(contract.currentContract)) {
+    contract.base_pool = new state.web3.eth.Contract(allabis[contract.currentContract].base_pool_abi, allabis[contract.currentContract].base_pool_address);
+  }
+
   window[contract.currentContract] = {};
   window[contract.currentContract].swap = contract.swap
   window[contract.currentContract].swap_token = contract.swap_token
@@ -700,6 +708,7 @@ export async function init(contract, refresh = false) {
 
   contract.coins = []
   contract.underlying_coins = []
+  contract.base_coins = []
 
   // Curver old 
   // if(window.location.href.includes('withdraw_old'))
@@ -741,14 +750,14 @@ export async function init(contract, refresh = false) {
 
 export const allState = Vue.observable({
 	swap: {},
-	underlying_coins: {},
+  underlying_coins: {},
 })
 
 export async function getAllUnderlying() {
 	for([key, contract] of Object.entries(allabis)) {
 		if(key == 'susd') continue;
 		allState.swap[key] = new state.web3.eth.Contract(contract.swap_abi, contract.swap_address);
-        allState.underlying_coins[key] = [];
+    allState.underlying_coins[key] = [];
 		for(let i = 0; i < contract.N_COINS; i++) {
       var addr = await allState.swap[key].methods.coins(i).call();
       var underlying_addr = await allState.swap[key].swap.methods[(key == 'okuu' || key == 'usd5' || key == 'qusd5') ? coins : underlying_coins](i).call();
@@ -775,6 +784,8 @@ console.log(!(pool in allabis))
 	state.migration_address = allabis[pool].migration_address;
 	state.coins = new Array(allabis[pool].coins);
 	state.underlying_coins = new Array(allabis[pool].underlying_coins);
+	state.base_coins = new Array(allabis[pool].base_coins);
+	state.base_coins_idx = allabis[pool].base_coins_idx;
 	state.balances = new Array(allabis[pool].balances);
 	state.wallet_balances = new Array(allabis[pool].wallet_balances);
 	state.bal_info = []

@@ -51,9 +51,10 @@
                   <span class="coin d-flex align-items-center">
                     <img class="icon-w-20 mr-2" :class="{'icon token-icon': true, [getCurrFrom+'-icon']: true}" :src='getTokenIcon(getCurrFrom)'>
                     <span v-show='!swapwrapped'> {{getCurrFrom | capitalize}} </span>
-                    <span v-show='swapwrapped'> {{currencies[getCurrFrom]}} </span>
+                    <span v-show='swapwrapped'> {{currencie_coins[getCurrFrom]}} </span>
                   </span>
                   <!-- <b-form-input
+                    id="from-val"
                     id="from-val"
                     v-model="fromInput"
                     aria-describedby="from-val-help"
@@ -95,7 +96,7 @@
                       </span>
                   </span>
                   <span class="float-right" v-show='swapwrapped'>
-                    ≈ {{toFixed(actualFromValue)}} {{Object.keys(currencies)[this.from_currency] | capitalize}}
+                    ≈ {{toFixed(actualFromValue)}} {{Object.keys(currencie_coins)[this.from_currency] | capitalize}}
                   </span>
                   <span class="float-right" v-show="['sbtc', 'ren'].includes(currentPool)">
                     ≈ {{ actualFromValue }}$
@@ -104,12 +105,12 @@
               </div>
               <div class="lists lists-select">
                 <ul>
-                  <li class="d-flex align-items-center" :class="{'coins': true, [currency]: true}" v-for='(currency, i) in Object.keys(currencies)'>
+                  <li class="d-flex align-items-center" :class="{'coins': true, [currency]: true}" v-for='(currency, i) in Object.keys(currencie_coins)'>
                     <b-form-radio class="radio-danger" v-model="from_currency" :id="'from_cur_'+i"  name="from_cur" :value='i'></b-form-radio>
                     <label :for="'from_cur_'+i" class="d-flex align-items-center mb-0">
                       <img class="mr-2 icon-w-20" :class="{'icon token-icon': true, [currency+'-icon']: true}" :src='getTokenIcon(currency)'>
                       <span v-show="!swapwrapped && !['tbtc', 'ren', 'sbtc'].includes(currentPool)"> {{currency | capitalize}} </span>
-                      <span v-show="swapwrapped || ['tbtc', 'ren', 'sbtc'].includes(currentPool)"> {{currencies[currency]}} </span>
+                      <span v-show="swapwrapped || ['tbtc', 'ren', 'sbtc'].includes(currentPool)"> {{currencie_coins[currency]}} </span>
                     </label>
                   </li>
                 </ul>
@@ -127,7 +128,7 @@
                   <span class="coin d-flex align-items-center">
                     <img class="icon-w-20 mr-2" :class="{'icon token-icon': true, [getCurrTo+'-icon']: true}" :src='getTokenIcon(getCurrTo)'>
                     <span v-show='!swapwrapped'> {{getCurrTo | capitalize}} </span>
-                    <span v-show='swapwrapped'> {{currencies[getCurrTo]}} </span>
+                    <span v-show='swapwrapped'> {{currencie_coins[getCurrTo]}} </span>
                   </span>
                   <!-- <b-form-input
                     id="to-val"
@@ -147,7 +148,7 @@
                 <b-form-text id="to-val-help" class="text-black-65 mt-0">
                   {{ $t('instantSwap.max') }}: -
                   <span class="float-right" v-show='swapwrapped'>
-                    ≈ {{toFixed(actualToValue)}} {{Object.keys(currencies)[this.to_currency] | capitalize}}
+                    ≈ {{toFixed(actualToValue)}} {{Object.keys(currencie_coins)[this.to_currency] | capitalize}}
                   </span>
                   <span class="float-right" v-show="['ren', 'sbtc'].includes(currentPool)">
                     ≈ {{ actualToValue }}$
@@ -156,12 +157,12 @@
               </div>
               <div class="lists lists-select">
                 <ul>
-                  <li class="d-flex align-items-center" :class="{'coins': true, [currency]: true}" v-for='(currency, i) in Object.keys(currencies)'>
+                  <li class="d-flex align-items-center" :class="{'coins': true, [currency]: true}" v-for='(currency, i) in Object.keys(currencie_coins)'>
                     <b-form-radio class="radio-danger" v-model="to_currency" :id="'to_cur_'+i"  name="to_cur" :value='i'></b-form-radio>
                     <label :for="'to_cur_'+i" class="d-flex align-items-center mb-0">
                         <img class="mr-2 icon-w-20" :class="{'icon token-icon': true, [currency+'-icon']: true}" :src='getTokenIcon(currency)'>
                         <span v-show="!swapwrapped && !['tbtc', 'ren'].includes(currentPool)"> {{currency | capitalize}} </span>
-                        <span v-show="swapwrapped || ['tbtc', 'ren'].includes(currentPool)"> {{currencies[currency]}} </span>
+                        <span v-show="swapwrapped || ['tbtc', 'ren'].includes(currentPool)"> {{currencie_coins[currency]}} </span>
                     </label>
                   </li>
                 </ul>
@@ -527,7 +528,6 @@
             customSlippageDisabled: true,
             swapwrapped: false,
             coins: [],
-            c_rates: [],
             get showadvancedoptions() {
                 return localStorage.getItem('advancedoptions') === 'true' 
                     || +this.fromInput > 5000 || (['ren', 'sbtc'].includes(currentContract.currentContract) && +this.fromInput > 0.5)
@@ -602,6 +602,21 @@
         },
         computed: {
           ...getters,
+          c_rates () {
+            let result = []
+
+            if (['qusd5'].includes(currentContract.currentContract)) {
+              let underlying_coins_len = currentContract.underlying_coins.length
+
+              result = this.swapwrapped
+                ? currentContract.c_rates.slice(0, underlying_coins_len)
+                : currentContract.c_rates.slice(underlying_coins_len)
+            } else {
+              result = currentContract.c_rates
+            }
+
+            return result
+          },
           currentPoolName () {
             const poolName = {
               dusd: 'dForce',
@@ -646,15 +661,30 @@
               this.maxSlippage = modes[val]
             }
           },
+          currencie_coins () {
+            let result = []
+
+            if (['qusd5'].includes(currentContract.currentContract)) {
+              if (this.swapwrapped) {
+                result = this.currencies
+              } else {
+                result = this.allCurrencies[currentContract.currentContract + '_base']
+              }
+            } else {
+              result = this.currencies
+            }
+
+            return result
+          },
           messages () {
-            const { $i18n, selldisabled, susdWaitingPeriod, susdWaitingPeriodTime, maxSynthBalanceText, notEnoughBalanceSynth, exchangeRate, swapwrapped, currencies, from_currency, to_currency, showNoBalanceWarning, warningNoPool, currentPool } = this
+            const { $i18n, selldisabled, susdWaitingPeriod, susdWaitingPeriodTime, maxSynthBalanceText, notEnoughBalanceSynth, exchangeRate, swapwrapped, currencie_coins, from_currency, to_currency, showNoBalanceWarning, warningNoPool, currentPool } = this
             const result = []
             const from = swapwrapped
-              ? Object.values(currencies)[from_currency]
-              : Object.keys(currencies)[from_currency]
+              ? Object.values(currencie_coins)[from_currency]
+              : Object.keys(currencie_coins)[from_currency]
             const to = swapwrapped
-              ? Object.values(currencies)[to_currency]
-              : Object.keys(currencies)[to_currency]
+              ? Object.values(currencie_coins)[to_currency]
+              : Object.keys(currencie_coins)[to_currency]
 
             if (exchangeRate<=0.98 && (to_currency > 0 && !['ren', 'sbtc'].includes(currentPool) || ['ren', 'sbtc'].includes(currentPool)) ||
               exchangeRate<=0.95 && (to_currency == 0 && !['ren', 'sbtc'].includes(currentPool))) {
@@ -705,8 +735,14 @@
             return this.bal_info && this.bal_info.reduce((a, b) => a + b, 0) || null
           },
           precisions() {
-              if(this.swapwrapped) return allabis[currentContract.currentContract].wrapped_precisions;
-              return allabis[currentContract.currentContract].coin_precisions
+            let coin_precisions = allabis[currentContract.currentContract].coin_precisions
+
+            if (['qusd5'].includes(this.currentPool)) {
+              coin_precisions = allabis[currentContract.currentContract].base_precisions
+            }
+            return this.swapwrapped
+              ? allabis[currentContract.currentContract].wrapped_precisions
+              : coin_precisions
           },
             actualFromValue() {
                 if(!this.swapwrapped && !['ren','sbtc'].includes(this.currentPool)) return;
@@ -729,8 +765,8 @@
               return this.currentPool == 'susdv2' && this.from_currency == 3 && cBN(this.fromInput).gt(cBN(this.maxSynthBalance))
             },
             exchangeRateSwapped() {
-              let from = !this.swapwrapped ? helpers.capitalize(Object.keys(this.currencies)[this.from_currency]) : Object.values(this.currencies)[this.from_currency]
-              let to = !this.swapwrapped ? helpers.capitalize(Object.keys(this.currencies)[this.to_currency]) : Object.values(this.currencies)[this.to_currency]
+              let from = !this.swapwrapped ? helpers.capitalize(Object.keys(this.currencie_coins)[this.from_currency]) : Object.values(this.currencie_coins)[this.from_currency]
+              let to = !this.swapwrapped ? helpers.capitalize(Object.keys(this.currencie_coins)[this.to_currency]) : Object.values(this.currencie_coins)[this.to_currency]
 
               return this.swaprate
                 ? `1 ${to} = ${(1 / this.exchangeRate).toFixed(4)} ${from}`
@@ -740,10 +776,10 @@
                 return process.env.BASE_URL
             },
             getCurrFrom() {
-              return Object.keys(this.currencies)[this.from_currency]
+              return Object.keys(this.currencie_coins)[this.from_currency]
             },
             getCurrTo() {
-              return Object.keys(this.currencies)[this.to_currency]
+              return Object.keys(this.currencie_coins)[this.to_currency]
             },
             checkExchangeRate () {
               return !isNaN(this.exchangeRate)
@@ -769,26 +805,28 @@
         },
         mounted () {
             if(currentContract.initializedContracts) {
-              if(['qusd5'].includes(currentContract.currentContract)) {
-                this.swapwrapped = true
-              }
               this.mounted();
             }
         },
         methods: { 
             async mounted() {
+              console.log('mounted')
               if(['susd', 'susdv2', 'tbtc', 'ren', 'sbtc'].includes(currentContract.currentContract)) this.depositc = true;
                 else this.depositc = false;
 
-              
-
               if(['ren', 'sbtc'].includes(currentContract.currentContract)) this.btcPrice = await priceStore.getBTCPrice()
               if(['tbtc', 'ren', 'sbtc'].includes(currentContract.currentContract)) this.fromInput = '0.0001'
-              this.c_rates = currentContract.c_rates
-              this.coins = currentContract.underlying_coins
-              if(this.swapwrapped) {
-                  this.coins = currentContract.coins
+
+              if (['qusd5'].includes(currentContract.currentContract)) {
+                this.coins = this.swapwrapped
+                  ? currentContract.underlying_coins
+                  : currentContract.base_coins
+              } else {
+                this.coins = this.swapwrapped
+                  ? currentContract.coins
+                  : currentContract.underlying_coins
               }
+
               this.disabled = false;
               this.from_cur_handler()
             },
@@ -796,8 +834,8 @@
                 return helpers.getTokenIcon(token, this.swapwrapped, this.currentPool)
             },
             getPair(inverse = false) {
-                let from = !this.swapwrapped ? Object.keys(this.currencies)[this.from_currency] : Object.values(this.currencies)[this.from_currency]
-                let to = !this.swapwrapped ? Object.keys(this.currencies)[this.to_currency] : Object.values(this.currencies)[this.to_currency]
+                let from = !this.swapwrapped ? Object.keys(this.currencie_coins)[this.from_currency] : Object.values(this.currencie_coins)[this.from_currency]
+                let to = !this.swapwrapped ? Object.keys(this.currencie_coins)[this.to_currency] : Object.values(this.currencie_coins)[this.to_currency]
                 from = helpers.capitalize(from)
                 to = helpers.capitalize(to)
                 if(!inverse) return from + '/' + to
@@ -810,8 +848,8 @@
                 return floor(num, 2).toFixed(2)
             },
             getCurrency(i) {
-                if(!this.swapwrapped && !['susdv2', 'tbtc', 'ren', 'sbtc'].includes(this.currentPool)) return (Object.keys(this.currencies)[i]).toUpperCase()
-                return Object.values(this.currencies)[i] 
+                if(!this.swapwrapped && !['susdv2', 'tbtc', 'ren', 'sbtc'].includes(this.currentPool)) return (Object.keys(this.currencie_coins)[i]).toUpperCase()
+                return Object.values(this.currencie_coins)[i] 
             },
             swapInputs() {
                 //look no temp variable! :D
@@ -860,6 +898,7 @@
                 this.promise = helpers.makeCancelable(promise)
             },
             async from_cur_handler() {
+              console.log('coins', this.coins)
                 let currentAllowance = cBN(await this.coins[this.from_currency].methods.allowance(currentContract.default_account, currentContract.swap_address).call())
                 let maxAllowance = currentContract.max_allowance.div(cBN(2))
                 if (currentAllowance.gt(maxAllowance))
@@ -904,6 +943,7 @@
                     this.fromBgColor = 'blue'
             },
             async set_from_amount(i) {
+              console.log('this.coins[i]', i, this.coins[i])
                 let balanceCalls = [[this.coins[i]._address, this.coins[i].methods.balanceOf(this.default_account).encodeABI()]]
                 if(this.currentPool == 'susdv2' && i == 3 || this.currentPool == 'sbtc' && i == 2) {
                     balanceCalls.push([this.coins[i]._address, this.coins[i].methods.transferableSynths(this.default_account).encodeABI()])
@@ -937,28 +977,49 @@
             },
             setAmountPromise() {
               let promise = new Promise(async (resolve, reject) => {
-                  var i = this.from_currency;
-                  var j = this.to_currency;
-                  var dx_ = this.fromInput;
+                if (this.from_currency > this.precisions.length) {
+                  this.from_currency = 0
+                }
+                if (this.to_currency > this.precisions.length) {
+                  this.to_currency = 1
+                }
+
+                var i = this.from_currency;
+                var j = this.to_currency;
+                var dx_ = this.fromInput;
+
                   var dx = cBN(Math.round(dx_ * this.precisions[i])).toFixed(0,1);
-                  let calls = [
-                    [currentContract.swap._address, currentContract.swap.methods.balances(i).encodeABI()],
-                  ]
-                  if(!this.swapwrapped && !['susdv2', 'tbtc', 'ren', 'okuu', 'usd5', 'qusd5'].includes(this.currentPool))
+                  let calls = []
+
+                  if (!this.swapwrapped && ['qusd5'].includes(this.currentPool) && currentContract.base_coins_idx[i] != null ) {
+                    calls.push([currentContract.base_pool._address, currentContract.base_pool.methods.balances(currentContract.base_coins_idx[i]).encodeABI()])
+              // console.log('-- base_pool', i, await currentContract.base_pool.methods.balances(currentContract.base_coins_idx[i]).call() )
+                  } else {
+                    calls.push([currentContract.swap._address, currentContract.swap.methods.balances(i).encodeABI()])
+            //  console.log('-- swap', i, await currentContract.swap.methods.balances(i).call() )
+                  }
+
+                  if(!this.swapwrapped && !['susdv2', 'tbtc', 'ren', 'okuu', 'usd5'].includes(this.currentPool)) {
+          console.log('get_dy_underlying', i, j, dx)
                     calls.push([currentContract.swap._address, currentContract.swap.methods.get_dy_underlying(i, j, dx).encodeABI()])
-                  else {
+          // console.log(await currentContract.swap.methods.get_dy_underlying(i, j, dx).call() )
+                  } else {
+          console.log('get_dy', i, j, dx)
                     //dx = cBN(dx).times(currentContract.c_rates[i])
                     calls.push([currentContract.swap._address, currentContract.swap.methods.get_dy(i, j, dx).encodeABI()])
                   }
+
                   calls.push([this.coins[this.to_currency]._address , this.coins[this.to_currency].methods.balanceOf(currentContract.default_account).encodeABI()])
 
                   let aggcalls = await currentContract.multicall.methods.aggregate(calls).call(undefined, 'pending')
                   let decoded = aggcalls[1].map(hex => currentContract.web3.eth.abi.decodeParameter('uint256', hex))
                   let [b, get_dy_underlying, balance] = decoded
-                  b = +b * currentContract.c_rates[i];
+
+                  b = +b * this.c_rates[i];
                   // In c-units
                   var dy_ = +get_dy_underlying / this.precisions[j];
                   var dy = this.toFixed(dy_);
+console.log('------', dy, dy_, dx_, balance)
                   resolve([dy, dy_, dx_, balance])
               })
               return helpers.makeCancelable(promise);
@@ -976,10 +1037,18 @@
                 var i = this.from_currency
                 var j = this.to_currency;
 
-                var b = parseInt(await currentContract.swap.methods.balances(i).call()) / currentContract.c_rates[i];
+                var b = 0;
+
+                if (!this.swapwrapped && ['qusd5'].includes(this.currentPool) && currentContract.base_coins_idx[i] != null ) {
+                  b = parseInt(await currentContract.base_pool.methods.balances(currentContract.base_coins_idx[i]).call()) / this.c_rates[i]
+                } else {
+                  b = parseInt(await currentContract.swap.methods.balances(i).call()) / this.c_rates[i]
+                }
+
+          console.log('----b', b)
                 let maxSlippage = this.maxSlippage / 100;
-                let currency = (Object.keys(this.currencies)[this.from_currency]).toUpperCase()
-                if(this.swapwrapped) currency = Object.values(this.currencies)[this.from_currency]
+                let currency = (Object.keys(this.currencie_coins)[this.from_currency]).toUpperCase()
+                if(this.swapwrapped) currency = Object.values(this.currencie_coins)[this.from_currency]
                 if(this.maxInputSlippage) maxSlippage = this.maxInputSlippage / 100;
                 var dx = Math.floor(this.fromInput * this.precisions[i]);
                 if(BN(this.maxBalance).gt(0) && BN(this.maxBalance).div(this.precisions[i]).minus(BN(this.fromInput)).lt(BN(this.minAmount))) {
@@ -994,20 +1063,27 @@
                     dx = BN(this.maxSynthBalance).times(1e18).toFixed(0,1)
                 }
                 let min_dy_method = 'get_dy_underlying'
-                if(this.swapwrapped || ['susdv2', 'tbtc', 'ren', 'sbtc', 'okuu', 'usd5', 'qusd5'].includes(this.currentPool)) {
+                if(this.swapwrapped || ['susdv2', 'tbtc', 'ren', 'sbtc', 'okuu', 'usd5'].includes(this.currentPool)) {
                     min_dy_method = 'get_dy'
                 }
 
                 var min_dy = BN(await currentContract.swap.methods[min_dy_method](i, j, BN(dx).toFixed(0,1)).call())
+
+console.log('min_dy', min_dy, '=', i, j, BN(dx).toFixed(0,1))
                 min_dy = min_dy.times(1-maxSlippage)
                 dx = cBN(dx.toString()).toFixed(0,1);
                 this.waitingMessage = this.$i18n.t('instantSwap.approveExchange', [this.fromInput, this.getCurrency(this.from_currency)])
                 var { dismiss } = notifyNotification(this.waitingMessage)
+
+                let allowance_underlying_coins = []
+                if (!this.swapwrapped && ['qusd5'].includes(this.currentPool)) {
+                  allowance_underlying_coins = currentContract.base_coins
+                }
                 try {
                   if (this.inf_approval)
-                    await common.ensure_underlying_allowance(i, currentContract.max_allowance, [], undefined, this.swapwrapped)
+                    await common.ensure_underlying_allowance(i, currentContract.max_allowance, allowance_underlying_coins, undefined, this.swapwrapped)
                   else
-                    await common.ensure_underlying_allowance(i, dx, [], undefined, this.swapwrapped);
+                    await common.ensure_underlying_allowance(i, dx, allowance_underlying_coins, undefined, this.swapwrapped);
                 }
                 catch(err) {
                     console.error(err)
@@ -1024,13 +1100,14 @@
                 var { dismiss } = notifyNotification(this.waitingMessage)
                 min_dy = cBN(min_dy).toFixed(0);
                 let exchangeMethod = currentContract.swap.methods[
-                  ['okuu', 'usd5', 'qusd5'].includes(this.currentPool)
+                  ['okuu', 'usd5'].includes(this.currentPool)
                     ? 'exchange'
                     : 'exchange_underlying'
                 ]
                 if(this.swapwrapped || ['susdv2', 'tbtc', 'ren', 'sbtc'].includes(this.currentPool)) exchangeMethod = currentContract.swap.methods.exchange
                 try {
                     await helpers.setTimeoutPromise(100)
+                    console.log(i, j, dx, BN(min_dy).toFixed(0,1))
                     await exchangeMethod(i, j, dx, BN(min_dy).toFixed(0,1))
                         .send({
                             from: currentContract.default_account,

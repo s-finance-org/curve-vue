@@ -249,7 +249,7 @@ export function update_rates(version = 'new', contract) {
       for (let j = 0; j < allabis[contract.currentContract].coins.length; j++) {
         let address = allabis[contract.currentContract].coins[j]
 
-        if(checkCoinsTethered(contract, j)) {
+        if(checkBaseTethered(contract, j)) {
           Vue.set(contract.c_rates, j + i, 1 / allabis[contract.currentContract].coins_precisions[j]);
         }
       }
@@ -357,12 +357,12 @@ function checkTethered(contract, i) {
     || contract.currentContract == 'susdv2';
 }
 
-function checkCoinsTethered(contract, i) {
-  return allabis[contract.currentContract].coins_tethered
-    && allabis[contract.currentContract].coins_tethered[i]
-    && allabis[contract.currentContract].coins_use_lending
-    && !allabis[contract.currentContract].coins_use_lending[i]
-    || allabis[contract.currentContract].coins_is_plain[i];
+function checkBaseTethered(contract, i) {
+  return allabis[contract.currentContract].base_tethered
+    && allabis[contract.currentContract].base_tethered[i]
+    && allabis[contract.currentContract].base_use_lending
+    && !allabis[contract.currentContract].base_use_lending[i]
+    || allabis[contract.currentContract].base_is_plain[i];
 }
 
 export async function multiInitState(calls, contract, initContracts = false) {
@@ -370,7 +370,7 @@ export async function multiInitState(calls, contract, initContracts = false) {
     let multicall = new web3.eth.Contract(multicall_abi, multicall_address)
     var default_account = currentContract.default_account;
     let aggcalls;
-    // console.log('calls', calls)
+    console.log('calls', calls)
     try {
         aggcalls = await multicall.methods.aggregate(calls).call()
     }
@@ -455,6 +455,15 @@ export async function multiInitState(calls, contract, initContracts = false) {
         }
       })
 
+      if (['qusd5'].includes(contract.currentContract)) {
+        let abi = ERC20_abi
+        allabis[contract.currentContract].base_coins.forEach(item => {
+          contract.base_coins.push(new web3.eth.Contract(abi, item));
+        })
+
+        window[contract.currentContract].base_coins = contract.base_coins
+      }
+
       window[contract.currentContract].coins = contract.coins
       window[contract.currentContract].underlying_coins = contract.underlying_coins
       // ratesDecoded = decoded.slice(4+allabis[contract.currentContract].N_COINS, decoded.length-allabis[contract.currentContract].N_COINS*2)
@@ -483,7 +492,7 @@ export async function multiInitState(calls, contract, initContracts = false) {
             Vue.set(contract.c_rates, i, rate)
           }
         } else {
-          if(checkCoinsTethered(contract, i - underlying_coins_len)) {
+          if(checkBaseTethered(contract, i - underlying_coins_len)) {
             Vue.set(contract.c_rates, i, 1 / allabis[contract.currentContract].coins_precisions[i]);
           } else {
             let rate = v / 1e18 / allabis[contract.currentContract].coins_precisions[i]
