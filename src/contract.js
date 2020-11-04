@@ -785,7 +785,9 @@ console.log(!(pool in allabis))
 	state.old_token_address = allabis[pool].old_token_address;
 	state.migration_address = allabis[pool].migration_address;
 	state.coins = new Array(allabis[pool].coins);
-	state.underlying_coins = new Array(allabis[pool].underlying_coins);
+  state.underlying_coins = new Array(allabis[pool].underlying_coins);
+  state.base_pool_address = allabis[pool].base_pool_address;
+  state.deposit_address = allabis[pool].deposit_address;
 	state.base_coins = new Array(allabis[pool].base_coins);
 	state.base_coins_idx = allabis[pool].base_coins_idx;
 	state.balances = new Array(allabis[pool].balances);

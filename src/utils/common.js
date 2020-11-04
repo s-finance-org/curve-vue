@@ -90,52 +90,110 @@ console.log('allowance', allowance.toString(), 'amount', amount)
     }
 }
 
+
 export async function ensure_allowance(amounts, plain = false, contractName, N_COINS, infinite = false) {
-    var default_account = currentContract.default_account
-    let cont = currentContract
-    if(N_COINS === undefined) {
-        N_COINS = currentContract.N_COINS
+  var default_account = currentContract.default_account
+  let cont = currentContract
+  if(N_COINS === undefined) {
+      N_COINS = currentContract.N_COINS
+  }
+  if(contractName !== undefined) {
+      cont = currentContract.contracts[contractName]
+  }
+  var allowances = new Array(N_COINS);
+  let coins = currentContract.coins;
+  let swap = cont.swap_address;
+  if(plain) {
+      coins = cont.underlying_coins;
+      swap = allabis[cont.currentContract].deposit_address;
+  }
+  let fromContract = coins
+  let calls = []
+  for (let i=0; i < N_COINS; i++) {
+      calls.push([coins[i]._address, coins[i].methods.allowance(default_account, swap).encodeABI()])
+console.log(i, swap, await coins[i].methods.allowance(default_account, swap).call() )
+  }
+  let aggcalls = await currentContract.multicall.methods.aggregate(calls).call();
+  allowances = aggcalls[1].map(hex => currentContract.web3.eth.abi.decodeParameter('uint256', hex));
+
+  console.log('allowances', allowances, 'amounts', amounts)
+
+  if (!infinite) {
+      // Non-infinite
+      for (let i=0; i < N_COINS; i++) {
+          if (cBN(allowances[i]).isLessThan(cBN(amounts[i])) && cBN(amounts[i]).gt(0)) {
+              if (allowances[i] > 0 && requiresResetAllowance.includes(coins[i]._address))
+                  await approve(coins[i], 0, default_account, swap);
+              await approve(coins[i], amounts[i], default_account, swap);
+          }
+      }
+  }
+  else {
+      // Infinite
+      for (let i=0; i < N_COINS; i++) {
+          if (cBN(allowances[i]).isLessThan(cont.max_allowance.div(cBN(2))) && cBN(amounts[i]).gt(0)) {
+              if (allowances[i] > 0 && requiresResetAllowance.includes(coins[i]._address))
+                  await approve(coins[i], 0, default_account, swap);
+              await approve(coins[i], cont.max_allowance, default_account, swap);
+          }
+      }
+  }
+}
+
+// qusd5
+export async function ensure_allowance_base(amounts, plain = false, contractName, N_COINS, infinite = false) {
+  var default_account = currentContract.default_account
+  let cont = currentContract
+  if(N_COINS === undefined) {
+    N_COINS = amounts.length
+  }
+  if(contractName !== undefined) {
+    cont = currentContract.contracts[contractName]
+  }
+  var allowances = new Array(N_COINS);
+  let coins = currentContract.underlying_coins;
+  let swap = cont.swap_address;
+
+  let fromContract = coins
+
+  if(['qusd5'].includes(currentContract.currentContract)) {
+    if (Object.keys(currentContract.base_coins).length === N_COINS) {
+      coins = currentContract.base_coins
+      swap = currentContract.deposit_address
+      fromContract = coins
     }
-    if(contractName !== undefined) {
-        cont = currentContract.contracts[contractName]
-    }
-    var allowances = new Array(N_COINS);
-    let coins = currentContract.coins;
-    let swap = cont.swap_address;
-    if(plain) {
-        coins = cont.underlying_coins;
-        swap = allabis[cont.currentContract].deposit_address;
-    }
-    let fromContract = coins
-    let calls = []
+  }
+
+  let calls = []
+  for (let i=0; i < N_COINS; i++) {
+    calls.push([coins[i]._address, coins[i].methods.allowance(default_account, swap).encodeABI()])
+console.log(i, coins[i]._address, swap, await coins[i].methods.allowance(default_account, swap).call() )
+  }
+  let aggcalls = await currentContract.multicall.methods.aggregate(calls).call();
+  allowances = aggcalls[1].map(hex => currentContract.web3.eth.abi.decodeParameter('uint256', hex));
+
+  console.log('allowances', allowances, 'amounts', amounts)
+
+  if (!infinite) {
+    // Non-infinite
     for (let i=0; i < N_COINS; i++) {
-        calls.push([coins[i]._address, coins[i].methods.allowance(default_account, swap).encodeABI()])
+      if (cBN(allowances[i]).isLessThan(cBN(amounts[i])) && cBN(amounts[i]).gt(0)) {
+        if (allowances[i] > 0 && requiresResetAllowance.includes(coins[i]._address))
+            await approve(coins[i], 0, default_account, swap);
+        await approve(coins[i], amounts[i], default_account, swap);
+      }
     }
-    let aggcalls = await currentContract.multicall.methods.aggregate(calls).call();
-    allowances = aggcalls[1].map(hex => currentContract.web3.eth.abi.decodeParameter('uint256', hex));
-
-    console.log('allowances', allowances, 'amounts', amounts)
-
-    if (!infinite) {
-        // Non-infinite
-        for (let i=0; i < N_COINS; i++) {
-            if (cBN(allowances[i]).isLessThan(cBN(amounts[i])) && cBN(amounts[i]).gt(0)) {
-                if (allowances[i] > 0 && requiresResetAllowance.includes(coins[i]._address))
-                    await approve(coins[i], 0, default_account, swap);
-                await approve(coins[i], amounts[i], default_account, swap);
-            }
-        }
+  }
+  else {
+    // Infinite
+    for (let i=0; i < N_COINS; i++) {
+      if (cBN(allowances[i]).isLessThan(cont.max_allowance.div(cBN(2))) && cBN(amounts[i]).gt(0)) {
+        if (allowances[i] > 0 && requiresResetAllowance.includes(coins[i]._address))
+          await approve(coins[i], 0, default_account, swap);
+        await approve(coins[i], cont.max_allowance, default_account, swap);
+      }
     }
-    else {
-        // Infinite
-        for (let i=0; i < N_COINS; i++) {
-            if (cBN(allowances[i]).isLessThan(cont.max_allowance.div(cBN(2))) && cBN(amounts[i]).gt(0)) {
-                if (allowances[i] > 0 && requiresResetAllowance.includes(coins[i]._address))
-                    await approve(coins[i], 0, default_account, swap);
-                await approve(coins[i], cont.max_allowance, default_account, swap);
-            }
-        }
-    }
+  }
 }
 
 export async function ensure_underlying_allowance(i, _amount, underlying_coins = [], toContract, wrapped = false, contract) {
@@ -472,7 +530,6 @@ console.log('calls ok')
       ratesDecoded = decoded.slice(4+allabis[contract.currentContract].underlying_coins.length, decoded.length-(allabis[contract.currentContract].underlying_coins.length + allabis[contract.currentContract].coins.length))
     }
 
-
     if(['iearn', 'busd', 'susd', 'pax', 'dfi', 'dusd', 'okuu', 'usd5', 'qusd5'].includes(contract.currentContract)) {
       // ratesDecoded.map((v, i) => {
       //   if(checkTethered(contract, i)) {
@@ -485,19 +542,29 @@ console.log('calls ok')
       // })
       const underlying_coins_len = allabis[contract.currentContract].underlying_coins.length
       ratesDecoded.map((v, i) => {
-        if (underlying_coins_len > i) {
+        if (['qusd5'].includes(contract.currentContract)) {
+          if (underlying_coins_len > i) {
+            if(checkTethered(contract, i)) {
+              Vue.set(contract.c_rates, i, 1 / allabis[contract.currentContract].coin_precisions[i]);
+            } else {
+              let rate = v / 1e18 / allabis[contract.currentContract].coin_precisions[i]
+              if(contract.currentContract == 'susd' && i == 1) rate =  v / 1e36
+              Vue.set(contract.c_rates, i, rate)
+            }
+          } else {
+            if(checkBaseTethered(contract, i - underlying_coins_len)) {
+              Vue.set(contract.c_rates, i, 1 / allabis[contract.currentContract].coins_precisions[i]);
+            } else {
+              let rate = v / 1e18 / allabis[contract.currentContract].coins_precisions[i]
+              if(contract.currentContract == 'susd' && i == 1) rate =  v / 1e36
+              Vue.set(contract.c_rates, i, rate)
+            }
+          }
+        } else {
           if(checkTethered(contract, i)) {
             Vue.set(contract.c_rates, i, 1 / allabis[contract.currentContract].coin_precisions[i]);
           } else {
             let rate = v / 1e18 / allabis[contract.currentContract].coin_precisions[i]
-            if(contract.currentContract == 'susd' && i == 1) rate =  v / 1e36
-            Vue.set(contract.c_rates, i, rate)
-          }
-        } else {
-          if(checkBaseTethered(contract, i - underlying_coins_len)) {
-            Vue.set(contract.c_rates, i, 1 / allabis[contract.currentContract].coins_precisions[i]);
-          } else {
-            let rate = v / 1e18 / allabis[contract.currentContract].coins_precisions[i]
             if(contract.currentContract == 'susd' && i == 1) rate =  v / 1e36
             Vue.set(contract.c_rates, i, rate)
           }
@@ -588,11 +655,68 @@ export async function handle_migrate_new(page) {
     update_fee_info(page);
 }
 
+
 export async function calc_slippage(values, deposit, zap_values, to_currency) {
+  //var real_values = [...$("[id^=currency_]")].map((x,i) => +($(x).val()));
+  values = values.map(v => v || 0)
+  let slippage = 0;
+  var real_values = Array(currentContract.N_COINS).fill(0)
+  let calls = [
+      [currentContract.swap._address ,currentContract.swap.methods.get_virtual_price().encodeABI()],
+  ]
+  if(to_currency !== undefined) {
+      let precision = allabis[currentContract.currentContract].coin_precisions[to_currency]
+      real_values[to_currency] = zap_values[to_currency].div(precision)
+      zap_values[to_currency] = zap_values[to_currency].times(1e18/precision)
+      var Sr = zap_values[to_currency]
+      zap_values[to_currency] = zap_values[to_currency].div(1e18).div(currentContract.c_rates[to_currency]).toFixed(0);
+      calls.push([currentContract.swap._address, currentContract.swap.methods.calc_token_amount(zap_values, to_currency).encodeABI()])
+  } else {
+      real_values = values.map(v=>+v);
+      var Sr = real_values.reduce((a,b) => a+b, 0);
+
+      var values = real_values.map((x,i) => cBN(Math.floor(x / currentContract.c_rates[i]).toString()).toFixed(0,1));
+      calls.push([currentContract.swap._address, currentContract.swap.methods.calc_token_amount(values, deposit).encodeABI()])
+  }
+  calls.push(...[...Array(currentContract.N_COINS).keys()].map(i => [currentContract.swap._address, currentContract.swap.methods.balances(i).encodeABI()]))
+  let aggcalls = await currentContract.multicall.methods.aggregate(calls).call();
+  let decoded = aggcalls[1].map(hex => currentContract.web3.eth.abi.decodeParameter('uint256', hex))
+  let [virtual_price, token_amount, ...balances] = decoded
+  let Sv = +virtual_price * (+token_amount) / 1e36;
+// console.log('virtual_price', virtual_price, 'token_amount', token_amount)
+  for(let i = 0; i < currentContract.N_COINS; i++) {
+    let coin_balance = +balances[i] * currentContract.c_rates[i];
+    if(!deposit) {
+      if(coin_balance < real_values[i]) {
+          currentContract.showNoBalance = true;
+          currentContract.noBalanceCoin = i;
+      }
+      else {
+        currentContract.showNoBalance = false;
+      }
+    }
+  }
+// console.log(values, deposit)
+// console.log(await currentContract.swap.methods.calc_token_amount(values, deposit).call())
+console.log('Sr', Sr, 'Sv', Sv)
+  if (deposit) {
+    slippage = Sv / Sr
+  } else if(to_currency === undefined) {
+    slippage = Sr / Sv;
+  } else {
+    slippage = Sr / (Sv * 1e18)
+  }
+
+  slippage = slippage - 1;
+  slippage = slippage || 0
+  currentContract.slippage = slippage;
+  currentContract.showSlippage = true;
+}
+
+export async function calc_slippage_base(values, deposit, zap_values, to_currency) {
     //var real_values = [...$("[id^=currency_]")].map((x,i) => +($(x).val()));
-console.log('values', values)
-    let N_COINS = values.length
-console.log('N_COINS', N_COINS)
+    let N_COINS = values.length || (zap_values && zap_values.length) || 0
+console.log('calc_slippage', N_COINS, values, values.length, deposit, zap_values, to_currency)
     values = values.map(v => v || 0)
     let slippage = 0;
     var real_values = Array(N_COINS).fill(0)

@@ -256,7 +256,7 @@
                 <div class="row">
                   <div class="col-12 col-lg mb-2 line-right">
                     <small class="mb-2">{{ $t('temp') }}</small>
-                    <div role="group" class="mb-3" v-for='(currency, i) in Object.keys(currencie_coins)' :key="'icon-'+currency">
+                    <div role="group" class="mb-3" v-for='(currency, i) in Object.keys(currencie_coins_withdrawc)' :key="'icon-'+currency">
                         <div class="currentInput d-flex">
                           <span class="coin d-flex align-items-center" @click='handleCheck(i)'>
                             <input class="mr-2" type="radio" :id="'to_cur_'+i" name="to_cur" :value='i' :checked='to_currency === i'>
@@ -264,11 +264,11 @@
                               <img class="icon-w-20 mr-2"
                                 :class="{'token-icon': true, [currency+'-icon']: true, 'y': depositc && !isPlain}" 
                                 :src='getTokenIcon(currency, withdrawc)'>
-                              <span v-show='withdrawc'>{{currencie_coins[currency]}}
+                              <span v-show='withdrawc'>{{currencie_coins_withdrawc[currency]}}
                                 <!-- <span v-show="!(currency == 'usdt' && currentPool == 'usdt') && !['susdv2', 'ren', 'sbtc'].includes(currentPool)">(in {{currency | capitalize}})</span> -->
                               </span>
                               <span v-show="!withdrawc && !['susdv2', 'tbtc', 'ren', 'sbtc', 'okuu', 'usd5', 'qusd5'].includes(currentPool)">{{currency | capitalize}}</span>
-                              <span v-show="!withdrawc && ['susdv2', 'tbtc', 'ren', 'sbtc', 'okuu', 'usd5', 'qusd5'].includes(currentPool)">{{currencie_coins[currency]}}</span>
+                              <span v-show="!withdrawc && ['susdv2', 'tbtc', 'ren', 'sbtc', 'okuu', 'usd5', 'qusd5'].includes(currentPool)">{{currencie_coins_withdrawc[currency]}}</span>
                             <!-- </b-form-radio> -->
                           </span>
                           <input class="form-control" type="text"
@@ -326,7 +326,7 @@
                   <b-alert :show='show_loading' variant="dark" v-html='waitingMessage'></b-alert>
                   <b-alert :show='compareInputsWarning.length && !max_balances' variant="dark">
                     Not enough balance for currencie_coins {{ compareInputsWarning.toString() }}
-                      <p v-show='compareInputsWarning.length == currencie_coins_n - 1'>
+                      <p v-show='compareInputsWarning.length == currencie_coins_n_withdrawc - 1'>
                           Maybe you forgot to uncheck the first 
                           "Add all coins in a balanced proportion" checkbox?
                       </p>
@@ -920,8 +920,8 @@
     		},
     		inputStyles: [],
     		calc_balances: [],
-    		staked_balance: null,
-    		token_balance: null,
+    		staked_balance: BN(0),
+    		token_balance: BN(0),
     		token_supply: 0,
     		show_nobalance: false,
     		show_nobalance_i: 0,
@@ -996,7 +996,6 @@
           !this.max_balances && this.highlightAllInputs();
           //await Promise.all([...Array(currentContract.N_COINS).keys()].map(i=>this.change_currency(i, false)))
           await this.calcSlippage(this.deposit_inputs, true)
-
           await this.getLPCrvReceived()
         },
         getDepositMaxSlippage() {
@@ -1011,8 +1010,16 @@
         },
         withdrawc(val) {
           if(this.share == '---' ) return;
+          // FIXME:
+          if (this.currencie_coins_n_withdrawc > this.withdraw_inputs.length) {
+            Array(this.currencie_coins_n_withdrawc).fill(0).forEach((item, idx) => {
+              !this.withdraw_inputs[idx] && Vue.set(this.withdraw_inputs, idx, 0)
+            })
+          }
+
           if(!val && this.to_currency === null) this.to_currency = 10
-          if(val && this.to_currency !== null) this.to_currency = null
+          // if(val && this.to_currency !== null) this.to_currency = null
+          if(val && this.to_currency !== null) this.to_currency = 0
         },
         maxSlippage() {
             this.setSlippage = true
@@ -1033,9 +1040,22 @@
             ? allabis[currentContract.currentContract].wrapped_precisions
             : coin_precisions
         },
+        precisions_withdrawc () {
+          let coin_precisions = allabis[currentContract.currentContract].coin_precisions
+
+          if (['qusd5'].includes(this.currentPool)) {
+            coin_precisions = allabis[currentContract.currentContract].base_precisions
+          }
+          return this.withdrawc
+            ? allabis[currentContract.currentContract].wrapped_precisions
+            : coin_precisions
+        },
         // 6
         p_rates () {
           return this.precisions.map(item => 1 / item)
+        },
+        p_rates_withdrawc () {
+          return this.precisions_withdrawc.map(item => 1 / item)
         },
         // 5
         c_rates () {
@@ -1053,12 +1073,37 @@
 
           return result
         },
-        currencie_contractMethods () {
-          let result = currentContract.swap.methods
+        // c_rates_withdrawc () {
+        //   let result = []
+
+        //   if (['qusd5'].includes(currentContract.currentContract)) {
+        //     let underlying_coins_len = currentContract.underlying_coins.length
+
+        //     result = this.withdrawc
+        //       ? currentContract.c_rates.slice(0, underlying_coins_len)
+        //       : currentContract.c_rates.slice(underlying_coins_len)
+        //   } else {
+        //     result = currentContract.c_rates
+        //   }
+
+        //   return result
+        // },
+        currencie_contract () {
+          let result = currentContract.swap
           if (['qusd5'].includes(currentContract.currentContract)) {
             result = this.depositc
-              ? currentContract.swap.methods
-              : currentContract.deposit_zap.methods
+              ? currentContract.swap
+              : currentContract.deposit_zap
+          }
+
+          return result
+        },
+        currencie_contract_withdrawc () {
+          let result = currentContract.swap
+          if (['qusd5'].includes(currentContract.currentContract)) {
+            result = this.withdrawc
+              ? currentContract.swap
+              : currentContract.deposit_zap
           }
 
           return result
@@ -1078,9 +1123,29 @@
 
           return result
         },
+        currencie_coins_withdrawc () {
+          let result = {}
+
+          if (['qusd5'].includes(currentContract.currentContract)) {
+            if (this.withdrawc) {
+              result = this.currencies
+            } else {
+              result = this.allCurrencies[currentContract.currentContract + '_base']
+            }
+          } else {
+            result = this.currencies
+          }
+
+          return result
+        },
         currencie_coins_n () {
           return Object.keys(this.currencie_coins).length
         },
+        currencie_coins_n_withdrawc () {
+          return Object.keys(this.currencie_coins_withdrawc).length
+        },
+
+
         currentContract () {
           return currentContract
         },
@@ -1297,6 +1362,15 @@
             }
             return result
           },
+          pushBalances_withdrawc (i) {
+            let result = []
+            if (!this.withdrawc && ['qusd5'].includes(this.currentPool) && currentContract.base_coins_idx[i] != null ) {
+              result = [currentContract.base_pool._address, currentContract.base_pool.methods.balances(currentContract.base_coins_idx[i]).encodeABI()]
+            } else {
+              result = [currentContract.swap._address, currentContract.swap.methods.balances(i).encodeABI()]
+            }
+            return result
+          },
         	async stakeTokens(tokens, deposit_and_stake = false) {
                 if(this.loadingAction == 3) return;
                 this.setLoadingAction(3);
@@ -1343,72 +1417,73 @@
             this.changeSwapInfo(this.depositc)
             currentContract.showSlippage = false;
             currentContract.slippage = 0;
-              await this.handle_sync_balances();
-              await this.getLPCrvReceived()
-              await this.calcSlippage(this.deposit_inputs, true)
-              let calls = [...Array(this.currencie_coins_n).keys()].map(i=>[this.coins[i]._address, 
-                this.coins[i].methods.allowance(currentContract.default_account || '0x0000000000000000000000000000000000000000', this.swap_address).encodeABI()])
-              if(['susdv2', 'sbtc', 'y', 'iearn', 'dfi', 'dusd', 'okuu', 'usd5', 'qusd5'].includes(this.currentPool))
-                  calls.push([currentContract.curveRewards._address, currentContract.curveRewards.methods.periodFinish().encodeABI()])
-              let aggcalls = await currentContract.multicall.methods.aggregate(calls).call()
-              let decoded = aggcalls[1].map(hex => currentContract.web3.eth.abi.decodeParameter('uint256', hex))
-              if(decoded.slice(0,decoded.length-1).some(v=>BN(v).lte(currentContract.max_allowance.div(BN(2))) > 0))
-                this.inf_approval = false
-              let now = Date.now() / 1000
-              if(['susdv2', 'sbtc', 'y', 'iearn', 'dfi', 'dusd', 'okuu', 'usd5', 'qusd5'].includes(this.currentPool) && +decoded[decoded.length-1] < now)
-                  this.hasRewards = false
+            await this.handle_sync_balances();
+            await this.getLPCrvReceived()
+            await this.calcSlippage(this.deposit_inputs, true)
+            let calls = [...Array(this.currencie_coins_n).keys()].map(i=>[this.coins[i]._address, 
+              this.coins[i].methods.allowance(currentContract.default_account || '0x0000000000000000000000000000000000000000', this.swap_address).encodeABI()])
+            if(['susdv2', 'sbtc', 'y', 'iearn', 'dfi', 'dusd', 'okuu', 'usd5', 'qusd5'].includes(this.currentPool))
+                calls.push([currentContract.curveRewards._address, currentContract.curveRewards.methods.periodFinish().encodeABI()])
+            let aggcalls = await currentContract.multicall.methods.aggregate(calls).call()
+            let decoded = aggcalls[1].map(hex => currentContract.web3.eth.abi.decodeParameter('uint256', hex))
+            if(decoded.slice(0,decoded.length-1).some(v=>BN(v).lte(currentContract.max_allowance.div(BN(2))) > 0))
+              this.inf_approval = false
+            let now = Date.now() / 1000
+            if(['susdv2', 'sbtc', 'y', 'iearn', 'dfi', 'dusd', 'okuu', 'usd5', 'qusd5'].includes(this.currentPool) && +decoded[decoded.length-1] < now)
+                this.hasRewards = false
 
-              this.disabledButtons = false;
+            this.disabledButtons = false;
 
 
 
             // withdraw
-            if(['susdv2', 'tbtc', 'ren', 'sbtc', 'okuu', 'usd5', 'qusd5'].includes(this.currentPool)) {
+            if(['susdv2', 'tbtc', 'ren', 'sbtc', 'okuu', 'usd5'].includes(this.currentPool)) {
               this.withdrawc = true;
-              this.to_currency = null
+              // this.to_currency = null
             } else {
               this.withdrawc = false
             }
+            this.to_currency = 0
 
             currentContract.showSlippage = false;
             currentContract.slippage = 0;
-              let curveRewards = currentContract.curveRewards
-              let allowance = BN(await currentContract.swap_token.methods.allowance(currentContract.default_account || '0x0000000000000000000000000000000000000000', currentContract.deposit_zap._address).call())
-              if(allowance.lte(currentContract.max_allowance.div(BN(2))))
-                  this.inf_approval = false
-              if(['susdv2', 'y', 'iearn', 'dfi', 'dusd', 'okuu', 'usd5', 'qusd5'].includes(this.currentPool)) {
-                  this.pendingSNXRewards = await curveRewards.methods.earned(this.default_account).call()
-                  console.log(this.pendingSNXRewards, "PENDING SNX REWARDS")
-              }
-              if(['sbtc'].includes(this.currentPool)) {
-                  this.balancerPool = new currentContract.web3.eth.Contract(balancer_ABI, balancer_address)
-                  window.balancerPool = this.balancerPool
-                  let calls = [
-                      [curveRewards._address, curveRewards.methods.earned(this.default_account).encodeABI()],
-                      [this.balancerPool._address, this.balancerPool.methods.totalSupply().encodeABI()],
-                      [this.balancerPool._address, this.balancerPool.methods.getBalance(process.env.VUE_APP_SNX_TOKEN).encodeABI()],
-                      [this.balancerPool._address, this.balancerPool.methods.getBalance('0x408e41876cccdc0f92210600ef50372656052a38').encodeABI()],
-                      [this.balancerPool._address, this.balancerPool.methods.balanceOf(currentContract.default_account).encodeABI()],
-                  ]
-                  let aggcalls = await currentContract.multicall.methods.aggregate(calls).call()
-                  let decoded = aggcalls[1].map(hex => currentContract.web3.eth.abi.decodeParameter('uint256', hex))
+            let curveRewards = currentContract.curveRewards
+            let allowance = BN(await currentContract.swap_token.methods.allowance(currentContract.default_account || '0x0000000000000000000000000000000000000000', currentContract.deposit_zap._address).call())
+            if(allowance.lte(currentContract.max_allowance.div(BN(2))))
+                this.inf_approval = false
+            if(['susdv2', 'y', 'iearn', 'dfi', 'dusd', 'okuu', 'usd5', 'qusd5'].includes(this.currentPool)) {
+                this.pendingSNXRewards = await curveRewards.methods.earned(this.default_account).call()
+                console.log(this.pendingSNXRewards, "PENDING SNX REWARDS")
+            }
+            if(['sbtc'].includes(this.currentPool)) {
+                this.balancerPool = new currentContract.web3.eth.Contract(balancer_ABI, balancer_address)
+                window.balancerPool = this.balancerPool
+                let calls = [
+                    [curveRewards._address, curveRewards.methods.earned(this.default_account).encodeABI()],
+                    [this.balancerPool._address, this.balancerPool.methods.totalSupply().encodeABI()],
+                    [this.balancerPool._address, this.balancerPool.methods.getBalance(process.env.VUE_APP_SNX_TOKEN).encodeABI()],
+                    [this.balancerPool._address, this.balancerPool.methods.getBalance('0x408e41876cccdc0f92210600ef50372656052a38').encodeABI()],
+                    [this.balancerPool._address, this.balancerPool.methods.balanceOf(currentContract.default_account).encodeABI()],
+                ]
+                let aggcalls = await currentContract.multicall.methods.aggregate(calls).call()
+                let decoded = aggcalls[1].map(hex => currentContract.web3.eth.abi.decodeParameter('uint256', hex))
 
-                  this.pendingBALRewards = decoded[0]
-                  this.pendingSNXRewards = decoded[0] * decoded[2] / decoded[1]
-                  this.pendingRENRewards = decoded[0] * decoded[3] / decoded[1]
+                this.pendingBALRewards = decoded[0]
+                this.pendingSNXRewards = decoded[0] * decoded[2] / decoded[1]
+                this.pendingRENRewards = decoded[0] * decoded[3] / decoded[1]
 
-                  this.withdrawBALPool = decoded[4]
-                  this.withdrawSNXPool = decoded[4] * decoded[2] / decoded[1]
-                  this.withdrawRENPool = decoded[4] * decoded[3] / decoded[1]
+                this.withdrawBALPool = decoded[4]
+                this.withdrawSNXPool = decoded[4] * decoded[2] / decoded[1]
+                this.withdrawRENPool = decoded[4] * decoded[3] / decoded[1]
 
-              }
-              // if(['y','iearn', 'dfi', 'dusd'].includes(this.currentPool)) {
-              //     this.withdrawADAI = await currentContract.aRewards.methods.claimable(currentContract.default_account).call()
-              // }
+            }
+            // if(['y','iearn', 'dfi', 'dusd'].includes(this.currentPool)) {
+            //     this.withdrawADAI = await currentContract.aRewards.methods.claimable(currentContract.default_account).call()
+            // }
 
-              await common.update_fee_info();
-              await this.update_balances();
-              this.setCalcBalances()
+            await common.update_fee_info();
+            await this.update_balances();
+            this.setCalcBalances()
             this.handle_change_share();
           },
           getTokenIcon(token, type = false) {
@@ -1424,7 +1499,6 @@
             return this.toFixed(this.wallet_balances[i] / this.precisions[i])
           },
           setMaxBalanceCoin(i) {
-console.log('setMaxBalanceCoin', i, this.maxBalanceCoin(i))
             Vue.set(this.deposit_inputs, i, this.maxBalanceCoin(i))
             if(this.currentPool == 'susdv2' && i == 3 || this.currentPool == 'sbtc' && i == 2) {
                 let maxbalance_susd = this.susdWaitingPeriod ? 0 : BN(this.transferableBalance).times(this.rates[i]).toString()
@@ -1462,8 +1536,16 @@ console.log('setMaxBalanceCoin', i, this.maxBalanceCoin(i))
                 this.swap_address = currentContract.deposit_zap._address
               }
             }
+
+            if (this.deposit_inputs.length > this.coins.length) {
+              this.deposit_inputs = this.deposit_inputs.slice(0, this.coins.length)
+            }
+            if (this.withdraw_inputs.length > this.coins.length) {
+              this.withdraw_inputs = this.withdraw_inputs.slice(0, this.coins.length)
+            }
           },
           setInputStyles(newInputs = false, newContract, oldContract) {
+    console.log('setInputStyles')
             if(oldContract) {
               for(let i = 0; i < allabis[newContract].N_COINS - allabis[oldContract].N_COINS; i++) {
                 this.deposit_inputs.push('0.00')
@@ -1483,7 +1565,11 @@ console.log('setMaxBalanceCoin', i, this.maxBalanceCoin(i))
           async calcSlippage(...args) {
             try {
               this.slippagePromise.cancel();
-              this.slippagePromise = helpers.makeCancelable(common.calc_slippage(...args))
+              let calc_slippage = common.calc_slippage
+              if (['qusd5'].includes(this.currentPool)) {
+                calc_slippage = common.calc_slippage_base
+              }
+              this.slippagePromise = helpers.makeCancelable(calc_slippage(...args))
               await this.slippagePromise;
             }
             catch (err) {
@@ -1529,7 +1615,7 @@ console.log('setMaxBalanceCoin', i, this.maxBalanceCoin(i))
 			      if (this.max_balances) {
 			        this.disabled = true;
 			        for (let i = 0; i < this.currencie_coins_n; i++) {
-			        	let amount = this.wallet_balances[i] * this.c_rates[i]
+			        	let amount = this.wallet_balances[i] * this.p_rates[i]
 			        	if(!this.depositc) amount = this.wallet_balances[i] / this.precisions[i]
 			            var val = amount
 			            var val = this.toFixed(amount);
@@ -1636,7 +1722,7 @@ console.log('setMaxBalanceCoin', i, this.maxBalanceCoin(i))
             if(total_supply > 0) {
                 let token_amounts = this.amounts
 console.log('token_amount', token_amount, token_amounts)
-                token_amount = await this.currencie_contractMethods.calc_token_amount(token_amounts, true).call();
+                token_amount = await this.currencie_contract.methods.calc_token_amount(token_amounts, true).call();
 
                 token_amount = BN(token_amount).times(BN(1).minus(BN(this.calcFee)))
                 token_amount = BN(token_amount).times(BN(this.getDepositMaxSlippage)).toFixed(0,1);
@@ -1646,14 +1732,18 @@ console.log('token_amount', token_amount, token_amounts)
               this.estimateGas = contractGas.deposit[this.currentPool] / 2
             else
               this.estimateGas = (contractGas.depositzap[this.currentPool].deposit(nonZeroInputs) | 0) / 1.5
+console.log('this.amounts', this.amounts, amounts)
+            let ensure_allowance = common.ensure_allowance
+            if (['qusd5'].includes(this.currentPool)) {
+              ensure_allowance = common.ensure_allowance_base
+            }
 
             if (this.inf_approval)
-                await common.ensure_allowance(this.amounts, !this.depositc, undefined, undefined, true)
+              await ensure_allowance(this.amounts, !this.depositc, undefined, undefined, true)
             else if(this.depositc) {
-                await common.ensure_allowance(this.amounts, false);
-            }
-            else {
-              await common.ensure_allowance(amounts, true)
+              await ensure_allowance(this.amounts, false);
+            } else {
+              await ensure_allowance(amounts, true)
             }
 
             let receipt;
@@ -1663,7 +1753,7 @@ console.log('token_amount', token_amount, token_amounts)
 
               var { dismiss } = notifyNotification(this.waitingMessage)
               await helpers.setTimeoutPromise(100)
-
+console.log('add_liquidity', this.amounts, token_amount)
               let add_liquidity = currentContract.swap.methods.add_liquidity(this.amounts, token_amount).send({
                   from: currentContract.default_account,
                   gasPrice: this.gasPriceWei,
@@ -1697,19 +1787,19 @@ console.log('token_amount', token_amount, token_amounts)
                 //   currentContract.virtual_price, 'virtual_price', token_amount, 'token_amount', Date.now())
                 this.waitingMessage = this.$i18n.t('notice.confirmDepositTransaction')
                 await helpers.setTimeoutPromise(100)
-              console.log('deposit_zap', amounts, token_amount)
-              let add_liquidity = currentContract.deposit_zap.methods.add_liquidity(amounts, token_amount).send({
-                from: currentContract.default_account,
-                gasPrice: this.gasPriceWei,
-                // gas: gas,
-              })
-              .once('transactionHash', hash => {
-                            notifyHandler(hash)
-                this.waitingMessage = `Waiting for deposit 
-                                <a href='http://etherscan.io/tx/${hash}'>transaction</a>
-                                to confirm ${stake ? 'before staking (1/2)' : 'no further action required'}`
-                console.warn(hash, 'tx hash')
-              })
+console.log('deposit_zap', amounts, token_amount)
+                let add_liquidity = currentContract.deposit_zap.methods.add_liquidity(amounts, token_amount).send({
+                  from: currentContract.default_account,
+                  gasPrice: this.gasPriceWei,
+                  // gas: gas,
+                })
+                .once('transactionHash', hash => {
+                  notifyHandler(hash)
+                  this.waitingMessage = `Waiting for deposit 
+                                  <a href='http://etherscan.io/tx/${hash}'>transaction</a>
+                                  to confirm ${stake ? 'before staking (1/2)' : 'no further action required'}`
+                  console.warn(hash, 'tx hash')
+                })
               try {
                   receipt = await add_liquidity
                 }
@@ -1785,15 +1875,16 @@ console.log('token_amount', token_amount, token_amounts)
 			},
       async getLPCrvReceived() {
         let deposit_inputs = this.deposit_inputs.map(v => v || 0);
-console.log('deposit_inputs', deposit_inputs.length)
-console.log('getLPCrvReceived', deposit_inputs.map((v, i) => BN(v).div(this.p_rates[i]).toFixed(0,1)
-            ))
-console.log(  await this.currencie_contractMethods.calc_token_amount(
+console.log('deposit_inputs', deposit_inputs)
+console.log('deposit_inputs 1', deposit_inputs.map((v, i) => BN(v).div(this.p_rates[i]).toFixed(0,1)))
+console.log('deposit_inputs 2', await this.currencie_contract.methods.calc_token_amount(
             deposit_inputs.map((v, i) => BN(v).div(this.p_rates[i]).toFixed(0,1)),
             true
-          ).call() )
+          ).call() / 1e18)
+
+
         this.lpCrvReceived = (
-          await this.currencie_contractMethods.calc_token_amount(
+          await this.currencie_contract.methods.calc_token_amount(
             deposit_inputs.map((v, i) => BN(v).div(this.p_rates[i]).toFixed(0,1)),
             true
           ).call() / 1e18) * this.getDepositMaxSlippage
@@ -1810,10 +1901,10 @@ console.log(  await this.currencie_contractMethods.calc_token_amount(
                 if (j != i) {
                     var value_j = this.deposit_inputs[j]
 
-                    if (this.balances[i] * this.c_rates[i] > 1) {
+                    if (this.balances[i] * this.p_rates[i] > 1) {
                         // proportional
-                        var newval = value / this.c_rates[i] * this.balances[j] / this.balances[i];
-                        newval = Math.floor(newval * this.c_rates[j] * 100) / 100;
+                        var newval = value / this.p_rates[i] * this.balances[j] / this.balances[i];
+                        newval = Math.floor(newval * this.p_rates[j] * 100) / 100;
                         setInputs && Vue.set(this.deposit_inputs, j, newval);
 
                     } else {
@@ -1836,53 +1927,55 @@ console.log(  await this.currencie_contractMethods.calc_token_amount(
         common.handle_migrate_new('new')
       },
 
+
+
+
+
       // withdraw
       handleCheck(idx) {
         if(idx === this.to_currency) {
-          if(this.withdrawc == false) this.withdrawc = true
-          this.to_currency = null
+          // if(this.withdrawc == false) this.withdrawc = true
+          // this.to_currency = null
 
-          currentContract.slippage = 0
-          currentContract.showSlippage = false
+          // currentContract.slippage = 0
+          // currentContract.showSlippage = false
         }
         else {
-          this.withdrawc = false
+          // this.withdrawc = false
           this.to_currency = idx
         }
       },
           setCalcBalances() {
             for (let i = 0; i < this.currencie_coins_n; i++) {
                 let token_balance = this.showstaked ? this.token_balance.plus(this.staked_balance) : this.token_balance
-                let value = BN(100 / 100 * this.balances[i] * this.c_rates[i] * token_balance / this.token_supply)
+                let value = BN(100 / 100 * this.balances[i] * this.p_rates_withdrawc[i] * token_balance / this.token_supply)
                 Vue.set(this.calc_balances, i, value)
+              // console.log('setCalcBalances', i, value.toString() )
             }
           },
           async update_balances() {
             let calls = []
             if (currentContract.default_account) {
-                for (let i = 0; i < this.currencie_coins_n; i++) {
-                  calls.push([this.coins[i]._address ,this.coins[i].methods.balanceOf(currentContract.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
-                }
-                calls.push([currentContract.swap_token._address ,currentContract.swap_token.methods.balanceOf(currentContract.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
+              for (let i = 0; i < this.currencie_coins_n_withdrawc; i++) {
+                calls.push([this.coins[i]._address ,this.coins[i].methods.balanceOf(currentContract.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
+              }
+              calls.push([currentContract.swap_token._address ,currentContract.swap_token.methods.balanceOf(currentContract.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
             }
-            else {
-                this.token_balance = BN(0);
-            }
-            for (let i = 0; i < this.currencie_coins_n; i++) {
-              calls.push(this.pushBalances(i))
+            for (let i = 0; i < this.currencie_coins_n_withdrawc; i++) {
+              calls.push(this.pushBalances_withdrawc(i))
             }
             if(['susdv2', 'sbtc','y','iearn', 'dfi', 'dusd', 'okuu', 'usd5', 'qusd5'].includes(this.currentPool)) calls.push([currentContract.curveRewards._address, currentContract.curveRewards.methods.balanceOf(currentContract.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
             calls.push([currentContract.swap_token._address ,currentContract.swap_token.methods.totalSupply().encodeABI()])
             let aggcalls = await currentContract.multicall.methods.aggregate(calls).call()
             let decoded = aggcalls[1].map(hex => currentContract.web3.eth.abi.decodeParameter('uint256', hex))
             if(currentContract.default_account) {
-              decoded.slice(0, this.currencie_coins_n).map((v, i) => {
-                Vue.set(this.wallet_balances_withdraw, i, +v / this.precisions[i])
+              decoded.slice(0, this.currencie_coins_n_withdrawc).map((v, i) => {
+                Vue.set(this.wallet_balances_withdraw, i, +v / this.precisions_withdrawc[i])
               })
-              this.token_balance = BN(decoded[this.currencie_coins_n])
-              decoded = decoded.slice(this.currencie_coins_n+1)
+              this.token_balance = BN(decoded[this.currencie_coins_n_withdrawc])
+              decoded = decoded.slice(this.currencie_coins_n_withdrawc+1)
             }
-            decoded.slice(0, this.currencie_coins_n+1 + this.currencie_coins_n).map((v, i) => {
+            decoded.slice(0, this.currencie_coins_n_withdrawc+1 + this.currencie_coins_n_withdrawc).map((v, i) => {
               Vue.set(this.balances, i, +v)
                   if(!currentContract.default_account) Vue.set(this.balances, i, 0)
             })
@@ -1902,18 +1995,22 @@ console.log(  await this.currencie_contractMethods.calc_token_amount(
           }
 				  if(this.currentPool == 'susd') return;
 				  this.to_currency = null
-          var values = this.withdraw_inputs.map((x,i) => x / this.c_rates[i])
+          var values = this.withdraw_inputs.map((x,i) => x / this.p_rates_withdrawc[i])
           values = values.map(v=>BN(Math.floor(v).toString()).toFixed(0))
           this.show_nobalance = false;
           this.show_nobalance_i = 0;
-          let calls = [...Array(this.currencie_coins_n).keys()].map(i=>this.pushBalances(i))
-          calls.push([currentContract.swap._address ,this.currencie_contractMethods.calc_token_amount(values, false).encodeABI()])
+          let calls = [...Array(this.currencie_coins_n_withdrawc).keys()].map(i=>this.pushBalances_withdrawc(i))
+      console.log('values', values, this.withdrawc)
+
+
+
+          calls.push([this.currencie_contract_withdrawc._address ,this.currencie_contract_withdrawc.methods.calc_token_amount(values, false).encodeABI()])
           calls.push([currentContract.swap_token._address, currentContract.swap_token.methods.balanceOf(currentContract.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
           try {
             let aggcalls = await currentContract.multicall.methods.aggregate(calls).call()
             let decoded = aggcalls[1].map(hex => currentContract.web3.eth.abi.decodeParameter('uint256', hex))
-            decoded.slice(0, this.currencie_coins_n).forEach((v, i) => {
-              let coin_balance = +v * this.c_rates[i]
+            decoded.slice(0, this.currencie_coins_n_withdrawc).forEach((v, i) => {
+              let coin_balance = +v * this.p_rates_withdrawc[i]
               if(coin_balance < this.withdraw_inputs[i]) {
                   this.show_nobalance |= true;
                   this.show_nobalance_i = i;
@@ -1922,7 +2019,7 @@ console.log(  await this.currencie_contractMethods.calc_token_amount(
               }
             })
             var availableAmount = BN(decoded[decoded.length-2])
-            availableAmount = availableAmount.div(BN(1 - currentContract.fee * this.currencie_coins_n / (4 * (this.currencie_coins_n - 1))))
+            availableAmount = availableAmount.div(BN(1 - currentContract.fee * this.currencie_coins_n_withdrawc / (4 * (this.currencie_coins_n_withdrawc - 1))))
             var maxAvailableAmount = BN(decoded[decoded.length-1]);
             if(availableAmount.gt(maxAvailableAmount.plus(BN(this.staked_balance)))) {
                 this.setAllInputBackground('red')
@@ -1946,23 +2043,23 @@ console.log(  await this.currencie_contractMethods.calc_token_amount(
             this.setAllInputBackground('red')
           }
         },
-      async getMinAmounts() {
-				//use update rates instead
-				await common.update_fee_info();
-				let min_amounts = []
-				for(let i = 0; i < this.currencie_coins_n; i++) {
-			    	min_amounts[i] = BN(0.98).times(this.share/100).times(BN(this.balances[i]))
-					if(!this.withdrawc) {
-						min_amounts[i] = min_amounts[i]
-              .times(this.precisions[i])
-              .times(this.c_rates[i])
-					}
-					min_amounts[i] = min_amounts[i].times(BN(this.token_balance))
-            .div(BN(this.token_supply))
-            .toFixed(0,1)
-				}
-				return min_amounts;
-			},
+        async getMinAmounts() {
+          //use update rates instead
+          await common.update_fee_info();
+          let min_amounts = []
+          for(let i = 0; i < this.currencie_coins_n_withdrawc; i++) {
+              min_amounts[i] = BN(0.98).times(this.share/100).times(BN(this.balances[i]))
+            if(!this.withdrawc) {
+              min_amounts[i] = min_amounts[i]
+                .times(this.precisions_withdrawc[i])
+                .times(this.p_rates_withdrawc[i])
+            }
+            min_amounts[i] = min_amounts[i].times(BN(this.token_balance))
+              .div(BN(this.token_supply))
+              .toFixed(0,1)
+          }
+          return min_amounts;
+        },
             async claim_SNX(claim_bpt_only = false, unstake = true) {
                 this.show_loading = true
                 this.waitingMessage = `Please confirm claiming ${(this.pendingSNXRewards / 1e18).toFixed(2)} 
@@ -2135,22 +2232,20 @@ console.log(  await this.currencie_contractMethods.calc_token_amount(
         this.ethPrice = promises[0]
         this.estimateGas = 0;
         if(['susdv2', 'sbtc','y','iearn', 'dfi', 'dusd', 'okuu', 'usd5', 'qusd5'].includes(this.currentPool)) {
-            if(unstake_only) {
-                this.estimateGas = 125000
-                if(this.currentPool == 'sbtc') this.estimateGas += 300000
+          if(unstake_only) {
+            this.estimateGas = 125000
+            if(this.currentPool == 'sbtc') this.estimateGas += 300000
+          } else {
+            let nonZeroInputs = this.withdraw_inputs.filter(Number).length
+            if(this.share == '---') {
+              this.estimateGas = contractGas.withdraw[this.currentPool].imbalance(nonZeroInputs) | 0
             }
-            else {
-                let nonZeroInputs = this.withdraw_inputs.filter(Number).length
-                if(this.share == '---') {
-                    this.estimateGas = contractGas.withdraw[this.currentPool].imbalance(nonZeroInputs) | 0
-                }
-                else if(this.to_currency !== null && this.to_currency < 10) {
-                    this.estimateGas = contractGas.depositzap[this.currentPool].withdraw / 2
-                }
-                else {
-                    this.estimateGas = contractGas.depositzap[this.currentPool].withdrawShare / 2
-                }
+            else if(this.to_currency !== null && this.to_currency < 10) {
+              this.estimateGas = contractGas.depositzap[this.currentPool].withdraw / 2
+            } else {
+              this.estimateGas = contractGas.depositzap[this.currentPool].withdrawShare / 2
             }
+          }
         }
         this.show_loading = true;
         let inOneCoin = currentContract.deposit_zap
@@ -2158,7 +2253,7 @@ console.log(  await this.currencie_contractMethods.calc_token_amount(
 
         let min_amounts = []
 
-        for (let i = 0; i < this.currencie_coins_n; i++) {
+        for (let i = 0; i < this.currencie_coins_n_withdrawc; i++) {
           if(!this.withdraw_inputs[i]) {
               Vue.set(this.amounts, i, 0)
               continue
@@ -2166,10 +2261,10 @@ console.log(  await this.currencie_contractMethods.calc_token_amount(
           let maxDiff = BN(this.calc_balances[i]).minus(BN(this.withdraw_inputs[i]))
           let useMax = this.calc_balances[i] > 0 && maxDiff.lte(BN(this.minAmount)) && maxDiff > 0
           if(useMax) {
-            Vue.set(this.amounts, i, BN(this.calc_balances[i]).div(this.c_rates[i]).toFixed(0,1))
+            Vue.set(this.amounts, i, BN(this.calc_balances[i]).div(this.p_rates_withdrawc[i]).toFixed(0,1))
           }
           else {
-            Vue.set(this.amounts, i, BN(Math.floor(this.withdraw_inputs[i] / this.c_rates[i]).toString()).toFixed(0,1)); // -> c-tokens
+            Vue.set(this.amounts, i, BN(Math.floor(this.withdraw_inputs[i] / this.p_rates_withdrawc[i]).toString()).toFixed(0,1)); // -> c-tokens
           }
         }
 
@@ -2181,7 +2276,7 @@ console.log(  await this.currencie_contractMethods.calc_token_amount(
 			    if (this.share == '---') {
 			    	var token_amount;
             try {
-              token_amount = await this.currencie_contractMethods.calc_token_amount(this.amounts, false).call();
+              token_amount = await this.currencie_contract_withdrawc.methods.calc_token_amount(this.amounts, false).call();
             }
             catch(err) {
               console.error(err)
@@ -2246,7 +2341,7 @@ console.log(  await this.currencie_contractMethods.calc_token_amount(
 			        	let amounts = this.withdraw_inputs.map((v, i) => {
                     if(!v) v = 0
                     let maxDiff = BN(this.calc_balances[i]).minus(BN(v))
-                    return this.calc_balances[i] > 0 && maxDiff.lte(BN(this.minAmount)) && maxDiff > 0 ? this.calc_balances[i].times(this.precisions[i]).toFixed(0, 1) : BN(v).times(this.precisions[i]).toFixed(0, 1)
+                    return this.calc_balances[i] > 0 && maxDiff.lte(BN(this.minAmount)) && maxDiff > 0 ? this.calc_balances[i].times(this.precisions_withdrawc[i]).toFixed(0, 1) : BN(v).times(this.precisions_withdrawc[i]).toFixed(0, 1)
                   })
                         amounts = amounts.map(amount => amount || 0)
                         let gas = contractGas.depositzap[this.currentPool].withdrawImbalance(nonZeroInputs) | 0
@@ -2340,38 +2435,38 @@ console.log('share', this.share, balance)
                 errorStore.handleError(err)
               }
             } else if(this.to_currency == 10) {
-                        this.waitingMessage = this.$i18n.t('liquidity.approveLptokenWithdrawal', [this.toFixed(amount / 1e18), 'LP token'])
-                        var { dismiss } = notifyNotification(this.waitingMessage)
-                        try {
-                            this.estimateGas = contractGas.depositzap[this.currentPool].withdrawShare / 2
-                            if(!['tbtc','ren','sbtc'].includes(currentContract.currentContract)) await common.ensure_allowance_zap_out(amount, undefined, undefined, this.inf_approval)
-                            dismiss()
-                            this.waitingMessage = this.$i18n.t('liquidity.confirmWithdrawalTransaction')
-                            var { dismiss } = notifyNotification(this.waitingMessage)
-                            let min_amounts = await this.getMinAmounts();
-                            await helpers.setTimeoutPromise(100)
-    			        	await inOneCoin.methods.remove_liquidity(amount, min_amounts)
-    			        	.send({
-                                from: currentContract.default_account, 
-                                gasPrice: this.gasPriceWei,
-                                // gas: contractGas.depositzap[this.currentPool].withdrawShare,
-                            })
-                            .once('transactionHash', hash => {
-                                dismiss()
-                                notifyHandler(hash)
-                                this.waitingMessage = `Waiting for withdrawal 
-                                <a href='https://etherscan.io/tx/${hash}'>transaction</a>
-                                to confirm: no further action needed`
-                            });
-                        }
-                        catch(err) {
-                            console.error(err)
-                            dismiss()
-                            errorStore.handleError(err)
-                            this.waitingMessage = ''
-                            this.show_loading = false
-                            throw err;
-                        }
+              this.waitingMessage = this.$i18n.t('liquidity.approveLptokenWithdrawal', [this.toFixed(amount / 1e18), 'LP token'])
+              var { dismiss } = notifyNotification(this.waitingMessage)
+              try {
+                this.estimateGas = contractGas.depositzap[this.currentPool].withdrawShare / 2
+                if(!['tbtc','ren','sbtc'].includes(currentContract.currentContract)) await common.ensure_allowance_zap_out(amount, undefined, undefined, this.inf_approval)
+                dismiss()
+                this.waitingMessage = this.$i18n.t('liquidity.confirmWithdrawalTransaction')
+                var { dismiss } = notifyNotification(this.waitingMessage)
+                let min_amounts = await this.getMinAmounts();
+                await helpers.setTimeoutPromise(100)
+          console.log('amount, min_amounts', amount, min_amounts)
+                await inOneCoin.methods.remove_liquidity(amount, min_amounts)
+                  .send({
+                    from: currentContract.default_account, 
+                    gasPrice: this.gasPriceWei,
+                    // gas: contractGas.depositzap[this.currentPool].withdrawShare,
+                  })
+                  .once('transactionHash', hash => {
+                      dismiss()
+                      notifyHandler(hash)
+                      this.waitingMessage = `Waiting for withdrawal 
+                      <a href='https://etherscan.io/tx/${hash}'>transaction</a>
+                      to confirm: no further action needed`
+                  });
+              } catch(err) {
+                console.error(err)
+                dismiss()
+                errorStore.handleError(err)
+                this.waitingMessage = ''
+                this.show_loading = false
+                throw err;
+              }
 			        }
 			        else {
                 try {
@@ -2414,7 +2509,7 @@ console.log('share', this.share, balance)
 			        }
 			    }
 			    if(this.share == '---') {
-			        for (let i = 0; i < this.currencie_coins_n; i++) {
+			        for (let i = 0; i < this.currencie_coins_n_withdrawc; i++) {
 			            this.handle_change_amounts(i);
 			        }
 			    }
@@ -2426,31 +2521,32 @@ console.log('share', this.share, balance)
 			    await common.update_fee_info();
 			},
 			async handle_change_share() {
-                let inOneCoin = currentContract.deposit_zap
-                if(['tbtc','ren','sbtc'].includes(currentContract.currentContract)) inOneCoin = currentContract.swap
+        let inOneCoin = currentContract.deposit_zap
+        if(['tbtc','ren','sbtc'].includes(currentContract.currentContract)) inOneCoin = currentContract.swap
 
-                this.warninglow = false;
-                this.showWithdrawSlippage = false
-                this.show_nobalance = false
-                if(this.to_currency == null && this.withdrawc == false && this.share == '---') this.to_currency = 10
-                if(this.share != '---' && this.to_currency != null && this.to_currency != 10) this.showWithdrawSlippage = true
-				let token_balance = this.showstaked ? this.token_balance.plus(this.staked_balance) : this.token_balance
-	        	currentContract.showSlippage = false;
-        		currentContract.slippage = 0;
-        		if(this.to_currency !== null && this.to_currency < 10) {
-              var amount = BN(this.share).div(BN(100)).times(token_balance).toFixed(0,1);
-              if (this.share == 100) {
-                amount = await currentContract.swap_token.methods.balanceOf(currentContract.default_account || '0x0000000000000000000000000000000000000000').call();
-                if(this.showstaked) amount = BN(amount).plus(BN(this.staked_balance)).toFixed(0,1)
-              }
+        this.warninglow = false;
+        this.showWithdrawSlippage = false
+        this.show_nobalance = false
+        if(this.to_currency == null && this.withdrawc == false && this.share == '---') this.to_currency = 10
+        if(this.share != '---' && this.to_currency != null && this.to_currency != 10) this.showWithdrawSlippage = true
+        let token_balance = this.showstaked ? this.token_balance.plus(this.staked_balance) : this.token_balance
+        currentContract.showSlippage = false;
+        currentContract.slippage = 0;
+        if(this.to_currency !== null && this.to_currency < 10) {
+          var amount = BN(this.share).div(BN(100)).times(token_balance).toFixed(0,1);
 
-              let precision = this.precisions[this.to_currency]
-          let zap_values = Array(this.currencie_coins_n).fill(0)
-    console.log('amount', amount, this.to_currency)
+          if (this.share == 100) {
+            amount = await currentContract.swap_token.methods.balanceOf(currentContract.default_account || '0x0000000000000000000000000000000000000000').call();
+            if(this.showstaked) {
+              amount = BN(amount).plus(BN(this.staked_balance)).toFixed(0,1)
+            }
+          }
+
+          let precision = this.precisions_withdrawc[this.to_currency]
+          let zap_values = Array(this.currencie_coins_n_withdrawc).fill(0)
 					try {
             this.warninglow = false
 						zap_values[this.to_currency] = BN(await inOneCoin.methods.calc_withdraw_one_coin(amount, this.to_currency).call())
-  console.log('zap_values', zap_values[0].toString(), zap_values[1].toString(),)
             if(zap_values[this.to_currency].eq(BN(0))) this.warninglow = true
 					}
 					catch(err) {
@@ -2459,16 +2555,19 @@ console.log('share', this.share, balance)
               this.show_nobalance = true;
               this.show_nobalance_i = this.to_currency;
             }
-					}
-              let real_values = Array(this.currencie_coins_n).fill(0)
-console.log('zap_values', zap_values, this.to_currency)
-			        real_values[this.to_currency] = zap_values[this.to_currency].div(precision)
-              this.withdraw_inputs = this.withdraw_inputs.map(v=>0)
-              // fix toFixed
-              this.withdraw_inputs[this.to_currency] = this.toFixed(BN(real_values[this.to_currency]), 2, 1)
+          }
 
-              await this.calcSlippage([], false, zap_values, this.to_currency)
-        		}
+          let real_values = Array(this.currencie_coins_n_withdrawc).fill(0)
+console.log('zap_values', zap_values, this.to_currency)
+          real_values[this.to_currency] = zap_values[this.to_currency].div(precision)
+
+          this.withdraw_inputs = real_values.map(v=>0)
+
+          // fix toFixed
+          this.withdraw_inputs[this.to_currency] = this.toFixed(BN(real_values[this.to_currency]), 2, 1)
+console.log('this.withdraw_inputs', this.withdraw_inputs)
+          await this.calcSlippage([], false, zap_values, this.to_currency)
+        }
 
 				this.shareStyles.backgroundColor = 'blue'
 				this.shareStyles.color = 'aqua'
@@ -2478,9 +2577,9 @@ console.log('zap_values', zap_values, this.to_currency)
         else if ((this.share > 100) | (this.share < 0))
           this.shareStyles.backgroundColor = 'red'
         if(this.to_currency !== null && this.to_currency < 10) return;
-        for (let i = 0; i < this.currencie_coins_n; i++) {
+        for (let i = 0; i < this.currencie_coins_n_withdrawc; i++) {
             if ((this.share >=0) & (this.share <= 100)) {
-              let value = BN(this.share / 100 * this.balances[i] * this.c_rates[i] * token_balance / this.token_supply)
+              let value = BN(this.share / 100 * this.balances[i] * this.p_rates_withdrawc[i] * token_balance / this.token_supply)
                 Vue.set(this.withdraw_inputs, i, this.toFixed(value, 2, 1))
                 Vue.set(this.withdraw_maxs, i, this.toFixed(value, 2, 1))
             }
@@ -2495,7 +2594,7 @@ console.log('zap_values', zap_values, this.to_currency)
         }
       },
       setAllInputBackground(bgcolor) {
-				for(let i = 0; i < this.currencie_coins_n; i++) {
+				for(let i = 0; i < this.currencie_coins_n_withdrawc; i++) {
 					Vue.set(this.inputStyles, i, Object.assign(this.inputStyles[i] || {}, {backgroundColor: bgcolor}))
 				}
       },
