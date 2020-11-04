@@ -475,6 +475,7 @@ const state = Vue.observable({
 	N_COINS: N_COINS,
 	coin_precisions: coin_precisions,
 	wrapped_precisions: [],
+	base_precisions: [],
 	swap_address: swap_address,
 	old_swap_address: old_swap_address,
 	token_address: token_address,
@@ -777,6 +778,7 @@ console.log(!(pool in allabis))
 	state.N_COINS = allabis[pool].N_COINS;
 	state.coin_precisions = allabis[pool].coin_precisions;
 	state.wrapped_precisions = allabis[pool].wrapped_precisions;
+	state.base_precisions = allabis[pool].base_precisions;
 	state.swap_address = allabis[pool].swap_address;
 	state.old_swap_address = allabis[pool].old_swap_address;
 	state.token_address = allabis[pool].token_address;

@@ -518,7 +518,8 @@
               pooltext: 'qian',
               pools: 'QUSD DAI USDC USDT TUSD PAX',
               volData: null,
-              currencies: {qusd: 'QUSD', dai: 'DAI', usdc: 'USDC', usdt: 'USDT', tusd: 'TUSD', pax: 'PAX'},
+              // currencies: {qusd: 'QUSD', dai: 'DAI', usdc: 'USDC', usdt: 'USDT', tusd: 'TUSD', pax: 'PAX'},
+              currencies: {qusd: 'QUSD', usd5: 'USD5'},
               funds: '-',
               apy: apyCont(apys.qusd5),
               link: '/qusd5'

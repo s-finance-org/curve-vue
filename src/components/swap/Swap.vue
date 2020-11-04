@@ -539,7 +539,7 @@
             show_loading: false,
             waitingMessage: '',
             userInteracted: false,
-            
+
             estimateGas: 0,
             ethPrice: 0,
             icontype: '',
@@ -548,7 +548,9 @@
             interval: null,
             depositc: false,
             maxSlippageMode: 2,
-            bestPool: null
+            bestPool: null,
+
+            c_rates: []
         }),
         async created() {
             this.$watch(()=>currentContract.default_account, (val, oldval) => {
@@ -573,12 +575,12 @@
               this.to_cur_handler()
           },
           swapwrapped() {
-              this.mounted()
+            this.mounted()
           },
           maxBalance(val) {
-              let amount = val / this.precisions[this.from_currency]
+            let amount = val / this.precisions[this.from_currency]
 
-              this.maxBalanceText = currentContract.default_account ? this.toFixed(amount) : 0;
+            this.maxBalanceText = currentContract.default_account ? this.toFixed(amount) : 0;
           },
           maxSynthBalance(val) {
               if(isNaN(val)) return '0.00';
@@ -602,21 +604,6 @@
         },
         computed: {
           ...getters,
-          c_rates () {
-            let result = []
-
-            if (['qusd5'].includes(currentContract.currentContract)) {
-              let underlying_coins_len = currentContract.underlying_coins.length
-
-              result = this.swapwrapped
-                ? currentContract.c_rates.slice(0, underlying_coins_len)
-                : currentContract.c_rates.slice(underlying_coins_len)
-            } else {
-              result = currentContract.c_rates
-            }
-
-            return result
-          },
           currentPoolName () {
             const poolName = {
               dusd: 'dForce',
@@ -810,7 +797,6 @@
         },
         methods: { 
             async mounted() {
-              console.log('mounted')
               if(['susd', 'susdv2', 'tbtc', 'ren', 'sbtc'].includes(currentContract.currentContract)) this.depositc = true;
                 else this.depositc = false;
 
@@ -818,16 +804,27 @@
               if(['tbtc', 'ren', 'sbtc'].includes(currentContract.currentContract)) this.fromInput = '0.0001'
 
               if (['qusd5'].includes(currentContract.currentContract)) {
+                let underlying_coins_len = currentContract.underlying_coins.length
+
+                this.c_rates = this.swapwrapped
+                  ? currentContract.c_rates.slice(0, underlying_coins_len)
+                  : currentContract.c_rates.slice(underlying_coins_len)
+
                 this.coins = this.swapwrapped
                   ? currentContract.underlying_coins
                   : currentContract.base_coins
               } else {
+                this.c_rates = currentContract.c_rates
                 this.coins = this.swapwrapped
                   ? currentContract.coins
                   : currentContract.underlying_coins
               }
 
               this.disabled = false;
+
+              this.from_currency = 0
+              this.to_currency = 1
+
               this.from_cur_handler()
             },
             getTokenIcon(token) {
@@ -898,6 +895,13 @@
                 this.promise = helpers.makeCancelable(promise)
             },
             async from_cur_handler() {
+              if (this.from_currency > this.precisions.length) {
+                  this.from_currency = 0
+                }
+                if (this.to_currency > this.precisions.length) {
+                  this.to_currency = 1
+                }
+
               console.log('coins', this.coins)
                 let currentAllowance = cBN(await this.coins[this.from_currency].methods.allowance(currentContract.default_account, currentContract.swap_address).call())
                 let maxAllowance = currentContract.max_allowance.div(cBN(2))
@@ -913,8 +917,6 @@
                 if (this.to_currency == this.from_currency) {
                     if (this.to_currency == 0) {
                         this.from_currency = 1;
-                    } else {
-                        this.from_currency = 0;
                     }
                     await this.set_from_amount(this.from_currency);
                 }
@@ -1019,7 +1021,7 @@
                   // In c-units
                   var dy_ = +get_dy_underlying / this.precisions[j];
                   var dy = this.toFixed(dy_);
-console.log('------', dy, dy_, dx_, balance)
+console.log('------', dy, dy_, dx_, balance, this.c_rates)
                   resolve([dy, dy_, dx_, balance])
               })
               return helpers.makeCancelable(promise);
@@ -1045,7 +1047,7 @@ console.log('------', dy, dy_, dx_, balance)
                   b = parseInt(await currentContract.swap.methods.balances(i).call()) / this.c_rates[i]
                 }
 
-          console.log('----b', b)
+          // console.log('----b', b, this.currencie_coins, this.from_currency)
                 let maxSlippage = this.maxSlippage / 100;
                 let currency = (Object.keys(this.currencie_coins)[this.from_currency]).toUpperCase()
                 if(this.swapwrapped) currency = Object.values(this.currencie_coins)[this.from_currency]

@@ -9,6 +9,7 @@ import Web3 from "web3";
 
 import * as errorStore from '../components/common/errorStore'
 import { notify, notifyHandler } from '../init'
+import { valueModel } from "../model/index.js";
 
 var cBN = (val) => new BigNumber(val);
 
@@ -379,6 +380,7 @@ export async function multiInitState(calls, contract, initContracts = false) {
       aggcalls = await multicall.methods.aggregate(calls.slice(1)).call()
       aggcalls[1] = [web3.eth.abi.encodeParameter('uint256', cBN(1e18).toFixed(0)), ...aggcalls[1]] 
     }
+console.log('calls ok')
     var block = +aggcalls[0]
     //initContracts && contract.currentContract == 'compound' && i == 0 || 
     let decoded = aggcalls[1].map((hex, i) =>
@@ -588,34 +590,71 @@ export async function handle_migrate_new(page) {
 
 export async function calc_slippage(values, deposit, zap_values, to_currency) {
     //var real_values = [...$("[id^=currency_]")].map((x,i) => +($(x).val()));
+console.log('values', values)
+    let N_COINS = values.length
+console.log('N_COINS', N_COINS)
     values = values.map(v => v || 0)
     let slippage = 0;
-    var real_values = Array(currentContract.N_COINS).fill(0)
+    var real_values = Array(N_COINS).fill(0)
     let calls = [
-        [currentContract.swap._address ,currentContract.swap.methods.get_virtual_price().encodeABI()],
+      [currentContract.swap._address ,currentContract.swap.methods.get_virtual_price().encodeABI()],
     ]
+    let calc_token_amount_method = null
+    let precisions = []
+    let swapAddress = ''
+    let c_rates = []
+    if(['qusd5'].includes(currentContract.currentContract)) {
+      if (currentContract.base_coins.length === N_COINS) {
+        calc_token_amount_method = currentContract.deposit_zap.methods.calc_token_amount
+        precisions = allabis[currentContract.currentContract].base_precisions
+        swapAddress = currentContract.deposit_zap._address
+        c_rates = currentContract.base_precisions.map(item => 1/item)
+      } else {
+        calc_token_amount_method = currentContract.swap.methods.calc_token_amount
+        precisions = currentContract.coin_precisions
+        swapAddress = currentContract.swap._address
+        c_rates = currentContract.coin_precisions.map(item => 1/item)
+      }
+    } else {
+      calc_token_amount_method = currentContract.swap.methods.calc_token_amount
+      precisions = currentContract.coin_precisions
+      swapAddress = currentContract.swap._address
+      c_rates = currentContract.c_rates
+    }
+
+
     if(to_currency !== undefined) {
-        let precision = allabis[currentContract.currentContract].coin_precisions[to_currency]
+        let precision = precisions[to_currency]
         real_values[to_currency] = zap_values[to_currency].div(precision)
         zap_values[to_currency] = zap_values[to_currency].times(1e18/precision)
         var Sr = zap_values[to_currency]
-        zap_values[to_currency] = zap_values[to_currency].div(1e18).div(currentContract.c_rates[to_currency]).toFixed(0);
-        calls.push([currentContract.swap._address, currentContract.swap.methods.calc_token_amount(zap_values, to_currency).encodeABI()])
+        zap_values[to_currency] = zap_values[to_currency].div(1e18).div(c_rates[to_currency]).toFixed(0);
+        calls.push([swapAddress, calc_token_amount_method(zap_values, to_currency).encodeABI()])
     } else {
         real_values = values.map(v=>+v);
         var Sr = real_values.reduce((a,b) => a+b, 0);
 
-        var values = real_values.map((x,i) => cBN(Math.floor(x / currentContract.c_rates[i]).toString()).toFixed(0,1));
-        calls.push([currentContract.swap._address, currentContract.swap.methods.calc_token_amount(values, deposit).encodeABI()])
+        var values = real_values.map((x,i) => cBN(Math.floor(x / c_rates[i]).toString()).toFixed(0,1));
+        calls.push([swapAddress, calc_token_amount_method(values, deposit).encodeABI()])
     }
-    calls.push(...[...Array(currentContract.N_COINS).keys()].map(i => [currentContract.swap._address, currentContract.swap.methods.balances(i).encodeABI()]))
+
+    calls.push(...[...Array(N_COINS).keys()].map(i => {
+      let result = []
+      if (currentContract.base_coins.length === N_COINS && ['qusd5'].includes(currentContract.currentContract) && currentContract.base_coins_idx[i] != null ) {
+        result = [currentContract.base_pool._address, currentContract.base_pool.methods.balances(currentContract.base_coins_idx[i]).encodeABI()]
+      } else {
+        result = [currentContract.swap._address, currentContract.swap.methods.balances(i).encodeABI()]
+      }
+
+      return result
+    }))
     let aggcalls = await currentContract.multicall.methods.aggregate(calls).call();
     let decoded = aggcalls[1].map(hex => currentContract.web3.eth.abi.decodeParameter('uint256', hex))
     let [virtual_price, token_amount, ...balances] = decoded
     let Sv = +virtual_price * (+token_amount) / 1e36;
 // console.log('virtual_price', virtual_price, 'token_amount', token_amount)
-    for(let i = 0; i < currentContract.N_COINS; i++) {
-      let coin_balance = +balances[i] * currentContract.c_rates[i];
+    for(let i = 0; i < N_COINS; i++) {
+      let coin_balance = +balances[i] * c_rates[i];
       if(!deposit) {
         if(coin_balance < real_values[i]) {
             currentContract.showNoBalance = true;
