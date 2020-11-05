@@ -2866,6 +2866,38 @@ store.gauges = {
         dismiss()
         notifyHandler(hash)
       })
+    },
+
+    async onClaimRewards (accountAddress) {
+      // const { name, address, contract, mortgages, rewards } = this
+      // // let minter = new web3.eth.Contract(daoabis.minter_abi, process.env.VUE_APP_PS_MINTER)
+
+      // // const mint = await gaugeStore.state.minter.methods.mint(address)
+      // // let gas = await mint.estimateGas()
+
+      // var { dismiss } = notifyNotification(`Please confirm claiming ${rewards.sfg.name} from ${name} gauge`)
+
+      // await mint.send({
+      //   from: accountAddress,
+      //   // gasPrice: gasPriceStore.gasPriceWei,
+      //   // gas: gas * 1.5 | 0,
+      // })
+      // .once('transactionHash', hash => {
+      //   dismiss()
+      //   notifyHandler(hash)
+      // })
+
+      const { name, address, contract, mortgages, rewards } = this
+
+      var { dismiss } = notifyNotification(`Please confirm claiming ${rewards.kun.name}`)
+
+      await contract.methods.claim_rewards(accountAddress).send({
+          from: accountAddress
+        })
+        .once('transactionHash', hash => {
+          dismiss()
+          notifyHandler(hash)
+        })
     }
   },
 

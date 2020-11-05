@@ -18975,6 +18975,8 @@ var qusd5 = {
   base_is_plain: [true, true, true, true, true, true],
   base_pool_address: process.env.VUE_APP_USD5_SWAP,
   base_pool_abi: qusd5_abi,
+  base_pool_token_address: process.env.VUE_APP_USD5_TOKEN,
+  base_pool_token_abi: ERC20_abi,
   base_coins_idx: {
     1: 0,
     2: 1,

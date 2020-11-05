@@ -696,8 +696,11 @@ export async function init(contract, refresh = false) {
   contract.swap = new state.web3.eth.Contract(allabis[contract.currentContract].swap_abi, allabis[contract.currentContract].swap_address);
   contract.swap_token = new state.web3.eth.Contract(ERC20_abi, allabis[contract.currentContract].token_address);
 
-  if (allabis[contract.currentContract].base_pool_address && ['qusd5'].includes(contract.currentContract)) {
-    contract.base_pool = new state.web3.eth.Contract(allabis[contract.currentContract].base_pool_abi, allabis[contract.currentContract].base_pool_address);
+  if (['qusd5'].includes(contract.currentContract)) {
+    allabis[contract.currentContract].base_pool_address && 
+      (contract.base_pool = new state.web3.eth.Contract(allabis[contract.currentContract].base_pool_abi, allabis[contract.currentContract].base_pool_address) );
+    allabis[contract.currentContract].base_pool_token_address && 
+      (contract.base_pool_token = new state.web3.eth.Contract(allabis[contract.currentContract].base_pool_token_abi, allabis[contract.currentContract].base_pool_token_address) );
   }
 
   window[contract.currentContract] = {};
@@ -787,6 +790,7 @@ console.log(!(pool in allabis))
 	state.coins = new Array(allabis[pool].coins);
   state.underlying_coins = new Array(allabis[pool].underlying_coins);
   state.base_pool_address = allabis[pool].base_pool_address;
+  state.base_pool_token_address = allabis[pool].base_pool_token_address;
   state.deposit_address = allabis[pool].deposit_address;
 	state.base_coins = new Array(allabis[pool].base_coins);
 	state.base_coins_idx = allabis[pool].base_coins_idx;

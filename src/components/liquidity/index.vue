@@ -1023,15 +1023,14 @@
 
           if(!val && this.to_currency === null) {
             this.to_currency = 10
-            if (this.sync_withdraw_avg_balances) {
-              this.handle_change_share()
-            }
+          }
+
+          if (this.sync_withdraw_avg_balances) {
+            this.handle_change_share()
+          } else {
+            this.to_currency = 0
           }
           // if(val && this.to_currency !== null) this.to_currency = null
-
-          // if (this.sync_withdraw_avg_balances) {
-          //   this.sync_withdraw_avg_balances = false
-          // }
         },
         maxSlippage() {
             this.setSlippage = true
@@ -1999,8 +1998,7 @@ console.log('update_balances', this.currencie_coins_n_withdrawc)
             }
 
             decoded.slice(0, this.currencie_coins_n_withdrawc+1 + this.currencie_coins_n_withdrawc).map((v, i) => {
-              Vue.set(this.balances, i, +v)
-              if(!currentContract.default_account) Vue.set(this.balances, i, 0)
+              Vue.set(this.balances, i, currentContract.default_account ? +v : 0)
             })
 
             if(['susdv2', 'sbtc','y','iearn', 'dfi', 'dusd', 'okuu', 'usd5', 'qusd5'].includes(this.currentPool)) {
@@ -2027,8 +2025,6 @@ console.log('update_balances', this.currencie_coins_n_withdrawc)
           this.show_nobalance_i = 0;
           let calls = [...Array(this.currencie_coins_n_withdrawc).keys()].map(i=>this.pushBalances_withdrawc(i))
       console.log('values', values, this.withdrawc)
-
-
 
           calls.push([this.currencie_contract_withdrawc._address ,this.currencie_contract_withdrawc.methods.calc_token_amount(values, false).encodeABI()])
           calls.push([currentContract.swap_token._address, currentContract.swap_token.methods.balanceOf(currentContract.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
@@ -2276,6 +2272,11 @@ console.log('update_balances', this.currencie_coins_n_withdrawc)
         this.show_loading = true;
         let inOneCoin = currentContract.deposit_zap
         if(['tbtc','ren', 'sbtc'].includes(currentContract.currentContract)) inOneCoin = currentContract.swap
+        if(['qusd5'].includes(currentContract.currentContract)) {
+          inOneCoin = this.withdrawc
+              ? currentContract.swap
+              : currentContract.deposit_zap
+        }
 
         let min_amounts = []
 
@@ -2417,8 +2418,8 @@ console.log('share', this.share, balance)
             if(unstake_only) return;
       console.log('amount', amount.toString(), amount.toFixed(0,1))
             amount = amount.toFixed(0,1)
+console.log('handle_remove_liquidity', this.sync_withdraw_avg_balances, this.to_currency, this.to_currency !== null && this.to_currency < 10)
             if(this.to_currency !== null && this.to_currency < 10) {
-
               this.waitingMessage = this.$i18n.t('liquidity.approveLptokenWithdrawal', [floor(amount / 1e18, 6), 'LP token'])
               var { dismiss } = notifyNotification(this.waitingMessage)
               this.estimateGas = contractGas.depositzap[this.currentPool].withdraw / 2
@@ -2426,13 +2427,13 @@ console.log('share', this.share, balance)
               dismiss()
               let min_amount;
               try {
-                  min_amount = await inOneCoin.methods.calc_withdraw_one_coin(amount, this.to_currency).call();
-                  min_amount = BN(min_amount).times(BN(1).minus(this.calcFee))
+                min_amount = await inOneCoin.methods.calc_withdraw_one_coin(amount, this.to_currency).call();
+                min_amount = BN(min_amount).times(BN(1).minus(this.calcFee))
               }
               catch(err) {
-                  console.error(err)
-                  this.show_nobalance = true;
-                  this.show_nobalance_i = this.to_currency;
+                console.error(err)
+                this.show_nobalance = true;
+                this.show_nobalance_i = this.to_currency;
               }
               this.waitingMessage = this.$i18n.t('liquidity.confirmWithdrawalTransaction')
               var { dismiss } = notifyNotification(this.waitingMessage)
@@ -2493,8 +2494,7 @@ console.log('share', this.share, balance)
                 this.show_loading = false
                 throw err;
               }
-			        }
-			        else {
+            } else {
                 try {
     			        	let min_amounts = await this.getMinAmounts();
                             this.waitingMessage = this.$i18n.t('liquidity.confirmWithdrawalTransaction')
@@ -2534,21 +2534,21 @@ console.log('share', this.share, balance)
                         }
 			        }
 			    }
-			    if(this.share == '---') {
-			        for (let i = 0; i < this.currencie_coins_n_withdrawc; i++) {
-			            this.handle_change_amounts(i);
-			        }
-			    }
-                this.show_loading = false;
-                this.waitingMessage = ''
-                this.estimateGas = 0
+        if(this.share == '---') {
+          for (let i = 0; i < this.currencie_coins_n_withdrawc; i++) {
+            this.handle_change_amounts(i);
+          }
+        }
 
-			    await this.update_balances();
-			    await common.update_fee_info();
+        this.show_loading = false;
+        this.waitingMessage = ''
+        this.estimateGas = 0
+
+        await this.update_balances();
+        await common.update_fee_info();
 			},
 			async handle_change_share() {
-                    await this.update_balances()
-
+        await this.update_balances()
 
         let inOneCoin = currentContract.deposit_zap
         if(['tbtc','ren','sbtc'].includes(currentContract.currentContract)) inOneCoin = currentContract.swap
@@ -2607,10 +2607,42 @@ console.log('this.withdraw_inputs', this.withdraw_inputs)
         }
 console.log('handle_change_share', this.to_currency)
         if(this.to_currency !== null && this.to_currency < 10) return;
+
+        let fromCoinIdx = 0
+        let baseCoinCont = this.currencies[1]
+        let toBaseCoinIdxs = []
+        let toTokenSupply = 0
+        let baseTotalTokenBalance = 0
+        if(['qusd5'].includes(this.currentPool)) {
+          toBaseCoinIdxs = [1,2,3,4,5]
+          // TODO: qusd5 USD5 -> DAI/USDC/USDT/TUSD/PAX
+          // fromCoin = BN(await baseCoinCont.methods.balanceOf(currentContract.default_account || '0x0000000000000000000000000000000000000000').call())
+          // let total = 0
+          // for (let i = 0; i < this.currencie_coins_n_withdrawc; i++) {
+          //   if (toBaseCoinIdxs.includes(i)) {
+
+          //   }
+          // }
+          // let a  = await currentContract.underlying_coins[1].methods.balanceOf(currentContract.default_account || '0x0000000000000000000000000000000000000000').call()
+          let a  = await currentContract.swap.methods.balances(1).call()
+          toTokenSupply = await currentContract.base_pool_token.methods.totalSupply().call()
+          // toTokenSupply = BN(this.token_supply).minus(this.balances[0]).toString()
+          baseTotalTokenBalance = this.share / 100 * a * token_balance / this.token_supply
+          console.log('baseTotalTokenBalance', baseTotalTokenBalance)
+          console.log('toTokenSupply', toTokenSupply)
+        }
+
+        let token_supply = this.token_supply
+
         for (let i = 0; i < this.currencie_coins_n_withdrawc; i++) {
           if ((this.share >=0) & (this.share <= 100)) {
-            let value = BN(this.share / 100 * this.balances[i] * this.p_rates_withdrawc[i] * token_balance / this.token_supply)
-console.log('withdraw_inputs', i, this.toFixed(value, 2, 1), this.balances[i], this.p_rates_withdrawc[i], token_balance.toString(), this.token_supply)
+            if(!this.withdrawc && ['qusd5'].includes(this.currentPool) && toBaseCoinIdxs.includes(i)) {
+              token_balance = baseTotalTokenBalance
+              token_supply = toTokenSupply
+            }
+
+            let value = BN(this.share / 100 * this.balances[i] * this.p_rates_withdrawc[i] * token_balance / token_supply )
+console.log('withdraw_inputs', i, this.share, this.toFixed(value, 2, 1), this.balances[i], this.p_rates_withdrawc[i], token_balance.toString(), token_supply)
             Vue.set(this.withdraw_inputs, i, this.toFixed(value, 2, 1))
             Vue.set(this.withdraw_maxs, i, this.toFixed(value, 2, 1))
           } else {
