@@ -287,6 +287,7 @@
 
                     <div class="mt-4">
                       <b-form-checkbox v-model="inf_approval" name="inf-approval">{{ $t('global.infiniteApproval') }}</b-form-checkbox>
+                      <b-form-checkbox @change='handle_sync_withdraw_avg_balances' :disabled='disabledButtons' v-model='sync_withdraw_avg_balances' name="sync-withdraw-avg-balances">{{ $t('liquidity.withdrawBalancedProportion') }}</b-form-checkbox>
                       <b-form-checkbox v-show = "!['susd', 'susdv2', 'tbtc', 'ren', 'sbtc', 'okuu', 'usd5'].includes(currentPool)" v-model='withdrawc' name="inf-approval" >{{ $t('liquidity.withdrawWrapped', [currentPoolTokenCoinMark]) }}</b-form-checkbox>
                     </div>
                   </div>
@@ -913,6 +914,7 @@
         hasRewards: true,
 
         // withdraw
+        sync_withdraw_avg_balances: false,
         share: '100.00',
     		shareStyles: {
     			backgroundColor: '#707070',
@@ -1008,9 +1010,8 @@
           this.setInputStyles()
           if(val !== null) this.handle_change_share();
         },
-        withdrawc(val) {
+        withdrawc (val) {
           if(this.share == '---' ) return;
-console.log('withdrawc', val, this.withdraw_inputs.length, this.currencie_coins_n_withdrawc)
 
           if (this.withdraw_inputs.length > this.currencie_coins_n_withdrawc) {
             this.withdraw_inputs = this.withdraw_inputs.slice(0, this.currencie_coins_n_withdrawc)
@@ -1020,10 +1021,8 @@ console.log('withdrawc', val, this.withdraw_inputs.length, this.currencie_coins_
             })
           }
 
-
           if(!val && this.to_currency === null) this.to_currency = 10
           // if(val && this.to_currency !== null) this.to_currency = null
-          if(val && this.to_currency !== null) this.to_currency = 0
         },
         maxSlippage() {
             this.setSlippage = true
@@ -1441,9 +1440,9 @@ console.log('withdrawc', val, this.withdraw_inputs.length, this.currencie_coins_
 
 
             // withdraw
-            if(['susdv2', 'tbtc', 'ren', 'sbtc', 'okuu', 'usd5'].includes(this.currentPool)) {
+            if(['susdv2', 'tbtc', 'ren', 'sbtc'].includes(this.currentPool)) {
               this.withdrawc = true;
-              // this.to_currency = null
+              this.to_currency = null
             } else {
               this.withdrawc = false
             }
@@ -1641,6 +1640,14 @@ console.log('withdrawc', val, this.withdraw_inputs.length, this.currencie_coins_
             await this.handle_sync_balances();
             //for(let i = 0; i < currentContract.N_COINS; i++) this.change_currency(i)
           },
+          async handle_sync_withdraw_avg_balances() {
+            if (this.sync_withdraw_avg_balances) {
+              this.to_currency = null
+            } else {
+              this.to_currency = 10
+            }
+            await this.update_balances()
+          },
           deposit_stake() {
             this.show_loading = true;
             this.handle_add_liquidity(true)
@@ -1721,12 +1728,12 @@ console.log('withdrawc', val, this.withdraw_inputs.length, this.currencie_coins_
             })
             var token_amount = 0;
             if(total_supply > 0) {
-                let token_amounts = this.amounts
+              let token_amounts = this.amounts
 console.log('token_amount', token_amount, token_amounts)
-                token_amount = await this.currencie_contract.methods.calc_token_amount(token_amounts, true).call();
-
-                token_amount = BN(token_amount).times(BN(1).minus(BN(this.calcFee)))
-                token_amount = BN(token_amount).times(BN(this.getDepositMaxSlippage)).toFixed(0,1);
+              token_amount = await this.currencie_contract.methods.calc_token_amount(token_amounts, true).call();
+console.log('token_amount1', token_amount)
+              token_amount = BN(token_amount).times(BN(1).minus(BN(this.calcFee)))
+              token_amount = BN(token_amount).times(BN(this.getDepositMaxSlippage)).toFixed(0,1);
             }
 
             if(this.depositc)

@@ -198,11 +198,22 @@ console.log(i, coins[i]._address, swap, await coins[i].methods.allowance(default
 
 export async function ensure_underlying_allowance(i, _amount, underlying_coins = [], toContract, wrapped = false, contract) {
     if(!contract) contract = currentContract
+
     if(!underlying_coins.length) underlying_coins = contract.underlying_coins;
     let coins = underlying_coins
     if(wrapped) coins = contract.coins
+
+    if (['qusd5'].includes(contract.currentContract)) {
+      if (wrapped) {
+        coins = currentContract.underlying_coins
+      } else {
+        coins = currentContract.base_coins
+      }
+    }
+
     var default_account = currentContract.default_account
     var amount = cBN(_amount);
+console.log('allowance coins i', i, coins[i]._address, coins)
     var current_allowance = cBN(await coins[i].methods.allowance(default_account, contract.swap._address).call());
 console.log('current_allowance', current_allowance.toString(), 'amount', amount)
 

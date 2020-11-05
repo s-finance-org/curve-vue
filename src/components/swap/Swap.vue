@@ -1077,15 +1077,11 @@ console.log('min_dy', min_dy, '=', i, j, BN(dx).toFixed(0,1))
                 this.waitingMessage = this.$i18n.t('instantSwap.approveExchange', [this.fromInput, this.getCurrency(this.from_currency)])
                 var { dismiss } = notifyNotification(this.waitingMessage)
 
-                let allowance_underlying_coins = []
-                if (!this.swapwrapped && ['qusd5'].includes(this.currentPool)) {
-                  allowance_underlying_coins = currentContract.base_coins
-                }
                 try {
                   if (this.inf_approval)
-                    await common.ensure_underlying_allowance(i, currentContract.max_allowance, allowance_underlying_coins, undefined, this.swapwrapped)
+                    await common.ensure_underlying_allowance(i, currentContract.max_allowance, [], undefined, this.swapwrapped)
                   else
-                    await common.ensure_underlying_allowance(i, dx, allowance_underlying_coins, undefined, this.swapwrapped);
+                    await common.ensure_underlying_allowance(i, dx, [], undefined, this.swapwrapped);
                 }
                 catch(err) {
                     console.error(err)

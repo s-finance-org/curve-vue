@@ -117,6 +117,7 @@ export default {
     reservesTitle: '资产分布',
     depositTip: '你可以存入下方任意一种或多种稳定币，智能合约将按比例自动平衡存入的资产',
     depositBalancedProportion: '均衡添加所有代币',
+    withdrawBalancedProportion: '均衡所有代币',
     depositUseMaximumAvailable: '使用最大数量的代币',
     depositWrapped: '存入 {0} 代币',
     depositWrappedPlaceholder: '存入抵押数量',
