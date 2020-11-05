@@ -1021,8 +1021,17 @@
             })
           }
 
-          if(!val && this.to_currency === null) this.to_currency = 10
+          if(!val && this.to_currency === null) {
+            this.to_currency = 10
+            if (this.sync_withdraw_avg_balances) {
+              this.handle_change_share()
+            }
+          }
           // if(val && this.to_currency !== null) this.to_currency = null
+
+          // if (this.sync_withdraw_avg_balances) {
+          //   this.sync_withdraw_avg_balances = false
+          // }
         },
         maxSlippage() {
             this.setSlippage = true
@@ -1447,6 +1456,7 @@
               this.withdrawc = false
             }
             this.to_currency = 0
+            this.sync_withdraw_avg_balances = false
 
             currentContract.showSlippage = false;
             currentContract.slippage = 0;
@@ -1545,7 +1555,7 @@
             }
           },
           setInputStyles(newInputs = false, newContract, oldContract) {
-    console.log('setInputStyles')
+    console.log('setInputStyles', newContract, oldContract)
             if(oldContract) {
               for(let i = 0; i < allabis[newContract].N_COINS - allabis[oldContract].N_COINS; i++) {
                 this.deposit_inputs.push('0.00')
@@ -1646,7 +1656,6 @@
             } else {
               this.to_currency = 10
             }
-            await this.update_balances()
           },
           deposit_stake() {
             this.show_loading = true;
@@ -1939,20 +1948,21 @@ console.log('deposit_inputs 2', await this.currencie_contract.methods.calc_token
 
 
 
-      // withdraw
-      handleCheck(idx) {
-        if(idx === this.to_currency) {
-          // if(this.withdrawc == false) this.withdrawc = true
-          // this.to_currency = null
+          // withdraw
+          handleCheck(idx) {
+            // if(idx === this.to_currency) {
+              // if(this.withdrawc == false) this.withdrawc = true
+              // this.to_currency = null
 
-          // currentContract.slippage = 0
-          // currentContract.showSlippage = false
-        }
-        else {
-          // this.withdrawc = false
-          this.to_currency = idx
-        }
-      },
+              // currentContract.slippage = 0
+              // currentContract.showSlippage = false
+            // }
+            // else {
+              // this.withdrawc = false
+              this.to_currency = idx
+              this.sync_withdraw_avg_balances = false
+            // }
+          },
           setCalcBalances() {
             for (let i = 0; i < this.currencie_coins_n; i++) {
                 let token_balance = this.showstaked ? this.token_balance.plus(this.staked_balance) : this.token_balance
@@ -1964,11 +1974,13 @@ console.log('deposit_inputs 2', await this.currencie_contract.methods.calc_token
           async update_balances() {
             let calls = []
             if (currentContract.default_account) {
+console.log('update_balances', this.currencie_coins_n_withdrawc)
               for (let i = 0; i < this.currencie_coins_n_withdrawc; i++) {
                 calls.push([this.coins[i]._address ,this.coins[i].methods.balanceOf(currentContract.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
               }
               calls.push([currentContract.swap_token._address ,currentContract.swap_token.methods.balanceOf(currentContract.default_account || '0x0000000000000000000000000000000000000000').encodeABI()])
             }
+
             for (let i = 0; i < this.currencie_coins_n_withdrawc; i++) {
               calls.push(this.pushBalances_withdrawc(i))
             }
@@ -1976,23 +1988,29 @@ console.log('deposit_inputs 2', await this.currencie_contract.methods.calc_token
             calls.push([currentContract.swap_token._address ,currentContract.swap_token.methods.totalSupply().encodeABI()])
             let aggcalls = await currentContract.multicall.methods.aggregate(calls).call()
             let decoded = aggcalls[1].map(hex => currentContract.web3.eth.abi.decodeParameter('uint256', hex))
+
             if(currentContract.default_account) {
               decoded.slice(0, this.currencie_coins_n_withdrawc).map((v, i) => {
+// console.log('wallet_balances_withdraw', i, +v / this.precisions_withdrawc[i])
                 Vue.set(this.wallet_balances_withdraw, i, +v / this.precisions_withdrawc[i])
               })
               this.token_balance = BN(decoded[this.currencie_coins_n_withdrawc])
               decoded = decoded.slice(this.currencie_coins_n_withdrawc+1)
             }
+
             decoded.slice(0, this.currencie_coins_n_withdrawc+1 + this.currencie_coins_n_withdrawc).map((v, i) => {
               Vue.set(this.balances, i, +v)
-                  if(!currentContract.default_account) Vue.set(this.balances, i, 0)
+              if(!currentContract.default_account) Vue.set(this.balances, i, 0)
             })
-                  console.log(decoded[decoded.length-2])
-                  if(['susdv2', 'sbtc','y','iearn', 'dfi', 'dusd', 'okuu', 'usd5', 'qusd5'].includes(this.currentPool)) this.staked_balance = BN(decoded[decoded.length-2])
-                  else this.staked_balance = BN(0)
-                  this.unstakepercentage = this.toFixed(this.staked_balance.div(1e18))
-          this.token_supply = +decoded[decoded.length-1]
-        },
+
+            if(['susdv2', 'sbtc','y','iearn', 'dfi', 'dusd', 'okuu', 'usd5', 'qusd5'].includes(this.currentPool)) {
+              this.staked_balance = BN(decoded[decoded.length-2])
+            } else {
+              this.staked_balance = BN(0)
+            }
+            this.unstakepercentage = this.toFixed(this.staked_balance.div(1e18))
+            this.token_supply = +decoded[decoded.length-1]
+          },
         async handle_change_amounts(i, event) {
           // FIXME:
           this.showWithdrawSlippage = true;
@@ -2529,6 +2547,9 @@ console.log('share', this.share, balance)
 			    await common.update_fee_info();
 			},
 			async handle_change_share() {
+                    await this.update_balances()
+
+
         let inOneCoin = currentContract.deposit_zap
         if(['tbtc','ren','sbtc'].includes(currentContract.currentContract)) inOneCoin = currentContract.swap
 
@@ -2581,24 +2602,26 @@ console.log('this.withdraw_inputs', this.withdraw_inputs)
 				this.shareStyles.color = 'aqua'
         if (this.share == '---') {
             this.share = 0;
-        }
-        else if ((this.share > 100) | (this.share < 0))
+        } else if ((this.share > 100) | (this.share < 0)) {
           this.shareStyles.backgroundColor = 'red'
+        }
+console.log('handle_change_share', this.to_currency)
         if(this.to_currency !== null && this.to_currency < 10) return;
         for (let i = 0; i < this.currencie_coins_n_withdrawc; i++) {
-            if ((this.share >=0) & (this.share <= 100)) {
-              let value = BN(this.share / 100 * this.balances[i] * this.p_rates_withdrawc[i] * token_balance / this.token_supply)
-                Vue.set(this.withdraw_inputs, i, this.toFixed(value, 2, 1))
-                Vue.set(this.withdraw_maxs, i, this.toFixed(value, 2, 1))
-            }
-            else {
-                Vue.set(this.withdraw_inputs, i, 0)
-                Vue.set(this.withdraw_maxs, i, 0)
-            }
-            Vue.set(this.inputStyles, i, {
-              backgroundColor: '#707070',
-              color: '#d0d0d0'
-            })
+          if ((this.share >=0) & (this.share <= 100)) {
+            let value = BN(this.share / 100 * this.balances[i] * this.p_rates_withdrawc[i] * token_balance / this.token_supply)
+console.log('withdraw_inputs', i, this.toFixed(value, 2, 1), this.balances[i], this.p_rates_withdrawc[i], token_balance.toString(), this.token_supply)
+            Vue.set(this.withdraw_inputs, i, this.toFixed(value, 2, 1))
+            Vue.set(this.withdraw_maxs, i, this.toFixed(value, 2, 1))
+          } else {
+            Vue.set(this.withdraw_inputs, i, 0)
+            Vue.set(this.withdraw_maxs, i, 0)
+          }
+
+          Vue.set(this.inputStyles, i, {
+            backgroundColor: '#707070',
+            color: '#d0d0d0'
+          })
         }
       },
       setAllInputBackground(bgcolor) {
