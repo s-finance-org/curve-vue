@@ -1010,12 +1010,16 @@
         },
         withdrawc(val) {
           if(this.share == '---' ) return;
-          // FIXME:
-          if (this.currencie_coins_n_withdrawc > this.withdraw_inputs.length) {
+console.log('withdrawc', val, this.withdraw_inputs.length, this.currencie_coins_n_withdrawc)
+
+          if (this.withdraw_inputs.length > this.currencie_coins_n_withdrawc) {
+            this.withdraw_inputs = this.withdraw_inputs.slice(0, this.currencie_coins_n_withdrawc)
+          } else if (this.withdraw_inputs.length < this.currencie_coins_n_withdrawc) {
             Array(this.currencie_coins_n_withdrawc).fill(0).forEach((item, idx) => {
               !this.withdraw_inputs[idx] && Vue.set(this.withdraw_inputs, idx, 0)
             })
           }
+
 
           if(!val && this.to_currency === null) this.to_currency = 10
           // if(val && this.to_currency !== null) this.to_currency = null
@@ -1539,9 +1543,6 @@
 
             if (this.deposit_inputs.length > this.coins.length) {
               this.deposit_inputs = this.deposit_inputs.slice(0, this.coins.length)
-            }
-            if (this.withdraw_inputs.length > this.coins.length) {
-              this.withdraw_inputs = this.withdraw_inputs.slice(0, this.coins.length)
             }
           },
           setInputStyles(newInputs = false, newContract, oldContract) {
