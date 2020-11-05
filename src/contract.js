@@ -794,6 +794,8 @@ console.log(!(pool in allabis))
   state.deposit_address = allabis[pool].deposit_address;
 	state.base_coins = new Array(allabis[pool].base_coins);
 	state.base_coins_idx = allabis[pool].base_coins_idx;
+	state.fromUnderlyingBaseCoinIdx = allabis[pool].fromUnderlyingBaseCoinIdx;
+	state.toBaseCoinIdxs = allabis[pool].toBaseCoinIdxs;
 	state.balances = new Array(allabis[pool].balances);
 	state.wallet_balances = new Array(allabis[pool].wallet_balances);
 	state.bal_info = []

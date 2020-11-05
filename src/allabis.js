@@ -18984,6 +18984,8 @@ var qusd5 = {
     4: 3,
     5: 4,
   },
+  fromUnderlyingBaseCoinIdx: 1,
+  toBaseCoinIdxs: [1,2,3,4,5],
   base_coins: [
     process.env.VUE_APP_QUSD_TOKEN,
     process.env.VUE_APP_DAI_TOKEN,

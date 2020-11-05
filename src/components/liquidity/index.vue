@@ -2069,15 +2069,33 @@ console.log('update_balances', this.currencie_coins_n_withdrawc)
           //use update rates instead
           await common.update_fee_info();
           let min_amounts = []
+
+          let token_balance = this.token_balance
+          let toTokenSupply = 0
+          let baseTotalTokenBalance = 0
+          if(['qusd5'].includes(this.currentPool)) {
+            let fromUnderlyingCoinBalances  = await currentContract.swap.methods.balances(currentContract.fromUnderlyingBaseCoinIdx).call()
+            toTokenSupply = await currentContract.base_pool_token.methods.totalSupply().call()
+            baseTotalTokenBalance = this.share / 100 * fromUnderlyingCoinBalances * token_balance / this.token_supply
+          }
+
+          let token_supply = this.token_supply
+
           for(let i = 0; i < this.currencie_coins_n_withdrawc; i++) {
-              min_amounts[i] = BN(0.98).times(this.share/100).times(BN(this.balances[i]))
+            if(!this.withdrawc && ['qusd5'].includes(this.currentPool) && currentContract.toBaseCoinIdxs.includes(i)) {
+              token_balance = baseTotalTokenBalance
+              token_supply = toTokenSupply
+            }
+
+            min_amounts[i] = BN(0.98).times(this.share/100).times(BN(this.balances[i]))
+
             if(!this.withdrawc) {
               min_amounts[i] = min_amounts[i]
                 .times(this.precisions_withdrawc[i])
                 .times(this.p_rates_withdrawc[i])
             }
-            min_amounts[i] = min_amounts[i].times(BN(this.token_balance))
-              .div(BN(this.token_supply))
+            min_amounts[i] = min_amounts[i].times(token_balance)
+              .div(token_supply)
               .toFixed(0,1)
           }
           return min_amounts;
@@ -2608,41 +2626,25 @@ console.log('this.withdraw_inputs', this.withdraw_inputs)
 console.log('handle_change_share', this.to_currency)
         if(this.to_currency !== null && this.to_currency < 10) return;
 
-        let fromCoinIdx = 0
-        let baseCoinCont = this.currencies[1]
-        let toBaseCoinIdxs = []
         let toTokenSupply = 0
         let baseTotalTokenBalance = 0
         if(['qusd5'].includes(this.currentPool)) {
-          toBaseCoinIdxs = [1,2,3,4,5]
-          // TODO: qusd5 USD5 -> DAI/USDC/USDT/TUSD/PAX
-          // fromCoin = BN(await baseCoinCont.methods.balanceOf(currentContract.default_account || '0x0000000000000000000000000000000000000000').call())
-          // let total = 0
-          // for (let i = 0; i < this.currencie_coins_n_withdrawc; i++) {
-          //   if (toBaseCoinIdxs.includes(i)) {
-
-          //   }
-          // }
-          // let a  = await currentContract.underlying_coins[1].methods.balanceOf(currentContract.default_account || '0x0000000000000000000000000000000000000000').call()
-          let a  = await currentContract.swap.methods.balances(1).call()
+          let fromUnderlyingCoinBalances  = await currentContract.swap.methods.balances(currentContract.fromUnderlyingBaseCoinIdx).call()
           toTokenSupply = await currentContract.base_pool_token.methods.totalSupply().call()
-          // toTokenSupply = BN(this.token_supply).minus(this.balances[0]).toString()
-          baseTotalTokenBalance = this.share / 100 * a * token_balance / this.token_supply
-          console.log('baseTotalTokenBalance', baseTotalTokenBalance)
-          console.log('toTokenSupply', toTokenSupply)
+          baseTotalTokenBalance = this.share / 100 * fromUnderlyingCoinBalances * token_balance / this.token_supply
         }
 
         let token_supply = this.token_supply
 
         for (let i = 0; i < this.currencie_coins_n_withdrawc; i++) {
           if ((this.share >=0) & (this.share <= 100)) {
-            if(!this.withdrawc && ['qusd5'].includes(this.currentPool) && toBaseCoinIdxs.includes(i)) {
+            if(!this.withdrawc && ['qusd5'].includes(this.currentPool) && currentContract.toBaseCoinIdxs.includes(i)) {
               token_balance = baseTotalTokenBalance
               token_supply = toTokenSupply
             }
 
             let value = BN(this.share / 100 * this.balances[i] * this.p_rates_withdrawc[i] * token_balance / token_supply )
-console.log('withdraw_inputs', i, this.share, this.toFixed(value, 2, 1), this.balances[i], this.p_rates_withdrawc[i], token_balance.toString(), token_supply)
+// console.log('withdraw_inputs', i, this.share, this.toFixed(value, 2, 1), this.balances[i], this.p_rates_withdrawc[i], token_balance.toString(), token_supply)
             Vue.set(this.withdraw_inputs, i, this.toFixed(value, 2, 1))
             Vue.set(this.withdraw_maxs, i, this.toFixed(value, 2, 1))
           } else {
