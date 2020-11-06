@@ -17,7 +17,7 @@
             <span class="mr-3">{{ $t('dao.tokenTitle', [store.gauges.qusd5.propagateMark]) }}</span>
             <small class="mr-auto">{{ $t('dao.describe', [store.gauges.qusd5.mortgagesUnit, store.gauges.qusd5.rewardsUnit.join(' + ')]) }}</small>
             <text-overlay-loading inline :show="store.gauges.qusd5.apy.loading">
-              <span class="h5 text-danger-1 mb-0">
+              <span class="h5 text-danger-1">
                 <small class="text-black-45">{{ $t('global.apr') }}</small>
                 {{ store.gauges.qusd5.apy.percent }}%
               </span>
@@ -42,10 +42,10 @@
               <span class="col-12 col-md-6 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.virtualPrice') }}</h6>
                 <text-overlay-loading inline :show="store.tokens.qusd5.price.loading">
-                  <span class="h4 mb-0">
+                  <span class="h4">
                     1 <span class="h6 text-black-65">{{ store.tokens.qusd5.name }} = </span>
                   </span>
-                  <span class="h4 mb-0">
+                  <span class="h4">
                     {{ store.tokens.qusd5.price.cont }}
                     <span class="text-black-65 h6">USD</span>
                   </span>
@@ -60,7 +60,10 @@
               <span class="col-12 col-md-6 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.dailyYield', ['SFG']) }}</h6>
                 <text-overlay-loading inline :show="store.gauges.qusd5.rewards.sfg.dailyYield.loading">
-                  <span class="h4">{{ store.gauges.qusd5.rewards.sfg.dailyYield.cont }} {{ store.gauges.qusd5.rewards.sfg.name }}</span>
+                  <span class="h4">
+                    {{ store.gauges.qusd5.rewards.sfg.dailyYield.cont }}
+                    <span class="text-black-65 h6">{{ store.gauges.qusd5.rewards.sfg.name }}</span>
+                  </span>
                   <!-- <b-avatar text="!" class="iconTip iconTip-warning ml-2" id="tooltip-mining-paid-reward-tip1"></b-avatar>
                   <b-tooltip placement="topright" target="tooltip-mining-paid-reward-tip1" variant="success">{{ $t('dao.miningPoolOpeningNotice', [store.gauges.qusd5.propagateMark, store.gauges.qusd5.mortgagesUnit]) }}</b-tooltip> -->
                 </text-overlay-loading>
@@ -68,7 +71,10 @@
               <span class="col-12 col-md-6 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.dailyYield', ['KUN']) }}</h6>
                 <text-overlay-loading inline :show="store.gauges.qusd5.rewards.kun.dailyYield.loading">
-                  <span class="h4">{{ store.gauges.qusd5.rewards.kun.dailyYield.cont }} {{ store.gauges.qusd5.rewards.kun.name }}</span>
+                  <span class="h4">
+                    {{ store.gauges.qusd5.rewards.kun.dailyYield.cont }}
+                    <span class="text-black-65 h6">{{ store.gauges.qusd5.rewards.kun.name }}</span>
+                  </span>
                   <!-- <b-avatar text="!" class="iconTip iconTip-warning ml-2" id="tooltip-mining-paid-reward-tip2"></b-avatar>
                   <b-tooltip placement="topright" target="tooltip-mining-paid-reward-tip2" variant="success">{{ $t('dao.miningPoolOpeningNotice', [store.gauges.qusd5.propagateMark, store.gauges.qusd5.mortgagesUnit]) }}</b-tooltip> -->
                 </text-overlay-loading>
@@ -238,7 +244,7 @@
             <span class="mr-3">{{ $t('dao.tokenTitle', [store.gauges.usd5.propagateMark]) }}</span>
             <small class="mr-auto">{{ $t('dao.describe', [store.gauges.usd5.mortgagesUnit, store.gauges.usd5.rewardsUnit.join(' + ')]) }}</small>
             <text-overlay-loading inline :show="store.gauges.usd5.apy.loading">
-              <span class="h5 text-danger-1 mb-0">
+              <span class="h5 text-danger-1">
                 <small class="text-black-45">{{ $t('global.apr') }}</small>
                 {{ store.gauges.usd5.apy.percent }}%
               </span>
@@ -263,10 +269,10 @@
               <span class="col-12 col-md-6 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.virtualPrice') }}</h6>
                 <text-overlay-loading inline :show="store.tokens.usd5.price.loading">
-                  <span class="h4 mb-0">
+                  <span class="h4">
                     1 <span class="h6 text-black-65">{{ store.tokens.usd5.name }} = </span>
                   </span>
-                  <span class="h4 mb-0">
+                  <span class="h4">
                     {{ store.tokens.usd5.price.cont }}
                     <span class="text-black-65 h6">USD</span>
                   </span>
@@ -281,7 +287,10 @@
               <span class="col-12 col-md-6 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.dailyYield', ['SFG']) }}</h6>
                 <text-overlay-loading inline :show="store.gauges.usd5.rewards.sfg.dailyYield.loading">
-                  <span class="h4">{{ store.gauges.usd5.rewards.sfg.dailyYield.cont }} {{ store.gauges.usd5.rewards.sfg.name }}</span>
+                  <span class="h4">
+                    {{ store.gauges.usd5.rewards.sfg.dailyYield.cont }}
+                    <span class="text-black-65 h6">{{ store.gauges.usd5.rewards.sfg.name }}</span>
+                  </span>
                 </text-overlay-loading>
               </span>
             </div>
@@ -409,7 +418,7 @@
             <span class="mr-3">{{ $t('dao.tokenTitle', [store.gauges.dusd.propagateMark]) }}</span>
             <small class="mr-auto">{{ $t('dao.describe', [store.gauges.dusd.mortgagesUnit, store.gauges.dusd.rewardsUnit.join(' + ')]) }}</small>
             <text-overlay-loading inline :show="store.gauges.dusd.apy.loading">
-              <span class="h5 text-danger-1 mb-0">
+              <span class="h5 text-danger-1">
                 <small class="text-black-45">{{ $t('global.apr') }}</small>
                 {{ store.gauges.dusd.apy.percent }}%
               </span>
@@ -434,10 +443,10 @@
               <span class="col-12 col-md-6 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.virtualPrice') }}</h6>
                 <text-overlay-loading inline :show="store.tokens.dusd.price.loading">
-                  <span class="h4 mb-0">
+                  <span class="h4">
                     1 <span class="h6 text-black-65">{{ store.tokens.dusd.name }} = </span>
                   </span>
-                  <span class="h4 mb-0">
+                  <span class="h4">
                     {{ store.tokens.dusd.price.cont }}
                     <span class="text-black-65 h6">USDT</span>
                   </span>
@@ -452,13 +461,19 @@
               <span class="col-12 col-md-6 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.dailyYield', ['SFG']) }}</h6>
                 <text-overlay-loading inline :show="store.gauges.dusd.rewards.sfg.dailyYield.loading">
-                  <span class="h4">{{ store.gauges.dusd.rewards.sfg.dailyYield.cont }} {{ store.gauges.dusd.rewards.sfg.name }}</span>
+                  <span class="h4">
+                    {{ store.gauges.dusd.rewards.sfg.dailyYield.cont }}
+                    <span class="text-black-65 h6">{{ store.gauges.dusd.rewards.sfg.name }}</span>
+                  </span>
                 </text-overlay-loading>
               </span>
               <span class="col-12 col-md-6 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.dailyYield', ['DF']) }}</h6>
                 <text-overlay-loading inline :show="store.gauges.dusd.rewards.df.dailyYield.loading">
-                  <span class="h4">{{ store.gauges.dusd.rewards.df.dailyYield.cont }} {{ store.gauges.dusd.rewards.df.name }}</span>
+                  <span class="h4">
+                    {{ store.gauges.dusd.rewards.df.dailyYield.cont }}
+                    <span class="text-black-65 h6">{{ store.gauges.dusd.rewards.df.name }}</span>
+                  </span>
                 </text-overlay-loading>
               </span>
             </div>
@@ -626,7 +641,7 @@
             <span class="mr-3">{{ $t('dao.tokenTitle', [store.gauges.dfi.propagateMark]) }}</span>
             <small class="mr-auto">{{ $t('dao.describe', [store.gauges.dfi.mortgagesUnit, store.gauges.dfi.rewardsUnit.join(' ')]) }}</small>
             <text-overlay-loading inline :show="store.gauges.dfi.apy.loading">
-              <span class="h5 text-danger-1 mb-0">
+              <span class="h5 text-danger-1">
                 <small class="text-black-45">{{ $t('global.apr') }}</small>
                 {{ store.gauges.dfi.apy.percent }}%
               </span>
@@ -651,10 +666,10 @@
               <span class="col-12 col-md-6 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.virtualPrice') }}</h6>
                 <text-overlay-loading inline :show="store.tokens.iUSD_LPT.price.loading">
-                  <span class="h4 mb-0">
+                  <span class="h4">
                     1 <span class="h6 text-black-65">{{ store.tokens.iUSD_LPT.name }} = </span>
                   </span>
-                  <span class="h4 mb-0">
+                  <span class="h4">
                     {{ store.tokens.iUSD_LPT.price.cont }}
                     <span class="text-black-65 h6">USD</span>
                   </span>
@@ -669,7 +684,10 @@
               <span class="col-12 col-md-6 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.dailyYield', ['SFG']) }}</h6>
                 <text-overlay-loading inline :show="store.gauges.dfi.rewards.sfg.dailyYield.loading">
-                  <span class="h4">{{ store.gauges.dfi.rewards.sfg.dailyYield.cont }} {{ store.gauges.dfi.rewards.sfg.name }}</span>
+                  <span class="h4">
+                    {{ store.gauges.dfi.rewards.sfg.dailyYield.cont }}
+                    <span class="text-black-65 h6">{{ store.gauges.dfi.rewards.sfg.name }}</span>
+                  </span>
                 </text-overlay-loading>
               </span>
             </div>
@@ -795,7 +813,7 @@
             <span class="mr-3">{{ $t('dao.tokenTitle', [currentPool.nameCont]) }}</span>
             <small class="mr-auto">{{ $t('dao.describe', [currentPool.name + ' LP token', currentPool.describeTokensCont]) }}</small>
             <text-overlay-loading inline :show="store.gauges.susdv2.apy.loading">
-              <span class="h5 text-danger-1 mb-0">
+              <span class="h5 text-danger-1">
                 <small class="text-black-45">{{ $t('global.apr') }}</small>
                 {{ store.gauges.susdv2.apy.percent }}%
               </span>
@@ -820,10 +838,10 @@
               <span class="col-12 col-md-6 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.virtualPrice') }}</h6>
                 <text-overlay-loading inline :show="store.tokens.susdv2LpToken.price.loading">
-                  <span class="h4 mb-0">
+                  <span class="h4">
                     1 <span class="h6 text-black-65">{{ currentPool.name }} LP token = </span>
                   </span>
-                  <span class="h4 mb-0">
+                  <span class="h4">
                     {{ store.tokens.susdv2LpToken.price.cont }}<span class="text-black-65 h6"> USD</span>
                   </span>
                 </text-overlay-loading>
@@ -837,7 +855,10 @@
               <span class="col-12 col-md-6 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.dailyYield', ['SFG']) }}</h6>
                 <text-overlay-loading inline :show="store.gauges.susdv2.rewards.sfg.dailyYield.loading">
-                  <span class="h4">{{ store.gauges.susdv2.rewards.sfg.dailyYield.cont }} {{ store.gauges.susdv2.rewards.sfg.name }}</span>
+                  <span class="h4">
+                    {{ store.gauges.susdv2.rewards.sfg.dailyYield.cont }}
+                    <span class="text-black-65 h6">{{ store.gauges.susdv2.rewards.sfg.name }}</span>
+                  </span>
                 </text-overlay-loading>
               </span>
             </div>
@@ -1019,7 +1040,7 @@
             <span class="mr-3">{{ $t('dao.tokenTitle', [store.gauges.bpt.propagateMark]) }}</span>
             <small class="mr-auto">{{ $t('dao.describe', [store.gauges.bpt.mortgagesUnit, store.gauges.bpt.rewardsUnit.join(' ')]) }}</small>
             <text-overlay-loading inline :show="store.gauges.bpt.apy.loading">
-              <span class="h5 text-danger-1 mb-0">
+              <span class="h5 text-danger-1">
                 <small class="text-black-45">{{ $t('global.apr') }}</small>
                 {{ store.gauges.bpt.apy.percent }}%
               </span>
@@ -1057,7 +1078,10 @@
               <span class="col-12 col-md-6 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.dailyYield', ['SFG']) }}</h6>
                 <text-overlay-loading inline :show="store.gauges.bpt.rewards.sfg.dailyYield.loading">
-                  <span class="h4">{{ store.gauges.bpt.rewards.sfg.dailyYield.cont }} {{ store.gauges.bpt.rewards.sfg.name }}</span>
+                  <span class="h4">
+                    {{ store.gauges.bpt.rewards.sfg.dailyYield.cont }}
+                    <span class="text-black-65 h6">{{ store.gauges.bpt.rewards.sfg.name }}</span>
+                  </span>
                 </text-overlay-loading>
               </span>
             </div>
