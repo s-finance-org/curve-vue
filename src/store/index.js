@@ -375,6 +375,7 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
     userBalanceOf: valueModel.create(),
     async getBalanceOf (target, accountAddress) {
       const { contract, userBalanceOf } = this
+console.log('accountAddress', accountAddress)
       const result = await contract.methods.balanceOf(accountAddress).call()
 
       userBalanceOf.ether = target.ether = result

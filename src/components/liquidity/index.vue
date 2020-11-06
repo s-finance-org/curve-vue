@@ -1205,13 +1205,15 @@
             qusd5: 'qusd5',
           }
 
-          if (tokenKeys[currentPool]) {
-            store.tokens[tokenKeys[currentPool]].getBalanceOf(result.balanceOf, currentContract.default_account)
-          } else {
-            currentContract.swap_token.methods.balanceOf(currentContract.default_account).call()
-              .then(data => {
-                result.balanceOf.ether = data
-              })
+          if(currentContract.initializedContracts) {
+            if (tokenKeys[currentPool]) {
+              store.tokens[tokenKeys[currentPool]].getBalanceOf(result.balanceOf, currentContract.default_account)
+            } else {
+              currentContract.swap_token.methods.balanceOf(currentContract.default_account).call()
+                .then(data => {
+                  result.balanceOf.ether = data
+                })
+            }
           }
 
           return result
