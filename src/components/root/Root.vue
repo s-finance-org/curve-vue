@@ -10,8 +10,9 @@
         </template>
         <template v-slot:cell(name)="data">
           <div class="d-flex">
-            <div class="icon-box-20 d-flex flex-wrap mr-3">
-              <img v-for='currency in Object.keys(data.item.currencies)' :key="'icon-'+currency" class="icon-w-8"
+            <div class="icon-box-20 d-flex flex-wrap mr-3"  :class="[`icons-box-${Object.keys(data.item.currencies).length}`]">
+              <img v-for='currency in Object.keys(data.item.currencies)'
+                :key="'icon-'+currency" class="icon-w-8"
                 :class="{'token-icon': true, [currency+'-icon']: true, 'y': depositc && !isPlain}"
                 :src='getTokenIcon(currency)' />
             </div>
@@ -491,8 +492,8 @@
           // okuu: (+okuu.price.handled - 1) / ((now - 1603800000000) / 86400000) * 365 * 100,
           dusd: (+dusd.price.handled - 1) / ((now - 1603468800000) / 86400000) * 365 * 100,
           dfi: (+iUSD_LPT.price.handled - 1) / ((now - 1602345600000) / 86400000) * 365 * 100,
-          usd5: (+usd5.price.handled - 1) / ((now - 1604149200) / 86400000) * 365 * 100,
-          qusd5: (+qusd5.price.handled - 1) / ((now - 1604149200) / 86400000) * 365 * 100
+          usd5: (+usd5.price.handled - 1) / ((now - 1604149200000) / 86400000) * 365 * 100,
+          qusd5: (+qusd5.price.handled - 1) / ((now - 1604649443000) / 86400000) * 365 * 100
         }
 
         const apyCont = (apy) => {
@@ -516,9 +517,8 @@
               toDeposit: '/liquidity/qusd5',
               toDao: '/dao',
               pooltext: 'qian',
-              pools: 'QUSD DAI USDC USDT TUSD PAX',
+              pools: 'QUSD USD5',
               volData: null,
-              // currencies: {qusd: 'QUSD', dai: 'DAI', usdc: 'USDC', usdt: 'USDT', tusd: 'TUSD', pax: 'PAX'},
               currencies: {qusd: 'QUSD', usd5: 'USD5'},
               funds: '-',
               apy: apyCont(apys.qusd5),

@@ -47,7 +47,7 @@
                   </span>
                   <span class="h4 mb-0">
                     {{ store.tokens.qusd5.price.cont }}
-                    <span class="text-black-65 h6">USDT</span>
+                    <span class="text-black-65 h6">USD</span>
                   </span>
                 </text-overlay-loading>
               </span>
@@ -1777,27 +1777,6 @@
               dusd.getUserPaidReward_DF(dusd.rewards.df.userPaidReward, currentContract.default_account)
             )
 
-            // dfi
-            // store.gauges.dfi.rewards.sfg.weighting.handled = 0.15
-            store.gauges.dfi.rewards.sfg.weighting.handled = 0.1
-
-            store.gauges.dfi.getAPY(
-              store.tokens.sfg.getPrice(),
-              store.tokens.sfg.getDailyYield(),
-              dfi.getTotalStaking(dfi.mortgages.iUSD_LPT.totalStaking),
-              store.tokens.iUSD_LPT.getPrice(),
-            )
-
-            store.tokens.iUSD_LPT.getBalanceOf(dfi.mortgages.iUSD_LPT.userBalanceOf, currentContract.default_account)
-
-            dfi.getBalanceOf(dfi.mortgages.iUSD_LPT.userStaking, currentContract.default_account)
-
-            dfi.getUserTotalReward_SFG(
-              dfi.rewards.sfg.userTotalReward,
-              dfi.getUserPendingReward_SFG(dfi.rewards.sfg.userPendingReward, currentContract.default_account),
-              dfi.getUserPaidReward_SFG(dfi.rewards.sfg.userPaidReward, currentContract.default_account)
-            )
-
             // okuu
             // store.gauges.okuu.rewards.sfg.weighting.handled = 0
 
@@ -1885,6 +1864,27 @@
               bpt.rewards.sfg.userTotalReward,
               bpt.getUserPendingReward_SFG(bpt.rewards.sfg.userPendingReward, currentContract.default_account),
               bpt.getUserPaidReward_SFG(bpt.rewards.sfg.userPaidReward, currentContract.default_account)
+            )
+
+            // dfi
+            // store.gauges.dfi.rewards.sfg.weighting.handled = 0.15
+            store.gauges.dfi.rewards.sfg.weighting.handled = 0.1
+
+            store.gauges.dfi.getAPY(
+              store.tokens.sfg.getPrice(),
+              store.tokens.sfg.getDailyYield(),
+              dfi.getTotalStaking(dfi.mortgages.iUSD_LPT.totalStaking),
+              store.tokens.iUSD_LPT.getPrice(),
+            )
+
+            store.tokens.iUSD_LPT.getBalanceOf(dfi.mortgages.iUSD_LPT.userBalanceOf, currentContract.default_account)
+
+            dfi.getBalanceOf(dfi.mortgages.iUSD_LPT.userStaking, currentContract.default_account)
+
+            dfi.getUserTotalReward_SFG(
+              dfi.rewards.sfg.userTotalReward,
+              dfi.getUserPendingReward_SFG(dfi.rewards.sfg.userPendingReward, currentContract.default_account),
+              dfi.getUserPaidReward_SFG(dfi.rewards.sfg.userPaidReward, currentContract.default_account)
             )
           },
           countDownChanged(val) {

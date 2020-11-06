@@ -294,6 +294,26 @@ fieldset {
 .icons-box-2 img:last-child {
   align-self: flex-end;
 }
+.icons-box-5 img:nth-last-child(n+5) ~ img,
+.icons-box-5 img:nth-last-child(n+5):first-child {
+  width: 31px;
+  height: 31px;
+}
+.icons-box-5 img:nth-last-child(n+5) ~ img:nth-child(2) {
+  margin-left: 18px;
+}
+.icons-box-5 img:nth-last-child(n+5) ~ img:nth-child(3) {
+  margin-left: 25px;
+  margin-top: -5px;
+}
+.icons-box-5 img:nth-last-child(n+5) ~ img:nth-child(4) {
+  margin-top: -5px;
+}
+.icons-box-5 img:nth-last-child(n+5) ~ img:nth-child(5) {
+  margin-top: -5px;
+  margin-left: 18px;
+}
+
 
 .iconTip {
   width: 12px;
@@ -313,25 +333,6 @@ fieldset {
 .box-98 {
   width: 98px;
   height: 98px;
-}
-.box-98 img:nth-last-child(n+5) ~ img,
-.box-98 img:nth-last-child(n+5):first-child {
-  width: 31px;
-  height: 31px;
-}
-.box-98 img:nth-last-child(n+5) ~ img:nth-child(2) {
-  margin-left: 18px;
-}
-.box-98 img:nth-last-child(n+5) ~ img:nth-child(3) {
-  margin-left: 25px;
-  margin-top: -5px;
-}
-.box-98 img:nth-last-child(n+5) ~ img:nth-child(4) {
-  margin-top: -5px;
-}
-.box-98 img:nth-last-child(n+5) ~ img:nth-child(5) {
-  margin-top: -5px;
-  margin-left: 18px;
 }
 
 .icon-box-20 img:nth-last-child(n+5) ~ img,

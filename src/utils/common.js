@@ -213,9 +213,9 @@ export async function ensure_underlying_allowance(i, _amount, underlying_coins =
 
     var default_account = currentContract.default_account
     var amount = cBN(_amount);
-console.log('allowance coins i', i, coins[i]._address, coins)
+// console.log('allowance coins i', i, coins[i]._address, coins)
     var current_allowance = cBN(await coins[i].methods.allowance(default_account, contract.swap._address).call());
-console.log('current_allowance', current_allowance.toString(), 'amount', amount)
+// console.log('current_allowance', current_allowance.toString(), 'amount', amount)
 
     if (current_allowance.gte(amount))
         return false;
@@ -440,7 +440,7 @@ export async function multiInitState(calls, contract, initContracts = false) {
     let multicall = new web3.eth.Contract(multicall_abi, multicall_address)
     var default_account = currentContract.default_account;
     let aggcalls;
-    console.log('calls', calls)
+    // console.log('calls', calls)
     try {
         aggcalls = await multicall.methods.aggregate(calls).call()
     }
@@ -449,7 +449,7 @@ export async function multiInitState(calls, contract, initContracts = false) {
       aggcalls = await multicall.methods.aggregate(calls.slice(1)).call()
       aggcalls[1] = [web3.eth.abi.encodeParameter('uint256', cBN(1e18).toFixed(0)), ...aggcalls[1]] 
     }
-console.log('calls ok')
+// console.log('calls ok')
     var block = +aggcalls[0]
     //initContracts && contract.currentContract == 'compound' && i == 0 || 
     let decoded = aggcalls[1].map((hex, i) =>
@@ -709,7 +709,7 @@ export async function calc_slippage(values, deposit, zap_values, to_currency) {
   }
 // console.log(values, deposit)
 // console.log(await currentContract.swap.methods.calc_token_amount(values, deposit).call())
-console.log('Sr', Sr, 'Sv', Sv)
+// console.log('Sr', Sr, 'Sv', Sv)
   if (deposit) {
     slippage = Sv / Sr
   } else if(to_currency === undefined) {
@@ -727,7 +727,7 @@ console.log('Sr', Sr, 'Sv', Sv)
 export async function calc_slippage_base(values, deposit, zap_values, to_currency) {
     //var real_values = [...$("[id^=currency_]")].map((x,i) => +($(x).val()));
     let N_COINS = values.length || (zap_values && zap_values.length) || 0
-console.log('calc_slippage', N_COINS, values, values.length, deposit, zap_values, to_currency)
+// console.log('calc_slippage', N_COINS, values, values.length, deposit, zap_values, to_currency)
     values = values.map(v => v || 0)
     let slippage = 0;
     var real_values = Array(N_COINS).fill(0)
@@ -802,7 +802,7 @@ console.log('calc_slippage', N_COINS, values, values.length, deposit, zap_values
     }
 // console.log(values, deposit)
 // console.log(await currentContract.swap.methods.calc_token_amount(values, deposit).call())
-console.log('Sr', Sr, 'Sv', Sv)
+// console.log('Sr', Sr, 'Sv', Sv)
     if (deposit) {
       slippage = Sv / Sr
     } else if(to_currency === undefined) {

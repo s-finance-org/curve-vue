@@ -39,7 +39,9 @@ export default {
     withdraw: 'Withdraw',
     all: 'All',
     poolProfit: 'Pool profit',
-    totalPoolsDeposits: 'Total pools deposits'
+    wiki: 'Wiki',
+    totalPoolsDeposits: 'Total pools deposits',
+    infiniteApproval: 'Infinite approval',
   },
   beta: {
     slogan: 'The project is still in testing stage, please pay attention to the risks and stay tuned for more functions~',
@@ -152,7 +154,6 @@ export default {
     miningReward: 'Minted',
     stakingAmountPlaceholder: 'Amount',
     stakingBalance: 'Available',
-    infiniteApproval: 'Infinite approval',
     stakingConfirmTip: 'Deposit to get {0}',
     stakingConfirm: 'Deposit',
     redemptionBalance: 'Available',

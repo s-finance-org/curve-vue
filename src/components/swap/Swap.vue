@@ -12,7 +12,7 @@
       </b-container>
       <b-container class="py-4 px-md-5">
         <div class="d-flex align-items-center px-md-5 flex-wrap">
-          <div class="total-box p-2 mr-4 d-none d-lg-flex box-98 flex-wrap" :class="{ 'icons-box-2': Object.keys(currencies).length === 2 }">
+          <div class="total-box p-2 mr-4 d-none d-lg-flex box-98 flex-wrap" :class="[`icons-box-${Object.keys(currencies).length}`]">
             <img v-for='(currency, i) in Object.keys(currencies)' :key="'icon-'+currency" class="icon-w-40"
               :class="{'token-icon': true, [currency+'-icon']: true, 'y': depositc && !isPlain}" 
               :src='getTokenIcon(currency)'>
@@ -902,7 +902,7 @@
                   this.to_currency = 1
                 }
 
-              console.log('coins', this.coins)
+              // console.log('coins', this.coins)
                 let currentAllowance = cBN(await this.coins[this.from_currency].methods.allowance(currentContract.default_account, currentContract.swap_address).call())
                 let maxAllowance = currentContract.max_allowance.div(cBN(2))
                 if (currentAllowance.gt(maxAllowance))
@@ -945,7 +945,7 @@
                     this.fromBgColor = 'blue'
             },
             async set_from_amount(i) {
-              console.log('this.coins[i]', i, this.coins[i])
+              // console.log('this.coins[i]', i, this.coins[i])
                 let balanceCalls = [[this.coins[i]._address, this.coins[i].methods.balanceOf(this.default_account).encodeABI()]]
                 if(this.currentPool == 'susdv2' && i == 3 || this.currentPool == 'sbtc' && i == 2) {
                     balanceCalls.push([this.coins[i]._address, this.coins[i].methods.transferableSynths(this.default_account).encodeABI()])
@@ -1002,11 +1002,11 @@
                   }
 
                   if(!this.swapwrapped && !['susdv2', 'tbtc', 'ren', 'okuu', 'usd5'].includes(this.currentPool)) {
-          console.log('get_dy_underlying', i, j, dx)
+          // console.log('get_dy_underlying', i, j, dx)
                     calls.push([currentContract.swap._address, currentContract.swap.methods.get_dy_underlying(i, j, dx).encodeABI()])
           // console.log(await currentContract.swap.methods.get_dy_underlying(i, j, dx).call() )
                   } else {
-          console.log('get_dy', i, j, dx)
+          // console.log('get_dy', i, j, dx)
                     //dx = cBN(dx).times(currentContract.c_rates[i])
                     calls.push([currentContract.swap._address, currentContract.swap.methods.get_dy(i, j, dx).encodeABI()])
                   }
@@ -1021,7 +1021,7 @@
                   // In c-units
                   var dy_ = +get_dy_underlying / this.precisions[j];
                   var dy = this.toFixed(dy_);
-console.log('------', dy, dy_, dx_, balance, this.c_rates)
+// console.log('------', dy, dy_, dx_, balance, this.c_rates)
                   resolve([dy, dy_, dx_, balance])
               })
               return helpers.makeCancelable(promise);
@@ -1071,7 +1071,7 @@ console.log('------', dy, dy_, dx_, balance, this.c_rates)
 
                 var min_dy = BN(await currentContract.swap.methods[min_dy_method](i, j, BN(dx).toFixed(0,1)).call())
 
-console.log('min_dy', min_dy, '=', i, j, BN(dx).toFixed(0,1))
+// console.log('min_dy', min_dy, '=', i, j, BN(dx).toFixed(0,1))
                 min_dy = min_dy.times(1-maxSlippage)
                 dx = cBN(dx.toString()).toFixed(0,1);
                 this.waitingMessage = this.$i18n.t('instantSwap.approveExchange', [this.fromInput, this.getCurrency(this.from_currency)])
@@ -1105,7 +1105,7 @@ console.log('min_dy', min_dy, '=', i, j, BN(dx).toFixed(0,1))
                 if(this.swapwrapped || ['susdv2', 'tbtc', 'ren', 'sbtc'].includes(this.currentPool)) exchangeMethod = currentContract.swap.methods.exchange
                 try {
                     await helpers.setTimeoutPromise(100)
-                    console.log(i, j, dx, BN(min_dy).toFixed(0,1))
+                    // console.log(i, j, dx, BN(min_dy).toFixed(0,1))
                     await exchangeMethod(i, j, dx, BN(min_dy).toFixed(0,1))
                         .send({
                             from: currentContract.default_account,

@@ -39,6 +39,7 @@ export default {
     withdraw: '取款',
     all: '全部',
     poolProfit: '流动性奖励',
+    wiki: '指南',
     totalPoolsDeposits: '兑换池资金',
     infiniteApproval: '信任此合约使用最佳矿工费，后续将无需再次批准',
   },

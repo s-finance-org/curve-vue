@@ -27,6 +27,7 @@
                 :href=item.href
                 :target=item.target
                 :active=item.active
+                v-show="item.href || item.to"
                 >{{ $t(item.i18n) }}</b-dropdown-item>
             </b-nav-item-dropdown>
           </b-navbar-nav>
@@ -53,7 +54,9 @@
               :href=item.href
               :target=item.target
               :active=item.active
-              ><span class="pl-3">{{ $t(item.i18n) }}</span></b-nav-item>
+              >
+              <span v-show="item.href || item.to" class="pl-3">{{ $t(item.i18n) }}</span>
+            </b-nav-item>
           </b-navbar-nav>
         </b-navbar>
         <sel-language class="ml-3 mt-3" />
@@ -110,7 +113,8 @@
         return process.env.BASE_URL
       },
       headerNav () {
-        const { $route } = this
+        const { $route, $i18n } = this
+        const { locale } = $i18n
         const navs = [
           { name: 'home', to: { name: 'RootIndex' }, i18n: 'global.home' },
           { name: 'swap', to: { name: 'Swap' }, i18n: 'global.swap', active: 'Swap' === $route.name },
@@ -121,7 +125,8 @@
         const more = [
           { name: 'risks', to: { name: 'Risks', path: '/risks' }, i18n: 'global.risks' },
           { name: 'statemented', to: { name: 'Statemented', path: '/statemented' }, i18n: 'global.announcements' },
-          { name: 'voting', href: 'https://signal.s.finance/', target: '_blank', i18n: 'global.voting' }
+          { name: 'voting', href: 'https://signal.s.finance/', target: '_blank', i18n: 'global.voting' },
+          { name: 'wiki', href: locale === 'zh-CN' ? 'https://wiki.s.finance/zh/home' : '', target: '_blank', i18n: 'global.wiki' }
         ]
 
         return {

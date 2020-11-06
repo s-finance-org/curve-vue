@@ -1554,7 +1554,6 @@
             }
           },
           setInputStyles(newInputs = false, newContract, oldContract) {
-    console.log('setInputStyles', newContract, oldContract)
             if(oldContract) {
               for(let i = 0; i < allabis[newContract].N_COINS - allabis[oldContract].N_COINS; i++) {
                 this.deposit_inputs.push('0.00')
@@ -2591,6 +2590,8 @@ console.log('handle_remove_liquidity', this.sync_withdraw_avg_balances, this.to_
 
           let precision = this.precisions_withdrawc[this.to_currency]
           let zap_values = Array(this.currencie_coins_n_withdrawc).fill(0)
+          // FIXME: to [].div()
+          zap_values[this.to_currency] = BN(0)
           // FIXME: amount === 0 ERROR
           try {
             this.warninglow = false
