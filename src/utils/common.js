@@ -178,8 +178,9 @@ export async function ensure_allowance_base(amounts, plain = false, contractName
     // Non-infinite
     for (let i=0; i < N_COINS; i++) {
       if (cBN(allowances[i]).isLessThan(cBN(amounts[i])) && cBN(amounts[i]).gt(0)) {
-        if (allowances[i] > 0 && requiresResetAllowance.includes(coins[i]._address))
-            await approve(coins[i], 0, default_account, swap);
+        if (allowances[i] > 0 && requiresResetAllowance.includes(coins[i]._address)) {
+          await approve(coins[i], 0, default_account, swap);
+        }
         await approve(coins[i], amounts[i], default_account, swap);
       }
     }

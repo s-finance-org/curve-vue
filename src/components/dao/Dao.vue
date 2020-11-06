@@ -61,16 +61,16 @@
                 <h6 class="mb-0 text-black-65">{{ $t('dao.dailyYield', ['SFG']) }}</h6>
                 <text-overlay-loading inline :show="store.gauges.qusd5.rewards.sfg.dailyYield.loading">
                   <span class="h4">{{ store.gauges.qusd5.rewards.sfg.dailyYield.cont }} {{ store.gauges.qusd5.rewards.sfg.name }}</span>
-                  <b-avatar text="!" class="iconTip iconTip-warning ml-2" id="tooltip-mining-paid-reward-tip1"></b-avatar>
-                  <b-tooltip placement="topright" target="tooltip-mining-paid-reward-tip1" variant="success">{{ $t('dao.miningPoolOpeningNotice', [store.gauges.qusd5.propagateMark, store.gauges.qusd5.mortgagesUnit]) }}</b-tooltip>
+                  <!-- <b-avatar text="!" class="iconTip iconTip-warning ml-2" id="tooltip-mining-paid-reward-tip1"></b-avatar>
+                  <b-tooltip placement="topright" target="tooltip-mining-paid-reward-tip1" variant="success">{{ $t('dao.miningPoolOpeningNotice', [store.gauges.qusd5.propagateMark, store.gauges.qusd5.mortgagesUnit]) }}</b-tooltip> -->
                 </text-overlay-loading>
               </span>
               <span class="col-12 col-md-6 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.dailyYield', ['KUN']) }}</h6>
                 <text-overlay-loading inline :show="store.gauges.qusd5.rewards.kun.dailyYield.loading">
                   <span class="h4">{{ store.gauges.qusd5.rewards.kun.dailyYield.cont }} {{ store.gauges.qusd5.rewards.kun.name }}</span>
-                  <b-avatar text="!" class="iconTip iconTip-warning ml-2" id="tooltip-mining-paid-reward-tip2"></b-avatar>
-                  <b-tooltip placement="topright" target="tooltip-mining-paid-reward-tip2" variant="success">{{ $t('dao.miningPoolOpeningNotice', [store.gauges.qusd5.propagateMark, store.gauges.qusd5.mortgagesUnit]) }}</b-tooltip>
+                  <!-- <b-avatar text="!" class="iconTip iconTip-warning ml-2" id="tooltip-mining-paid-reward-tip2"></b-avatar>
+                  <b-tooltip placement="topright" target="tooltip-mining-paid-reward-tip2" variant="success">{{ $t('dao.miningPoolOpeningNotice', [store.gauges.qusd5.propagateMark, store.gauges.qusd5.mortgagesUnit]) }}</b-tooltip> -->
                 </text-overlay-loading>
               </span>
             </div>
@@ -1802,8 +1802,8 @@
             // )
 
             // usd5
-            store.gauges.usd5.rewards.sfg.weighting.handled = 0.3
-            // store.gauges.usd5.rewards.sfg.weighting.handled = 0.25
+            // store.gauges.usd5.rewards.sfg.weighting.handled = 0.3
+            store.gauges.usd5.rewards.sfg.weighting.handled = 0.25
 
             store.gauges.usd5.getAPY(
               store.tokens.sfg.getPrice(),
@@ -1823,8 +1823,8 @@
             )
 
             // qusd5
-            store.gauges.qusd5.rewards.sfg.weighting.handled = 0
-            // store.gauges.qusd5.rewards.sfg.weighting.handled = 0.1
+            // store.gauges.qusd5.rewards.sfg.weighting.handled = 0
+            store.gauges.qusd5.rewards.sfg.weighting.handled = 0.1
 
             store.gauges.qusd5.getAPY(
               store.tokens.sfg.getPrice(),
@@ -1871,8 +1871,8 @@
             )
 
             // dfi
-            store.gauges.dfi.rewards.sfg.weighting.handled = 0.15
-            // store.gauges.dfi.rewards.sfg.weighting.handled = 0.1
+            // store.gauges.dfi.rewards.sfg.weighting.handled = 0.15
+            store.gauges.dfi.rewards.sfg.weighting.handled = 0.1
 
             store.gauges.dfi.getAPY(
               store.tokens.sfg.getPrice(),

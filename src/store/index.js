@@ -2779,8 +2779,7 @@ console.log('dailyAPY.handled', dailyAPY.handled, await price / 1e18, await tota
       const { contract, dailyAPY, apy, rewards } = this
 
       rewards.sfg.dailyYield.handled = BN(await dailyYield / 1e18).times(rewards.sfg.weighting.handled).toString()
-      // rewards.kun.dailyYield.handled = 3333.3333
-      rewards.kun.dailyYield.handled = 0
+      rewards.kun.dailyYield.handled = 3333.3333
 
       const lpt = BN(await totalStaking).times(await lpTokenPrice / 1e18)
       const kunAPY = BN(await kunPrice / 1e18).times(rewards.kun.dailyYield.handled).dividedBy(lpt)
