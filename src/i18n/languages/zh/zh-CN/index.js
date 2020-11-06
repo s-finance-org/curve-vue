@@ -165,7 +165,7 @@ export default {
     totalStaking: '总抵押量',
     myStaking: '我的抵押',
     virtualPrice: 'LP tokens 价格',
-    miningPoolOpeningNotice: '{0} 池流动性挖矿即将开启。当前可正常抵押赎回 {1} LP tokens，但是无法获得代币奖励',
+    miningPoolOpeningNotice: '{0} 池流动性挖矿即将开启。当前可正常抵押赎回 {1}，但是无法获得代币奖励',
     rewardMayBeLost: '由于进行了矿工费优化，赎回前请先领取挖矿奖励，否则可能会导致奖励丢失',
   },
   notice: {

@@ -14,7 +14,7 @@
         <div class="d-flex align-items-center px-md-5 flex-wrap">
           <div class="total-box p-2 mr-4 d-none d-lg-flex box-98 flex-wrap" :class="[`icons-box-${Object.keys(currencies).length}`]">
             <img v-for='(currency, i) in Object.keys(currencies)' :key="'icon-'+currency" class="icon-w-40"
-              :class="{'token-icon': true, [currency+'-icon']: true, 'y': depositc && !isPlain}" 
+              :class="{'token-icon': true, [currency+'-icon']: true, 'y': depositc && !isPlain}"
               :src='getTokenIcon(currency)'>
           </div>
           <h3 class="mb-0 col-4 py-3">{{ currentPoolName }}<br/>{{ $t('liquidity.name') }}</h3>

@@ -375,7 +375,6 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
     userBalanceOf: valueModel.create(),
     async getBalanceOf (target, accountAddress) {
       const { contract, userBalanceOf } = this
-console.log('accountAddress', accountAddress)
       const result = await contract.methods.balanceOf(accountAddress).call()
 
       userBalanceOf.ether = target.ether = result
@@ -2780,7 +2779,8 @@ console.log('dailyAPY.handled', dailyAPY.handled, await price / 1e18, await tota
       const { contract, dailyAPY, apy, rewards } = this
 
       rewards.sfg.dailyYield.handled = BN(await dailyYield / 1e18).times(rewards.sfg.weighting.handled).toString()
-      rewards.kun.dailyYield.handled = 3333.3333
+      // rewards.kun.dailyYield.handled = 3333.3333
+      rewards.kun.dailyYield.handled = 0
 
       const lpt = BN(await totalStaking).times(await lpTokenPrice / 1e18)
       const kunAPY = BN(await kunPrice / 1e18).times(rewards.kun.dailyYield.handled).dividedBy(lpt)
