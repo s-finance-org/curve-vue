@@ -13,7 +13,7 @@
       </b-container>
       <b-container class="py-4 px-md-5">
         <div class="d-flex align-items-center px-md-5 flex-wrap">
-          <div class="total-box p-2 mr-4 d-none d-lg-flex box-98 flex-wrap" :class="{ 'icons-box-2': Object.keys(currencies).length === 2 }">
+          <div class="total-box p-2 mr-4 d-none d-lg-flex box-98 flex-wrap" :class="[`icons-box-${Object.keys(currencies).length}`]">
             <img v-for='(currency, i) in Object.keys(currencies)' :key="'icon-'+currency" class="icon-w-40"
               :class="{'token-icon': true, [currency+'-icon']: true, 'y': depositc && !isPlain}"
               :src='getTokenIcon(currency)'>
@@ -1699,6 +1699,8 @@
 
             let aggcalls = await currentContract.multicall.methods.aggregate(calls).call()
             let decoded = aggcalls[1].map(hex=>currentContract.web3.eth.abi.decodeParameter('uint256',hex))
+            // init
+            this.amounts = []
 
             decoded.slice(0, decoded.length-endOffset).forEach((balance, i) => {
               let precisions = this.precisions[i]
