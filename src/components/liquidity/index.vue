@@ -2591,7 +2591,8 @@ console.log('handle_remove_liquidity', this.sync_withdraw_avg_balances, this.to_
 
           let precision = this.precisions_withdrawc[this.to_currency]
           let zap_values = Array(this.currencie_coins_n_withdrawc).fill(0)
-					try {
+          // FIXME: amount === 0 ERROR
+          try {
             this.warninglow = false
 						zap_values[this.to_currency] = BN(await inOneCoin.methods.calc_withdraw_one_coin(amount, this.to_currency).call())
             if(zap_values[this.to_currency].eq(BN(0))) this.warninglow = true

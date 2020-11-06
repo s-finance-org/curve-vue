@@ -111,7 +111,7 @@ export async function ensure_allowance(amounts, plain = false, contractName, N_C
   let calls = []
   for (let i=0; i < N_COINS; i++) {
       calls.push([coins[i]._address, coins[i].methods.allowance(default_account, swap).encodeABI()])
-console.log(i, swap, await coins[i].methods.allowance(default_account, swap).call() )
+// console.log(i, swap, await coins[i].methods.allowance(default_account, swap).call() )
   }
   let aggcalls = await currentContract.multicall.methods.aggregate(calls).call();
   allowances = aggcalls[1].map(hex => currentContract.web3.eth.abi.decodeParameter('uint256', hex));
@@ -167,7 +167,7 @@ export async function ensure_allowance_base(amounts, plain = false, contractName
   let calls = []
   for (let i=0; i < N_COINS; i++) {
     calls.push([coins[i]._address, coins[i].methods.allowance(default_account, swap).encodeABI()])
-console.log(i, coins[i]._address, swap, await coins[i].methods.allowance(default_account, swap).call() )
+// console.log(i, coins[i]._address, swap, await coins[i].methods.allowance(default_account, swap).call() )
   }
   let aggcalls = await currentContract.multicall.methods.aggregate(calls).call();
   allowances = aggcalls[1].map(hex => currentContract.web3.eth.abi.decodeParameter('uint256', hex));
