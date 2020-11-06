@@ -144,6 +144,7 @@ export default {
     standTitle: '稳定币流动性矿池',
     tokenTitle: '{0} 流动性矿池',
     rewardWeight: '{0} 奖励权重',
+    dailyYield: '{0} 每日奖励数量',
     describe: '抵押 {0} 挖矿奖励 {1}',
     staking: '抵押',
     redemption: '赎回',
@@ -163,7 +164,8 @@ export default {
     totalStaking: '总抵押量',
     myStaking: '我的抵押',
     virtualPrice: 'LP tokens 价格',
-    miningPoolOpeningNotice: '{0} 池流动性挖矿即将开启。当前可正常抵押赎回 {1} LP tokens，但是无法获得代币奖励'
+    miningPoolOpeningNotice: '{0} 池流动性挖矿即将开启。当前可正常抵押赎回 {1} LP tokens，但是无法获得代币奖励',
+    rewardMayBeLost: '由于进行了矿工费优化，赎回前请先领取挖矿奖励，否则可能会导致奖励丢失',
   },
   notice: {
     approveSpending: '请授权钱包进行扣款',

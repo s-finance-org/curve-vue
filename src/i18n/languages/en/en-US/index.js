@@ -145,6 +145,7 @@ export default {
     standTitle: 'Stablecoin liquidity pool',
     tokenTitle: '{0} Liquidity gauge',
     rewardWeight: '{0} reward weight',
+    dailyYield: '{0} daily reward',
     describe: 'Staking {0} Reward {1}',
     staking: 'Deposit',
     redemption: 'Withdraw',
@@ -165,7 +166,8 @@ export default {
     totalStaking: 'Total staking',
     myStaking: 'My staking',
     virtualPrice: 'Virtual price',
-    miningPoolOpeningNotice: '{0} liquidity gauge is about to open. Currently, deposits and withdrawals can be done normally, but no token reward is available.'
+    miningPoolOpeningNotice: '{0} liquidity gauge is about to open. Currently, deposits and withdrawals can be done normally, but no token reward is available.',
+    rewardMayBeLost: 'Due to the optimization of the miner fee, please claim the mining reward before withdraw, otherwise the reward may be lost',
   },
   notice: {
     approveSpending: 'Please approve spending your coins',

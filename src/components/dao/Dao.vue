@@ -51,10 +51,22 @@
                   </span>
                 </text-overlay-loading>
               </span>
-              <span class="col-12 col-md-6 pb-3">
+              <!-- <span class="col-12 col-md-6 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.rewardWeight', ['SFG']) }}</h6>
                 <text-overlay-loading inline :show="store.gauges.qusd5.rewards.sfg.weighting.loading">
                   <span class="h4">{{ store.gauges.qusd5.rewards.sfg.weighting.percent }}%</span>
+                </text-overlay-loading>
+              </span> -->
+              <span class="col-12 col-md-6 pb-3">
+                <h6 class="mb-0 text-black-65">{{ $t('dao.dailyYield', ['SFG']) }}</h6>
+                <text-overlay-loading inline :show="store.gauges.dusd.rewards.sfg.dailyYield.loading">
+                  <span class="h4">{{ store.gauges.dusd.rewards.sfg.dailyYield.cont }} {{ store.gauges.qusd5.rewards.sfg.name }}</span>
+                </text-overlay-loading>
+              </span>
+              <span class="col-12 col-md-6 pb-3">
+                <h6 class="mb-0 text-black-65">{{ $t('dao.dailyYield', ['KUN']) }}</h6>
+                <text-overlay-loading inline :show="store.gauges.qusd5.rewards.kun.dailyYield.loading">
+                  <span class="h4">{{ store.gauges.qusd5.rewards.kun.dailyYield.cont }} {{ store.gauges.qusd5.rewards.kun.name }}</span>
                 </text-overlay-loading>
               </span>
             </div>
@@ -100,7 +112,11 @@
                 </div>
               </b-tab>
               <b-tab :title="$t('dao.redemption')" class="pt-3">
-                <label class="text-black-65 mb-0">{{ $t('dao.redemption') }}</label>
+                <label class="text-black-65 mb-0 d-flex align-items-center">
+                  {{ $t('dao.redemption') }}
+                  <b-avatar text="!" class="iconTip iconTip-warning ml-2" id="tooltip-mining-paid-reward-tip-qian"></b-avatar>
+                  <b-tooltip placement="topright" target="tooltip-mining-paid-reward-tip-qian" variant="success">{{ $t('dao.rewardMayBeLost') }}</b-tooltip>
+                </label>
                 <div class="row flex-wrap">
                   <div class="col-12 col-lg mt-2">
                     <b-form-input class="h-38" v-model="store.gauges.qusd5.mortgages.qusd5.redemptionAmountInput" :placeholder="$t('dao.redemptionAmountPlaceholder')"></b-form-input>
@@ -252,10 +268,16 @@
                   </span>
                 </text-overlay-loading>
               </span>
-              <span class="col-12 col-md-6 pb-3">
+              <!-- <span class="col-12 col-md-6 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.rewardWeight', ['SFG']) }}</h6>
                 <text-overlay-loading inline :show="store.gauges.usd5.rewards.sfg.weighting.loading">
                   <span class="h4">{{ store.gauges.usd5.rewards.sfg.weighting.percent }}%</span>
+                </text-overlay-loading>
+              </span> -->
+              <span class="col-12 col-md-6 pb-3">
+                <h6 class="mb-0 text-black-65">{{ $t('dao.dailyYield', ['SFG']) }}</h6>
+                <text-overlay-loading inline :show="store.gauges.usd5.rewards.sfg.dailyYield.loading">
+                  <span class="h4">{{ store.gauges.usd5.rewards.sfg.dailyYield.cont }} {{ store.gauges.usd5.rewards.sfg.name }}</span>
                 </text-overlay-loading>
               </span>
             </div>
@@ -301,7 +323,9 @@
                 </div>
               </b-tab>
               <b-tab :title="$t('dao.redemption')" class="pt-3">
-                <label class="text-black-65 mb-0">{{ $t('dao.redemption') }}</label>
+                <label class="text-black-65 mb-0 d-flex align-items-center">
+                  {{ $t('dao.redemption') }}
+                </label>
                 <div class="row flex-wrap">
                   <div class="col-12 col-lg mt-2">
                     <b-form-input class="h-38" v-model="store.gauges.usd5.mortgages.usd5.redemptionAmountInput" :placeholder="$t('dao.redemptionAmountPlaceholder')"></b-form-input>
@@ -415,10 +439,22 @@
                   </span>
                 </text-overlay-loading>
               </span>
-              <span class="col-12 col-md-6 pb-3">
+              <!-- <span class="col-12 col-md-6 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.rewardWeight', ['SFG']) }}</h6>
                 <text-overlay-loading inline :show="store.gauges.dusd.rewards.sfg.weighting.loading">
                   <span class="h4">{{ store.gauges.dusd.rewards.sfg.weighting.percent }}%</span>
+                </text-overlay-loading>
+              </span> -->
+              <span class="col-12 col-md-6 pb-3">
+                <h6 class="mb-0 text-black-65">{{ $t('dao.dailyYield', ['SFG']) }}</h6>
+                <text-overlay-loading inline :show="store.gauges.dusd.rewards.sfg.dailyYield.loading">
+                  <span class="h4">{{ store.gauges.dusd.rewards.sfg.dailyYield.cont }} {{ store.gauges.dusd.rewards.sfg.name }}</span>
+                </text-overlay-loading>
+              </span>
+              <span class="col-12 col-md-6 pb-3">
+                <h6 class="mb-0 text-black-65">{{ $t('dao.dailyYield', ['DF']) }}</h6>
+                <text-overlay-loading inline :show="store.gauges.dusd.rewards.df.dailyYield.loading">
+                  <span class="h4">{{ store.gauges.dusd.rewards.df.dailyYield.cont }} {{ store.gauges.dusd.rewards.df.name }}</span>
                 </text-overlay-loading>
               </span>
             </div>
@@ -464,7 +500,11 @@
                 </div>
               </b-tab>
               <b-tab :title="$t('dao.redemption')" class="pt-3">
-                <label class="text-black-65 mb-0">{{ $t('dao.redemption') }}</label>
+                <label class="text-black-65 mb-0 d-flex align-items-center">
+                  {{ $t('dao.redemption') }}
+                  <b-avatar text="!" class="iconTip iconTip-warning ml-2" id="tooltip-mining-paid-reward-tip-dusd"></b-avatar>
+                  <b-tooltip placement="topright" target="tooltip-mining-paid-reward-tip-dusd" variant="success">{{ $t('dao.rewardMayBeLost') }}</b-tooltip>
+                </label>
                 <div class="row flex-wrap">
                   <div class="col-12 col-lg mt-2">
                     <b-form-input class="h-38" v-model="store.gauges.dusd.mortgages.dusd.redemptionAmountInput" :placeholder="$t('dao.redemptionAmountPlaceholder')"></b-form-input>
@@ -616,10 +656,16 @@
                   </span>
                 </text-overlay-loading>
               </span>
-              <span class="col-12 col-md-6 pb-3">
+              <!-- <span class="col-12 col-md-6 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.rewardWeight', ['SFG']) }}</h6>
                 <text-overlay-loading inline :show="store.gauges.dfi.rewards.sfg.weighting.loading">
                   <span class="h4">{{ store.gauges.dfi.rewards.sfg.weighting.percent }}%</span>
+                </text-overlay-loading>
+              </span> -->
+              <span class="col-12 col-md-6 pb-3">
+                <h6 class="mb-0 text-black-65">{{ $t('dao.dailyYield', ['SFG']) }}</h6>
+                <text-overlay-loading inline :show="store.gauges.dfi.rewards.sfg.dailyYield.loading">
+                  <span class="h4">{{ store.gauges.dfi.rewards.sfg.dailyYield.cont }} {{ store.gauges.dfi.rewards.sfg.name }}</span>
                 </text-overlay-loading>
               </span>
             </div>
@@ -778,10 +824,16 @@
                   </span>
                 </text-overlay-loading>
               </span>
-              <span class="col-12 col-md-6 pb-3">
+              <!-- <span class="col-12 col-md-6 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.rewardWeight', ['SFG']) }}</h6>
                 <text-overlay-loading inline :show="store.gauges.susdv2.rewards.sfg.weighting.loading">
                   <span class="h4">{{ store.gauges.susdv2.rewards.sfg.weighting.percent }}%</span>
+                </text-overlay-loading>
+              </span> -->
+              <span class="col-12 col-md-6 pb-3">
+                <h6 class="mb-0 text-black-65">{{ $t('dao.dailyYield', ['SFG']) }}</h6>
+                <text-overlay-loading inline :show="store.gauges.susdv2.rewards.sfg.dailyYield.loading">
+                  <span class="h4">{{ store.gauges.susdv2.rewards.sfg.dailyYield.cont }} {{ store.gauges.susdv2.rewards.sfg.name }}</span>
                 </text-overlay-loading>
               </span>
             </div>
@@ -992,10 +1044,16 @@
                   <span class="inline-block text-black-65">{{ store.gauges.bpt.rewards.sfg.name }}</span>
                 </text-overlay-loading>
               </span>
-              <span class="col-12 col-md-6 pb-3">
+              <!-- <span class="col-12 col-md-6 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.rewardWeight', ['SFG']) }}</h6>
                 <text-overlay-loading inline :show="store.gauges.bpt.rewards.sfg.weighting.loading">
                   <span class="h4">{{ store.gauges.bpt.rewards.sfg.weighting.percent }}%</span>
+                </text-overlay-loading>
+              </span> -->
+              <span class="col-12 col-md-6 pb-3">
+                <h6 class="mb-0 text-black-65">{{ $t('dao.dailyYield', ['SFG']) }}</h6>
+                <text-overlay-loading inline :show="store.gauges.bpt.rewards.sfg.dailyYield.loading">
+                  <span class="h4">{{ store.gauges.bpt.rewards.sfg.dailyYield.cont }} {{ store.gauges.bpt.rewards.sfg.name }}</span>
                 </text-overlay-loading>
               </span>
             </div>
@@ -1119,6 +1177,8 @@
       </b-tabs>
 
     </b-container>
+
+
 
 
     <fieldset v-if=false>
