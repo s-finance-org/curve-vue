@@ -97,6 +97,10 @@ fieldset {
   z-index: 0 !important;
 }
 
+.pointer {
+  cursor: pointer;
+}
+
 /* Shadow */
 .box {
   overflow: hidden;

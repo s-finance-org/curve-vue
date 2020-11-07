@@ -72,7 +72,7 @@
                     @input='set_to_amount'
                     v-model='fromInput'>
                 </div>
-                <b-form-text id="from-val-help" class="text-black-65 mt-0" @click=set_max_balance>
+                <b-form-text class="text-black-65 mt-0 pointer" @click=set_max_balance>
                   {{ $t('instantSwap.max') }}:
                   <span v-show="(currentPool == 'susdv2' && from_currency == 3 || currentPool == 'sbtc' && from_currency == 2)
                     && maxBalanceText != '0.00'"
@@ -81,18 +81,18 @@
                   </span>
                   <span>{{ maxBalanceText }}</span>
                   <span v-show='susdWaitingPeriod' class='susd-waiting-period'>
-                      <span class='tooltip'>
-                          <img src='@/assets/clock-regular.svg' class='icon small'>
-                          <span class='tooltiptext'>
-                              Cannot transfer during waiting period. {{ (susdWaitingPeriodTime).toFixed(0) }} secs left.
-                          </span>
-                      </span>
+                    <span class='tooltip'>
+                        <img src='@/assets/clock-regular.svg' class='icon small'>
+                        <span class='tooltiptext'>
+                            Cannot transfer during waiting period. {{ (susdWaitingPeriodTime).toFixed(0) }} secs left.
+                        </span>
+                    </span>
                   </span>
                   <span v-show="(currentPool == 'susdv2' && from_currency == 3 || currentPool == 'sbtc' && from_currency == 2)
-                    && maxBalanceText != '0.00'" 
+                    && maxBalanceText != '0.00'"
                       class='tooltip'> [?]
                       <span class='tooltiptext long'>
-                          Max transferrable amount is {{ maxSynthText }}. You can free the remaining balance by settling.
+                        Max transferrable amount is {{ maxSynthText }}. You can free the remaining balance by settling.
                       </span>
                   </span>
                   <span class="float-right" v-show='swapwrapped'>
@@ -923,17 +923,17 @@
                 await this.set_to_amount();
             },
             async set_max_balance() {
-                let balance
-                if(this.currentPool == 'susdv2' && this.from_currency == 3 ||
-                    this.currentPool == 'sbtc' && this.from_currency == 2) {
-                    balance = await this.coins[this.from_currency].methods.transferableSynths(this.default_account).call();
-                    if(this.susdWaitingPeriod) balance = 0
-                }
-                else
-                    balance = await this.coins[this.from_currency].methods.balanceOf(currentContract.default_account).call();
-                let amount = cBN(balance).div(this.precisions[this.from_currency]).toFixed()
-                this.fromInput = currentContract.default_account ? amount : 0
-                await this.set_to_amount();
+              let balance
+              if(this.currentPool == 'susdv2' && this.from_currency == 3 ||
+                  this.currentPool == 'sbtc' && this.from_currency == 2) {
+                balance = await this.coins[this.from_currency].methods.transferableSynths(this.default_account).call();
+                if(this.susdWaitingPeriod) balance = 0
+              }
+              else
+                  balance = await this.coins[this.from_currency].methods.balanceOf(currentContract.default_account).call();
+              let amount = cBN(balance).div(this.precisions[this.from_currency]).toString()
+              this.fromInput = currentContract.default_account ? this.toFixed(amount) : 0
+              await this.set_to_amount();
             },
             async highlight_input() {
                 let balanceCall = this.coins[this.from_currency].methods.balanceOf(this.default_account).call()
