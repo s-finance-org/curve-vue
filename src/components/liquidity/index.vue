@@ -18,7 +18,7 @@
               :class="{'token-icon': true, [currency+'-icon']: true, 'y': depositc && !isPlain}"
               :src='getTokenIcon(currency)'>
           </div>
-          <h3 class="mb-0 col-4 py-3">{{ currentPoolName }}<br/>{{ $t('liquidity.name') }}</h3>
+          <h3 class="mb-0 col py-3">{{ currentPoolName }}<br/>{{ $t('liquidity.name') }}</h3>
           <div class="col-12 col-md d-flex px-0">
             <div class="total-box col px-4 py-3 mr-4">
               <h6 class="text-black-65">{{ $t('global.totalBalances') }}</h6>
@@ -26,12 +26,12 @@
                 <h4 class="mb-0">${{ totalBalances | formatNumber(2) }}</h4>
               </text-overlay-loading>
             </div>
-            <!-- <div class="total-box col px-4 py-3">
+            <div class="total-box col px-4 py-3" v-if="poolDailyVolUSD !== ''">
               <h6 class="text-black-65">{{ $t('global.dailyVol') }}</h6>
-              <text-overlay-loading :show="poolVolumeUSD == -1">
-                <h4 class="mb-0">${{ poolVolumeUSD && poolVolumeUSD | formatNumber(2) }}</h4>
+              <text-overlay-loading :show="poolDailyVolUSD.loading">
+                <h4 class="mb-0">${{ poolDailyVolUSD.cont }}</h4>
               </text-overlay-loading>
-            </div> -->
+            </div>
           </div>
         </div>
       </b-container>
@@ -1226,6 +1226,21 @@
                 ? 'susd' : this.currentPool
               ][0]
         },
+        poolDailyVolUSD () {
+          let result = ''
+
+          const transforms = {
+            'qusd5': 'QUSD5',
+            'usd5': 'USD5',
+            'dusd': 'dUSD',
+            'dfi': 'iUSD',
+          }
+          if (transforms[this.currentPool]) {
+            result = store.pool[transforms[this.currentPool]].dailyVol
+          }
+
+          return result
+        },
         totalBalances() {
           return this.bal_info && this.bal_info.reduce((a, b) => a + b, 0) || null
         },
@@ -1673,7 +1688,7 @@
             this.ethPrice = promises[0]
 
             this.show_loading = true
-            console.log('this.coins', this.coins, this.currencie_coins)
+console.log('this.coins', this.coins, this.currencie_coins)
             let calls = [...Array(this.currencie_coins_n).keys()].map(i=> {
                 if(this.currentPool == 'susdv2' && i == 3 || this.currentPool == 'sbtc' && i == 2) {
                   return [this.coins[i]._address, this.coins[i].methods.transferableSynths(currentContract.default_account).encodeABI()]
@@ -1745,6 +1760,7 @@ console.log('token_amount', token_amount, token_amounts)
 console.log('token_amount1', token_amount)
               token_amount = BN(token_amount).times(BN(1).minus(BN(this.calcFee)))
               token_amount = BN(token_amount).times(BN(this.getDepositMaxSlippage)).toFixed(0,1);
+console.log('token_amount2', token_amount)
             }
 
             if(this.depositc)
@@ -1757,13 +1773,12 @@ console.log('this.amounts', this.amounts, amounts)
               ensure_allowance = common.ensure_allowance_base
             }
 
-            if (this.inf_approval)
-              await ensure_allowance(this.amounts, !this.depositc, undefined, undefined, true)
-            else if(this.depositc) {
-              await ensure_allowance(this.amounts, false);
-            } else {
-              await ensure_allowance(amounts, true)
-            }
+            let req = this.inf_approval
+              ? await ensure_allowance(this.amounts, !this.depositc, undefined, undefined, true, this)
+              : this.depositc
+                ? await ensure_allowance(this.amounts, false, undefined, undefined, false, this)
+                : await ensure_allowance(amounts, true, undefined, undefined, false, this)
+            if (req !== false) return false
 
             let receipt;
             let minted = 0;
@@ -2213,14 +2228,13 @@ console.log('update_balances', this.currencie_coins_n_withdrawc)
           , [this.toFixed(amount.div(BN(1e18)))]
         )
 
-                var { dismiss } = notifyNotification(this.waitingMessage)
+        var { dismiss } = notifyNotification(this.waitingMessage)
 
-                let stakedAmount = BN(await currentContract.curveRewards.methods.balanceOf(currentContract.default_account).call())
+        let stakedAmount = BN(await currentContract.curveRewards.methods.balanceOf(currentContract.default_account).call())
 
-                if(stakedAmount.lt(amount))
-                    amount = stakedAmount
+        if(stakedAmount.lt(amount)) amount = stakedAmount
 
-                try {
+          try {
     				await new Promise((resolve, reject) => {
     					currentContract.curveRewards.methods.withdraw(amount.toFixed(0,1))
     						.send({
@@ -2229,36 +2243,36 @@ console.log('update_balances', this.currencie_coins_n_withdrawc)
                   // gas: 125000,
     						})
     						.once('transactionHash', hash => {
-                                this.waitingMessage = 'Waiting for unstake transaction to confirm'
-                                dismiss()
-                                notifyHandler(hash)
-                                resolve()
-                            })
-                            .on('receipt', receipt => {
-                                this.staked_balance = this.staked_balance.minus(amount)
-                                currentContract.curveStakedBalance -= amount
-                                common.update_fee_info()
-                            })
-                            .catch(err => {
-                                dismiss()
-                                reject(err)
-                            })
-    				})
-                    if(exit) {
-        				this.claim_SNX()
-                        //if(['y', 'iearn', 'dfi', 'dusd'].includes(this.currentPool))
-                            //this.showModal = true
-                    }
-                }
-                catch(err) {
-                    console.log(err)
-                    errorStore.handleError(err)
-                    this.waitingMessage = ''
-                    this.show_loading = false;
-                    throw err
-                }
-                this.waitingMessage = ''
-                this.show_loading = false
+                  this.waitingMessage = 'Waiting for unstake transaction to confirm'
+                  dismiss()
+                  notifyHandler(hash)
+                  resolve()
+                })
+                .on('receipt', receipt => {
+                  this.staked_balance = this.staked_balance.minus(amount)
+                  currentContract.curveStakedBalance -= amount
+                  common.update_fee_info()
+                })
+                .catch(err => {
+                  dismiss()
+                  reject(err)
+                })
+            })
+
+            if(exit) {
+              this.claim_SNX()
+              //if(['y', 'iearn', 'dfi', 'dusd'].includes(this.currentPool))
+              //this.showModal = true
+            }
+          } catch(err) {
+            console.log(err)
+            errorStore.handleError(err)
+            this.waitingMessage = ''
+            this.show_loading = false;
+            throw err
+          }
+          this.waitingMessage = ''
+          this.show_loading = false
 			},
       setLoadingAction(val) {
           this.loadingAction = val;
@@ -2397,7 +2411,10 @@ console.log('update_balances', this.currencie_coins_n_withdrawc)
                         var { dismiss } = notifyNotification(this.waitingMessage)
                         try {
                             this.estimateGas = gas / (['compound', 'usdt'].includes(currentContract.currentContract) ? 1.5 : 2.5)
-                            if(!['tbtc','ren','sbtc'].includes(currentContract.currentContract)) await common.ensure_allowance_zap_out(token_amount, undefined, undefined, this.inf_approvalamount)
+                            if(!['tbtc','ren','sbtc'].includes(currentContract.currentContract)) {
+                              let req = await common.ensure_allowance_zap_out(token_amount, undefined, undefined, this.inf_approvalamount, this)
+                              if (req !== false) return false
+                            }
                             dismiss()
                             this.waitingMessage = this.$i18n.t('liquidity.confirmWithdrawalTransaction')
                             var { dismiss } = notifyNotification(this.waitingMessage)
@@ -2444,7 +2461,10 @@ console.log('handle_remove_liquidity', this.sync_withdraw_avg_balances, this.to_
               this.waitingMessage = this.$i18n.t('liquidity.approveLptokenWithdrawal', [floor(amount / 1e18, 6), 'LP token'])
               var { dismiss } = notifyNotification(this.waitingMessage)
               this.estimateGas = contractGas.depositzap[this.currentPool].withdraw / 2
-              if(!['tbtc','ren','sbtc'].includes(currentContract.currentContract)) await common.ensure_allowance_zap_out(amount, undefined, undefined, this.inf_approval)
+              if(!['tbtc','ren','sbtc'].includes(currentContract.currentContract)) {
+                let req = await common.ensure_allowance_zap_out(amount, undefined, undefined, this.inf_approval, this)
+                if (req !== false) return false
+              }
               dismiss()
               let min_amount;
               try {
@@ -2487,7 +2507,10 @@ console.log('handle_remove_liquidity', this.sync_withdraw_avg_balances, this.to_
               var { dismiss } = notifyNotification(this.waitingMessage)
               try {
                 this.estimateGas = contractGas.depositzap[this.currentPool].withdrawShare / 2
-                if(!['tbtc','ren','sbtc'].includes(currentContract.currentContract)) await common.ensure_allowance_zap_out(amount, undefined, undefined, this.inf_approval)
+                if(!['tbtc','ren','sbtc'].includes(currentContract.currentContract)) {
+                  let req = await common.ensure_allowance_zap_out(amount, undefined, undefined, this.inf_approval, this)
+                  if (req !== false) return false
+                }
                 dismiss()
                 this.waitingMessage = this.$i18n.t('liquidity.confirmWithdrawalTransaction')
                 var { dismiss } = notifyNotification(this.waitingMessage)

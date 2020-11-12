@@ -32,6 +32,23 @@ export default {
   },
   getAllInfo: async () => {
     const res = await requests.get('https://api.s.finance/v1/sfinance')
+
+    const { pool, sFinance } = store
+    const transforms = {
+      '0': pool.QUSD5,
+      '1': pool.USD5,
+      '2': pool.dUSD,
+      '3': pool.iUSD,
+    }
+
+    res.data.pools.forEach((item, idx) => {
+      if (transforms[idx]) {
+        transforms[idx].dailyVol.handled = item.vol.vol_24h
+      }
+    })
+
+    store.sFinance.dailyVol.handled = res.data.total_daily_swap
+    store.sFinance.totalValueStaked.handled = res.data.total_lptoken_value_staked
   },
   getDforceApy: async () => {
     const res = await requests.get('https://markets.dforce.network/api/v2/getApy/')

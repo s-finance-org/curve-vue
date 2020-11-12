@@ -1,19 +1,25 @@
 <template>
   <div class="total-bg">
-    <b-container class="d-flex py-4  justify-content-center">
-      <img class="logo_orgin" :src="publicPath + 'res/icons/logo/logo_orgin.svg'">
-      <!-- <div class="total-box px-4 py-3 w-270 mr-4 ml-auto">
-        <h6 class="text-black-65">{{ $t('global.totalPoolsDeposits') }}</h6>
-        <text-overlay-loading :show="!(totalBalances1 || total)">
-          <h4 class="mb-0">{{totalBalances1 || total | formatNumber}}$</h4>
-        </text-overlay-loading>
+    <b-container class="d-flex py-4 justify-content-center px-md-5">
+      <div class="d-flex align-items-center px-md-5 col flex-wrap">
+        <div class="col">
+          <img class="logo_orgin" :src="publicPath + 'res/icons/logo/logo_orgin.svg'">
+        </div>
+        <div class="col-12 col-md d-flex px-0">
+          <div class="total-box col px-4 py-3 mr-4">
+            <h6 class="text-black-65">{{ $t('global.totalPoolsDeposits') }}</h6>
+            <text-overlay-loading :show="totals.totalValueStaked.loading">
+              <h4 class="mb-0">${{ totals.totalValueStaked.cont }}</h4>
+            </text-overlay-loading>
+          </div>
+          <div class="total-box col px-4 py-3">
+            <h6 class="text-black-65">{{ $t('global.dailyVol') }}</h6>
+            <text-overlay-loading :show="totals.dailyVol.loading">
+              <h4 class="mb-0">${{ totals.dailyVol.cont }}</h4>
+            </text-overlay-loading>
+          </div>
+        </div>
       </div>
-      <div class="total-box px-4 py-3 w-270">
-        <h6 class="text-black-65">{{ $t('global.dailyVol') }}</h6>
-        <text-overlay-loading :show="!(volume >= 0)">
-          <h4 class="mb-0">{{(volume | 0) | formatNumber(0)}}$</h4>
-        </text-overlay-loading>
-      </div> -->
     </b-container>
   </div>
 </template>
@@ -26,6 +32,7 @@
 	import * as volumeStore from '@/components/common/volumeStore'
   import { contract } from '../../contract'
   import * as priceStore from '../common/priceStore'
+  import store from '../../store'
 
   import TextOverlayLoading from '../../components/common/TextOverlayLoading'
 
@@ -44,25 +51,13 @@
 			volume() {
 				return this.totalVolume || volumeStore.totalVolume()
       },
+      totals () {
+        return store.sFinance
+      }
       // FIXME: temp
-      totalBalances1() {
-        return this.bal_info && this.bal_info.reduce((a, b) => a + b, 0) || null
-      },
-      poolVolumeUSD() {
-        const converts = {
-          'iearn': 'y',
-          'dfi': 'dfi',
-          'dusd': 'dusd',
-          'okuu': 'okuu',
-          'susdv2': 'susd',
-          'usd5': 'usd5',
-          'qusd5': 'qusd5'
-        }
-
-        return volumeStore.state.volumes[
-          converts[this.currentPool] || this.currentPool
-        ][0]
-      },
+      // totalBalances() {
+      //   return this.bal_info && this.bal_info.reduce((a, b) => a + b, 0) || null
+      // },
 		},
 		async created() {
       await this.totalBalances()
@@ -114,10 +109,8 @@
 	            await volumeStore.getVolumes(pools);
 			}
 		}
-
 	}
 </script>
 
 <style scoped>
-  
 </style>

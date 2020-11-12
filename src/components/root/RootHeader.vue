@@ -78,6 +78,7 @@
     },
     async mounted () {
       await store.request.getAllAnnouncements()
+      await store.request.getAllInfo()
     },
     methods: {
       onStatement () {

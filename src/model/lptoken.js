@@ -49,7 +49,19 @@ const ModelLpToken = {
       contDecimal
     }
 
+    const mixin = {
+      /** @type {Object} */
+      get contract () {
+        const { contract } = __store__
+
+        return contract
+          || (__store__.contract = new web3.eth.Contract(abi, address))
+      }
+    }
+
     return {
+      ...mixin,
+
       code,
       address,
       abi,
@@ -76,15 +88,6 @@ const ModelLpToken = {
         const result = await multicall.batcher(queues)
 
         return result
-      },
-
-      /** @type {Object} */
-      get contract () {
-        const { contract } = __store__
-        const { abi, address } = this
-
-        return contract
-          || (__store__.contract = new web3.eth.Contract(abi, address))
       },
 
       /** @type {string} */
@@ -146,6 +149,7 @@ const ModelLpToken = {
         const { minAmount, maxAmount, error } = this
         const bnAmountEther = BN(amountEther)
 
+        // amount >= minAmount && maxAmount <= amount
         const result = bnAmountEther.gte(minAmount.ether)
           && bnAmountEther.let(maxAmount.ether)
 

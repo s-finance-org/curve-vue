@@ -12,12 +12,12 @@
       </b-container>
       <b-container class="py-4 px-md-5">
         <div class="d-flex align-items-center px-md-5 flex-wrap">
-          <div class="total-box p-2 mr-4 d-none d-lg-flex box-98 flex-wrap" :class="[`icons-box-${Object.keys(currencies).length}`]">
+          <div class="total-box p-2 mr-4 d-none d-lg-flex box-98 flex-wrap my-2" :class="[`icons-box-${Object.keys(currencies).length}`]">
             <img v-for='(currency, i) in Object.keys(currencies)' :key="'icon-'+currency" class="icon-w-40"
               :class="{'token-icon': true, [currency+'-icon']: true, 'y': depositc && !isPlain}"
               :src='getTokenIcon(currency)'>
           </div>
-          <h3 class="mb-0 col-4 py-3">{{ currentPoolName }}<br/>{{ $t('liquidity.name') }}</h3>
+          <h3 class="mb-0 col py-3">{{ currentPoolName }}<br/>{{ $t('liquidity.name') }}</h3>
           <div class="col-12 col-md d-flex px-0">
             <div class="total-box col px-4 py-3 mr-4">
               <h6 class="text-black-65">{{ $t('global.totalBalances') }}</h6>
@@ -25,12 +25,12 @@
                 <h4 class="mb-0">${{ totalBalances | formatNumber(2) }}</h4>
               </text-overlay-loading>
             </div>
-            <!-- <div class="total-box col px-4 py-3">
+            <div class="total-box col px-4 py-3" v-if="poolDailyVolUSD !== ''">
               <h6 class="text-black-65">{{ $t('global.dailyVol') }}</h6>
-              <text-overlay-loading :show="poolVolumeUSD == -1">
-                <h4 class="mb-0">${{ poolVolumeUSD && poolVolumeUSD | formatNumber(2) }}</h4>
+              <text-overlay-loading :show="poolDailyVolUSD.loading">
+                <h4 class="mb-0">${{ poolDailyVolUSD.cont }}</h4>
               </text-overlay-loading>
-            </div> -->
+            </div>
           </div>
         </div>
       </b-container>
@@ -486,6 +486,8 @@
     import TextOverlayLoading from '../../components/common/TextOverlayLoading'
     import * as volumeStore from '../common/volumeStore'
     import { floor } from '../../utils/math/round'
+    import store from '../../store'
+    import { ModelValueEther } from '../../model/index1'
 
     import BalancesInfo from '../BalancesInfo'
 
@@ -717,6 +719,21 @@
           },
           poolVolumeUSD() {
             return volumeStore.state.volumes[this.currentPool == 'iearn' ? 'y' : this.currentPool == 'susdv2' ? 'susd' : this.currentPool][0]
+          },
+          poolDailyVolUSD () {
+            let result = ''
+
+            const transforms = {
+              'qusd5': 'QUSD5',
+              'usd5': 'USD5',
+              'dusd': 'dUSD',
+              'dfi': 'iUSD',
+            }
+            if (transforms[this.currentPool]) {
+              result = store.pool[transforms[this.currentPool]].dailyVol
+            }
+
+            return result
           },
           totalBalances() {
             return this.bal_info && this.bal_info.reduce((a, b) => a + b, 0) || null
@@ -1030,10 +1047,13 @@
                 this.loadingAction = true
                 setTimeout(() => this.loadingAction = false, 500)
             },
+
             async handle_trade() {
-                if(this.loadingAction) return;
+                if(this.loadingAction) return false
+
                 this.userInteracted = true
-                this.setLoadingAction();
+                // this.setLoadingAction();
+                this.loadingAction = true
 
                 this.show_loading = true;
                 var i = this.from_currency
@@ -1047,7 +1067,6 @@
                   b = parseInt(await currentContract.swap.methods.balances(i).call()) / this.c_rates[i]
                 }
 
-          // console.log('----b', b, this.currencie_coins, this.from_currency)
                 let maxSlippage = this.maxSlippage / 100;
                 let currency = (Object.keys(this.currencie_coins)[this.from_currency]).toUpperCase()
                 if(this.swapwrapped) currency = Object.values(this.currencie_coins)[this.from_currency]
@@ -1062,7 +1081,7 @@
                     BN(this.maxSynthBalance).gt(0) && 
                     BN(this.maxSynthBalance).minus(BN(this.fromInput)).lt(BN(this.minAmount))
                 ) {
-                    dx = BN(this.maxSynthBalance).times(1e18).toFixed(0,1)
+                  dx = BN(this.maxSynthBalance).times(1e18).toFixed(0,1)
                 }
                 let min_dy_method = 'get_dy_underlying'
                 if(this.swapwrapped || ['susdv2', 'tbtc', 'ren', 'sbtc', 'okuu', 'usd5'].includes(this.currentPool)) {
@@ -1077,21 +1096,23 @@
                 this.waitingMessage = this.$i18n.t('instantSwap.approveExchange', [this.fromInput, this.getCurrency(this.from_currency)])
                 var { dismiss } = notifyNotification(this.waitingMessage)
 
-                try {
-                  if (this.inf_approval)
-                    await common.ensure_underlying_allowance(i, currentContract.max_allowance, [], undefined, this.swapwrapped)
-                  else
-                    await common.ensure_underlying_allowance(i, dx, [], undefined, this.swapwrapped);
-                }
-                catch(err) {
-                    console.error(err)
-                    dismiss()
-                    this.waitingMessage = '',
-                    this.show_loading = false
-                    throw err;
-                }
-                dismiss()
 
+                const maxAllowanceQuantity = this.inf_approval
+                  ? currentContract.max_allowance
+                  : dx
+                try {
+                  let req = await common.ensure_underlying_allowance(i, maxAllowanceQuantity, [], undefined, this.swapwrapped, null, this)
+                  if (req !== false) return false
+                } catch(err) {
+                  console.error(err)
+                  dismiss()
+                  this.waitingMessage = '',
+                  this.show_loading = false
+                  this.loadingAction = false
+                  throw err;
+                }
+
+                dismiss()
                 this.waitingMessage = this.$i18n.t('instantSwap.confirmSwapFromFor',
                   [`${this.fromInput} ${this.getCurrency(this.from_currency)}`, `${this.toFixed(BN(min_dy).div(this.precisions[j]).toString())} ${this.getCurrency(this.to_currency)}`])
 
@@ -1104,28 +1125,27 @@
                 ]
                 if(this.swapwrapped || ['susdv2', 'tbtc', 'ren', 'sbtc'].includes(this.currentPool)) exchangeMethod = currentContract.swap.methods.exchange
                 try {
-                    await helpers.setTimeoutPromise(100)
-                    // console.log(i, j, dx, BN(min_dy).toFixed(0,1))
-                    await exchangeMethod(i, j, dx, BN(min_dy).toFixed(0,1))
-                        .send({
-                            from: currentContract.default_account,
-                            gasPrice: this.gasPriceWei,
-                            // gas: this.swapwrapped
-                            //   ? contractGas.swap[this.currentPool].exchange(i, j)
-                            //   : contractGas.swap[this.currentPool].exchange_underlying(i, j),
-                        })
-                        .once('transactionHash', hash => {
-                            dismiss()
-                            notifyHandler(hash)
-                            this.waitingMessage = this.$i18n.t('instantSwap.waitingSwapTransactionNoFurther', [hash])
-                        })
-                }
-                catch(err) {
+                  await helpers.setTimeoutPromise(100)
+                  await exchangeMethod(i, j, dx, BN(min_dy).toFixed(0,1))
+                    .send({
+                        from: currentContract.default_account,
+                        gasPrice: this.gasPriceWei,
+                        // gas: this.swapwrapped
+                        //   ? contractGas.swap[this.currentPool].exchange(i, j)
+                        //   : contractGas.swap[this.currentPool].exchange_underlying(i, j),
+                    })
+                    .once('transactionHash', hash => {
+                      dismiss()
+                      notifyHandler(hash)
+                      this.waitingMessage = this.$i18n.t('instantSwap.waitingSwapTransactionNoFurther', [hash])
+                    })
+                } catch(err) {
                     console.error(err)
                     dismiss()
                     errorStore.handleError(err)
                     this.waitingMessage = '';
                     this.show_loading = '';
+                    this.loadingAction = false
                     throw err;
                 }
                 this.waitingMessage = ''
@@ -1135,6 +1155,7 @@
                 this.from_cur_handler();
                 let balance = await this.coins[i].methods.balanceOf(currentContract.default_account).call();
                 this.maxBalance = balance;
+                this.loadingAction = false
             }
         },
 

@@ -36,12 +36,7 @@
         </template>
         <template v-slot:cell(volume)="data">
           <text-overlay-loading :show="data.item.volData && data.item.volData[0] < 0">
-            <template v-if="data.item.volData && data.item.volData[0] > 0">
-              ${{(data.item.volData && data.item.volData[0] | 0) | formatNumber(0)}}
-            </template>
-            <template v-else>
-              -
-            </template>
+            ${{ (data.item.volData && data.item.volData[0] | 0) | formatNumber(0) }}
           </text-overlay-loading>
         </template>
         <template v-slot:head(apr)>
@@ -477,8 +472,8 @@
 		},
 		computed: {
 			publicPath() {
-                return process.env.BASE_URL
-            },
+          return process.env.BASE_URL
+      },
 			sumBalances() {
 				return Object.values(this.balances).filter(balance => balance > 0).reduce((a, b) => a + b, 0)
       },
@@ -490,17 +485,26 @@
 
         const apys = {
           // okuu: (+okuu.price.handled - 1) / ((now - 1603800000000) / 86400000) * 365 * 100,
-          dusd: (+dusd.price.handled - 1) / ((now - 1603468800000) / 86400000) * 365 * 100,
-          dfi: (+iUSD_LPT.price.handled - 1) / ((now - 1602345600000) / 86400000) * 365 * 100,
-          usd5: (+usd5.price.handled - 1) / ((now - 1604149200000) / 86400000) * 365 * 100,
-          qusd5: (+qusd5.price.handled - 1) / ((now - 1604649443000) / 86400000) * 365 * 100
+          'dusd': (+dusd.price.handled - 1) / ((now - 1603468800000) / 86400000) * 365 * 100,
+          'dfi': (+iUSD_LPT.price.handled - 1) / ((now - 1602345600000) / 86400000) * 365 * 100,
+          'usd5': (+usd5.price.handled - 1) / ((now - 1604149200000) / 86400000) * 365 * 100,
+          'qusd5': (+qusd5.price.handled - 1) / ((now - 1604649443000) / 86400000) * 365 * 100
         }
 
-        const apyCont = (apy) => {
+        const textCont = (apy) => {
           return apy > 0
             ? apy.toFixed(2)
             : '-'
         }
+
+        let dailyVols = {
+          'qusd5': [store.pool.QUSD5.dailyVol.handled, -1],
+          'usd5': [store.pool.USD5.dailyVol.handled, -1],
+          'dusd': [store.pool.dUSD.dailyVol.handled, -1],
+          'dfi': [store.pool.iUSD.dailyVol.handled, -1]
+        }
+
+        console.log(dailyVols)
 
         return {
           fields: [
@@ -518,10 +522,10 @@
               toDao: '/dao',
               pooltext: 'qian',
               pools: 'QUSD USD5',
-              volData: null,
+              volData: dailyVols.qusd5,
               currencies: {qusd: 'QUSD', usd5: 'USD5'},
               funds: '-',
-              apy: apyCont(apys.qusd5),
+              apy: textCont(apys.qusd5),
               link: '/qusd5'
             },
             {
@@ -530,10 +534,10 @@
               toDao: '/dao',
               pooltext: '5pool',
               pools: 'DAI USDC USDT TUSD PAX',
-              volData: null,
+              volData: dailyVols.usd5,
               currencies: {dai: 'DAI', usdc: 'USDC', usdt: 'USDT', tusd: 'TUSD', pax: 'PAX'},
               funds: '-',
-              apy: apyCont(apys.usd5),
+              apy: textCont(apys.usd5),
               link: '/usd5'
             },
             // {
@@ -545,7 +549,7 @@
             //   volData: null,
             //   currencies: {oku: 'OKU', usdt: 'USDT'},
             //   funds: '-',
-            //   apy: apyCont(apys.okuu),
+            //   apy: textCont(apys.okuu),
             //   link: '/okuu'
             // },
             {
@@ -554,10 +558,10 @@
               toDao: '/dao',
               pooltext: 'dUSD',
               pools: '(d)DAI (d)USDC (d)USDT (d)USDx',
-              volData: null,
+              volData: dailyVols.dusd,
               currencies: {dai: 'DAI', usdc: 'USDC', usdt: 'USDT', usdx: 'USDx'},
               funds: '-',
-              apy: apyCont(apys.dusd),
+              apy: textCont(apys.dusd),
               link: '/dusd'
             },
             {
@@ -566,10 +570,10 @@
               toDao: '/dao',
               pooltext: 'dfi',
               pools: '(i)DAI (i)USDC (i)USDT',
-              volData: null, // volData.dfi
+              volData: dailyVols.dfi, // volData.dfi
               currencies: {dai: 'DAI', usdc: 'USDC', usdt: "USDT"},
               funds: '-',
-              apy: apyCont(apys.dfi),
+              apy: textCont(apys.dfi),
               link: '/dfi'
             },
             // {

@@ -7,6 +7,7 @@ const Deposit = () => import('../components/deposit/Deposit.vue')
 const DepositRouter = () => import('../components/deposit/DepositRouter.vue')
 const Liquidity = () => import('../components/liquidity/index.vue')
 const Dao = () => import('../components/dao/Dao.vue')
+const Lock = () => import('../components/Lock.vue')
 const __test__ = () => import('../components/test/index.vue')
 const DepositRen = () => import('../components/ren/Deposit.vue')
 const Withdraw = () => import('../components/withdraw/Withdraw.vue')
@@ -191,6 +192,11 @@ let routes = [
         path: '/dao',
         name: 'Dao',
         component: Dao
+      },
+      {
+        path: '/lock',
+        name: 'Lock',
+        component: Lock
       },
       {
         path: '/statemented',

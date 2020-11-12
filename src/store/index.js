@@ -28,6 +28,7 @@ import abi_iUSD_LPT from '../components/dao/abi/iUSD_LPT'
 import swapAbi_iUSD_LPT from '../components/dao/abi/swapAbi_iUSD_LPT'
 import abi_susdv2_swap from '../components/dao/abi/susdv2_swap'
 import { ERC20_abi as abiSusdv2LpToken } from '../allabis'
+import ABI from '../constant/abi'
 
 // TEMP:
 import { contract as currentContract} from '../contract'
@@ -510,7 +511,7 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
     // TODO: priceUnit
     async getPrice (priceUnit) {
       const { address, priceUnitAddress, price } = this
-      const priceContract = new web3.eth.Contract(BALANCER_POOL_ABI, '0x461e474e594b211d41bb2ff855aa43e455d93888')
+      const priceContract = new web3.eth.Contract(BALANCER_POOL_ABI, process.env.VUE_APP_KUN_QUSD_BPT_TOKEN)
       const result = await priceContract.methods.getSpotPrice(priceUnitAddress, address).call()
 console.log('price', result)
       // XXX: ether?
@@ -1606,7 +1607,6 @@ store.gauges = {
     },
 
     async onStake (accountAddress, infApproval) {
-      const { tokens } = store
       const { name, address, contract, mortgages } = this
 
       const deposit = BN(mortgages.dusd.userStake.revised).times(1e18)
@@ -2792,7 +2792,7 @@ console.log('dailyAPY.handled', dailyAPY.handled, await price / 1e18, await tota
     async getBalanceOf (target, accountAddress) {
       const { contract } = this
       const result = await contract.methods.balanceOf(accountAddress).call()
-  
+
       target.ether = result
       return result
     },
@@ -3078,6 +3078,176 @@ const BPT_LPT = ModelLpToken.create({
   needResetAllowance: true
 })
 
+store.lock = {
+  SFG: {
+    code: 'SFG',
+    name: 'SFG',
+    address: process.env.VUE_APP_LOCK_SFG_SWAP,
+    abi: ABI.SFG.lock,
+    __contract: null,
+    get contract () {
+      const { __contract, abi, address } = this
+
+      return __contract ||
+        (this.__contract = new web3.eth.Contract(abi, address))
+    },
+
+    mortgages: {
+      SFG: {
+        code: 'SFG',
+        name: 'SFG',
+        priceDecimal: 4,
+
+        totalStaking: valueModel.create(),
+        userStaking: valueModel.create(),
+        userBalanceOf: valueModel.create(),
+
+        userStake: valueModel.create(),
+        stakeSliderSelected: 0,
+        // FIXME: common
+        stakeSliderOptions: [
+          { text: '25%', value: 0.25 },
+          { text: '50%', value: 0.5 },
+          { text: '75%', value: 0.75 },
+          { text: '100%', value: 1 }
+        ],
+        get stakeAmountInput () {
+          const { userStake } = this
+
+          return userStake.revised || ''
+        },
+        set stakeAmountInput (val) {
+          const { userStake } = this
+
+          userStake.revised = val
+          this.stakeSliderSelected = 0
+        },
+
+        get stakeSliderSelectedRadio () {
+          return this.stakeSliderSelected
+        },
+        set stakeSliderSelectedRadio (val) {
+          const { userStake, priceDecimal, userBalanceOf } = this
+
+          if (val === 0) return false
+
+          // FIXME: format
+          userStake.revised = +userBalanceOf.handled > 0
+            ? floor(BN(val).times(userBalanceOf.handled).toString(), priceDecimal)
+            : 0
+          this.stakeSliderSelected = val
+        },
+
+        userRedemption: valueModel.create(),
+        redemptionSliderSelected: 0,
+        // FIXME: common
+        redemptionSliderOptions: [
+          { text: '25%', value: 0.25 },
+          { text: '50%', value: 0.5 },
+          { text: '75%', value: 0.75 },
+          { text: '100%', value: 1 }
+        ],
+        get redemptionAmountInput () {
+          const { userRedemption } = this
+
+          return userRedemption.revised || ''
+        },
+        set redemptionAmountInput (val) {
+          const { userRedemption } = this
+
+          userRedemption.revised = val
+          this.redemptionSliderSelected = 0
+        },
+
+        get redemptionSliderSelectedRadio () {
+          return this.redemptionSliderSelected
+        },
+        set redemptionSliderSelectedRadio (val) {
+          const { userRedemption, priceDecimal, userStaking } = this
+
+          if (val === 0) return false
+
+          // FIXME: format
+          userRedemption.revised = +userStaking.handled > 0
+            ? floor(BN(val).times(userStaking.handled).toString(), priceDecimal)
+            : 0
+          this.stakeSliderSelected = val
+        }
+      }
+    },
+
+    /** 质押数量 */
+    async getBalanceOf (target, accountAddress) {
+      const { contract } = this
+      const result = await contract.methods.balanceOf(accountAddress).call()
+
+      target.ether = result
+      return result
+    },
+
+    /** 质押 */
+    async onStake (accountAddress, infApproval) {
+      const { name, address, contract, mortgages } = this
+
+      const deposit = BN(mortgages.SFG.userStake.revised).times(1e18)
+
+      var { dismiss } = notifyNotification(`Please confirm depositing into ${name} gauge`)
+
+      await contract.methods.deposit(deposit.toFixed(0,1)).send({
+        from: accountAddress,
+        // gasPrice: gasPriceStore.gasPriceWei,
+        // gas: this.currentPool.deposit.gas,
+      })
+      .once('transactionHash', hash => {
+        dismiss()
+        notifyHandler(hash)
+      })
+    },
+    /** 赎回 */
+    async onRedemption (accountAddress, infApproval) {
+      const { name, address, contract, mortgages } = this
+
+      let withdraw = BN(mortgages.SFG.userRedemption.revised).times(1e18)
+      let balance = BN(await contract.methods.balanceOf(accountAddress).call())
+
+      console.log('withdraw', withdraw, 'balance', balance)
+
+      if(withdraw.gt(balance))
+        withdraw = balance
+
+      // let gas = this.currentPool.deposit.gas
+      let withdrawMethod = contract.methods.withdraw(withdraw.toFixed(0,1))
+
+      // try {
+      //   // update
+      //   gas = await withdrawMethod.estimateGas()
+      // }
+      // catch(err) { }
+
+      var { dismiss } = notifyNotification(`Please confirm withdrawing from ${name} gauge`)
+
+      await withdrawMethod.send({
+        from: accountAddress,
+        // gasPrice: gasPriceStore.gasPriceWei,
+        // gas: gas * 1.5 | 0,
+      })
+      .once('transactionHash', hash => {
+        dismiss()
+        notifyHandler(hash)
+      })
+    },
+    /** 加速系数 */
+    async getFactorOf (address) {
+      const { contract } = this
+      // TODO: ether?
+      const result = await contract.methods.factorOf(address).call()
+
+      target.ether = result
+      return result
+    }
+  }
+}
+
 store.pool = {
   BPT: {
     code: 'BPT',
@@ -3087,7 +3257,29 @@ store.pool = {
 
       apy: {}
     }
+  },
+
+  QUSD5: {
+    // USD
+    dailyVol: ModelValueEther.create({ contDecimal: 2 })
+  },
+  USD5: {
+    // USD
+    dailyVol: ModelValueEther.create({ contDecimal: 2 })
+  },
+  dUSD: {
+    // USD
+    dailyVol: ModelValueEther.create({ contDecimal: 2 })
+  },
+  iUSD: {
+    // USD
+    dailyVol: ModelValueEther.create({ contDecimal: 2 })
   }
+}
+
+store.sFinance = {
+  dailyVol: ModelValueEther.create({ contDecimal: 2 }),
+  totalValueStaked: ModelValueEther.create({ contDecimal: 2 })
 }
 
 store.lptoken = {

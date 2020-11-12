@@ -1305,8 +1305,6 @@
     import * as gasPriceStore from '../common/gasPriceStore'
     import GasPrice from '../common/GasPrice.vue'
     import RootSub from '../root/RootSub.vue'
-    import DaoLiquidityGaugereAbi_susdv2 from './abi/susdv2'
-    import DaoLiquidityGaugereAbi_snx from './abi/snx'
 
     import * as errorStore from '../common/errorStore'
 

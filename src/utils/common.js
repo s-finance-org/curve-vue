@@ -8,7 +8,7 @@ import * as gasPriceStore from '../components/common/gasPriceStore'
 import Web3 from "web3";
 
 import * as errorStore from '../components/common/errorStore'
-import { notify, notifyHandler } from '../init'
+import { notify, notifyHandler, notifyNotification } from '../init'
 import { valueModel } from "../model/index.js";
 
 var cBN = (val) => new BigNumber(val);
@@ -25,28 +25,92 @@ let requiresResetAllowance = [
   process.env.VUE_APP_QUSD5_TOKEN, // s.finance QUSD/DAI/USDC/USDT/TUSD/PAX
 ]
 
-export function approve(contract, amount, account, toContract) {
-    if(!toContract) toContract = currentContract.swap_address
-    return new Promise((resolve, reject) => {
-                contract.methods.approve(toContract, cBN(amount).toFixed(0,1))
-                .send({
-                    from: account,
-                    gasPrice: gasPriceStore.state.gasPriceWei,
-                    gas: 100000,
-                })
-                .once('transactionHash', function(hash) {
-                    notifyHandler(hash)
-                    resolve(true)
-                })
-                .on('error', err => {
-                    errorStore.handleError(err)
-                    reject(err)
-                })
-                .catch(err => {
-                    errorStore.handleError(err)
-                    reject(err)
-                });
-            });
+export function approve (contract, amount, account, toContract) {
+  if (!toContract) toContract = currentContract.swap_address
+
+  return new Promise((resolve, reject) => {
+    contract.methods.approve(toContract, cBN(amount).toFixed(0,1))
+      .send({
+        from: account,
+        gasPrice: gasPriceStore.state.gasPriceWei,
+        gas: 100000,
+      })
+      .once('transactionHash', function (hash) {
+        notifyHandler(hash)
+        resolve(true)
+      })
+      .on('error', err => {
+        errorStore.handleError(err)
+        reject(err)
+      })
+      .catch(err => {
+        errorStore.handleError(err)
+        reject(err)
+      })
+  });
+}
+
+export function approveEvent (contract, amount, account, toContract, that) {
+  if (!toContract) toContract = currentContract.swap_address
+  // var { dismiss } = notifyNotification('11111111')
+
+  contract.methods.approve(toContract, cBN(amount).toFixed(0,1))
+    .send({
+      from: account,
+      gasPrice: gasPriceStore.state.gasPriceWei,
+      gas: 100000,
+    })
+    .once('transactionHash', function (hash) {
+      // dismiss()
+      notifyHandler(hash)
+      // TEMP: Avoid not triggering events.Approval
+      that
+        && window.setTimeout(() => that.loadingAction = false, 5000)
+    })
+    .on('error', err => {
+      if (that) {
+        that.waitingMessage = '',
+        that.show_loading = false
+        that.loadingAction = false
+      }
+      errorStore.handleError(err)
+    })
+    .catch(err => {
+      errorStore.handleError(err)
+    })
+
+  return new Promise((resolve, reject) => {
+    let onceLock = false
+
+    contract.events.Approval()
+      .on('data', function (data) {
+        /* data
+          {
+            returnValues: {
+              owner: '0x'
+              spender: '0x'
+              value: '0'
+            }
+          }
+         */
+        const filter = !onceLock
+          && data.returnValues.value === amount
+          && data.returnValues.owner === account
+          && data.returnValues.spender === toContract
+
+        console.log('events.Approval', filter, data)
+        if (filter) {
+          // TODO: double event
+          onceLock = true
+          window.setTimeout(() => onceLock = false, 3000)
+          resolve(data)
+        }
+      })
+      .on('error', err => {
+        errorStore.handleError(err)
+        reject(err)
+      })
+  })
 }
 
 
@@ -69,29 +133,30 @@ export function approve_to_migrate(amount, account) {
             });
 }
 
-export async function ensure_allowance_zap_out(amount, fromContract, toContract, infinite = false) {
-    var default_account = currentContract.default_account
-    if(!fromContract) fromContract = currentContract.swap_token;
-    if(!toContract) toContract = allabis[currentContract.currentContract].deposit_address
-    let allowance = cBN(await currentContract.swap_token.methods.allowance(default_account, toContract).call())
+export async function ensure_allowance_zap_out(amount, fromContract, toContract, infinite = false, that) {
+  var default_account = currentContract.default_account
+  if(!fromContract) fromContract = currentContract.swap_token;
+  if(!toContract) toContract = allabis[currentContract.currentContract].deposit_address
+  let allowance = cBN(await currentContract.swap_token.methods.allowance(default_account, toContract).call())
 console.log('allowance', allowance.toString(), 'amount', amount)
-    if(!infinite) {
-        if(allowance.lt(cBN(amount))) {
-            if(allowance > 0) await approve(fromContract, 0, default_account, toContract)
-            await approve(fromContract, amount, default_account, toContract)
-        }
+  if(!infinite) {
+    if(allowance.lt(cBN(amount))) {
+      if(allowance > 0) await approveEvent(fromContract, 0, default_account, toContract, that)
+      return await approveEvent(fromContract, amount, default_account, toContract, that)
     }
-    else {
-        if(allowance.lt(currentContract.max_allowance.div(cBN(2))) && cBN(amount).gt(0)) {
-            if(allowance > 0 && requiresResetAllowance.includes(fromContract._address))
-                await approve(fromContract, 0, default_account, toContract)
-            await approve(fromContract, currentContract.max_allowance, default_account, toContract)
-        }
+  }
+  else {
+    if(allowance.lt(currentContract.max_allowance.div(cBN(2))) && cBN(amount).gt(0)) {
+      if(allowance > 0 && requiresResetAllowance.includes(fromContract._address))
+        await approveEvent(fromContract, 0, default_account, toContract, that)
+      return await approveEvent(fromContract, currentContract.max_allowance, default_account, toContract, that)
     }
+  }
+  return false
 }
 
 
-export async function ensure_allowance(amounts, plain = false, contractName, N_COINS, infinite = false) {
+export async function ensure_allowance(amounts, plain = false, contractName, N_COINS, infinite = false, that = null) {
   var default_account = currentContract.default_account
   let cont = currentContract
   if(N_COINS === undefined) {
@@ -119,29 +184,32 @@ export async function ensure_allowance(amounts, plain = false, contractName, N_C
   console.log('allowances', allowances, 'amounts', amounts)
 
   if (!infinite) {
-      // Non-infinite
-      for (let i=0; i < N_COINS; i++) {
-          if (cBN(allowances[i]).isLessThan(cBN(amounts[i])) && cBN(amounts[i]).gt(0)) {
-              if (allowances[i] > 0 && requiresResetAllowance.includes(coins[i]._address))
-                  await approve(coins[i], 0, default_account, swap);
-              await approve(coins[i], amounts[i], default_account, swap);
-          }
+    // Non-infinite
+    for (let i=0; i < N_COINS; i++) {
+      if (cBN(allowances[i]).isLessThan(cBN(amounts[i])) && cBN(amounts[i]).gt(0)) {
+        if (allowances[i] > 0 && requiresResetAllowance.includes(coins[i]._address)) {
+          await approveEvent(coins[i], 0, default_account, swap, that)
+        }
+        return await approveEvent(coins[i], amounts[i], default_account, swap, that);
       }
+    }
+  } else {
+    // Infinite
+    for (let i=0; i < N_COINS; i++) {
+        if (cBN(allowances[i]).isLessThan(cont.max_allowance.div(cBN(2))) && cBN(amounts[i]).gt(0)) {
+            if (allowances[i] > 0 && requiresResetAllowance.includes(coins[i]._address)) {
+              await approveEvent(coins[i], 0, default_account, swap, that);
+            }
+            return await approveEvent(coins[i], cont.max_allowance, default_account, swap, that);
+        }
+    }
   }
-  else {
-      // Infinite
-      for (let i=0; i < N_COINS; i++) {
-          if (cBN(allowances[i]).isLessThan(cont.max_allowance.div(cBN(2))) && cBN(amounts[i]).gt(0)) {
-              if (allowances[i] > 0 && requiresResetAllowance.includes(coins[i]._address))
-                  await approve(coins[i], 0, default_account, swap);
-              await approve(coins[i], cont.max_allowance, default_account, swap);
-          }
-      }
-  }
+
+  return false
 }
 
 // qusd5
-export async function ensure_allowance_base(amounts, plain = false, contractName, N_COINS, infinite = false) {
+export async function ensure_allowance_base(amounts, plain = false, contractName, N_COINS, infinite = false, that = null) {
   var default_account = currentContract.default_account
   let cont = currentContract
   if(N_COINS === undefined) {
@@ -179,9 +247,9 @@ export async function ensure_allowance_base(amounts, plain = false, contractName
     for (let i=0; i < N_COINS; i++) {
       if (cBN(allowances[i]).isLessThan(cBN(amounts[i])) && cBN(amounts[i]).gt(0)) {
         if (allowances[i] > 0 && requiresResetAllowance.includes(coins[i]._address)) {
-          await approve(coins[i], 0, default_account, swap);
+          await approveEvent(coins[i], 0, default_account, swap, that);
         }
-        await approve(coins[i], amounts[i], default_account, swap);
+        return await approveEvent(coins[i], amounts[i], default_account, swap, that);
       }
     }
   }
@@ -190,14 +258,16 @@ export async function ensure_allowance_base(amounts, plain = false, contractName
     for (let i=0; i < N_COINS; i++) {
       if (cBN(allowances[i]).isLessThan(cont.max_allowance.div(cBN(2))) && cBN(amounts[i]).gt(0)) {
         if (allowances[i] > 0 && requiresResetAllowance.includes(coins[i]._address))
-          await approve(coins[i], 0, default_account, swap);
-        await approve(coins[i], cont.max_allowance, default_account, swap);
+          await approveEvent(coins[i], 0, default_account, swap, that);
+        return await approveEvent(coins[i], cont.max_allowance, default_account, swap, that);
       }
     }
   }
+
+  return false
 }
 
-export async function ensure_underlying_allowance(i, _amount, underlying_coins = [], toContract, wrapped = false, contract) {
+export async function ensure_underlying_allowance(i, _amount, underlying_coins = [], toContract, wrapped = false, contract, that) {
     if(!contract) contract = currentContract
 
     if(!underlying_coins.length) underlying_coins = contract.underlying_coins;
@@ -218,13 +288,13 @@ export async function ensure_underlying_allowance(i, _amount, underlying_coins =
     var current_allowance = cBN(await coins[i].methods.allowance(default_account, contract.swap._address).call());
 // console.log('current_allowance', current_allowance.toString(), 'amount', amount)
 
-    if (current_allowance.gte(amount))
-        return false;
+    if (current_allowance.gte(amount)) return false;
+
     if ((cBN(_amount).isEqualTo(currentContract.max_allowance)) & (current_allowance.isGreaterThan(currentContract.max_allowance.div(cBN(2)))))
         return false;  // It does get spent slowly, but that's ok
     if ((current_allowance.isGreaterThan(cBN(0))) & (current_allowance.isLessThan(amount)) && requiresResetAllowance.includes(coins[i]._address))
-        await approve(coins[i], 0, default_account, toContract);
-    return await approve(coins[i], cBN(amount).toFixed(0,1), default_account, toContract);
+        await approveEvent(coins[i], 0, default_account, toContract, that);
+    return await approveEvent(coins[i], cBN(amount).toFixed(0,1), default_account, toContract, that);
 }
 
 export async function approveAmount(contract, amount, account, toContract, infinite = false) {
@@ -234,7 +304,7 @@ export async function approveAmount(contract, amount, account, toContract, infin
     if(!infinite) {
         if(current_allowance.lt(amount) && amount.gt(0)) {
             if(current_allowance > 0 && requiresResetAllowance.includes(contract._address)) {
-                await approve(contract, 0, account, toContract)
+              await approve(contract, 0, account, toContract)
             }
             await approve(contract, amount, account, toContract)
         }
@@ -819,7 +889,7 @@ export async function calc_slippage_base(values, deposit, zap_values, to_currenc
 }
 
 export async function setTimeout(timeout) {
-    return new Promise(resolve => setTimeout(resolve, timeout))
+  return new Promise(resolve => window.setTimeout(resolve, timeout))
 }
 
 /**

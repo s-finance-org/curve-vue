@@ -7,6 +7,9 @@
       <li>{{ store.lptoken.BPT.symbol.cont  }}</li>
       <li>{{ store.lptoken.BPT.name.cont  }}</li>
       <li>{{ store.lptoken.BPT.totalSupply.cont  }}</li>
+
+
+      <li>{{ store.lptoken.BPT.walletBalanceOf }}</li>
     </ul>
 
 
@@ -1441,7 +1444,7 @@
             // store.lptoken.BPT.getWalletBalanceOf()
             store.lptoken.BPT.initiate()
 
-
+            
 
 
             // susdv2
