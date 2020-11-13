@@ -120,7 +120,8 @@
           { name: 'home', to: { name: 'RootIndex' }, i18n: 'global.home' },
           { name: 'swap', to: { name: 'Swap' }, i18n: 'global.swap', active: 'Swap' === $route.name },
           { name: 'liquidity', to: { name: 'Liquidity' }, i18n: 'global.liquidity', active: 'Liquidity' === $route.name },
-          { name: 'dao', to: { name: 'Dao', path: '/dao' }, i18n: 'global.dao' }
+          { name: 'dao', to: { name: 'Dao', path: '/dao' }, i18n: 'global.dao' },
+          { name: 'lock', to: { name: 'Lock', path: '/lock' }, i18n: 'global.lock' },
         ]
 
         const more = [

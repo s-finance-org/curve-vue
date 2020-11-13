@@ -10,6 +10,7 @@ import Web3 from "web3";
 import * as errorStore from '../components/common/errorStore'
 import { notify, notifyHandler, notifyNotification } from '../init'
 import { valueModel } from "../model/index.js";
+import store from "../store";
 
 var cBN = (val) => new BigNumber(val);
 
@@ -52,7 +53,7 @@ export function approve (contract, amount, account, toContract) {
 
 export function approveEvent (contract, amount, account, toContract, that) {
   if (!toContract) toContract = currentContract.swap_address
-  // var { dismiss } = notifyNotification('11111111')
+  var { dismiss } = notifyNotification(store.i18n.$i18n.t('model.approveOperation'))
 
   contract.methods.approve(toContract, cBN(amount).toFixed(0,1))
     .send({
@@ -61,13 +62,14 @@ export function approveEvent (contract, amount, account, toContract, that) {
       gas: 100000,
     })
     .once('transactionHash', function (hash) {
-      // dismiss()
+      dismiss()
       notifyHandler(hash)
       // TEMP: Avoid not triggering events.Approval
       that
         && window.setTimeout(() => that.loadingAction = false, 5000)
     })
     .on('error', err => {
+      dismiss()
       if (that) {
         that.waitingMessage = '',
         that.show_loading = false

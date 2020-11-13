@@ -148,7 +148,21 @@ fieldset {
   color: #EB3C00;
 }
 
+/* badge */
+.badge {
+  border-radius: 2px;
+  font-weight: normal;
+}
+.badge-success {
+  border: 1px solid #ffffff;
+  background: #1ba57b;
+}
+
 /* Size */
+.text-12 {
+  font-size: 12px;
+  line-height: 20px;
+}
 .text-18 {
   font-size: 18px;
 }

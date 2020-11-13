@@ -1010,6 +1010,8 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
       // TEMP: 
       return dailyYield.ether = await contract.methods.balanceOf(process.env.VUE_APP_PS_MINTER).call() * miningRate
     },
+
+    error: errorModel.create(),
   },
   susdv2LpToken: {
     address: process.env.VUE_APP_SUSDV2_LPT_TOKEN,
@@ -2416,7 +2418,7 @@ store.gauges = {
     mortgagesUnit: 'usd5 LP token',
     address: process.env.VUE_APP_USD5_GAUGE,
     // abi: abiDfi, // FIXME: ???
-    abi: abiSUSDv2,
+    abi: ABI.USD5.mining,
     __contract: null,
     get contract () {
       const { __contract, abi, address } = this
@@ -3097,6 +3099,7 @@ store.lock = {
         code: 'SFG',
         name: 'SFG',
         priceDecimal: 4,
+        gainUrl: 'https://pools.balancer.exchange/#/pool/0x2f49eea1efc1b04e9ecd3b81321060e29db26a19/',
 
         totalStaking: valueModel.create(),
         userStaking: valueModel.create(),
