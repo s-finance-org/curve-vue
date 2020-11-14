@@ -2636,21 +2636,14 @@ store.gauges = {
       }
     },
 
-    async getNeedLockAmount(target, BalanceOf, ratioStaking) {
+    async getNeedLockAmount(target, stakingPerLPT, balanceOf, lockSfgBalanceOf) {
       const { contract, mortgages } = this
-
-      const balanceOfEther = await BalanceOf / 1e18
-      const ratioStakingEther = await ratioStaking / 1e18
-
+// FIXME: 1E18
       const result = Math.max(
-        BN(balanceOfEther)
-          .dividedBy(ratioStakingEther)
-          .minus(balanceOfEther)
-          .toString(),
+        BN(await stakingPerLPT / 1e18).times(await balanceOf / 1e18).minus(await lockSfgBalanceOf / 1e18),
         0
       )
-
-      target.handled = result
+      target.ether = result * 1e18
 
       return result
     },
@@ -3470,6 +3463,14 @@ store.lock = {
 
       return result
     },
+
+    async getStakingPerLPT (address) {
+      const { contract } = this
+
+      const result = await contract.methods.stakingPerLPT(address).call()
+
+      return result
+    }
   }
 }
 

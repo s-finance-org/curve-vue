@@ -219,8 +219,8 @@
               <text-overlay-loading :show="data.item.need.loading">
                 {{ data.item.need.cont }}  {{ store.tokens.sfg.name }}
               </text-overlay-loading>
-              -------<br/>
-              {{ store.gauges.usd5.mortgages.usd5.ratioStaking }}
+              <!-- -------<br/> -->
+              <!-- {{ store.gauges.usd5.mortgages.usd5.ratioStaking }} -->
             </template>
             <template v-slot:head(day)>
               {{ $t('lock.needLockDays') }}
@@ -561,10 +561,12 @@
 
             gauges.usd5.getNeedLockAmount(
               gauges.usd5.mortgages.usd5.needLockAmount,
+              lock.SFG.getStakingPerLPT(gauges.usd5.address),
+              gauges.usd5.getBalanceOf(gauges.usd5.mortgages.usd5.userStaking, currentContract.default_account),
               lock.SFG.getBalanceOf(lock.SFG.mortgages.SFG.userStaking, walletAddress),
-              gauges.usd5.getRatioStaking(gauges.usd5.mortgages.usd5.ratioStaking, walletAddress)
             )
-            gauges.usd5.getBalanceOf(gauges.usd5.mortgages.usd5.userStaking, currentContract.default_account),
+            // ????
+            // gauges.usd5.getRatioStaking(gauges.usd5.mortgages.usd5.ratioStaking, walletAddress)
 
             gauges.usd5.getNeedLockDay(gauges.usd5.mortgages.usd5.needLockDay, stakeTimeOfEther)
 
