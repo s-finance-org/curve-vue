@@ -23,11 +23,11 @@
             <span class="col-12 col-md mb-4">
               <h6 class="mb-1 text-black-65 d-flex align-items-center">
                 {{ $t('lock.cumulativeCirculation') }}
-                <b-avatar text="!" class="iconTip iconTip-warning -1" id="tooltip-tip1"></b-avatar>
+                <b-avatar text="!" class="iconTip iconTip-warning ml-1" id="tooltip-tip1"></b-avatar>
                 <b-tooltip placement="topright" target="tooltip-tip1" variant="success">???</b-tooltip>
               </h6>
-              <text-overlay-loading inline show="false">
-                11111
+              <text-overlay-loading inline :show="store.tokens.sfg.supplied.loading">
+                {{ store.tokens.sfg.supplied.cont }} {{ store.tokens.sfg.name }}
               </text-overlay-loading>
             </span>
             <span class="col-12 col-md mb-4">
@@ -36,8 +36,8 @@
                 <b-avatar text="!" class="iconTip iconTip-warning ml-1" id="tooltip-tip2"></b-avatar>
                 <b-tooltip placement="topright" target="tooltip-tip2" variant="success">???</b-tooltip>
               </h6>
-              <text-overlay-loading inline show="false">
-                11111
+              <text-overlay-loading inline :show="store.tokens.sfg.dailyYield.loading">
+                {{ store.tokens.sfg.dailyYield.cont }} {{ store.tokens.sfg.name }}
               </text-overlay-loading>
             </span>
             <span class="col-12 col-md mb-4">
@@ -46,8 +46,8 @@
                 <b-avatar text="!" class="iconTip iconTip-warning ml-1" id="tooltip-tip3"></b-avatar>
                 <b-tooltip placement="topright" target="tooltip-tip3" variant="success">???</b-tooltip>
               </h6>
-              <text-overlay-loading inline show="false">
-                11111
+              <text-overlay-loading inline :show="store.lock.SFG.totalSupply.loading">
+                {{ store.lock.SFG.totalSupply.cont }} {{ store.tokens.sfg.name }}
               </text-overlay-loading>
             </span>
             <span class="col-12 col-md mb-4">
@@ -56,8 +56,8 @@
                 <b-avatar text="!" class="iconTip iconTip-warning ml-1" id="tooltip-tip4"></b-avatar>
                 <b-tooltip placement="topright" target="tooltip-tip4" variant="success">???</b-tooltip>
               </h6>
-              <text-overlay-loading inline show="false">
-                11111
+              <text-overlay-loading inline :show="store.tokens.sfg.circulation.loading">
+                {{ store.tokens.sfg.circulation.cont }} {{ store.tokens.sfg.name }}
               </text-overlay-loading>
             </span>
           </div>
@@ -70,45 +70,34 @@
       </h4>
       <div class="box mb-4 px-4 py-3">
         <div class="row mb-3 line-bottom">
-          <span class="col-12 col-md-6 pb-3">
-            <h6 class="mb-0 text-black-65">{{ $t('lock.totalLockedPosition') }}</h6>
-            <text-overlay-loading inline :show="store.lock.SFG.mortgages.SFG.totalStaking.loading">
-              <span class="h4 mr-2">{{ store.lock.SFG.mortgages.SFG.totalStaking.cont }}</span>
-              <span class="inline-block text-black-65">{{ store.lock.SFG.mortgagesUnit }}</span>
+          <span class="col-12 col-md-4 pb-3">
+            <h6 class="mb-0 text-black-65">{{ $t('lock.myLock') }}</h6>
+            <text-overlay-loading inline :show="store.lock.SFG.mortgages.SFG.userStaking.loading">
+              <span class="h4 mr-2">{{ store.lock.SFG.mortgages.SFG.userStaking.cont }}</span>
+              <span class="inline-block text-black-65">{{ store.tokens.sfg.name }}</span>
             </text-overlay-loading>
           </span>
-          <span class="col-12 col-md-6 pb-3">
-            <h6 class="mb-0 text-black-65">{{ $t('lock.myLock') }}</h6>
-            <!-- <text-overlay-loading inline :show="store.lock.SFG.mortgages.SFG.userStaking.loading">
-              <span class="h4 mr-2">{{ store.gauges.qusd5.mortgages.qusd5.userStaking.cont }}</span>
-              <span class="inline-block text-black-65">{{ store.gauges.qusd5.mortgagesUnit }}</span>
-            </text-overlay-loading> -->
-          </span>
-          <span class="col-12 col-md-6 pb-3">
-            <h6 class="mb-0 text-black-65 d-flex align-items-center">
-              {{ $t('lock.myShare') }}
-              <b-avatar text="!" class="iconTip iconTip-warning ml-1" id="tooltip-tip5"></b-avatar>
-              <b-tooltip placement="topright" target="tooltip-tip5" variant="success">???</b-tooltip>
-            </h6>
-            <!-- <text-overlay-loading inline :show="store.tokens.qusd5.price.loading">
-              <span class="h4">
-                1 <span class="h6 text-black-65">{{ store.tokens.qusd5.name }} = </span>
-              </span>
-              <span class="h4">
-                {{ store.tokens.qusd5.price.cont }}
-                <span class="text-black-65 h6">USD</span>
-              </span>
-            </text-overlay-loading> -->
-          </span>
-          <span class="col-12 col-md-6 pb-3">
+          <span class="col-12 col-md-4 pb-3">
             <h6 class="mb-0 text-black-65 d-flex align-items-center">
               {{ $t('lock.myAccelerationFactor') }}
               <b-avatar text="!" class="iconTip iconTip-warning ml-1" id="tooltip-tip6"></b-avatar>
               <b-tooltip placement="topright" target="tooltip-tip6" variant="success">???</b-tooltip>
             </h6>
-            <text-overlay-loading inline :show="store.gauges.qusd5.rewards.sfg.dailyYield.loading">
+            <text-overlay-loading inline :show="store.lock.SFG.mortgages.SFG.factorOf.loading">
               <span class="h4 text-danger-1">
-                {{ store.gauges.qusd5.rewards.sfg.dailyYield.cont }}
+                {{ store.lock.SFG.mortgages.SFG.factorOf.cont }}
+              </span>
+            </text-overlay-loading>
+          </span>
+          <span class="col-12 col-md-4 pb-3">
+            <h6 class="mb-0 text-black-65 d-flex align-items-center">
+              {{ $t('lock.myShare') }}
+              <b-avatar text="!" class="iconTip iconTip-warning ml-1" id="tooltip-tip5"></b-avatar>
+              <b-tooltip placement="topright" target="tooltip-tip5" variant="success">???</b-tooltip>
+            </h6>
+            <text-overlay-loading inline :show="store.lock.SFG.mortgages.SFG.share.loading">
+              <span class="h4">
+                {{ store.lock.SFG.mortgages.SFG.share.cont }}
               </span>
             </text-overlay-loading>
           </span>
@@ -193,12 +182,144 @@
       </div>
 
       <h4 class="mb-2 d-flex flex-wrap align-items-end">
+        <span class="mr-3">{{ $t('lock.miningAcceleration') }}</span>
+        <small class="mr-auto">{{ $t('lock.miningAccelerationTip') }}</small>
+      </h4>
+      <div class="box mb-4">
+        <div class="px-4 py-3">
+          <h5 class="d-flex">
+            <span class="mr-auto">{{ $t('lock.stablecoinMiningPool') }}</span>
+            <small>{{ $t('lock.stablecoinMiningPoolTip') }}</small>
+          </h5>
+          <b-table responsive class="mb-0 text-right table acceleration" hover :items="acceleration.items.stablecoin" :fields="acceleration.fields">
+            <template v-slot:head(name)>
+              {{ $t('lock.poolName')}}
+            </template>
+            <template v-slot:cell(name)="data">
+              {{ data.item.name }}
+            </template>
+            <template v-slot:head(weighting)>
+              {{ $t('lock.rewardWeight') }}
+            </template>
+            <template v-slot:cell(weighting)="data">
+              {{ data.item.weighting.percent }} %
+            </template>
+            <template v-slot:head(mortgage)>
+              {{ $t('lock.myMortgageAmount') }}
+            </template>
+            <template v-slot:cell(mortgage)="data">
+              <text-overlay-loading :show="data.item.mortgage.loading">
+              {{ data.item.mortgage.cont }} {{ data.item.lptoken }}
+              </text-overlay-loading>
+            </template>
+            <template v-slot:head(need)>
+              {{ $t('lock.needLockAmount') }}
+            </template>
+            <template v-slot:cell(need)="data">
+              <text-overlay-loading :show="data.item.need.loading">
+                {{ data.item.need.cont }}  {{ store.tokens.sfg.name }}
+              </text-overlay-loading>
+            </template>
+            <template v-slot:head(day)>
+              {{ $t('lock.needLockDays') }}
+            </template>
+            <template v-slot:cell(day)="data">
+              <text-overlay-loading :show="data.item.day.loading">
+                {{ data.item.day.cont }}
+              </text-overlay-loading>
+            </template>
+            <template v-slot:head(accelerated)>
+              {{ $t('lock.actualAcceleration') }}
+            </template>
+            <template v-slot:cell(accelerated)="data">
+              <text-overlay-loading :show="data.item.accelerated.loading">
+                {{ data.item.accelerated.cont }}
+              </text-overlay-loading>
+            </template>
+            <template v-slot:head(baseApy)>
+              {{ $t('lock.basicAPY') }}
+            </template>
+            <template v-slot:cell(baseApy)="data">
+              <text-overlay-loading :show="data.item.baseApy.loading">
+                {{ data.item.baseApy.percent }} %
+              </text-overlay-loading>
+            </template>
+            <template v-slot:head(myApy)>
+              {{ $t('lock.myAPY') }}
+            </template>
+            <template v-slot:cell(myApy)="data">
+              <text-overlay-loading :show="data.item.myApy.loading">
+                {{ data.item.myApy.percent }} %
+              </text-overlay-loading>
+            </template>
+          </b-table>
+        </div>
+        <!-- <div class="px-4 py-3">
+          <h5 class="d-flex">
+            <span class="mr-auto">{{ $t('lock.sfgMiningPool') }}</span>
+            <small>{{ $t('lock.sfgMiningPoolTip') }}</small>
+          </h5>
+          <b-table responsive class="mb-0 text-right table acceleration" hover :items="acceleration.items.sfg" :fields="acceleration.fields">
+            <template v-slot:head(name)>
+              {{ $t('lock.poolName')}}
+            </template>
+            <template v-slot:cell(name)="data">
+              {{ data.item.name }}
+            </template>
+            <template v-slot:head(weighting)>
+              {{ $t('lock.rewardWeight') }}
+            </template>
+            <template v-slot:cell(weighting)="data">
+              {{ data.item.weighting }}
+            </template>
+            <template v-slot:head(mortgage)>
+              {{ $t('lock.myMortgageRatio') }}
+            </template>
+            <template v-slot:cell(mortgage)="data">
+              {{ data.item.mortgage }}
+            </template>
+            <template v-slot:head(need)>
+              {{ $t('lock.needLockAmount') }}
+            </template>
+            <template v-slot:cell(need)="data">
+              <text-overlay-loading :show="!data.item.need">
+                {{ data.item.need }}
+              </text-overlay-loading>
+            </template>
+            <template v-slot:head(day)>
+              {{ $t('lock.needLockDays') }}
+            </template>
+            <template v-slot:cell(day)="data">
+              {{ data.item.apy }}
+            </template>
+            <template v-slot:head(accelerated)>
+              {{ $t('lock.actualAcceleration') }}
+            </template>
+            <template v-slot:cell(accelerated)="data">
+              {{ data.item.accelerated }}
+            </template>
+            <template v-slot:head(baseApy)>
+              {{ $t('lock.basicAPY') }}
+            </template>
+            <template v-slot:cell(baseApy)="data">
+              {{ data.item.baseApy }}
+            </template>
+            <template v-slot:head(myApy)>
+              {{ $t('lock.myAPY') }}
+            </template>
+            <template v-slot:cell(myApy)="data">
+              {{ data.item.myApy }}
+            </template>
+          </b-table>
+        </div> -->
+      </div>
+
+      <!-- <h4 class="mb-2 d-flex flex-wrap align-items-end">
         <span class="mr-3">{{ $t('lock.dividends') }}</span>
         <small class="mr-auto">{{ $t('lock.dividendsTip') }}</small>
       </h4>
       <div class="box mb-4">
         <div class="px-4 py-3 line-bottom">
-          <h6 class="text-black-65 mb-3">{{ $t('lock.assetDistribution') }}</h6>
           <div class="row">
             <span class="col-3" v-for='(currency, i) in Object.keys(currencies)'>
               <h6 class="mb-0 text-black-65">{{currency | capitalize}}：</h6>
@@ -221,15 +342,7 @@
             </span>
           </div>
         </div>
-        <!-- <div class="px-4 py-3">
-          <h6 class="text-black-65 mb-3">{{ $t('global.norm') }}</h6>
-           <div class="row">
-            <span class="col-3">{{ $t('lock.lpTokenPrice') }}：?</span>
-            <span class="col-3">{{ $t('lock.liquidityAPY') }}：?</span>
-            <span class="col-3">{{ $t('lock.fundingFeeRate') }}：?</span>
-          </div>
-        </div> -->
-      </div>
+      </div> -->
 
     </b-container>
 	</div>
@@ -316,33 +429,63 @@
         gaugeContract: null,
         gauge: '',
       }),
-
-        computed: {
-          ...getters,
-          gasPrice() {
-            return gasPriceStore.state.gasPrice
-          },
-          gasPriceWei() {
-            return gasPriceStore.gasPriceWei
-          },
-          loadingAction: {
-            get () {
-              // FIXME: 
-              if (__store__.loadingAction && currentContract.initializedContracts) {
-                this.mounted()
-                __store__.loadingAction = false
-              }
-
-              return __store__.loadingAction
-            },
-            set (val) {
-              __store__.loadingAction = val
-            }
-          },
-
-
-
+      computed: {
+        ...getters,
+        gasPrice() {
+          return gasPriceStore.state.gasPrice
         },
+        gasPriceWei() {
+          return gasPriceStore.gasPriceWei
+        },
+        loadingAction: {
+          get () {
+            // FIXME: 
+            if (__store__.loadingAction && currentContract.initializedContracts) {
+              this.mounted()
+              __store__.loadingAction = false
+            }
+
+            return __store__.loadingAction
+          },
+          set (val) {
+            __store__.loadingAction = val
+          }
+        },
+        acceleration () {
+          const { gauges, tokens } = store
+
+          return {
+            fields: [
+              { key: 'name', stickyColumn: true, isRowHeader: true },
+              'weighting',
+              'mortgage',
+              'need',
+              'day',
+              'accelerated',
+              'baseApy',
+              'myApy'
+            ],
+            items: {
+              stablecoin: [
+                // usd5
+                { name: gauges.usd5.propagateMark,
+                  lptoken: gauges.usd5.name,
+                  weighting: gauges.usd5.rewards.sfg.weighting,
+                  mortgage: gauges.usd5.mortgages.usd5.userStaking,
+                  need: gauges.usd5.mortgages.usd5.needLockAmount,
+                  day: gauges.usd5.mortgages.usd5.needLockDay,
+                  accelerated: gauges.usd5.mortgages.usd5.factorOf,
+                  baseApy: gauges.usd5.apy,
+                  myApy: gauges.usd5.myApy
+                }
+              ],
+              sfg: [
+                { name: '', weighting: '', mortgage: '', need: '', day: '', accelerated: '', baseApy: '', myApy: ''}
+              ]
+            }
+          }
+        }
+      },
         created() {
           // FIXME: ?
           this.$watch(() => currentContract.currentContract, (val, oldval) => {
@@ -381,12 +524,56 @@
             this.mypools = gaugeStore.state.mypools
             this.claimFromGauges = this.myGauges
 
-            store.tokens.sfg.getDailyYield()
-            store.lock.SFG.getTotalStaking(store.lock.SFG.mortgages.SFG.totalStaking),
+            const { lock, tokens, gauges } = store
+            const walletAddress = currentContract.default_account
 
-            store.tokens.sfg.getBalanceOf(store.lock.SFG.mortgages.SFG.userBalanceOf, currentContract.default_account)
+            // sfg
+            tokens.sfg.getSupplied()
+            tokens.sfg.getDailyYield()
+            tokens.sfg.getCirculation(
+              lock.SFG.getTotalSupply()
+            )
 
-            store.lock.SFG.getBalanceOf(store.lock.SFG.mortgages.SFG.userStaking, currentContract.default_account)
+            lock.SFG.getShare(
+              lock.SFG.mortgages.SFG.share,
+              lock.SFG.getBalanceOf(lock.SFG.mortgages.SFG.userStaking, walletAddress),
+              lock.SFG.getFactorOf(lock.SFG.mortgages.SFG.factorOf, walletAddress)
+            )
+
+            const stakeTimeOfEther = await lock.SFG.getStakeTimeOf(lock.SFG.mortgages.SFG.stakeTimeOf, walletAddress)
+
+            tokens.sfg.getBalanceOf(lock.SFG.mortgages.SFG.userBalanceOf, walletAddress)
+
+            // usd5
+            gauges.usd5.getMyApy(
+              gauges.usd5.getAPY(
+                tokens.sfg.getPrice(),
+                tokens.sfg.getDailyYield(),
+                gauges.usd5.getTotalStaking(gauges.usd5.mortgages.usd5.totalStaking),
+                tokens.usd5.getPrice(),
+              ),
+              lock.SFG.getFactorOf(lock.SFG.mortgages.SFG.factorOf, walletAddress)
+            )
+
+            gauges.usd5.getFactorOf(gauges.usd5.mortgages.usd5.factorOf, walletAddress)
+
+            gauges.usd5.getNeedLockAmount(
+              gauges.usd5.mortgages.usd5.needLockAmount,
+              gauges.usd5.getBalanceOf(gauges.usd5.mortgages.usd5.userStaking, currentContract.default_account),
+              gauges.usd5.getRatioStaking(gauges.usd5.mortgages.usd5.ratioStaking, walletAddress)
+            )
+
+            gauges.usd5.getNeedLockDay(gauges.usd5.mortgages.usd5.needLockDay, stakeTimeOfEther)
+
+
+
+
+
+            // lock.SFG.getTotalStaking(lock.SFG.mortgages.SFG.totalStaking),
+
+            // tokens.sfg.getBalanceOf(lock.SFG.mortgages.SFG.userBalanceOf, walletAddress)
+
+            // lock.SFG.getBalanceOf(lock.SFG.mortgages.SFG.userStaking, walletAddress)
 
             // qusd5.getUserTotalReward_SFG(
             //   qusd5.rewards.sfg.userTotalReward,
@@ -421,20 +608,25 @@
 </script>
 
 <style>
-  .area {
-    background: rgba(255,255,255,0.3);
-    border: 1px solid #dadedf;
-    border-radius: 2px;
-    padding: 20px;
-    margin-bottom: 20px;
+  .acceleration {
+    
   }
-  .area:last-child {
-    margin-bottom: 0px;
+  .acceleration thead {
+    padding: 0 10px;
   }
-  .area > .row > .col {
-    border-right: 1px solid rgba(0,0,0,0.08);
+  .acceleration thead th{
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 22px;
+    padding: 8px 0;
+    background: #e8f6f1 !important;
+    border: 0;
   }
-  .area > .row > .col:last-child {
-    border-right-width: 0px;
+  .acceleration th:first-child {
+    text-align: left;
+    padding-left: 10px;
+  }
+  .acceleration td:last-child {
+    padding-right: 10px;
   }
 </style>

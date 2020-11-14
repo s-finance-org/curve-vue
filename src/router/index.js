@@ -194,7 +194,7 @@ let routes = [
         component: Dao
       },
       {
-        path: '/lock',
+        path: '/sfg',
         name: 'Lock',
         component: Lock
       },

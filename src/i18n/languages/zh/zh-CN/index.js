@@ -214,27 +214,23 @@ export default {
     confirmUnlock: '确认解锁',
     miningAcceleration: '挖矿加速',
     miningAccelerationTip: '锁仓 SFG 数量决定可加速金额，加速倍数决定 APY 上限',
-
-
     stablecoinMiningPool: '稳定币流动性矿池',
     stablecoinMiningPoolTip: '锁仓 SFG 数量决定可加速 LPT 数量，加速倍数决定 APY 上限',
-    liquidityPool: '流动性池',
+    poolName: '流动性池',
     rewardWeight: 'SFG 奖励权重',
     myMortgageAmount: '我的 LPT 抵押数量',
+    myMortgageRatio: '我的 LPT 抵押比例',
     needLockAmount: '还需锁仓数量',
     needLockDays: '还需锁仓天数',
     sfgMiningPool: 'SFG 流动性矿池',
     sfgMiningPoolTip: '锁仓 SFG 数量决定可加速 BPT 比例，加速倍数决定 APY 上限',
-    acceleratedLiquidityAmount: '实际加速倍数',
+    actualAcceleration: '实际加速倍数',
     basicAPY: '基础 APY',
     myAPY: '我的 APY',
-
     acceleratedAmountPer: '每 SFG 可加速金额',
     acceleratingAmount: '我的可加速金额',
     remainingAcceleratingAmount: '剩余可加速金额',
     provideLiquidity: '我提供的流动性',
-
-
 
     dividends: '分红',
     dividendsTip: '锁仓 SFG 数量越多，时间越久，分红越高',

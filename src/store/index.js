@@ -992,10 +992,9 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
     priceUnit: 'DAI',
     priceUnitAddress: process.env.VUE_APP_DAI_TOKEN, // DAI
     price: valueModel.create(),
-    // TODO: priceUnit
-    async getPrice (priceUnit) {
+    async getPrice () {
       const { address, priceUnitAddress, price } = this
-      const result = await store.price.getPrice(priceUnitAddress, address)
+      const result = await store.price.getPrice(priceUnitAddress, process.env.VUE_APP_SFG_PRICE_TOKEN)
 
       // XXX: ether?
       price.ether = result
@@ -1003,12 +1002,116 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
       return result
     },
 
-    dailyYield: valueModel.create(),
+    // 总锁仓量
+    totalSupply: ModelValueEther.create(),
+    async getTotalSupply () {
+      const { contract, totalSupply } = this
+
+      // TEMP: 
+      return totalSupply.ether = await contract.methods.totalSupply().call()
+    },
+
+    // 已发行量
+    supplied: ModelValueEther.create(),
+    async getSupplied () {
+      const { contract, supplied, totalSupply } = this
+
+      await this.getTotalSupply()
+
+      // TEMP: 
+      return supplied.ether = BN(totalSupply.ether).minus(await contract.methods.balanceOf(process.env.VUE_APP_PS_MINTER).call()).toString()
+    },
+
+    // 每日预计发行量
+    dailyYield: ModelValueEther.create(),
     async getDailyYield () {
       const { contract, dailyYield, miningRate } = this
 
       // TEMP: 
       return dailyYield.ether = await contract.methods.balanceOf(process.env.VUE_APP_PS_MINTER).call() * miningRate
+    },
+
+    // 流通量
+    circulation: ModelValueEther.create(),
+    async getCirculation (lockEther) {
+      const { contract, supplied, circulation } = this
+
+      // FIXME: 流程
+      await this.getSupplied()
+
+      return circulation.ether = BN(supplied.ether).minus(await lockEther).toString()
+    },
+
+    // 钱包余额
+    async getBalanceOf (target, accountAddress) {
+      const { contract } = this
+      const result = await contract.methods.balanceOf(accountAddress).call()
+
+      return target.ether = result
+    },
+
+    minAllowance: 1,
+    // ether
+    maxAllowance: BN(2).pow(256).minus(1),
+    async hasValidAmount (val) {
+      const { minAllowance, maxAllowance, error } = this
+      const _val = BN(val).times(1e18)
+      // FIXME: balance Of
+      const result = _val.gte(minAllowance) &&
+        // TODO: div(2) why?
+        _val.lte(maxAllowance.div(2))
+
+      if (!result) {
+        error.message = store.i18n.$i18n.t('model.valueOutValidRange')
+      }
+
+      return result
+    },
+    async hasApprove (amount, accountAddress, toContract) {
+      const { contract, error } = this
+      const _amount = BN(amount).times(1e18)
+      // FIXME:
+      const allowance = BN(await contract.methods.allowance(accountAddress, toContract).call())
+      console.log('allowance', allowance.toString(), allowance.toString() / 1e18)
+      // allowance >= amount && amount > 0
+      const result = allowance.gte(_amount) && BN(_amount).gt(0)
+
+      if (!result) {
+        error.message = store.i18n.$i18n.t('model.approveOperation')
+      }
+
+      return result
+    },
+    async onApproveAmount (amount, accountAddress, toContract, infinite = false) {
+      const { contract, maxAllowance } = this
+      const _amount = BN(amount).times(1e18)
+
+      console.log('amount', amount)
+      if (!await this.hasValidAmount(amount)) return false
+
+      // FIXME:
+      const allowance = BN(await contract.methods.allowance(accountAddress, toContract).call())
+
+      if (infinite) {
+        // allowance < maxAllowance / 2 && amount > 0
+        // TODO: div(2) why?
+        if (allowance.lt(maxAllowance.div(2))) {
+          if (allowance.gt(0) && requiresResetAllowance.includes(contract._address)) {
+            await approve(contract, 0, accountAddress, toContract)
+          } else {
+            await approve(contract, maxAllowance, accountAddress, toContract)
+          }
+        }
+      } else {
+        // allowance < amount && amount > 0
+        if (allowance.lt(_amount)) {
+          if (allowance.gt(0) && requiresResetAllowance.includes(contract._address)) {
+            await approve(contract, 0, accountAddress, toContract)
+          } else {
+            await approve(contract, _amount, accountAddress, toContract)
+          }
+        }
+      }
     },
 
     error: errorModel.create(),
@@ -2438,6 +2541,11 @@ store.gauges = {
         userBalanceOf: valueModel.create(),
 
         userStake: valueModel.create(),
+        ratioStaking: valueModel.create(),
+        needLockAmount: valueModel.create(),
+        factorOf: valueModel.create(),
+        needLockDay: valueModel.create(),
+
         stakeSliderSelected: 0,
         // FIXME: common
         stakeSliderOptions: [
@@ -2527,24 +2635,78 @@ store.gauges = {
       }
     },
 
+    async getNeedLockAmount(target, totalStaking, ratioStaking) {
+      const { contract, mortgages } = this
+
+      const totalStakingEther = await totalStaking
+      const ratioStakingEther = await ratioStaking
+
+      const result = Math.max(BN(totalStakingEther)
+      .dividedBy(ratioStakingEther)
+      .minus(totalStakingEther)
+      .toString(), 0)
+
+      target.ether = result
+
+      return result
+    },
+
+    async getRatioStaking(target, accountAddress) {
+      const { contract } = this
+
+      return target.ether = await contract.methods.ratioStaking(accountAddress).call()
+    },
+
     async getTotalStaking (target) {
       const { contract } = this
 
       return target.ether = await contract.methods.totalSupply().call()
     },
 
+    async getNeedLockDay (target, stakeTimeOf) {
+      const result = Math.max(
+        BN(80 * 1e18).minus(stakeTimeOf).toString(),
+        0
+      )
+      target.ether = result
+      return result
+    },
+
     dailyAPY: valueModel.create(),
     apy: valueModel.create(),
+    myApy: valueModel.create(),
     // TEMP:
     async getAPY (price, dailyYield, totalStaking, lpTokenPrice) {
       const { contract, dailyAPY, apy, rewards } = this
-
+console.log(await dailyYield )
       rewards.sfg.dailyYield.handled = BN(await dailyYield / 1e18).times(rewards.sfg.weighting.handled).toString()
 
       dailyAPY.handled = BN(await price / 1e18).times(rewards.sfg.dailyYield.handled).dividedBy(BN(await totalStaking).times(await lpTokenPrice / 1e18)).toString()
 
 console.log('dailyAPY.handled', dailyAPY.handled, await price / 1e18, await totalStaking, await lpTokenPrice / 1e18 )
       apy.handled = +dailyAPY.handled * 365
+
+      return apy.handled
+    },
+
+    async getMyApy (apy, factorOf) {
+      const { myApy } = this
+console.log(await apy, await factorOf)
+      const result = BN(await apy).times(await factorOf / 1e18).toString()
+
+      myApy.handled = result
+      return result
+    },
+
+    /** 加速系数 */
+    async getFactorOf (target, address) {
+      const { contract } = this
+      // TODO: ether?
+      const result = await contract.methods.factorOf(address).call()
+
+      target.ether = result
+
+      return result
     },
 
     async getBalanceOf (target, accountAddress) {
@@ -2931,7 +3093,17 @@ console.log('dailyAPY.handled', dailyAPY.handled, await price / 1e18, await tota
           dismiss()
           notifyHandler(hash)
         })
-    }
+    },
+
+    /** 加速系数 */
+    async getFactorOf (target, address) {
+      const { contract } = this
+      // TODO: ether?
+      const result = await contract.methods.factorOf(address).call()
+
+      target.ether = result
+      return result
+    },
   },
 
   susdv2: {
@@ -3101,11 +3273,18 @@ store.lock = {
         priceDecimal: 4,
         gainUrl: 'https://pools.balancer.exchange/#/pool/0x2f49eea1efc1b04e9ecd3b81321060e29db26a19/',
 
-        totalStaking: valueModel.create(),
-        userStaking: valueModel.create(),
-        userBalanceOf: valueModel.create(),
+        // totalStaking: ModelValueEther.create(),
+        userStaking: ModelValueEther.create(),
+        userBalanceOf: ModelValueEther.create(),
 
+        // 份额
+        share: ModelValueEther.create(),
+        // 加速倍数
+        factorOf: ModelValueEther.create({ contDecimal: 4 }),
+        // 已锁仓天数
+        stakeTimeOf: ModelValueEther.create(),
         userStake: valueModel.create(),
+
         stakeSliderSelected: 0,
         // FIXME: common
         stakeSliderOptions: [
@@ -3179,6 +3358,14 @@ store.lock = {
       }
     },
 
+    totalSupply: ModelValueEther.create(),
+    async getTotalSupply () {
+      const { contract, totalSupply } = this
+
+      // TEMP: 
+      return totalSupply.ether = await contract.methods.totalSupply().call()
+    },
+
     /** 质押数量 */
     async getBalanceOf (target, accountAddress) {
       const { contract } = this
@@ -3196,7 +3383,7 @@ store.lock = {
 
       var { dismiss } = notifyNotification(`Please confirm depositing into ${name} gauge`)
 
-      await contract.methods.deposit(deposit.toFixed(0,1)).send({
+      await contract.methods.stake(deposit.toFixed(0,1)).send({
         from: accountAddress,
         // gasPrice: gasPriceStore.gasPriceWei,
         // gas: this.currentPool.deposit.gas,
@@ -3240,14 +3427,34 @@ store.lock = {
       })
     },
     /** 加速系数 */
-    async getFactorOf (address) {
+    async getFactorOf (target, address) {
       const { contract } = this
       // TODO: ether?
       const result = await contract.methods.factorOf(address).call()
 
       target.ether = result
+
       return result
-    }
+    },
+
+    async getShare (target, balanceOf, factorOf) {
+      const { contract } = this
+      // TODO: ether?
+      const result = BN(await balanceOf / 1e18).times(await factorOf / 1e18).toString()
+
+      target.handled = result
+      return result
+    },
+
+    async getStakeTimeOf (target, address) {
+      const { contract } = this
+      // TODO: ether?
+      const result = await contract.methods.stakeTimeOf(address).call()
+
+      target.ether = result
+
+      return result
+    },
   }
 }
 
@@ -3333,5 +3540,15 @@ store.lptoken = {
     }
   }
 }
+
+// SFG weighting
+store.gauges.susdv2.rewards.sfg.weighting.handled = 0.05
+store.gauges.dusd.rewards.sfg.weighting.handled = 0.1
+store.gauges.qusd5.rewards.sfg.weighting.handled = 0.1
+store.gauges.usd5.rewards.sfg.weighting.handled = 0.25
+store.gauges.dfi.rewards.sfg.weighting.handled = 0.1
+
+store.gauges.bpt.rewards.sfg.weighting.handled = 0.4
+
 
 export default Vue.observable(store)

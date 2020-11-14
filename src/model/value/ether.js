@@ -8,7 +8,8 @@ const ModelValueEther = {
    */
   create ({
     decimal = 18,
-    ether = null,
+    ether = undefined,
+    handled = undefined,
     contDecimal = 6,
     contDefault = '-',
     contMethod = floor
