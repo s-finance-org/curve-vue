@@ -47,6 +47,7 @@ import { GAUGE_DUSD_ABI } from './gauge'
 import ModelToken from '../model/token'
 import ModelLpToken from '../model/lptoken'
 import ModelValueEther from '../model/value/ether'
+import ModelValueDate from '../model/value/date'
 
 import request from './request'
 
@@ -2544,7 +2545,7 @@ store.gauges = {
         ratioStaking: valueModel.create(),
         needLockAmount: valueModel.create(),
         factorOf: valueModel.create(),
-        needLockDay: valueModel.create(),
+        needLockDay: ModelValueDate.create(),
 
         stakeSliderSelected: 0,
         // FIXME: common
@@ -2635,18 +2636,21 @@ store.gauges = {
       }
     },
 
-    async getNeedLockAmount(target, totalStaking, ratioStaking) {
+    async getNeedLockAmount(target, BalanceOf, ratioStaking) {
       const { contract, mortgages } = this
 
-      const totalStakingEther = await totalStaking
-      const ratioStakingEther = await ratioStaking
+      const balanceOfEther = await BalanceOf / 1e18
+      const ratioStakingEther = await ratioStaking / 1e18
 
-      const result = Math.max(BN(totalStakingEther)
-      .dividedBy(ratioStakingEther)
-      .minus(totalStakingEther)
-      .toString(), 0)
+      const result = Math.max(
+        BN(balanceOfEther)
+          .dividedBy(ratioStakingEther)
+          .minus(balanceOfEther)
+          .toString(),
+        0
+      )
 
-      target.ether = result
+      target.handled = result
 
       return result
     },
@@ -2663,12 +2667,14 @@ store.gauges = {
       return target.ether = await contract.methods.totalSupply().call()
     },
 
+    // FIXME: 秒而非 ether
     async getNeedLockDay (target, stakeTimeOf) {
       const result = Math.max(
-        BN(80 * 1e18).minus(stakeTimeOf).toString(),
+        // FIXME: 
+        ((+await stakeTimeOf + 80 * 86400) - Date.now() / 1000) / 86400,
         0
       )
-      target.ether = result
+      target.handled = result
       return result
     },
 
@@ -2714,6 +2720,15 @@ console.log(await apy, await factorOf)
       const result = await contract.methods.balanceOf(accountAddress).call()
 
       target.ether = result
+      return result
+    },
+
+    virtualTotalSupply: valueModel.create(),
+    async getVirtualTotalSupply () {
+      const { contract, virtualTotalSupply } = this
+      const result = await contract.methods.virtualTotalSupply().call()
+
+      virtualTotalSupply.ether = result
       return result
     },
     async getUserPendingReward_SFG (target, accountAddress) {
