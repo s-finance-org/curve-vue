@@ -219,6 +219,8 @@
               <text-overlay-loading :show="data.item.need.loading">
                 {{ data.item.need.cont }}  {{ store.tokens.sfg.name }}
               </text-overlay-loading>
+              -------<br/>
+              {{ store.gauges.usd5.mortgages.usd5.ratioStaking }}
             </template>
             <template v-slot:head(day)>
               {{ $t('lock.needLockDays') }}
