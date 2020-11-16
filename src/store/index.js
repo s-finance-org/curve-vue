@@ -1014,13 +1014,19 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
 
     // 已发行量
     supplied: ModelValueEther.create(),
-    async getSupplied () {
+    async getSupplied (amount) {
       const { contract, supplied, totalSupply } = this
+      let result = 0
 
-      await this.getTotalSupply()
+      if (amount) {
+        result = await amount
+      } else {
+        await this.getTotalSupply()
+        result = BN(totalSupply.ether).minus(await contract.methods.balanceOf(process.env.VUE_APP_PS_MINTER).call()).toString()
+      }
 
       // TEMP: 
-      return supplied.ether = BN(totalSupply.ether).minus(await contract.methods.balanceOf(process.env.VUE_APP_PS_MINTER).call()).toString()
+      return supplied.ether = result
     },
 
     // 每日预计发行量
@@ -1954,7 +1960,7 @@ store.gauges = {
         0
       )
       target.ether = result * 1e18
-
+console.log('getNeedLockAmount', await stakingPerLPT / 1e18, await balanceOf / 1e18, await lockSfgBalanceOf / 1e18, result)
       return result
     },
 
@@ -3571,9 +3577,17 @@ store.lock = {
       const { contract } = this
 
       const result = await contract.methods.weightOfGauge(address).call()
-console.log('getWeightOfGauge', result)
+
       target.ether = result
 
+      return result
+    },
+    totalMinted: ModelValueEther.create(),
+    async getTotalMinted () {
+      const { contract, totalMinted } = this
+
+      const result = await contract.methods.totalMinted().call()
+      totalMinted.ether = result
       return result
     }
   }

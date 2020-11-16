@@ -188,7 +188,6 @@ export default {
   },
   model: {
     valueOutValidRange: 'Value is out of valid range',
-    incorrectValue: 'Incorrect value',
     approveOperation: 'Please authorize first, and then continue after authorization is completed'
   },
   lock: {

@@ -309,11 +309,7 @@
               </text-overlay-loading>
             </template>
             <template v-slot:head(need)>
-              <span class="d-flex align-items-center justify-content-end white-space-nowrap">
-                {{ $t('lock.needLockAmount') }}
-                <b-avatar text="!" class="iconTip iconTip-warning ml-1" id="tooltip-tip-t1"></b-avatar>
-                <b-tooltip placement="topright" target="tooltip-tip-t1" boundary="viewport" variant="success">{{ $t('lock.needLockAmountTip') }}</b-tooltip>
-              </span>
+              {{ $t('lock.needLockAmount') }}
             </template>
             <template v-slot:cell(need)="data">
               <text-overlay-loading :show="data.item.need.loading">
@@ -323,11 +319,7 @@
               <!-- {{ store.gauges.usd5.mortgages.usd5.ratioStaking }} -->
             </template>
             <template v-slot:head(day)>
-              <span class="d-flex align-items-center justify-content-end white-space-nowrap">
-                {{ $t('lock.needLockDays') }}
-                <b-avatar text="!" class="iconTip iconTip-warning ml-1" id="tooltip-tip-t2"></b-avatar>
-                <b-tooltip placement="topright" target="tooltip-tip-t2" boundary="viewport" variant="success">{{ $t('lock.needLockDaysTip') }}</b-tooltip>
-              </span>
+              {{ $t('lock.needLockDays') }}
             </template>
             <template v-slot:cell(day)="data">
               <text-overlay-loading :show="data.item.day.loading">
@@ -335,11 +327,7 @@
               </text-overlay-loading>
             </template>
             <template v-slot:head(accelerated)>
-              <span class="d-flex align-items-center justify-content-end white-space-nowrap">
-                {{ $t('lock.actualAcceleration') }}
-                <b-avatar text="!" class="iconTip iconTip-warning ml-1" id="tooltip-tip-t3"></b-avatar>
-                <b-tooltip placement="topright" target="tooltip-tip-t3" boundary="viewport" variant="success">{{ $t('lock.actualAccelerationTip') }}</b-tooltip>
-              </span>
+              {{ $t('lock.actualAcceleration') }}
             </template>
             <template v-slot:cell(accelerated)="data">
               <text-overlay-loading :show="data.item.accelerated.loading">
@@ -347,11 +335,7 @@
               </text-overlay-loading>
             </template>
             <template v-slot:head(baseApy)>
-              <span class="d-flex align-items-center justify-content-end white-space-nowrap">
-                {{ $t('lock.basicAPY') }}
-                <b-avatar text="!" class="iconTip iconTip-warning ml-1" id="tooltip-tip-t4"></b-avatar>
-                <b-tooltip placement="topright" target="tooltip-tip-t4" boundary="viewport" variant="success">{{ $t('lock.basicAPYTip') }}</b-tooltip>
-              </span>
+              {{ $t('lock.basicAPY') }}
             </template>
             <template v-slot:cell(baseApy)="data">
               <text-overlay-loading :show="data.item.baseApy.loading">
@@ -586,7 +570,6 @@
           },
 
           async mounted() {
-
             await gaugeStore.getState()
 
             this.loadingAction = false
@@ -599,7 +582,9 @@
             const walletAddress = currentContract.default_account
 
             // sfg
-            tokens.sfg.getSupplied()
+            tokens.sfg.getSupplied(
+              lock.SFG.getTotalMinted()
+            )
             tokens.sfg.getDailyYield()
             tokens.sfg.getCirculation(
               lock.SFG.getTotalSupply()
@@ -615,7 +600,6 @@
 
             const stakeTimeOfEther = lock.SFG.getStakeTimeOf(lock.SFG.mortgages.SFG.stakeTimeOf, walletAddress)
             const sfgFactorOf = lock.SFG.getFactorOf(lock.SFG.mortgages.SFG.factorOf, walletAddress)
-            const sfgStakingPerLPT = lock.SFG.getStakingPerLPT(gauges.usd5.address)
 
             const sfgPrice = tokens.sfg.getPrice()
             const sfgDailyYield = tokens.sfg.getDailyYield()
@@ -639,7 +623,7 @@
 
             gauges.usd5.getNeedLockAmount(
               gauges.usd5.mortgages.usd5.needLockAmount,
-              sfgStakingPerLPT,
+              lock.SFG.getStakingPerLPT(gauges.usd5.address),
               gauges.usd5.getBalanceOf(gauges.usd5.mortgages.usd5.userStaking, walletAddress),
               sfgBalanceOf,
             )
@@ -663,7 +647,7 @@
 
             gauges.bpt.getNeedLockAmount(
               gauges.bpt.mortgages.bpt.needLockAmount,
-              sfgStakingPerLPT,
+              lock.SFG.getStakingPerLPT(gauges.bpt.address),
               gauges.bpt.getBalanceOf(gauges.bpt.mortgages.bpt.userStaking, walletAddress),
               sfgBalanceOf,
             )

@@ -187,7 +187,6 @@ export default {
   },
   model: {
     valueOutValidRange: '值不在有效范围内',
-    incorrectValue: '无效的数值',
     approveOperation: '请先授权，并在授权完成后再继续操作'
   },
   lock: {
