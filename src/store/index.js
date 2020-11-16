@@ -1826,7 +1826,8 @@ store.gauges = {
     propagateMark: 'SFG',
     mortgagesUnit: 'BPT',
     address: process.env.VUE_APP_BPT_GAUGE,
-    abi: abiSUSDv2,
+    // abi: abiSUSDv2,
+    abi: ABI.USD5.mining,
     __contract: null,
     get contract () {
       const { __contract, abi, address } = this
@@ -1850,6 +1851,11 @@ store.gauges = {
         totalStaking: valueModel.create(),
         userStaking: valueModel.create(),
         userBalanceOf: valueModel.create(),
+
+        ratioStaking: valueModel.create(),
+        needLockAmount: valueModel.create(),
+        factorOf: valueModel.create(),
+        needLockDay: ModelValueDate.create(),
 
         userStake: valueModel.create(),
         stakeSliderSelected: 0,
@@ -1940,6 +1946,35 @@ store.gauges = {
       }
     },
 
+    async getNeedLockAmount(target, stakingPerLPT, balanceOf, lockSfgBalanceOf) {
+      const { contract, mortgages } = this
+// FIXME: 1E18
+      const result = Math.max(
+        BN(await stakingPerLPT / 1e18).times(await balanceOf / 1e18).minus(await lockSfgBalanceOf / 1e18),
+        0
+      )
+      target.ether = result * 1e18
+
+      return result
+    },
+
+    async getRatioStaking(target, accountAddress) {
+      const { contract } = this
+
+      return target.ether = await contract.methods.ratioStaking(accountAddress).call()
+    },
+
+    // FIXME: 秒而非 ether
+    async getNeedLockDay (target, stakeTimeOf) {
+      const result = Math.max(
+        // FIXME: 
+        ((+await stakeTimeOf + 80 * 86400) - Date.now() / 1000) / 86400,
+        0
+      )
+      target.handled = result
+      return result
+    },
+
     async getTotalStaking (target) {
       const { contract } = this
 
@@ -1948,6 +1983,8 @@ store.gauges = {
 
     dailyAPY: valueModel.create(),
     apy: valueModel.create(),
+    myApy: valueModel.create(),
+    maxApy: valueModel.create(),
     // TEMP:
     async getAPY (price, dailyYield, totalStaking, lpTokenPrice) {
       const { contract, dailyAPY, apy, rewards } = this
@@ -1956,6 +1993,36 @@ store.gauges = {
 
       dailyAPY.handled = BN(await price / 1e18).times(rewards.sfg.dailyYield.handled).dividedBy(BN(await totalStaking / 1e18).times(await lpTokenPrice)).toString()
       apy.handled = +dailyAPY.handled * 365
+
+      return apy.handled
+    },
+
+    async getMyApy (apy, factorOf) {
+      const { myApy } = this
+
+      const result = BN(await apy).times(await factorOf / 1e18).toString()
+
+      myApy.handled = result
+      return result
+    },
+
+    async getMaxApy (minApy, multiple) {
+      const { maxApy } = this
+
+      const result = BN(await minApy).times(await multiple / 1e18).toString()
+
+      return maxApy.handled = result
+    },
+
+    /** 加速系数 */
+    async getFactorOf (target, address) {
+      const { contract } = this
+      // TODO: ether?
+      const result = await contract.methods.factorOf(address).call()
+
+      target.ether = result
+
+      return result
     },
 
     async getBalanceOf (target, accountAddress) {
@@ -1965,6 +2032,16 @@ store.gauges = {
       target.ether = result
       return result
     },
+
+    virtualTotalSupply: valueModel.create(),
+    async getVirtualTotalSupply () {
+      const { contract, virtualTotalSupply } = this
+      const result = await contract.methods.virtualTotalSupply().call()
+
+      virtualTotalSupply.ether = result
+      return result
+    },
+
     async getUserPendingReward_SFG (target, accountAddress) {
       const { contract } = this
 
@@ -2521,7 +2598,6 @@ store.gauges = {
     propagateMark: '5pool',
     mortgagesUnit: 'usd5 LP token',
     address: process.env.VUE_APP_USD5_GAUGE,
-    // abi: abiDfi, // FIXME: ???
     abi: ABI.USD5.mining,
     __contract: null,
     get contract () {
@@ -2541,12 +2617,12 @@ store.gauges = {
         userStaking: valueModel.create(),
         userBalanceOf: valueModel.create(),
 
-        userStake: valueModel.create(),
         ratioStaking: valueModel.create(),
         needLockAmount: valueModel.create(),
         factorOf: valueModel.create(),
         needLockDay: ModelValueDate.create(),
 
+        userStake: valueModel.create(),
         stakeSliderSelected: 0,
         // FIXME: common
         stakeSliderOptions: [
@@ -2654,12 +2730,6 @@ store.gauges = {
       return target.ether = await contract.methods.ratioStaking(accountAddress).call()
     },
 
-    async getTotalStaking (target) {
-      const { contract } = this
-
-      return target.ether = await contract.methods.totalSupply().call()
-    },
-
     // FIXME: 秒而非 ether
     async getNeedLockDay (target, stakeTimeOf) {
       const result = Math.max(
@@ -2671,9 +2741,16 @@ store.gauges = {
       return result
     },
 
+    async getTotalStaking (target) {
+      const { contract } = this
+
+      return target.ether = await contract.methods.totalSupply().call()
+    },
+
     dailyAPY: valueModel.create(),
     apy: valueModel.create(),
     myApy: valueModel.create(),
+    maxApy: valueModel.create(),
     // TEMP:
     async getAPY (price, dailyYield, totalStaking, lpTokenPrice) {
       const { contract, dailyAPY, apy, rewards } = this
@@ -2690,11 +2767,19 @@ console.log('dailyAPY.handled', dailyAPY.handled, await price / 1e18, await tota
 
     async getMyApy (apy, factorOf) {
       const { myApy } = this
-console.log(await apy, await factorOf)
+
       const result = BN(await apy).times(await factorOf / 1e18).toString()
 
       myApy.handled = result
       return result
+    },
+
+    async getMaxApy (minApy, multiple) {
+      const { maxApy } = this
+
+      const result = BN(await minApy).times(await multiple / 1e18).toString()
+
+      return maxApy.handled = result
     },
 
     /** 加速系数 */
@@ -3468,6 +3553,17 @@ store.lock = {
       const { contract } = this
 
       const result = await contract.methods.stakingPerLPT(address).call()
+
+      return result
+    },
+
+    multiple: ModelValueEther.create(),
+    async getMultiple () {
+      const { contract, multiple } = this
+      // TODO: ether?
+      const result = await contract.methods.factorOf('0x1d22aBf08A30a7881D8F6B24b52E7586272BA20b').call()
+console.log('getMultiple', result, multiple)
+      multiple.ether = result
 
       return result
     }

@@ -24,7 +24,7 @@
               <h6 class="mb-1 text-black-65 d-flex align-items-center">
                 {{ $t('lock.cumulativeCirculation') }}
                 <b-avatar text="!" class="iconTip iconTip-warning ml-1" id="tooltip-tip1"></b-avatar>
-                <b-tooltip placement="topright" target="tooltip-tip1" variant="success">???</b-tooltip>
+                <b-tooltip placement="topright" target="tooltip-tip1" variant="success">{{ $t('lock.cumulativeCirculationTip') }}</b-tooltip>
               </h6>
               <text-overlay-loading inline :show="store.tokens.sfg.supplied.loading">
                 {{ store.tokens.sfg.supplied.cont }} {{ store.tokens.sfg.name }}
@@ -34,7 +34,7 @@
               <h6 class="mb-1 text-black-65">
                 {{ $t('lock.expectedReleaseToday') }}
                 <b-avatar text="!" class="iconTip iconTip-warning ml-1" id="tooltip-tip2"></b-avatar>
-                <b-tooltip placement="topright" target="tooltip-tip2" variant="success">???</b-tooltip>
+                <b-tooltip placement="topright" target="tooltip-tip2" variant="success">{{ $t('lock.expectedReleaseTodayTip') }}</b-tooltip>
               </h6>
               <text-overlay-loading inline :show="store.tokens.sfg.dailyYield.loading">
                 {{ store.tokens.sfg.dailyYield.cont }} {{ store.tokens.sfg.name }}
@@ -44,7 +44,7 @@
               <h6 class="mb-1 text-black-65 d-flex align-items-center">
                 {{ $t('lock.totalLockedPosition') }}
                 <b-avatar text="!" class="iconTip iconTip-warning ml-1" id="tooltip-tip3"></b-avatar>
-                <b-tooltip placement="topright" target="tooltip-tip3" variant="success">???</b-tooltip>
+                <b-tooltip placement="topright" target="tooltip-tip3" variant="success">{{ $t('lock.totalLockedPositionTip') }}</b-tooltip>
               </h6>
               <text-overlay-loading inline :show="store.lock.SFG.totalSupply.loading">
                 {{ store.lock.SFG.totalSupply.cont }} {{ store.tokens.sfg.name }}
@@ -54,7 +54,7 @@
               <h6 class="mb-1 text-black-65 d-flex align-items-center">
                 {{ $t('lock.circulation') }}
                 <b-avatar text="!" class="iconTip iconTip-warning ml-1" id="tooltip-tip4"></b-avatar>
-                <b-tooltip placement="topright" target="tooltip-tip4" variant="success">???</b-tooltip>
+                <b-tooltip placement="topright" target="tooltip-tip4" variant="success">{{ $t('lock.circulationTip') }}</b-tooltip>
               </h6>
               <text-overlay-loading inline :show="store.tokens.sfg.circulation.loading">
                 {{ store.tokens.sfg.circulation.cont }} {{ store.tokens.sfg.name }}
@@ -80,8 +80,8 @@
           <span class="col-12 col-md-4 pb-3">
             <h6 class="mb-0 text-black-65 d-flex align-items-center">
               {{ $t('lock.myAccelerationFactor') }}
-              <b-avatar text="!" class="iconTip iconTip-warning ml-1" id="tooltip-tip6"></b-avatar>
-              <b-tooltip placement="topright" target="tooltip-tip6" variant="success">???</b-tooltip>
+              <b-avatar text="!" class="iconTip iconTip-warning ml-1" id="tooltip-tip10"></b-avatar>
+              <b-tooltip placement="topright" target="tooltip-tip10" variant="success">{{ $t('lock.myAccelerationFactorTip') }}</b-tooltip>
             </h6>
             <text-overlay-loading inline :show="store.lock.SFG.mortgages.SFG.factorOf.loading">
               <span class="h4 text-danger-1">
@@ -93,7 +93,7 @@
             <h6 class="mb-0 text-black-65 d-flex align-items-center">
               {{ $t('lock.myShare') }}
               <b-avatar text="!" class="iconTip iconTip-warning ml-1" id="tooltip-tip5"></b-avatar>
-              <b-tooltip placement="topright" target="tooltip-tip5" variant="success">???</b-tooltip>
+              <b-tooltip placement="topright" target="tooltip-tip5" variant="success">{{ $t('lock.myShareTip') }}</b-tooltip>
             </h6>
             <text-overlay-loading inline :show="store.lock.SFG.mortgages.SFG.share.loading">
               <span class="h4">
@@ -193,27 +193,37 @@
           </h5>
           <b-table responsive class="mb-0 text-right table acceleration" hover :items="acceleration.items.stablecoin" :fields="acceleration.fields">
             <template v-slot:head(name)>
-              {{ $t('lock.poolName')}}
+              <span class="white-space-nowrap">
+                {{ $t('lock.poolName')}}
+              </span>
             </template>
             <template v-slot:cell(name)="data">
               {{ data.item.name }}
             </template>
             <template v-slot:head(weighting)>
-              {{ $t('lock.rewardWeight') }}
+              <span class="white-space-nowrap">
+                {{ $t('lock.rewardWeight') }}
+              </span>
             </template>
             <template v-slot:cell(weighting)="data">
               {{ data.item.weighting.percent }} %
             </template>
             <template v-slot:head(mortgage)>
-              {{ $t('lock.myMortgageAmount') }}
+              <span class="white-space-nowrap">
+                {{ $t('lock.myMortgageAmount') }}
+              </span>
             </template>
             <template v-slot:cell(mortgage)="data">
               <text-overlay-loading :show="data.item.mortgage.loading">
-              {{ data.item.mortgage.cont }} {{ data.item.lptoken }}
+                {{ data.item.mortgage.cont }} {{ data.item.lptoken }}
               </text-overlay-loading>
             </template>
             <template v-slot:head(need)>
-              {{ $t('lock.needLockAmount') }}
+              <span class="d-flex align-items-center justify-content-end white-space-nowrap">
+                {{ $t('lock.needLockAmount') }}
+                <b-avatar text="!" class="iconTip iconTip-warning ml-1" id="tooltip-tip-s1"></b-avatar>
+                <b-tooltip placement="topright" target="tooltip-tip-s1" boundary="viewport" variant="success">{{ $t('lock.needLockAmountTip') }}</b-tooltip>
+              </span>
             </template>
             <template v-slot:cell(need)="data">
               <text-overlay-loading :show="data.item.need.loading">
@@ -223,7 +233,11 @@
               <!-- {{ store.gauges.usd5.mortgages.usd5.ratioStaking }} -->
             </template>
             <template v-slot:head(day)>
-              {{ $t('lock.needLockDays') }}
+              <span class="d-flex align-items-center justify-content-end white-space-nowrap">
+                {{ $t('lock.needLockDays') }}
+                <b-avatar text="!" class="iconTip iconTip-warning ml-1" id="tooltip-tip-s2"></b-avatar>
+                <b-tooltip placement="topright" target="tooltip-tip-s2" boundary="viewport" variant="success">{{ $t('lock.needLockDaysTip') }}</b-tooltip>
+              </span>
             </template>
             <template v-slot:cell(day)="data">
               <text-overlay-loading :show="data.item.day.loading">
@@ -231,7 +245,11 @@
               </text-overlay-loading>
             </template>
             <template v-slot:head(accelerated)>
-              {{ $t('lock.actualAcceleration') }}
+              <span class="d-flex align-items-center justify-content-end white-space-nowrap">
+                {{ $t('lock.actualAcceleration') }}
+                <b-avatar text="!" class="iconTip iconTip-warning ml-1" id="tooltip-tip-s3"></b-avatar>
+                <b-tooltip placement="topright" target="tooltip-tip-s3" boundary="viewport" variant="success">{{ $t('lock.actualAccelerationTip') }}</b-tooltip>
+              </span>
             </template>
             <template v-slot:cell(accelerated)="data">
               <text-overlay-loading :show="data.item.accelerated.loading">
@@ -239,7 +257,11 @@
               </text-overlay-loading>
             </template>
             <template v-slot:head(baseApy)>
-              {{ $t('lock.basicAPY') }}
+              <span class="d-flex align-items-center justify-content-end white-space-nowrap">
+                {{ $t('lock.basicAPY') }}
+                <b-avatar text="!" class="iconTip iconTip-warning ml-1" id="tooltip-tip-s4"></b-avatar>
+                <b-tooltip placement="topright" target="tooltip-tip-s4" boundary="viewport" variant="success">{{ $t('lock.basicAPYTip') }}</b-tooltip>
+              </span>
             </template>
             <template v-slot:cell(baseApy)="data">
               <text-overlay-loading :show="data.item.baseApy.loading">
@@ -256,64 +278,98 @@
             </template>
           </b-table>
         </div>
-        <!-- <div class="px-4 py-3">
+        <div class="px-4 py-3">
           <h5 class="d-flex">
             <span class="mr-auto">{{ $t('lock.sfgMiningPool') }}</span>
             <small>{{ $t('lock.sfgMiningPoolTip') }}</small>
           </h5>
           <b-table responsive class="mb-0 text-right table acceleration" hover :items="acceleration.items.sfg" :fields="acceleration.fields">
             <template v-slot:head(name)>
-              {{ $t('lock.poolName')}}
+              <span class="white-space-nowrap">
+                {{ $t('lock.poolName')}}
+              </span>
             </template>
             <template v-slot:cell(name)="data">
               {{ data.item.name }}
             </template>
             <template v-slot:head(weighting)>
-              {{ $t('lock.rewardWeight') }}
+              <span class="white-space-nowrap">
+                {{ $t('lock.rewardWeight') }}
+              </span>
             </template>
             <template v-slot:cell(weighting)="data">
-              {{ data.item.weighting }}
+              {{ data.item.weighting.percent }} %
             </template>
             <template v-slot:head(mortgage)>
-              {{ $t('lock.myMortgageRatio') }}
+              <span class="white-space-nowrap">
+                {{ $t('lock.myMortgageAmount') }}
+              </span>
             </template>
             <template v-slot:cell(mortgage)="data">
-              {{ data.item.mortgage }}
-            </template>
-            <template v-slot:head(need)>
-              {{ $t('lock.needLockAmount') }}
-            </template>
-            <template v-slot:cell(need)="data">
-              <text-overlay-loading :show="!data.item.need">
-                {{ data.item.need }}
+              <text-overlay-loading :show="data.item.mortgage.loading">
+                {{ data.item.mortgage.cont }} {{ data.item.lptoken }}
               </text-overlay-loading>
             </template>
+            <template v-slot:head(need)>
+              <span class="d-flex align-items-center justify-content-end white-space-nowrap">
+                {{ $t('lock.needLockAmount') }}
+                <b-avatar text="!" class="iconTip iconTip-warning ml-1" id="tooltip-tip-t1"></b-avatar>
+                <b-tooltip placement="topright" target="tooltip-tip-t1" boundary="viewport" variant="success">{{ $t('lock.needLockAmountTip') }}</b-tooltip>
+              </span>
+            </template>
+            <template v-slot:cell(need)="data">
+              <text-overlay-loading :show="data.item.need.loading">
+                {{ data.item.need.cont }}  {{ store.tokens.sfg.name }}
+              </text-overlay-loading>
+              <!-- -------<br/> -->
+              <!-- {{ store.gauges.usd5.mortgages.usd5.ratioStaking }} -->
+            </template>
             <template v-slot:head(day)>
-              {{ $t('lock.needLockDays') }}
+              <span class="d-flex align-items-center justify-content-end white-space-nowrap">
+                {{ $t('lock.needLockDays') }}
+                <b-avatar text="!" class="iconTip iconTip-warning ml-1" id="tooltip-tip-t2"></b-avatar>
+                <b-tooltip placement="topright" target="tooltip-tip-t2" boundary="viewport" variant="success">{{ $t('lock.needLockDaysTip') }}</b-tooltip>
+              </span>
             </template>
             <template v-slot:cell(day)="data">
-              {{ data.item.apy }}
+              <text-overlay-loading :show="data.item.day.loading">
+                {{ data.item.day.cont }}
+              </text-overlay-loading>
             </template>
             <template v-slot:head(accelerated)>
-              {{ $t('lock.actualAcceleration') }}
+              <span class="d-flex align-items-center justify-content-end white-space-nowrap">
+                {{ $t('lock.actualAcceleration') }}
+                <b-avatar text="!" class="iconTip iconTip-warning ml-1" id="tooltip-tip-t3"></b-avatar>
+                <b-tooltip placement="topright" target="tooltip-tip-t3" boundary="viewport" variant="success">{{ $t('lock.actualAccelerationTip') }}</b-tooltip>
+              </span>
             </template>
             <template v-slot:cell(accelerated)="data">
-              {{ data.item.accelerated }}
+              <text-overlay-loading :show="data.item.accelerated.loading">
+                {{ data.item.accelerated.cont }}
+              </text-overlay-loading>
             </template>
             <template v-slot:head(baseApy)>
-              {{ $t('lock.basicAPY') }}
+              <span class="d-flex align-items-center justify-content-end white-space-nowrap">
+                {{ $t('lock.basicAPY') }}
+                <b-avatar text="!" class="iconTip iconTip-warning ml-1" id="tooltip-tip-t4"></b-avatar>
+                <b-tooltip placement="topright" target="tooltip-tip-t4" boundary="viewport" variant="success">{{ $t('lock.basicAPYTip') }}</b-tooltip>
+              </span>
             </template>
             <template v-slot:cell(baseApy)="data">
-              {{ data.item.baseApy }}
+              <text-overlay-loading :show="data.item.baseApy.loading">
+                {{ data.item.baseApy.percent }} %
+              </text-overlay-loading>
             </template>
             <template v-slot:head(myApy)>
               {{ $t('lock.myAPY') }}
             </template>
             <template v-slot:cell(myApy)="data">
-              {{ data.item.myApy }}
+              <text-overlay-loading :show="data.item.myApy.loading">
+                {{ data.item.myApy.percent }} %
+              </text-overlay-loading>
             </template>
           </b-table>
-        </div> -->
+        </div>
       </div>
 
       <!-- <h4 class="mb-2 d-flex flex-wrap align-items-end">
@@ -456,6 +512,31 @@
         acceleration () {
           const { gauges, tokens } = store
 
+          const result = {
+            usd5: {
+              _gauges: gauges.usd5,
+              _mortgage: gauges.usd5.mortgages.usd5,
+            },
+            bpt: {
+              _gauges: gauges.bpt,
+              _mortgage: gauges.bpt.mortgages.bpt,
+            },
+          }
+
+          for (let key in result) {
+            let val = result[key]
+
+            val.name = val._gauges.propagateMark,
+            val.lptoken = val._gauges.name,
+            val.weighting = val._gauges.rewards.sfg.weighting,
+            val.mortgage = val._mortgage.userStaking,
+            val.need = val._mortgage.needLockAmount,
+            val.day = val._mortgage.needLockDay,
+            val.accelerated = val._mortgage.factorOf,
+            val.baseApy = val._gauges.apy,
+            val.myApy = val._gauges.myApy
+          }
+
           return {
             fields: [
               { key: 'name', stickyColumn: true, isRowHeader: true },
@@ -469,20 +550,10 @@
             ],
             items: {
               stablecoin: [
-                // usd5
-                { name: gauges.usd5.propagateMark,
-                  lptoken: gauges.usd5.name,
-                  weighting: gauges.usd5.rewards.sfg.weighting,
-                  mortgage: gauges.usd5.mortgages.usd5.userStaking,
-                  need: gauges.usd5.mortgages.usd5.needLockAmount,
-                  day: gauges.usd5.mortgages.usd5.needLockDay,
-                  accelerated: gauges.usd5.mortgages.usd5.factorOf,
-                  baseApy: gauges.usd5.apy,
-                  myApy: gauges.usd5.myApy
-                }
+                result.usd5
               ],
               sfg: [
-                { name: '', weighting: '', mortgage: '', need: '', day: '', accelerated: '', baseApy: '', myApy: ''}
+                result.bpt
               ]
             }
           }
@@ -536,61 +607,66 @@
               lock.SFG.getTotalSupply()
             )
 
+            const sfgBalanceOf = lock.SFG.getBalanceOf(lock.SFG.mortgages.SFG.userStaking, walletAddress)
+
             lock.SFG.getShare(
               lock.SFG.mortgages.SFG.share,
-              lock.SFG.getBalanceOf(lock.SFG.mortgages.SFG.userStaking, walletAddress),
+              sfgBalanceOf,
               lock.SFG.getFactorOf(lock.SFG.mortgages.SFG.factorOf, walletAddress)
             )
 
-            const stakeTimeOfEther = await lock.SFG.getStakeTimeOf(lock.SFG.mortgages.SFG.stakeTimeOf, walletAddress)
+            const stakeTimeOfEther = lock.SFG.getStakeTimeOf(lock.SFG.mortgages.SFG.stakeTimeOf, walletAddress)
+            const sfgFactorOf = lock.SFG.getFactorOf(lock.SFG.mortgages.SFG.factorOf, walletAddress)
+            const sfgStakingPerLPT = lock.SFG.getStakingPerLPT(gauges.usd5.address)
+
+            const sfgPrice = tokens.sfg.getPrice()
+            const sfgDailyYield = tokens.sfg.getDailyYield()
 
             tokens.sfg.getBalanceOf(lock.SFG.mortgages.SFG.userBalanceOf, walletAddress)
 
             // usd5
             gauges.usd5.getMyApy(
               gauges.usd5.getAPY(
-                tokens.sfg.getPrice(),
-                tokens.sfg.getDailyYield(),
+                sfgPrice,
+                sfgDailyYield,
                 gauges.usd5.getVirtualTotalSupply(), // gauges.usd5.getTotalStaking(gauges.usd5.mortgages.usd5.totalStaking),
                 tokens.usd5.getPrice(),
               ),
-              lock.SFG.getFactorOf(lock.SFG.mortgages.SFG.factorOf, walletAddress)
+              sfgFactorOf
             )
 
             gauges.usd5.getFactorOf(gauges.usd5.mortgages.usd5.factorOf, walletAddress)
 
             gauges.usd5.getNeedLockAmount(
               gauges.usd5.mortgages.usd5.needLockAmount,
-              lock.SFG.getStakingPerLPT(gauges.usd5.address),
-              gauges.usd5.getBalanceOf(gauges.usd5.mortgages.usd5.userStaking, currentContract.default_account),
-              lock.SFG.getBalanceOf(lock.SFG.mortgages.SFG.userStaking, walletAddress),
+              sfgStakingPerLPT,
+              gauges.usd5.getBalanceOf(gauges.usd5.mortgages.usd5.userStaking, walletAddress),
+              sfgBalanceOf,
             )
-            // ????
-            // gauges.usd5.getRatioStaking(gauges.usd5.mortgages.usd5.ratioStaking, walletAddress)
 
             gauges.usd5.getNeedLockDay(gauges.usd5.mortgages.usd5.needLockDay, stakeTimeOfEther)
 
+            // bpt
+            gauges.bpt.getMyApy(
+              gauges.bpt.getAPY(
+                sfgPrice,
+                sfgDailyYield,
+                gauges.bpt.getVirtualTotalSupply(), // gauges.usd5.getTotalStaking(gauges.usd5.mortgages.usd5.totalStaking),
+                tokens.bpt.getPrice(),
+              ),
+              sfgFactorOf
+            )
 
+            gauges.bpt.getFactorOf(gauges.bpt.mortgages.bpt.factorOf, walletAddress)
 
+            gauges.bpt.getNeedLockAmount(
+              gauges.bpt.mortgages.bpt.needLockAmount,
+              sfgStakingPerLPT,
+              gauges.bpt.getBalanceOf(gauges.bpt.mortgages.bpt.userStaking, walletAddress),
+              sfgBalanceOf,
+            )
 
-
-            // lock.SFG.getTotalStaking(lock.SFG.mortgages.SFG.totalStaking),
-
-            // tokens.sfg.getBalanceOf(lock.SFG.mortgages.SFG.userBalanceOf, walletAddress)
-
-            // lock.SFG.getBalanceOf(lock.SFG.mortgages.SFG.userStaking, walletAddress)
-
-            // qusd5.getUserTotalReward_SFG(
-            //   qusd5.rewards.sfg.userTotalReward,
-            //   qusd5.getUserPendingReward_SFG(qusd5.rewards.sfg.userPendingReward, currentContract.default_account),
-            //   qusd5.getUserPaidReward_SFG(qusd5.rewards.sfg.userPaidReward, currentContract.default_account)
-            // )
-
-            // qusd5.getUserTotalReward_KUN(
-            //   qusd5.rewards.kun.userTotalReward,
-            //   qusd5.getUserPendingReward_KUN(qusd5.rewards.kun.userPendingReward, currentContract.default_account),
-            //   qusd5.getUserPaidReward_KUN(qusd5.rewards.kun.userPaidReward, currentContract.default_account)
-            // )
+            gauges.bpt.getNeedLockDay(gauges.bpt.mortgages.bpt.needLockDay, stakeTimeOfEther)
           },
           countDownChanged(val) {
             this.dismissCountDown = val
@@ -619,19 +695,29 @@
   .acceleration thead {
     padding: 0 10px;
   }
+  .acceleration td {
+    padding: 8px 0 8px 20px;
+  }
   .acceleration thead th{
     font-size: 14px;
     font-weight: 400;
     line-height: 22px;
-    padding: 8px 0;
+    padding: 8px 0 8px 20px;
     background: #e8f6f1 !important;
     border: 0;
   }
   .acceleration th:first-child {
     text-align: left;
-    padding-left: 10px;
+    padding: 8px 0 8px 10px;
   }
+  .acceleration th:last-child {
+    padding-right: 10px;
+  }
+  .acceleration th:last-child,
   .acceleration td:last-child {
     padding-right: 10px;
+  }
+  .acceleration tbody tr {
+    box-shadow: 0px -1px 0px 0px rgba(0,0,0,0.08) inset;
   }
 </style>

@@ -91,6 +91,9 @@ fieldset {
   min-width: 0;
 }
 
+.white-space-nowrap {
+  white-space: nowrap;
+}
 
 /* b-overlay */
 .b-overlay {

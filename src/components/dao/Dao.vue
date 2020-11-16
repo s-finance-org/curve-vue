@@ -243,10 +243,10 @@
           <h4 class="mb-2 d-flex flex-wrap align-items-end">
             <span class="mr-3">{{ $t('dao.tokenTitle', [store.gauges.usd5.propagateMark]) }}</span>
             <small class="mr-auto">{{ $t('dao.describe', [store.gauges.usd5.mortgagesUnit, store.gauges.usd5.rewardsUnit.join(' + ')]) }}</small>
-            <text-overlay-loading inline :show="store.gauges.usd5.apy.loading">
+            <text-overlay-loading inline :show="store.gauges.usd5.apy.loading && store.gauges.usd5.maxApy.loading">
               <span class="h5 text-danger-1">
                 <small class="text-black-45">{{ $t('global.apr') }}</small>
-                {{ store.gauges.usd5.apy.percent }}%
+                {{ store.gauges.usd5.apy.percent }}% ~ {{ store.gauges.usd5.maxApy.percent }}%
               </span>
             </text-overlay-loading>
           </h4>
@@ -1039,10 +1039,10 @@
           <h4 class="mb-2 d-flex flex-wrap align-items-end">
             <span class="mr-3">{{ $t('dao.tokenTitle', [store.gauges.bpt.propagateMark]) }}</span>
             <small class="mr-auto">{{ $t('dao.describe', [store.gauges.bpt.mortgagesUnit, store.gauges.bpt.rewardsUnit.join(' ')]) }}</small>
-            <text-overlay-loading inline :show="store.gauges.bpt.apy.loading">
+            <text-overlay-loading inline :show="store.gauges.bpt.apy.loading && store.gauges.bpt.maxApy.loading">
               <span class="h5 text-danger-1">
                 <small class="text-black-45">{{ $t('global.apr') }}</small>
-                {{ store.gauges.bpt.apy.percent }}%
+                {{ store.gauges.bpt.apy.percent }}% ~ {{ store.gauges.bpt.maxApy.percent }}%
               </span>
             </text-overlay-loading>
           </h4>
@@ -1742,6 +1742,8 @@
 
             const { crv, snx, sfg } = this.currentPool.tokens
 
+            const multiple = store.lock.SFG.getMultiple()
+
             // TODO: temp
             this.gaugeContract = store.gauges.susdv2.contract
 
@@ -1820,11 +1822,14 @@
             // )
 
             // usd5
-            store.gauges.usd5.getAPY(
-              store.tokens.sfg.getPrice(),
-              store.tokens.sfg.getDailyYield(),
-              usd5.getTotalStaking(usd5.mortgages.usd5.totalStaking),
-              store.tokens.usd5.getPrice(),
+            store.gauges.usd5.getMaxApy(
+              store.gauges.usd5.getAPY(
+                store.tokens.sfg.getPrice(),
+                store.tokens.sfg.getDailyYield(),
+                store.gauges.usd5.getVirtualTotalSupply(), // usd5.getTotalStaking(usd5.mortgages.usd5.totalStaking),
+                store.tokens.usd5.getPrice(),
+              ),
+              multiple
             )
 
             store.tokens.usd5.getBalanceOf(usd5.mortgages.usd5.userBalanceOf, currentContract.default_account)
@@ -1863,11 +1868,14 @@
             )
 
             // bpt
-            store.gauges.bpt.getAPY(
-              store.tokens.sfg.getPrice(),
-              store.tokens.sfg.getDailyYield(),
-              bpt.getTotalStaking(bpt.mortgages.bpt.totalStaking),
-              store.tokens.bpt.getPrice(),
+            store.gauges.bpt.getMaxApy(
+              store.gauges.bpt.getAPY(
+                store.tokens.sfg.getPrice(),
+                store.tokens.sfg.getDailyYield(),
+                store.gauges.bpt.getVirtualTotalSupply(), // bpt.getTotalStaking(bpt.mortgages.bpt.totalStaking),
+                store.tokens.bpt.getPrice(),
+              ),
+              multiple
             )
 
             store.tokens.bpt.getBalanceOf(bpt.mortgages.bpt.userBalanceOf, currentContract.default_account)
