@@ -32,6 +32,7 @@ export function totalCurrencies(currencies) {
 }
 
 export function getTokenIcon(token, wrapped = false, pool = '') {
+    if (token === 'sfg') token = '__sfg'
     if(wrapped && ['compound', 'usdt'].includes(pool) && token != 'pax') {
         token = 'c' + token
     }
