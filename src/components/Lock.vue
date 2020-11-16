@@ -187,10 +187,7 @@
       </h4>
       <div class="box mb-4">
         <div class="px-4 py-3">
-          <h5 class="d-flex">
-            <span class="mr-auto">{{ $t('lock.stablecoinMiningPool') }}</span>
-            <small>{{ $t('lock.stablecoinMiningPoolTip') }}</small>
-          </h5>
+          <h5>{{ $t('lock.stablecoinMiningPool') }}</h5>
           <b-table responsive class="mb-0 text-right table acceleration" hover :items="acceleration.items.stablecoin" :fields="acceleration.fields">
             <template v-slot:head(name)>
               <span class="white-space-nowrap">
@@ -279,10 +276,7 @@
           </b-table>
         </div>
         <div class="px-4 py-3">
-          <h5 class="d-flex">
-            <span class="mr-auto">{{ $t('lock.sfgMiningPool') }}</span>
-            <small>{{ $t('lock.sfgMiningPoolTip') }}</small>
-          </h5>
+          <h5>{{ $t('lock.sfgMiningPool') }}</h5>
           <b-table responsive class="mb-0 text-right table acceleration" hover :items="acceleration.items.sfg" :fields="acceleration.fields">
             <template v-slot:head(name)>
               <span class="white-space-nowrap">

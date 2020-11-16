@@ -243,7 +243,7 @@
           <h4 class="mb-2 d-flex flex-wrap align-items-end">
             <span class="mr-3">{{ $t('dao.tokenTitle', [store.gauges.usd5.propagateMark]) }}</span>
             <small class="mr-auto">{{ $t('dao.describe', [store.gauges.usd5.mortgagesUnit, store.gauges.usd5.rewardsUnit.join(' + ')]) }}</small>
-            <text-overlay-loading inline :show="store.gauges.usd5.apy.loading && store.gauges.usd5.maxApy.loading">
+            <text-overlay-loading inline :show="store.gauges.usd5.apy.loading || store.gauges.usd5.maxApy.loading">
               <span class="h5 text-danger-1">
                 <small class="text-black-45">{{ $t('global.apr') }}</small>
                 {{ store.gauges.usd5.apy.percent }}% ~ {{ store.gauges.usd5.maxApy.percent }}%
@@ -1039,7 +1039,7 @@
           <h4 class="mb-2 d-flex flex-wrap align-items-end">
             <span class="mr-3">{{ $t('dao.tokenTitle', [store.gauges.bpt.propagateMark]) }}</span>
             <small class="mr-auto">{{ $t('dao.describe', [store.gauges.bpt.mortgagesUnit, store.gauges.bpt.rewardsUnit.join(' ')]) }}</small>
-            <text-overlay-loading inline :show="store.gauges.bpt.apy.loading && store.gauges.bpt.maxApy.loading">
+            <text-overlay-loading inline :show="store.gauges.bpt.apy.loading || store.gauges.bpt.maxApy.loading">
               <span class="h5 text-danger-1">
                 <small class="text-black-45">{{ $t('global.apr') }}</small>
                 {{ store.gauges.bpt.apy.percent }}% ~ {{ store.gauges.bpt.maxApy.percent }}%
