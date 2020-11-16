@@ -128,7 +128,7 @@
           { name: 'risks', to: { name: 'Risks', path: '/risks' }, i18n: 'global.risks' },
           { name: 'statemented', to: { name: 'Statemented', path: '/statemented' }, i18n: 'global.announcements' },
           { name: 'voting', href: 'https://signal.s.finance/', target: '_blank', i18n: 'global.voting' },
-          { name: 'wiki', href: locale === 'zh-CN' ? 'https://wiki.s.finance/zh/home' : '', target: '_blank', i18n: 'global.wiki' }
+          { name: 'wiki', href: locale === 'zh-CN' ? 'https://wiki.s.finance/zh/home' : 'https://wiki.s.finance/en/home', target: '_blank', i18n: 'global.wiki' }
         ]
 
         return {

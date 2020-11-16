@@ -1999,7 +1999,7 @@ console.log('getNeedLockAmount', await stakingPerLPT / 1e18, await balanceOf / 1
 
       dailyAPY.handled = BN(await price / 1e18).times(rewards.sfg.dailyYield.handled).dividedBy(BN(await totalStaking / 1e18).times(await lpTokenPrice)).toString()
       apy.handled = +dailyAPY.handled * 365
-
+console.log('getAPY',  apy.handled)
       return apy.handled
     },
 
@@ -3224,7 +3224,12 @@ console.log('getNeedLockAmount', await stakingPerLPT / 1e18, await balanceOf / 1
       return Object.keys(mortgages)
     },
     mortgages: {
-
+      susdv2: {
+        code: 'susdv2',
+        name: 'susdv2 LP token',
+        priceDecimal: 4,
+        totalStaking: valueModel.create(),
+      }
     },
 
     rewards: {

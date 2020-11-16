@@ -8,6 +8,7 @@ export default {
     home: 'Home',
     more: 'More',
     swap: 'Swap',
+    lock: 'SFG',
     liquidity: 'Liquidity',
     stats: 'Stats',
     voting: 'Voting',
@@ -137,8 +138,7 @@ export default {
     confirmWithdrawalTransaction: 'Please confirm withdrawal transaction {0}',
     confirmUnstakingToken: 'Please confirm unstaking {0} tokens',
     UnstakingTokenWithdrawal: `Unstaking {0} tokens for withdrawal.
-    <br />
-    A bit more tokens are needed to unstake to ensure that withdrawal is successful.
+    <br />A bit more tokens are needed to unstake to ensure that withdrawal is successful.
     You'll see them in your unstaked balance afterwards.`,
     waitingDepositTransactionBeforeStaking: `Waiting for deposit <a href='http://etherscan.io/tx/{0}'>transaction</a> to confirm before staking`,
     waitingDepositTransactionNoFurther: `Waiting for deposit <a href='http://etherscan.io/tx/{0}'>transaction</a> to confirm no further action required`
