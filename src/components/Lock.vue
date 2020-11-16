@@ -203,7 +203,9 @@
               </span>
             </template>
             <template v-slot:cell(weighting)="data">
-              {{ data.item.weighting.percent }} %
+              <text-overlay-loading :show="data.item.weighting.loading">
+                {{ data.item.weighting.percent }} %
+              </text-overlay-loading>
             </template>
             <template v-slot:head(mortgage)>
               <span class="white-space-nowrap">
@@ -292,7 +294,9 @@
               </span>
             </template>
             <template v-slot:cell(weighting)="data">
-              {{ data.item.weighting.percent }} %
+              <text-overlay-loading :show="data.item.weighting.loading">
+                {{ data.item.weighting.percent }} %
+              </text-overlay-loading>
             </template>
             <template v-slot:head(mortgage)>
               <span class="white-space-nowrap">
@@ -619,6 +623,8 @@
             tokens.sfg.getBalanceOf(lock.SFG.mortgages.SFG.userBalanceOf, walletAddress)
 
             // usd5
+            await lock.SFG.getWeightOfGauge(gauges.usd5.rewards.sfg.weighting, gauges.usd5.address)
+
             gauges.usd5.getMyApy(
               gauges.usd5.getAPY(
                 sfgPrice,
@@ -641,6 +647,8 @@
             gauges.usd5.getNeedLockDay(gauges.usd5.mortgages.usd5.needLockDay, stakeTimeOfEther)
 
             // bpt
+            await lock.SFG.getWeightOfGauge(gauges.bpt.rewards.sfg.weighting, gauges.bpt.address)
+
             gauges.bpt.getMyApy(
               gauges.bpt.getAPY(
                 sfgPrice,

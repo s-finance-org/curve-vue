@@ -1741,15 +1741,20 @@
             store.tokens.susdv2LpToken.getBalanceOf(this.currentPool.balanceOf, currentContract.default_account)
 
             const { crv, snx, sfg } = this.currentPool.tokens
+            const { lock, gauges } = store
 
-            const multiple = store.lock.SFG.getMultiple()
+            const sfgPrice = await store.tokens.sfg.getPrice()
+            const sfgDailyYield = await store.tokens.sfg.getDailyYield()
+
+            const multiple = lock.SFG.getMultiple()
 
             // TODO: temp
-            this.gaugeContract = store.gauges.susdv2.contract
+            this.gaugeContract = gauges.susdv2.contract
+            await lock.SFG.getWeightOfGauge(gauges.susdv2.rewards.sfg.weighting, gauges.susdv2.address)
 
             store.gauges.susdv2.getAPY(
-              store.tokens.sfg.getPrice(),
-              store.tokens.sfg.getDailyYield(),
+              sfgPrice,
+              sfgDailyYield,
               store.gauges.susdv2.getTotalSupply(this.currentPool.totalSupply),
               store.tokens.susdv2LpToken.getPrice(),
             )
@@ -1777,9 +1782,11 @@
             const { dfi, bpt, dusd, okuu, usd5, qusd5 } = store.gauges
 
             // dusd
+            await lock.SFG.getWeightOfGauge(gauges.dusd.rewards.sfg.weighting, gauges.dusd.address)
+
             store.gauges.dusd.getAPY(
-              store.tokens.sfg.getPrice(),
-              store.tokens.sfg.getDailyYield(),
+              sfgPrice,
+              sfgDailyYield,
               dusd.getTotalStaking(dusd.mortgages.dusd.totalStaking),
               store.tokens.dusd.getPrice(),
               store.tokens.df.getPrice(),
@@ -1801,32 +1808,15 @@
               dusd.getUserPaidReward_DF(dusd.rewards.df.userPaidReward, currentContract.default_account)
             )
 
-            // okuu
-            // store.gauges.okuu.rewards.sfg.weighting.handled = 0
-
-            // store.gauges.okuu.getAPY(
-            //   store.tokens.sfg.getPrice(),
-            //   store.tokens.sfg.getDailyYield(),
-            //   okuu.getTotalStaking(okuu.mortgages.okuu.totalStaking),
-            //   store.tokens.okuu.getPrice(),
-            // )
-
-            // store.tokens.okuu.getBalanceOf(okuu.mortgages.okuu.userBalanceOf, currentContract.default_account)
-
-            // okuu.getBalanceOf(okuu.mortgages.okuu.userStaking, currentContract.default_account)
-
-            // okuu.getUserTotalReward_SFG(
-            //   okuu.rewards.sfg.userTotalReward,
-            //   okuu.getUserPendingReward_SFG(okuu.rewards.sfg.userPendingReward, currentContract.default_account),
-            //   okuu.getUserPaidReward_SFG(okuu.rewards.sfg.userPaidReward, currentContract.default_account)
-            // )
-
             // usd5
+            await lock.SFG.getWeightOfGauge(gauges.usd5.rewards.sfg.weighting, gauges.usd5.address)
+
+            usd5.getTotalStaking(usd5.mortgages.usd5.totalStaking)
             store.gauges.usd5.getMaxApy(
               store.gauges.usd5.getAPY(
-                store.tokens.sfg.getPrice(),
-                store.tokens.sfg.getDailyYield(),
-                store.gauges.usd5.getVirtualTotalSupply(), // usd5.getTotalStaking(usd5.mortgages.usd5.totalStaking),
+                sfgPrice,
+                sfgDailyYield,
+                store.gauges.usd5.getVirtualTotalSupply(),
                 store.tokens.usd5.getPrice(),
               ),
               multiple
@@ -1843,9 +1833,11 @@
             )
 
             // qusd5
+            await lock.SFG.getWeightOfGauge(gauges.qusd5.rewards.sfg.weighting, gauges.qusd5.address)
+
             store.gauges.qusd5.getAPY(
-              store.tokens.sfg.getPrice(),
-              store.tokens.sfg.getDailyYield(),
+              sfgPrice,
+              sfgDailyYield,
               qusd5.getTotalStaking(qusd5.mortgages.qusd5.totalStaking),
               store.tokens.qusd5.getPrice(),
               store.tokens.kun.getPrice(),
@@ -1868,11 +1860,14 @@
             )
 
             // bpt
+            await lock.SFG.getWeightOfGauge(gauges.bpt.rewards.sfg.weighting, gauges.bpt.address)
+
+            bpt.getTotalStaking(bpt.mortgages.bpt.totalStaking)
             store.gauges.bpt.getMaxApy(
               store.gauges.bpt.getAPY(
-                store.tokens.sfg.getPrice(),
-                store.tokens.sfg.getDailyYield(),
-                store.gauges.bpt.getVirtualTotalSupply(), // bpt.getTotalStaking(bpt.mortgages.bpt.totalStaking),
+                sfgPrice,
+                sfgDailyYield,
+                store.gauges.bpt.getVirtualTotalSupply(),
                 store.tokens.bpt.getPrice(),
               ),
               multiple
@@ -1889,9 +1884,11 @@
             )
 
             // dfi
+            await lock.SFG.getWeightOfGauge(gauges.dfi.rewards.sfg.weighting, gauges.dfi.address)
+
             store.gauges.dfi.getAPY(
-              store.tokens.sfg.getPrice(),
-              store.tokens.sfg.getDailyYield(),
+              sfgPrice,
+              sfgDailyYield,
               dfi.getTotalStaking(dfi.mortgages.iUSD_LPT.totalStaking),
               store.tokens.iUSD_LPT.getPrice(),
             )

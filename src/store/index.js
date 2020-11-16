@@ -514,7 +514,7 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
       const { address, priceUnitAddress, price } = this
       const priceContract = new web3.eth.Contract(BALANCER_POOL_ABI, process.env.VUE_APP_KUN_QUSD_BPT_TOKEN)
       const result = await priceContract.methods.getSpotPrice(priceUnitAddress, address).call()
-console.log('price', result)
+
       // XXX: ether?
       price.ether = result
 
@@ -2754,12 +2754,11 @@ store.gauges = {
     // TEMP:
     async getAPY (price, dailyYield, totalStaking, lpTokenPrice) {
       const { contract, dailyAPY, apy, rewards } = this
-console.log(await dailyYield )
+
       rewards.sfg.dailyYield.handled = BN(await dailyYield / 1e18).times(rewards.sfg.weighting.handled).toString()
 
       dailyAPY.handled = BN(await price / 1e18).times(rewards.sfg.dailyYield.handled).dividedBy(BN(await totalStaking).times(await lpTokenPrice / 1e18)).toString()
 
-console.log('dailyAPY.handled', dailyAPY.handled, await price / 1e18, await totalStaking, await lpTokenPrice / 1e18 )
       apy.handled = +dailyAPY.handled * 365
 
       return apy.handled
@@ -3562,8 +3561,18 @@ store.lock = {
       const { contract, multiple } = this
       // TODO: ether?
       const result = await contract.methods.factorOf('0x1d22aBf08A30a7881D8F6B24b52E7586272BA20b').call()
-console.log('getMultiple', result, multiple)
+
       multiple.ether = result
+
+      return result
+    },
+
+    async getWeightOfGauge (target, address) {
+      const { contract } = this
+
+      const result = await contract.methods.weightOfGauge(address).call()
+console.log('getWeightOfGauge', result)
+      target.ether = result
 
       return result
     }
@@ -3654,13 +3663,12 @@ store.lptoken = {
 }
 
 // SFG weighting
-store.gauges.susdv2.rewards.sfg.weighting.handled = 0.05
-store.gauges.dusd.rewards.sfg.weighting.handled = 0.1
-store.gauges.qusd5.rewards.sfg.weighting.handled = 0.1
-store.gauges.usd5.rewards.sfg.weighting.handled = 0.25
-store.gauges.dfi.rewards.sfg.weighting.handled = 0.1
+// store.gauges.susdv2.rewards.sfg.weighting.handled = 0.05
+// store.gauges.dusd.rewards.sfg.weighting.handled = 0.1
+// store.gauges.qusd5.rewards.sfg.weighting.handled = 0.1
+// store.gauges.usd5.rewards.sfg.weighting.handled = 0.25
+// store.gauges.dfi.rewards.sfg.weighting.handled = 0.1
 
-store.gauges.bpt.rewards.sfg.weighting.handled = 0.4
-
+// store.gauges.bpt.rewards.sfg.weighting.handled = 0.4
 
 export default Vue.observable(store)
