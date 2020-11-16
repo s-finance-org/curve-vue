@@ -1037,15 +1037,22 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
       return dailyYield.ether = await contract.methods.balanceOf(process.env.VUE_APP_PS_MINTER).call() * miningRate
     },
 
+    totalStakeRate: valueModel.create(),
     // 流通量
     circulation: ModelValueEther.create({ contDecimal: 2 }),
+    circulationRate: valueModel.create(),
     async getCirculation (lockEther) {
-      const { contract, supplied, circulation } = this
+      const { contract, supplied, circulation, circulationRate, totalStakeRate } = this
 
       // FIXME: 流程
       await this.getSupplied()
 
-      return circulation.ether = BN(supplied.ether).minus(await lockEther).toString()
+      const _lockEther = await lockEther
+
+      totalStakeRate.handled = BN(_lockEther).dividedBy(supplied.ether).toString()
+      circulationRate.handled = BN(1).minus(totalStakeRate.handled).toString()
+
+      return circulation.ether = BN(supplied.ether).minus(_lockEther).toString()
     },
 
     // 钱包余额
@@ -1156,7 +1163,7 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
     async getBalanceOf (target, accountAddress) {
       const { contract } = this
       const result = await contract.methods.balanceOf(accountAddress).call()
-console.log('getBalanceOf', result)
+
       target.ether = result
 
       return result
@@ -1999,7 +2006,7 @@ console.log('getNeedLockAmount', await stakingPerLPT / 1e18, await balanceOf / 1
       dailyAPY.handled = BN(await price / 1e18).times(rewards.sfg.dailyYield.handled).dividedBy(BN(await totalStaking / 1e18).times(await lpTokenPrice)).toString()
 
       apy.handled = +dailyAPY.handled * 365
-console.log('getAPY',  apy.handled, await dailyYield / 1e18)
+
       return apy.handled
     },
 

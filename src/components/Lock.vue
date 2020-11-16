@@ -47,7 +47,7 @@
                 <b-tooltip placement="topright" target="tooltip-tip3" variant="success">{{ $t('lock.totalLockedPositionTip') }}</b-tooltip>
               </h6>
               <text-overlay-loading inline :show="store.lock.SFG.totalSupply.loading">
-                {{ store.lock.SFG.totalSupply.cont }} {{ store.tokens.sfg.name }}
+                {{ store.lock.SFG.totalSupply.cont }} {{ store.tokens.sfg.name }} <small>- {{ store.tokens.sfg.totalStakeRate.percent }}%</small>
               </text-overlay-loading>
             </span>
             <span class="col-12 col-md mb-4">
@@ -57,7 +57,7 @@
                 <b-tooltip placement="topright" target="tooltip-tip4" variant="success">{{ $t('lock.circulationTip') }}</b-tooltip>
               </h6>
               <text-overlay-loading inline :show="store.tokens.sfg.circulation.loading">
-                {{ store.tokens.sfg.circulation.cont }} {{ store.tokens.sfg.name }}
+                {{ store.tokens.sfg.circulation.cont }} {{ store.tokens.sfg.name }} <small>- {{ store.tokens.sfg.circulationRate.percent }}%</small>
               </text-overlay-loading>
             </span>
           </div>
@@ -584,14 +584,6 @@
           },
 
           async mounted() {
-            await gaugeStore.getState()
-
-            this.loadingAction = false
-
-            this.pools = gaugeStore.state.pools
-            this.mypools = gaugeStore.state.mypools
-            this.claimFromGauges = this.myGauges
-
             const { lock, tokens, gauges } = store
             const walletAddress = currentContract.default_account
 
