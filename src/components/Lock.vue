@@ -268,7 +268,9 @@
               </text-overlay-loading>
             </template>
             <template v-slot:head(myApy)>
-              {{ $t('lock.myAPY') }}
+              <span class="white-space-nowrap">
+                {{ $t('lock.myAPY') }}
+              </span>
             </template>
             <template v-slot:cell(myApy)="data">
               <text-overlay-loading :show="data.item.myApy.loading">
@@ -282,7 +284,9 @@
           <b-table responsive class="mb-0 text-right table acceleration" hover :items="acceleration.items.sfg" :fields="acceleration.fields">
             <template v-slot:head(name)>
               <span class="white-space-nowrap">
-                {{ $t('lock.poolName')}}
+                <span class="white-space-nowrap">
+                  {{ $t('lock.poolName')}}
+                </span>
               </span>
             </template>
             <template v-slot:cell(name)="data">
@@ -309,7 +313,9 @@
               </text-overlay-loading>
             </template>
             <template v-slot:head(need)>
-              {{ $t('lock.needLockAmount') }}
+              <span class="white-space-nowrap">
+                {{ $t('lock.needLockAmount') }}
+              </span>
             </template>
             <template v-slot:cell(need)="data">
               <text-overlay-loading :show="data.item.need.loading">
@@ -319,7 +325,9 @@
               <!-- {{ store.gauges.usd5.mortgages.usd5.ratioStaking }} -->
             </template>
             <template v-slot:head(day)>
-              {{ $t('lock.needLockDays') }}
+              <span class="white-space-nowrap">
+                {{ $t('lock.needLockDays') }}
+              </span>
             </template>
             <template v-slot:cell(day)="data">
               <text-overlay-loading :show="data.item.day.loading">
@@ -327,7 +335,9 @@
               </text-overlay-loading>
             </template>
             <template v-slot:head(accelerated)>
-              {{ $t('lock.actualAcceleration') }}
+              <span class="white-space-nowrap">
+                {{ $t('lock.actualAcceleration') }}
+              </span>
             </template>
             <template v-slot:cell(accelerated)="data">
               <text-overlay-loading :show="data.item.accelerated.loading">
@@ -335,7 +345,9 @@
               </text-overlay-loading>
             </template>
             <template v-slot:head(baseApy)>
-              {{ $t('lock.basicAPY') }}
+              <span class="white-space-nowrap">
+                {{ $t('lock.basicAPY') }}
+              </span>
             </template>
             <template v-slot:cell(baseApy)="data">
               <text-overlay-loading :show="data.item.baseApy.loading">
@@ -343,7 +355,9 @@
               </text-overlay-loading>
             </template>
             <template v-slot:head(myApy)>
-              {{ $t('lock.myAPY') }}
+              <span class="white-space-nowrap">
+                {{ $t('lock.myAPY') }}
+              </span>
             </template>
             <template v-slot:cell(myApy)="data">
               <text-overlay-loading :show="data.item.myApy.loading">
