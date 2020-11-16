@@ -43,7 +43,10 @@
           {{ $t('global.apr') }}
         </template>
         <template v-slot:cell(apr)="data">
-          {{ data.item.apy || daily_apy[data.item.id] }}%
+          <text-overlay-loading :show="data.item.apy.loading">
+            {{ data.item.apy.percent || daily_apy[data.item.id] }}%
+            <span v-if="data.item.maxApy">~{{ data.item.maxApy.percent }}%</span>
+          </text-overlay-loading>
         </template>
         <template v-slot:head(operating)>
           {{ $t('global.operating') }}
@@ -568,7 +571,7 @@
               volData: dailyVols.qusd5,
               currencies: {qusd: 'QUSD', usd5: 'USD5'},
               funds: '-',
-              apy: gauges.qusd5.apy.percent,
+              apy: gauges.qusd5.apy,
               link: '/qusd5'
             },
             {
@@ -580,7 +583,8 @@
               volData: dailyVols.usd5,
               currencies: {dai: 'DAI', usdc: 'USDC', usdt: 'USDT', tusd: 'TUSD', pax: 'PAX'},
               funds: '-',
-              apy: `${gauges.usd5.apy.percent}%~${gauges.usd5.maxApy.percent}`,
+              apy: gauges.usd5.apy,
+              maxApy: gauges.usd5.maxApy,
               link: '/usd5'
             },
             // {
@@ -604,7 +608,7 @@
               volData: dailyVols.dusd,
               currencies: {dai: 'DAI', usdc: 'USDC', usdt: 'USDT', usdx: 'USDx'},
               funds: '-',
-              apy: gauges.dusd.apy.percent,
+              apy: gauges.dusd.apy,
               link: '/dusd'
             },
             {
@@ -616,7 +620,7 @@
               volData: dailyVols.dfi, // volData.dfi
               currencies: {dai: 'DAI', usdc: 'USDC', usdt: "USDT"},
               funds: '-',
-              apy: gauges.dfi.apy.percent,
+              apy: gauges.dfi.apy,
               link: '/dfi'
             },
             // {
@@ -662,7 +666,7 @@
               pooltext: 'sUSD',
               pools: 'DAI USDC USDT sUSD',
               volData: volumes.susd,
-              apy: gauges.susdv2.apy.percent,
+              apy: gauges.susdv2.apy,
               currencies: {dai: 'DAI', usdc: 'USDC', usdt: "USDT", susd: "sUSD"},
               funds: '-',
               link: '/susdv2'

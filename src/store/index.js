@@ -957,7 +957,6 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
     },
   },
 
-
   dai: {
     address: process.env.VUE_APP_DAI_TOKEN,
     // TEMP: 
@@ -1013,7 +1012,7 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
     },
 
     // 已发行量
-    supplied: ModelValueEther.create(),
+    supplied: ModelValueEther.create({ contDecimal: 2 }),
     async getSupplied (amount) {
       const { contract, supplied, totalSupply } = this
       let result = 0
@@ -1030,7 +1029,7 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
     },
 
     // 每日预计发行量
-    dailyYield: ModelValueEther.create(),
+    dailyYield: ModelValueEther.create({ contDecimal: 2 }),
     async getDailyYield () {
       const { contract, dailyYield, miningRate } = this
 
@@ -1039,7 +1038,7 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
     },
 
     // 流通量
-    circulation: ModelValueEther.create(),
+    circulation: ModelValueEther.create({ contDecimal: 2 }),
     async getCirculation (lockEther) {
       const { contract, supplied, circulation } = this
 
@@ -1998,8 +1997,9 @@ console.log('getNeedLockAmount', await stakingPerLPT / 1e18, await balanceOf / 1
       rewards.sfg.dailyYield.handled = BN(await dailyYield / 1e18).times(rewards.sfg.weighting.handled).toString()
 
       dailyAPY.handled = BN(await price / 1e18).times(rewards.sfg.dailyYield.handled).dividedBy(BN(await totalStaking / 1e18).times(await lpTokenPrice)).toString()
+
       apy.handled = +dailyAPY.handled * 365
-console.log('getAPY',  apy.handled)
+console.log('getAPY',  apy.handled, await dailyYield / 1e18)
       return apy.handled
     },
 
@@ -3461,7 +3461,7 @@ store.lock = {
       }
     },
 
-    totalSupply: ModelValueEther.create(),
+    totalSupply: ModelValueEther.create({ contDecimal: 2 }),
     async getTotalSupply () {
       const { contract, totalSupply } = this
 
