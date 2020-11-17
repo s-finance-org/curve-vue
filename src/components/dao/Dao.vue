@@ -694,11 +694,28 @@
           </h4>
           <div class="box mb-4 px-4 py-3">
             <div class="row mb-3 line-bottom flex-wrap align-items-center">
-              <text-overlay-loading class="d-flex col-auto pb-3 col-12 col-sm-auto" inline :show="store.gauges.dfi.rewards.sfg.totalApy.loading">
-                <img :src="getTokenIcon(store.gauges.dfi.rewards.sfg.code)" class="mr-2 icon-w-48 icon" :class="[store.gauges.dfi.rewards.sfg.code+'-icon']">
+              <span class="d-md-flex d-none flex-wrap align-items-center">
+                <text-overlay-loading class="d-flex col-auto pb-3 col-12 col-sm-auto" inline :show="store.gauges.dfi.rewards.sfg.totalApy.loading">
+                  <img :src="getTokenIcon(store.gauges.dfi.rewards.sfg.code)" class="mr-2 icon-w-48 icon" :class="[store.gauges.dfi.rewards.sfg.code+'-icon']">
+                  <span class="d-flex h4 mb-0 flex-column">
+                    <span class="h6 mb-0 inline-block text-black-65">{{ store.gauges.dfi.rewards.sfg.name }} {{ $t('global.apr') }}</span>
+                    {{ store.gauges.dfi.rewards.sfg.totalApy.percent }}%
+                  </span>
+                </text-overlay-loading>
+                <span class="icon-w-20 icon-plus mb-3"></span>
+                <text-overlay-loading class="d-flex col-auto pb-3 col-12 col-sm-auto" inline :show="store.gauges.dfi.mortgages.iUSD_LPT.totalApy.loading">
+                  <img :src="getTokenIcon(store.gauges.dfi.mortgages.iUSD_LPT.code)" class="mr-2 icon-w-48 icon" :class="[store.gauges.dfi.mortgages.iUSD_LPT.code+'-icon']">
+                  <span class="d-flex h4 mb-0 flex-column">
+                    <span class="h6 mb-0 inline-block text-black-65">{{ store.gauges.dfi.mortgages.iUSD_LPT.name1 }} {{ $t('global.apr') }}</span>
+                    {{ store.gauges.dfi.mortgages.iUSD_LPT.totalApy.percent }}%
+                  </span>
+                </text-overlay-loading>
+                <span class="icon-w-20 icon-equal mb-3"></span>
+              </span>
+              <text-overlay-loading class="d-flex col-auto pb-3 col-12 col-sm-auto" inline :show="store.gauges.dfi.totalApy.loading">
                 <span class="d-flex h4 mb-0 flex-column">
-                  <span class="h6 mb-0 inline-block text-black-65">{{ store.gauges.dfi.rewards.sfg.name }} {{ $t('global.apr') }}</span>
-                  {{ store.gauges.dfi.rewards.sfg.totalApy.percent }}%
+                  <span class="h6 mb-0 inline-block text-black-65">{{ $t('dao.total') }} {{ $t('global.apr') }}</span>
+                  {{ store.gauges.dfi.totalApy.percent }}%
                 </span>
               </text-overlay-loading>
             </div>
@@ -881,7 +898,7 @@
                   <img :src="getTokenIcon(store.gauges.susdv2.rewards.crv.code)" class="mr-2 icon-w-48 icon" :class="[store.gauges.susdv2.rewards.crv.code+'-icon']">
                   <img :src="getTokenIcon(store.gauges.susdv2.rewards.snx.code)" class="mr-2 icon-w-48 icon" :class="[store.gauges.susdv2.rewards.snx.code+'-icon']">
                   <span class="d-flex h4 mb-0 flex-column">
-                    <span class="h6 mb-0 inline-block text-black-65">{{ store.gauges.susdv2.rewards.crv.name }} + {{ store.gauges.susdv2.rewards.snx.name }} {{ $t('global.apr') }}</span>
+                    <span class="h6 mb-0 inline-block text-black-65">{{ store.gauges.susdv2.rewards.crv.name }} {{ $t('global.apr') }} + {{ store.gauges.susdv2.rewards.snx.name }} {{ $t('global.apr') }}</span>
                     {{ store.gauges.susdv2.rewards.crv.totalApy.percent }}%
                   </span>
                 </text-overlay-loading>

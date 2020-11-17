@@ -571,7 +571,7 @@
               volData: dailyVols.qusd5,
               currencies: {qusd: 'QUSD', usd5: 'USD5'},
               funds: '-',
-              apy: gauges.qusd5.apy,
+              apy: gauges.qusd5.totalApy,
               link: '/qusd5'
             },
             {
@@ -583,7 +583,7 @@
               volData: dailyVols.usd5,
               currencies: {dai: 'DAI', usdc: 'USDC', usdt: 'USDT', tusd: 'TUSD', pax: 'PAX'},
               funds: '-',
-              apy: gauges.usd5.apy,
+              apy: gauges.usd5.totalApy,
               maxApy: gauges.usd5.maxApy,
               link: '/usd5'
             },
@@ -608,7 +608,7 @@
               volData: dailyVols.dusd,
               currencies: {dai: 'DAI', usdc: 'USDC', usdt: 'USDT', usdx: 'USDx'},
               funds: '-',
-              apy: gauges.dusd.apy,
+              apy: gauges.dusd.totalApy,
               link: '/dusd'
             },
             {
@@ -620,7 +620,7 @@
               volData: dailyVols.dfi, // volData.dfi
               currencies: {dai: 'DAI', usdc: 'USDC', usdt: "USDT"},
               funds: '-',
-              apy: gauges.dfi.apy,
+              apy: gauges.dfi.totalApy,
               link: '/dfi'
             },
             // {
@@ -666,7 +666,7 @@
               pooltext: 'sUSD',
               pools: 'DAI USDC USDT sUSD',
               volData: volumes.susd,
-              apy: gauges.susdv2.apy,
+              apy: gauges.susdv2.totalApy,
               currencies: {dai: 'DAI', usdc: 'USDC', usdt: "USDT", susd: "sUSD"},
               funds: '-',
               link: '/susdv2'

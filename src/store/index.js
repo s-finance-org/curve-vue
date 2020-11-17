@@ -2183,11 +2183,15 @@ store.gauges = {
       iUSD_LPT: {
         code: 'iUSD_LPT',
         name: 'iUSD LP token',
+        name1: 'iToken',
         priceDecimal: 5,
 
         totalStaking: valueModel.create(),
         userStaking: valueModel.create(),
         userBalanceOf: valueModel.create(),
+
+        dailyApy: valueModel.create(),
+        totalApy: valueModel.create(),
 
         userStake: valueModel.create(),
         stakeSliderSelected: 0,
@@ -2291,17 +2295,18 @@ store.gauges = {
     totalApy: valueModel.create(),
     // TEMP: 
     async getAPY (price, dailyYield, totalStaking, lpTokenPrice) {
-      const { contract, dailyAPY, totalApy, rewards } = this
+      const { mortgages, contract, dailyAPY, totalApy, rewards } = this
 
       const req = await fetch('https://api.dfi.money/apy.json')
-      let daiDailyAPY = BN((await req.json()).dai.replace('%','')).dividedBy(100 * 365)
+      mortgages.iUSD_LPT.dailyApy.handled = BN((await req.json()).dai.replace('%','')).dividedBy(100 * 365).toString()
 
       rewards.sfg.dailyYield.handled = BN(await dailyYield / 1e18).times(rewards.sfg.weighting.handled).toString()
-      rewards.sfg.dailyApy.handled = BN(await price / 1e18).times(rewards.sfg.dailyYield.handled).dividedBy(BN(await totalStaking).times(await lpTokenPrice / 1e18)).plus(daiDailyAPY).toString()
+      rewards.sfg.dailyApy.handled = BN(await price / 1e18).times(rewards.sfg.dailyYield.handled).dividedBy(BN(await totalStaking).times(await lpTokenPrice / 1e18)).toString()
       dailyAPY.handled = rewards.sfg.dailyApy.handled
 
+      mortgages.iUSD_LPT.totalApy.handled = +mortgages.iUSD_LPT.dailyApy.handled * 365
       rewards.sfg.totalApy.handled = +rewards.sfg.dailyApy.handled * 365
-      totalApy.handled = rewards.sfg.totalApy.handled
+      totalApy.handled = BN(rewards.sfg.totalApy.handled).plus(mortgages.iUSD_LPT.totalApy.handled).toString()
     },
 
     async getBalanceOf (target, accountAddress) {
