@@ -8,7 +8,6 @@
       <b-navbar class="no-gutters align-items-center p-0">
         <div class="col py-2 d-flex align-items-start">
           <img class="logo-sm" :src="publicPath + 'res/icons/logo/logo_sm.svg'">
-          <div class="beta-tag">BETA</div>
         </div>
         <div class="d-none d-md-flex align-items-center">
           <b-navbar-nav>
@@ -149,16 +148,6 @@
 </script>
 
 <style scoped>
-  .beta-tag {
-    background-color: #1ba57b;
-    color: rgba(255,255,255,0.85);
-    border-radius: 2px;
-    line-height: 18px;
-    font-size: 10px;
-    text-align: center;
-    padding: 0 4px;
-    margin-left: -4px;
-  }
   .statement-banner {
     background-color: #1BA57B;
     color: rgba(255,255,255,0.85);

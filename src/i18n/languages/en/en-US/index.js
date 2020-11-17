@@ -169,6 +169,7 @@ export default {
     virtualPrice: 'Virtual price',
     miningPoolOpeningNotice: '{0} liquidity gauge is about to open. Currently, deposits and withdrawals can be done normally, but no token reward is available.',
     rewardMayBeLost: 'Due to the optimization of the miner fee, please claim the mining reward before withdraw, otherwise the reward may be lost',
+    total: 'Total',
   },
   notice: {
     approveSpending: 'Please approve spending your coins',
@@ -212,7 +213,7 @@ export default {
     currentLockablePosition: 'Avaliable',
     goBalancer: 'Buy on Balancer ',
     enterLockedPosition: 'Enter staking quantity',
-    confirmLock: 'Coinform',
+    confirmLock: 'Confirm',
     unlock: 'Unstake',
     enterunLockPosition: 'Enter unstaking quantity',
     currentlyUnlockable: 'Avaliable',

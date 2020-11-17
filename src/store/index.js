@@ -1541,13 +1541,17 @@ store.gauges = {
       dusd: {
         code: 'dusd',
         name: 'dUSD LP token',
+        name1: 'dToken',
         priceDecimal: 4,
 
         totalStaking: valueModel.create(),
         userStaking: valueModel.create(),
         userBalanceOf: valueModel.create(),
-
         userStake: valueModel.create(),
+
+        dailyApy: valueModel.create(),
+        totalApy: valueModel.create(),
+
         stakeSliderSelected: 0,
         // FIXME: common
         stakeSliderOptions: [
@@ -1631,8 +1635,10 @@ store.gauges = {
         userPendingReward: valueModel.create(),
         userPaidReward: valueModel.create(),
         userTotalReward: valueModel.create(),
-
         dailyYield: valueModel.create(),
+
+        dailyApy: valueModel.create(),
+        totalApy: valueModel.create(),
       },
       df: {
         code: 'df',
@@ -1642,8 +1648,10 @@ store.gauges = {
         userPendingReward: valueModel.create(),
         userPaidReward: valueModel.create(),
         userTotalReward: valueModel.create(),
-
         dailyYield: valueModel.create(),
+
+        dailyApy: valueModel.create(),
+        totalApy: valueModel.create(),
       }
     },
 
@@ -1654,13 +1662,13 @@ store.gauges = {
     },
 
     dailyAPY: valueModel.create(),
-    apy: valueModel.create(),
+    totalApy: valueModel.create(),
     // TEMP: 
     async getAPY (price, dailyYield, totalStaking, lpTokenPrice, dfPrice) {
-      const { contract, dailyAPY, apy, rewards } = this
+      const { mortgages, contract, dailyAPY, totalApy, rewards } = this
 
       // 0.1*DAI APY + 0.4*USDC APY +0.4*USDT APY + 0.1*USDx APY
-      const { dDAI, dUSDC, dUSDT, dUSDx} = await request.getDforceApy()
+      const { dDAI, dUSDC, dUSDT, dUSDx } = await request.getDforceApy()
 
       const dDAI_apy = BN(dDAI.now_apy).dividedBy(100 * 365).times(0.1)
       const dUSDC_apy = BN(dUSDC.now_apy).dividedBy(100 * 365).times(0.4)
@@ -1674,18 +1682,26 @@ store.gauges = {
       rewards.sfg.dailyYield.handled = BN(await dailyYield / 1e18).times(rewards.sfg.weighting.handled).toString()
       rewards.df.dailyYield.handled = BN(await dfPrice).times(86400).times(await contractDfSwap.methods.rewardRate().call() / 1e18).toString()
 
-      const dfApy = BN(rewards.df.dailyYield.handled)
-        .dividedBy(BN(await totalStaking / 1e18 ).times(await lpTokenPrice))
-      dailyAPY.handled = BN(await price / 1e18)
-        .times(rewards.sfg.dailyYield.handled)
-        .dividedBy(BN(await totalStaking / 1e18).times(await lpTokenPrice))
-        .plus(dDAI_apy)
+      mortgages.dusd.dailyApy.handled = BN(dDAI_apy)
         .plus(dUSDC_apy)
         .plus(dUSDT_apy)
-        .plus(dUSDx_apy)
-        .plus(dfApy)
+        .plus(dUSDx_apy).toString()
+
+      rewards.sfg.dailyApy.handled = BN(await price / 1e18)
+        .times(rewards.sfg.dailyYield.handled)
+        .dividedBy(BN(await totalStaking / 1e18).times(await lpTokenPrice)).toString()
+      rewards.df.dailyApy.handled = BN(rewards.df.dailyYield.handled)
+        .dividedBy(BN(await totalStaking / 1e18 ).times(await lpTokenPrice)).toString()
+
+      mortgages.dusd.totalApy.handled = +mortgages.dusd.dailyApy.handled * 365
+      rewards.sfg.totalApy.handled = +rewards.sfg.dailyApy.handled * 365
+      rewards.df.totalApy.handled = +rewards.df.dailyApy.handled * 365
+
+
+      totalApy.handled = BN(mortgages.dusd.totalApy.handled)
+        .plus(rewards.sfg.totalApy.handled)
+        .plus(rewards.df.totalApy.handled)
         .toString()
-      apy.handled = +dailyAPY.handled * 365
     },
 
     async getBalanceOf (target, accountAddress) {
@@ -1953,8 +1969,10 @@ store.gauges = {
         userPendingReward: valueModel.create(),
         userPaidReward: valueModel.create(),
         userTotalReward: valueModel.create(),
-
         dailyYield: valueModel.create(),
+
+        dailyApy: valueModel.create(),
+        totalApy: valueModel.create(),
       }
     },
 
@@ -1966,7 +1984,7 @@ store.gauges = {
         0
       )
       target.ether = result * 1e18
-console.log('getNeedLockAmount', await stakingPerLPT / 1e18, await balanceOf / 1e18, await lockSfgBalanceOf / 1e18, result)
+
       return result
     },
 
@@ -1994,20 +2012,21 @@ console.log('getNeedLockAmount', await stakingPerLPT / 1e18, await balanceOf / 1
     },
 
     dailyAPY: valueModel.create(),
-    apy: valueModel.create(),
+    totalApy: valueModel.create(),
     myApy: valueModel.create(),
     maxApy: valueModel.create(),
     // TEMP:
     async getAPY (price, dailyYield, totalStaking, lpTokenPrice) {
-      const { contract, dailyAPY, apy, rewards } = this
+      const { contract, dailyAPY, totalApy, rewards } = this
 
       rewards.sfg.dailyYield.handled = BN(await dailyYield / 1e18).times(rewards.sfg.weighting.handled).toString()
+      rewards.sfg.dailyApy.handled = BN(await price / 1e18).times(rewards.sfg.dailyYield.handled).dividedBy(BN(await totalStaking / 1e18).times(await lpTokenPrice)).toString()
+      dailyAPY.handled = rewards.sfg.dailyApy.handled
 
-      dailyAPY.handled = BN(await price / 1e18).times(rewards.sfg.dailyYield.handled).dividedBy(BN(await totalStaking / 1e18).times(await lpTokenPrice)).toString()
+      rewards.sfg.totalApy.handled = +dailyAPY.handled * 365
+      totalApy.handled = rewards.sfg.totalApy.handled
 
-      apy.handled = +dailyAPY.handled * 365
-
-      return apy.handled
+      return totalApy.handled
     },
 
     async getMyApy (apy, factorOf) {
@@ -2255,8 +2274,10 @@ console.log('getNeedLockAmount', await stakingPerLPT / 1e18, await balanceOf / 1
         userPendingReward: valueModel.create(),
         userPaidReward: valueModel.create(),
         userTotalReward: valueModel.create(),
-
         dailyYield: valueModel.create(),
+
+        dailyApy: valueModel.create(),
+        totalApy: valueModel.create(),
       }
     },
 
@@ -2267,18 +2288,20 @@ console.log('getNeedLockAmount', await stakingPerLPT / 1e18, await balanceOf / 1
     },
 
     dailyAPY: valueModel.create(),
-    apy: valueModel.create(),
+    totalApy: valueModel.create(),
     // TEMP: 
     async getAPY (price, dailyYield, totalStaking, lpTokenPrice) {
-      const { contract, dailyAPY, apy, rewards } = this
+      const { contract, dailyAPY, totalApy, rewards } = this
 
       const req = await fetch('https://api.dfi.money/apy.json')
       let daiDailyAPY = BN((await req.json()).dai.replace('%','')).dividedBy(100 * 365)
 
       rewards.sfg.dailyYield.handled = BN(await dailyYield / 1e18).times(rewards.sfg.weighting.handled).toString()
+      rewards.sfg.dailyApy.handled = BN(await price / 1e18).times(rewards.sfg.dailyYield.handled).dividedBy(BN(await totalStaking).times(await lpTokenPrice / 1e18)).plus(daiDailyAPY).toString()
+      dailyAPY.handled = rewards.sfg.dailyApy.handled
 
-      dailyAPY.handled = BN(await price / 1e18).times(rewards.sfg.dailyYield.handled).dividedBy(BN(await totalStaking).times(await lpTokenPrice / 1e18)).plus(daiDailyAPY).toString()
-      apy.handled = +dailyAPY.handled * 365
+      rewards.sfg.totalApy.handled = +rewards.sfg.dailyApy.handled * 365
+      totalApy.handled = rewards.sfg.totalApy.handled
     },
 
     async getBalanceOf (target, accountAddress) {
@@ -2720,8 +2743,10 @@ console.log('getNeedLockAmount', await stakingPerLPT / 1e18, await balanceOf / 1
         userPendingReward: valueModel.create(),
         userPaidReward: valueModel.create(),
         userTotalReward: valueModel.create(),
-
         dailyYield: valueModel.create(),
+
+        dailyApy: valueModel.create(),
+        totalApy: valueModel.create(),
       }
     },
 
@@ -2761,20 +2786,23 @@ console.log('getNeedLockAmount', await stakingPerLPT / 1e18, await balanceOf / 1
     },
 
     dailyAPY: valueModel.create(),
-    apy: valueModel.create(),
+    totalApy: valueModel.create(),
     myApy: valueModel.create(),
     maxApy: valueModel.create(),
     // TEMP:
     async getAPY (price, dailyYield, totalStaking, lpTokenPrice) {
-      const { contract, dailyAPY, apy, rewards } = this
+      const { contract, dailyAPY, totalApy, rewards } = this
 
       rewards.sfg.dailyYield.handled = BN(await dailyYield / 1e18).times(rewards.sfg.weighting.handled).toString()
 
-      dailyAPY.handled = BN(await price / 1e18).times(rewards.sfg.dailyYield.handled).dividedBy(BN(await totalStaking).times(await lpTokenPrice / 1e18)).toString()
+      rewards.sfg.dailyApy.handled = BN(await price / 1e18).times(rewards.sfg.dailyYield.handled).dividedBy(BN(await totalStaking).times(await lpTokenPrice / 1e18)).toString()
+      rewards.sfg.totalApy.handled = +rewards.sfg.dailyApy.handled * 365
 
-      apy.handled = +dailyAPY.handled * 365
+      dailyAPY.handled = rewards.sfg.dailyApy.handled
 
-      return apy.handled
+      totalApy.handled = +dailyAPY.handled * 365
+
+      return totalApy.handled
     },
 
     async getMyApy (apy, factorOf) {
@@ -3022,6 +3050,9 @@ console.log('getNeedLockAmount', await stakingPerLPT / 1e18, await balanceOf / 1
         userPaidReward: valueModel.create(),
         userTotalReward: valueModel.create(),
         dailyYield: valueModel.create(),
+
+        dailyApy: valueModel.create(),
+        totalApy: valueModel.create(),
       },
       kun: {
         code: 'kun',
@@ -3032,6 +3063,9 @@ console.log('getNeedLockAmount', await stakingPerLPT / 1e18, await balanceOf / 1
         userPaidReward: valueModel.create(),
         userTotalReward: valueModel.create(),
         dailyYield: valueModel.create(),
+
+        dailyApy: valueModel.create(),
+        totalApy: valueModel.create(),
       }
     },
 
@@ -3041,21 +3075,22 @@ console.log('getNeedLockAmount', await stakingPerLPT / 1e18, await balanceOf / 1
       return target.ether = await contract.methods.totalSupply().call()
     },
 
-    dailyAPY: valueModel.create(),
-    apy: valueModel.create(),
+    // dailyAPY: valueModel.create(),
+    totalApy: valueModel.create(),
     // TEMP:
     async getAPY (price, dailyYield, totalStaking, lpTokenPrice, kunPrice) {
-      const { contract, dailyAPY, apy, rewards } = this
+      const { contract, dailyAPY, totalApy, rewards } = this
 
       rewards.sfg.dailyYield.handled = BN(await dailyYield / 1e18).times(rewards.sfg.weighting.handled).toString()
       rewards.kun.dailyYield.handled = 3333.3333
 
       const lpt = BN(await totalStaking).times(await lpTokenPrice / 1e18)
-      const kunAPY = BN(await kunPrice / 1e18).times(rewards.kun.dailyYield.handled).dividedBy(lpt)
-      dailyAPY.handled = BN(await price / 1e18).times(rewards.sfg.dailyYield.handled).dividedBy(lpt)
-        .plus(kunAPY)
-        .toString()
-      apy.handled = +dailyAPY.handled * 365
+      rewards.sfg.dailyApy.handled = BN(await price / 1e18).times(rewards.sfg.dailyYield.handled).dividedBy(lpt).toString()
+      rewards.sfg.totalApy.handled = +rewards.sfg.dailyApy.handled * 365
+      rewards.kun.dailyApy.handled = BN(await kunPrice / 1e18).times(rewards.kun.dailyYield.handled).dividedBy(lpt)
+      rewards.kun.totalApy.handled = +rewards.kun.dailyApy.handled * 365
+
+      totalApy.handled = BN(rewards.sfg.totalApy.handled).plus(rewards.kun.totalApy.handled).toString()
     },
 
     async getBalanceOf (target, accountAddress) {
@@ -3248,24 +3283,41 @@ console.log('getNeedLockAmount', await stakingPerLPT / 1e18, await balanceOf / 1
         userPendingReward: valueModel.create(),
         userPaidReward: valueModel.create(),
         userTotalReward: valueModel.create(),
-
         dailyYield: valueModel.create(),
+
+        dailyApy: valueModel.create(),
+        totalApy: valueModel.create(),
       },
-      crv: {},
-      snx: {}
+      crv: {
+        code: 'crv',
+        name: 'CRV',
+        dailyApy: valueModel.create(),
+        totalApy: valueModel.create(),
+      },
+      snx: {
+        code: 'snx',
+        name: 'SNX',
+        dailyApy: valueModel.create(),
+        totalApy: valueModel.create(),
+      }
     },
 
     dailyAPY: valueModel.create(),
-    apy: valueModel.create(),
+    totalApy: valueModel.create(),
     // TEMP: 
     async getAPY (price, dailyYield, totalStaking, lpTokenPrice) {
-      const { contract, dailyAPY, apy, rewards } = this
+      const { contract, dailyAPY, totalApy, rewards } = this
 
-      rewards.sfg.dailyYield.handled =BN(await dailyYield / 1e18).times(rewards.sfg.weighting.handled).toString()
+      rewards.sfg.dailyYield.handled = BN(await dailyYield / 1e18).times(rewards.sfg.weighting.handled).toString()
+      rewards.sfg.dailyApy.handled = BN(await price / 1e18).times(rewards.sfg.dailyYield.handled).dividedBy(BN(await totalStaking / 1e18).times(await lpTokenPrice)).toString()
 
-      dailyAPY.handled = BN(await price / 1e18).times(rewards.sfg.dailyYield.handled).dividedBy(BN(await totalStaking / 1e18).times(await lpTokenPrice)).toString()
-      // TMEP: + 0.11
-      apy.handled = +dailyAPY.handled * 365 + 0.11
+      dailyAPY.handled = rewards.sfg.dailyApy.handled
+
+      rewards.sfg.totalApy.handled = +dailyAPY.handled * 365
+      // TEMP: 
+      rewards.crv.totalApy.handled = 0.11
+
+      totalApy.handled = BN(rewards.sfg.totalApy.handled).plus(rewards.crv.totalApy.handled).toString()
     },
 
     async getBalanceOf (target, accountAddress) {

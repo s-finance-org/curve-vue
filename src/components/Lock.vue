@@ -47,7 +47,7 @@
                 <b-tooltip placement="topright" target="tooltip-tip3" variant="success">{{ $t('lock.totalLockedPositionTip') }}</b-tooltip>
               </h6>
               <text-overlay-loading inline :show="store.lock.SFG.totalSupply.loading">
-                {{ store.lock.SFG.totalSupply.cont }} {{ store.tokens.sfg.name }} <small>- {{ store.tokens.sfg.totalStakeRate.percent }}%</small>
+                {{ store.lock.SFG.totalSupply.cont }} {{ store.tokens.sfg.name }} <small>({{ store.tokens.sfg.totalStakeRate.percent }}%)</small>
               </text-overlay-loading>
             </span>
             <span class="col-12 col-md mb-4">
@@ -57,7 +57,7 @@
                 <b-tooltip placement="topright" target="tooltip-tip4" variant="success">{{ $t('lock.circulationTip') }}</b-tooltip>
               </h6>
               <text-overlay-loading inline :show="store.tokens.sfg.circulation.loading">
-                {{ store.tokens.sfg.circulation.cont }} {{ store.tokens.sfg.name }} <small>- {{ store.tokens.sfg.circulationRate.percent }}%</small>
+                {{ store.tokens.sfg.circulation.cont }} {{ store.tokens.sfg.name }} <small>({{ store.tokens.sfg.circulationRate.percent }}%)</small>
               </text-overlay-loading>
             </span>
           </div>
@@ -529,7 +529,7 @@
             val.need = val._mortgage.needLockAmount,
             val.day = val._mortgage.needLockDay,
             val.accelerated = val._mortgage.factorOf,
-            val.baseApy = val._gauges.apy,
+            val.baseApy = val._gauges.totalApy,
             val.myApy = val._gauges.myApy
           }
 
@@ -693,10 +693,11 @@
   .acceleration thead th{
     font-size: 14px;
     font-weight: 400;
-    line-height: 22px;
-    padding: 8px 0 8px 20px;
+    line-height: 20px;
+    padding: 8px 0 8px 10px;
     background: #e8f6f1 !important;
     border: 0;
+    min-width: 100px;
   }
   .acceleration th:first-child {
     text-align: left;

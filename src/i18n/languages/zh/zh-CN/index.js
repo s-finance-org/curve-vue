@@ -17,7 +17,7 @@ export default {
     deposits: '资金',
     totalBalances: '资金总额',
     dailyVol: '日交易额',
-    apr: '年化收益率',
+    apr: 'APY',
     poolName: '名称',
     assests: '资产',
     addLiquidity: '提供流动性（存币行为）',
@@ -168,6 +168,7 @@ export default {
     virtualPrice: 'LP tokens 价格',
     miningPoolOpeningNotice: '{0} 池流动性挖矿即将开启。当前可正常抵押赎回 {1}，但是无法获得代币奖励',
     rewardMayBeLost: '由于进行了矿工费优化，赎回前请先领取挖矿奖励，否则可能会导致奖励丢失',
+    total: '合计',
   },
   notice: {
     approveSpending: '请授权钱包进行扣款',
