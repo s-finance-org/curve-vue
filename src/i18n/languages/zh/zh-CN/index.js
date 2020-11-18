@@ -181,7 +181,6 @@ export default {
     telegram: '电报',
     discord: 'Discord',
     medium: 'Medium',
-    github: 'Github',
     wechat: '微信',
     tutorial: '挖矿教程',
     communitySupport: '社区支持',

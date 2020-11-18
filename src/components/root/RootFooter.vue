@@ -17,7 +17,8 @@
       </template>
       <a href="https://discord.gg/rc49Dzu" target="_blank">{{ $t('social.discord') }}</a>
       <a href="https://medium.com/s-finance" target="_blank">Medium</a>
-      <a href="https://github.com/s-finance-org/curve-vue" target="_blank">{{ $t('social.github') }}</a>
+      <a href="https://github.com/s-finance-org/curve-vue" target="_blank">Github</a>
+      <a href="https://defipulse.com/" target="_blank">DefiPulse</a>
     </footer>
   </b-container>
 </template>
