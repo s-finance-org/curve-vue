@@ -911,50 +911,6 @@
                 </span>
               </text-overlay-loading>
             </div>
-
-            <div class="row mb-3 line-bottom">
-              <span class="col-12 col-md-6 pb-3">
-                <h6 class="mb-0 text-black-65">{{ $t('dao.totalStaking') }}</h6>
-                <text-overlay-loading inline :show="store.gauges.dfi.mortgages.iUSD_LPT.totalStaking.loading">
-                  <span class="h4 mr-2">{{ store.gauges.dfi.mortgages.iUSD_LPT.totalStaking.cont }}</span>
-                  <span class="inline-block text-black-65">{{ store.gauges.dfi.mortgagesUnit }}</span>
-                </text-overlay-loading>
-              </span>
-              <span class="col-12 col-md-6 pb-3">
-                <h6 class="mb-0 text-black-65">{{ $t('dao.myStaking') }}</h6>
-                <text-overlay-loading inline :show="store.gauges.dfi.mortgages.iUSD_LPT.userStaking.loading">
-                  <span class="h4 mr-2">{{ store.gauges.dfi.mortgages.iUSD_LPT.userStaking.cont }}</span>
-                  <span class="inline-block text-black-65">{{ store.gauges.dfi.mortgagesUnit }}</span>
-                </text-overlay-loading>
-              </span>
-              <span class="col-12 col-md-6 pb-3">
-                <h6 class="mb-0 text-black-65">{{ $t('dao.virtualPrice') }}</h6>
-                <text-overlay-loading inline :show="store.tokens.iUSD_LPT.price.loading">
-                  <span class="h4">
-                    1 <span class="h6 text-black-65">{{ store.tokens.iUSD_LPT.name }} = </span>
-                  </span>
-                  <span class="h4">
-                    {{ store.tokens.iUSD_LPT.price.cont }}
-                    <span class="text-black-65 h6">USD</span>
-                  </span>
-                </text-overlay-loading>
-              </span>
-              <!-- <span class="col-12 col-md-6 pb-3">
-                <h6 class="mb-0 text-black-65">{{ $t('dao.rewardWeight', ['SFG']) }}</h6>
-                <text-overlay-loading inline :show="store.gauges.dfi.rewards.sfg.weighting.loading">
-                  <span class="h4">{{ store.gauges.dfi.rewards.sfg.weighting.percent }}%</span>
-                </text-overlay-loading>
-              </span> -->
-              <span class="col-12 col-md-6 pb-3">
-                <h6 class="mb-0 text-black-65">{{ $t('dao.dailyYield', ['SFG']) }}</h6>
-                <text-overlay-loading inline :show="store.gauges.dfi.rewards.sfg.dailyYield.loading">
-                  <span class="h4">
-                    {{ store.gauges.dfi.rewards.sfg.dailyYield.cont }}
-                    <span class="text-black-65 h6">{{ store.gauges.dfi.rewards.sfg.name }}</span>
-                  </span>
-                </text-overlay-loading>
-              </span>
-            </div>
             <div class="row mb-3 line-bottom">
               <span class="col-12 col-md-6 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.totalStaking') }}</h6>

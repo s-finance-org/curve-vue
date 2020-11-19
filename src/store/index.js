@@ -3397,7 +3397,7 @@ store.swap = {
 
 store.request = request
 
-
+// ====================== test ======================
 
 // {
 //   pool
@@ -3410,6 +3410,15 @@ store.wallet = {
   get address () {
     return currentContract.default_account
   }
+}
+
+store.token = {
+  DAI: ModelToken.create({
+    code: 'DAI',
+    address: process.env.VUE_APP_DAI_TOKEN,
+    abi: ABI.DAI.token,
+    // needResetAllowance: true
+  })
 }
 
 const BPT_LPT = ModelLpToken.create({

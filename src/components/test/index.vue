@@ -2,14 +2,21 @@
 	<div>
     <ul>
       <li>{{ store.wallet.address }}</li>
-      <li>{{ store.lptoken.BPT.walletBalanceOf  }}</li>
+      <!-- <li>{{ store.lptoken.BPT.walletBalanceOf  }}</li>
       <li>{{ store.lptoken.BPT.symbol  }}</li>
       <li>{{ store.lptoken.BPT.symbol.cont  }}</li>
       <li>{{ store.lptoken.BPT.name.cont  }}</li>
       <li>{{ store.lptoken.BPT.totalSupply.cont  }}</li>
 
 
-      <li>{{ store.lptoken.BPT.walletBalanceOf }}</li>
+      <li>{{ store.lptoken.BPT.walletBalanceOf }}</li> -->
+      <li>{{ store.token.DAI.walletBalanceOf  }}</li>
+      <li>{{ store.token.DAI.symbol.cont  }}</li>
+      <li>{{ store.token.DAI.name.cont  }}</li>
+      <li>{{ store.token.DAI.totalSupply.cont  }}</li>
+
+
+      <li>{{ store.token.DAI.walletBalanceOf.cont }}</li>
     </ul>
 
 
@@ -29,10 +36,10 @@
           <h4 class="mb-2 d-flex flex-wrap align-items-end">
             <span class="mr-3">{{ $t('dao.tokenTitle', [store.gauges.dusd.propagateMark]) }}</span>
             <small class="mr-auto">{{ $t('dao.describe', [store.gauges.dusd.mortgagesUnit, store.gauges.dusd.rewardsUnit.join(' + ')]) }}</small>
-            <text-overlay-loading inline :show="store.gauges.dusd.apy.loading">
+            <text-overlay-loading inline :show="store.gauges.dusd.totalApy.loading">
               <span class="h5 text-danger-1 mb-0">
                 <small class="text-black-45">{{ $t('global.apr') }}</small>
-                {{ store.gauges.dusd.apy.percent }}%
+                {{ store.gauges.dusd.totalApy.percent }}%
               </span>
             </text-overlay-loading>
           </h4>
@@ -230,10 +237,10 @@
           <h4 class="mb-2 d-flex flex-wrap align-items-end">
             <span class="mr-3">{{ $t('dao.tokenTitle', [store.gauges.dfi.propagateMark]) }}</span>
             <small class="mr-auto">{{ $t('dao.describe', [store.gauges.dfi.mortgagesUnit, store.gauges.dfi.rewardsUnit.join(' ')]) }}</small>
-            <text-overlay-loading inline :show="store.gauges.dfi.apy.loading">
+            <text-overlay-loading inline :show="store.gauges.dfi.totalApy.loading">
               <span class="h5 text-danger-1 mb-0">
                 <small class="text-black-45">{{ $t('global.apr') }}</small>
-                {{ store.gauges.dfi.apy.percent }}%
+                {{ store.gauges.dfi.totalApy.percent }}%
               </span>
             </text-overlay-loading>
           </h4>
@@ -393,10 +400,10 @@
           <h4 class="mb-2 d-flex flex-wrap align-items-end">
             <span class="mr-3">{{ $t('dao.tokenTitle', [currentPool.nameCont]) }}</span>
             <small class="mr-auto">{{ $t('dao.describe', [currentPool.name + ' LP token', currentPool.describeTokensCont]) }}</small>
-            <text-overlay-loading inline :show="store.gauges.susdv2.apy.loading">
+            <text-overlay-loading inline :show="store.gauges.susdv2.totalApy.loading">
               <span class="h5 text-danger-1 mb-0">
                 <small class="text-black-45">{{ $t('global.apr') }}</small>
-                {{ store.gauges.susdv2.apy.percent }}%
+                {{ store.gauges.susdv2.totalApy.percent }}%
               </span>
             </text-overlay-loading>
           </h4>
@@ -610,10 +617,10 @@
           <h4 class="mb-2 d-flex flex-wrap align-items-end">
             <span class="mr-3">{{ $t('dao.tokenTitle', [store.gauges.okuu.propagateMark]) }}</span>
             <small class="mr-auto">{{ $t('dao.describe', [store.gauges.okuu.mortgagesUnit, store.gauges.okuu.rewardsUnit.join(' + ')]) }}</small>
-            <text-overlay-loading inline :show="store.gauges.okuu.apy.loading">
+            <text-overlay-loading inline :show="store.gauges.okuu.totalApy.loading">
               <span class="h5 text-danger-1 mb-0">
                 <small class="text-black-45">{{ $t('global.apr') }}</small>
-                {{ store.gauges.okuu.apy.percent }}%
+                {{ store.gauges.okuu.totalApy.percent }}%
               </span>
             </text-overlay-loading>
           </h4>
@@ -774,10 +781,10 @@
           <h4 class="mb-2 d-flex flex-wrap align-items-end">
             <span class="mr-3">{{ $t('dao.tokenTitle', [store.gauges.bpt.propagateMark]) }}</span>
             <small class="mr-auto">{{ $t('dao.describe', [store.gauges.bpt.mortgagesUnit, store.gauges.bpt.rewardsUnit.join(' ')]) }}</small>
-            <text-overlay-loading inline :show="store.gauges.bpt.apy.loading">
+            <text-overlay-loading inline :show="store.gauges.bpt.totalApy.loading">
               <span class="h5 text-danger-1 mb-0">
                 <small class="text-black-45">{{ $t('global.apr') }}</small>
-                {{ store.gauges.bpt.apy.percent }}%
+                {{ store.gauges.bpt.totalApy.percent }}%
               </span>
             </text-overlay-loading>
           </h4>
@@ -1442,9 +1449,12 @@
 
             // TEST:
             // store.lptoken.BPT.getWalletBalanceOf()
-            store.lptoken.BPT.initiate()
+            // store.lptoken.BPT.initiate()
 
-            
+            store.token.DAI.getWalletBalanceOf()
+            store.token.DAI.initiate()
+
+
 
 
             // susdv2

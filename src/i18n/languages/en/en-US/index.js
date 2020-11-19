@@ -182,7 +182,6 @@ export default {
     telegram: 'Telegram',
     discord: 'Discord',
     medium: 'Medium',
-    github: 'Github',
     wechat: 'WeChat',
     tutorial: 'Tutorial',
     communitySupport: 'Support',

@@ -1,109 +1,295 @@
 import web3 from '../web3'
 import BN from 'bignumber.js'
 
+// TODO: store.wallet.address
+
 
 // FIXME: temp
 import store from '../../store'
 import * as errorStore from '../../components/common/errorStore'
 import { notifyHandler, notifyNotification } from '../../init'
 
+import multicall from '../../store/swap/multicall'
+
 import ModelValueEther from '../value/ether'
+import ModelValueText from '../value/text'
 import ModelValueError from '../value/error'
 
-
-
-// FIXME: 
-const approve = (contract, amount, account, toContract) => {
-  // if(!toContract) toContract = currentContract.swap_address
-  return new Promise((resolve, reject) => {
-      contract.methods.approve(toContract, BN(amount).toFixed(0,1))
-      .send({
-          from: account,
-          // gasPrice: gasPriceStore.state.gasPriceWei,
-          // gas: 100000,
-      })
-      .once('transactionHash', hash => {
-        notifyHandler(hash)
-        resolve(true)
-      })
-      .on('error', err => {
-        errorStore.handleError(err)
-        reject(err)
-      })
-      .catch(err => {
-        errorStore.handleError(err)
-        reject(err)
-      });
-    })
-}
-
-const ModelToken = {
+export default {
   /**
    *  @param {Object} opts
+   *  @param {string} opts.code
    *  @param {string} opts.address
    *  @param {Array} opts.abi
-   *  @param {string} opts.code
-   *  @param {string} opts.name
-   *  @param {string} opts.symbol
-   *  @param {number} [opts.decimal=]
-
-
+   *  @param {number=} opts.decimal
+   *  @param {number=} opts.contDecimal
+   *  @param {string=} opts.symbolMethodName
+   *  @param {string=} opts.balanceOfMethodName
+   *  @param {string=} opts.totalSupplyMethodName
    *  @return {!Object}
    */
   create ({
+    code = '',
     address = '',
     abi = [],
-    code = '',
-    name = '',
-    symbol = '',
-    decimal = 18
+    decimal = 18,
+    contDecimal = 4,
+    symbolMethodName = 'symbol',
+    balanceOfMethodName = 'balanceOf',
+    totalSupplyMethodName = 'totalSupply'
   } = {}) {
     const __store__ = {
       contract: null,
+      decimal,
+      precision: 0,
+    }
 
-      precision: 0
+    const valueOpts = {
+      decimal,
+      contDecimal
+    }
+
+    const mixin = {
+      /** @type {Object} */
+      get contract () {
+        const { contract } = __store__
+
+        return contract
+          || (__store__.contract = new web3.eth.Contract(abi, address))
+      }
     }
 
     return {
+      ...mixin,
+
+      code,
       address,
       abi,
 
-      get contract () {
-        const { contract } = __store__
-        const { abi, address } = this
+      error: ModelValueError.create(),
 
-        return contract ||
-          (__store__.contract = new web3.eth.Contract(abi, address))
-      },
+      async initiate () {
+        const {
+          address,
+          name,
+          getNameMethod,
+          symbol,
+          getSymbolMethod,
+          totalSupply,
+          getTotalSupplyMethod
+        } = this
 
-      code,
-      name,
-      symbol,
-      decimal,
+        const queues = [
+          { decodeType: 'string', call: [address, getNameMethod().encodeABI()], target: name },
+          { decodeType: 'string', call: [address, getSymbolMethod().encodeABI()], target: symbol },
+          { decodeType: 'uint256', call: [address, getTotalSupplyMethod().encodeABI()], target: totalSupply }
+        ]
 
-      /**
-       *  @type {number}
-       */
-      get precision () {
-        const { decimal } = this
-
-        return Math.pow(10, decimal)
-      },
-
-      /**
-       *  @param {Object!} target
-       *  @param {string} address
-       *  @return {Promise}
-       */
-      async getBalanceOf (target, address) {
-        const { contract } = this
-
-        const result = target.ether = await contract.methods.balanceOf(address).call()
+        const result = await multicall.batcher(queues)
 
         return result
       },
 
-      price: ModelValueEther.create(),
+      /** @type {string} */
+      name: ModelValueText.create(),
+      /** @type {Function} */
+      get getNameMethod () {
+        const { contract } = this
+
+        return contract.methods.name
+      },
+
+      /** @type {string} */
+      symbol: ModelValueText.create(),
+      /** @type {Function} */
+      get getSymbolMethod () {
+        const { contract } = this
+
+        return contract.methods[symbolMethodName]
+      },
+
+      /** @type {number} */
+      decimal,
+
+      /** @type {number} */
+      get precision () {
+        const { precision } = __store__
+        const { decimal } = this
+
+        return precision
+          || (__store__.precision = Math.pow(10, decimal))
+      },
+
+      /** @type {string} */
+      totalSupply: ModelValueEther.create(valueOpts),
+      /** @type {Function} */
+      get getTotalSupplyMethod () {
+        const { contract } = this
+
+        return contract.methods[totalSupplyMethodName]
+      },
+
+      minAmount: ModelValueEther.create({
+        ...valueOpts,
+        ether: 1
+      }),
+      maxAmount: ModelValueEther.create({
+        ...valueOpts,
+        // TODO: div(2) ?
+        ether: BN(2).pow(256).minus(1).toString()
+      }),
+      // TODO:
+      // amount:
+
+      /**
+       *  @param {string|number} amountEther
+       *  @return {boolean}
+       */
+      isValidAmount (amountEther) {
+        const { minAmount, maxAmount, error } = this
+        const bnAmountEther = BN(amountEther)
+
+        // amount >= minAmount && maxAmount <= amount
+        const result = bnAmountEther.gte(minAmount.ether)
+          && bnAmountEther.let(maxAmount.ether)
+
+        if (!result) {
+          error.message = store.i18n.$i18n.t('model.valueOutValidRange')
+        }
+
+        return result
+      },
+
+      /** @type {boolean} */
+      infiniteAllowance: false,
+
+      /** @type {boolean} */
+      needResetAllowance: false,
+
+      /**
+       *  @param {string|number} amount
+       *  @param {string} toContractAddress
+       *  @param {boolean=} infinite
+       */
+      async ensureAllowance (amount, toContractAddress) {
+        // const { precision, error, maxAmount, infiniteAllowance, needResetAllowance } = this
+
+        // const amountEther = BN(amount).times(precision)
+        // if (!this.isValidAmount(amountEther)) {
+        //   return false
+        // }
+
+        // const allowanceEther = BN(await this.getAllowanceMethod(store.wallet.address, toContractAddress).call())
+
+        // if (infiniteAllowance) {
+        //   // allowanceEther < maxAmount.ether / 2
+        //   // Half used
+        //   allowanceEther.lt(BN(maxAmount.ether).div(2))
+        // } else {
+
+        // }
+        // // allowanceEther = 0
+        // // if (allowanceEther)
+
+        // // // allowanceEther < amountEther
+        // // if (allowanceEther.lt(amountEther)) {
+        // //   error.message = store.i18n.$i18n.t('model.approveOperation')
+        // // }
+
+        // // needResetAllowance
+
+
+        // // infiniteAllowance
+        // //   ? maxAmount.ether
+        // //   : amountEther
+
+
+
+        // // await approve(contract, maxAllowance, accountAddress, toContract)
+
+
+        // // // TEST:
+        // // if (infinite) {
+
+        // //   if (allowance.gt(0) && requiresResetAllowance.includes(contract._address)) {
+        // //     await approve(contract, 0, accountAddress, toContract)
+        // //   } else {
+        // //     await approve(contract, maxAllowance, accountAddress, toContract)
+        // //   }
+        // // } else {
+        // //   // allowance < amount
+        // //   if (allowance.lt(_amount)) {
+        // //     if (allowance.gt(0) && requiresResetAllowance.includes(contract._address)) {
+        // //       await approve(contract, 0, accountAddress, toContract)
+        // //     } else {
+        // //       await approve(contract, _amount, accountAddress, toContract)
+        // //     }
+        // //   }
+        // // }
+      },
+      /** @type {Function} */
+      get getAllowanceMethod () {
+        const { contract } = this
+
+        return contract.methods.allowance
+      },
+
+      get getApproveMethod () {
+        const { contract } = this
+
+        return contract.methods.approve
+      },
+
+      /**
+       *  Wallet
+       */
+
+      walletBalanceOf: ModelValueEther.create({
+        ...valueOpts
+
+      }),
+      /**
+       *  - sync walletBalanceOf
+       *  @return {string}
+       */
+      async getWalletBalanceOf () {
+        const { walletBalanceOf } = this
+
+        walletBalanceOf.ether = await mixin.contract.methods[balanceOfMethodName](store.wallet.address).call()
+
+        return walletBalanceOf.handled
+      },
+
+      getBalanceOfMethod: mixin.contract.methods[balanceOfMethodName],
+      /**
+       *  @param {string} address
+       *  @return {string}
+       */
+      async getBalanceOf (address) {
+        const result = await this.getBalanceOfMethod(address).call()
+
+        return result
+      },
+
+
+
+
+      price: ModelValueEther.create(valueOpts),
+
+
+
+
+
+      underlyingCoins: {},
+
+      hasTokensCoins: false,
+      tokensCoins: {},
+
+
+
+
+
+      
 
 
       // ------------------------------
@@ -120,10 +306,7 @@ const ModelToken = {
       //   return result
       // },
 
-      error: ModelValueError.create(),
 
     }
   }
 }
-
-export default ModelToken
