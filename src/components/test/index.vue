@@ -10,13 +10,16 @@
 
 
       <li>{{ store.lptoken.BPT.walletBalanceOf }}</li> -->
-      <li>{{ store.token.DAI.walletBalanceOf  }}</li>
+      <!-- <li>{{ store.token.DAI.walletBalanceOf  }}</li> -->
       <li>{{ store.token.DAI.symbol.cont  }}</li>
       <li>{{ store.token.DAI.name.cont  }}</li>
       <li>{{ store.token.DAI.totalSupply.cont  }}</li>
 
-
-      <li>{{ store.token.DAI.walletBalanceOf.cont }}</li>
+      <li>
+        <text-overlay-loading inline :show="store.token.DAI.walletBalanceOf.loading">
+          {{ store.token.DAI.walletBalanceOf.cont }}
+        </text-overlay-loading>
+      </li>
     </ul>
 
 
@@ -1451,7 +1454,7 @@
             // store.lptoken.BPT.getWalletBalanceOf()
             // store.lptoken.BPT.initiate()
 
-            store.token.DAI.getWalletBalanceOf()
+            // store.token.DAI.getWalletBalanceOf()
             store.token.DAI.initiate()
 
 

@@ -3,8 +3,9 @@ import BN from 'bignumber.js'
 
 // TODO: store.wallet.address
 
-
 // FIXME: temp
+// import wallet from '../../store/wallet'
+
 import store from '../../store'
 import * as errorStore from '../../components/common/errorStore'
 import { notifyHandler, notifyNotification } from '../../init'
@@ -12,6 +13,7 @@ import { notifyHandler, notifyNotification } from '../../init'
 import multicall from '../../store/swap/multicall'
 
 import ModelValueEther from '../value/ether'
+import ModelWalletEther from '../wallet/ether'
 import ModelValueText from '../value/text'
 import ModelValueError from '../value/error'
 
@@ -59,8 +61,21 @@ export default {
       }
     }
 
+    const methods = {
+      getNameMethod: mixin.contract.methods.name,
+      getSymbolMethod: mixin.contract.methods[symbolMethodName],
+      getTotalSupplyMethod: mixin.contract.methods[totalSupplyMethodName],
+      getBalanceOfMethod: mixin.contract.methods[balanceOfMethodName],
+      getAllowanceMethod: mixin.contract.methods.allowance,
+      getApproveMethod: mixin.contract.methods.approve,
+    }
+
     return {
       ...mixin,
+
+      /**
+       *  Base
+       */
 
       code,
       address,
@@ -72,12 +87,14 @@ export default {
         const {
           address,
           name,
-          getNameMethod,
           symbol,
-          getSymbolMethod,
           totalSupply,
-          getTotalSupplyMethod
         } = this
+        const {
+          getNameMethod,
+          getSymbolMethod,
+          getTotalSupplyMethod
+        } = methods
 
         const queues = [
           { decodeType: 'string', call: [address, getNameMethod().encodeABI()], target: name },
@@ -90,24 +107,13 @@ export default {
         return result
       },
 
+      price: ModelValueEther.create(valueOpts),
+
       /** @type {string} */
       name: ModelValueText.create(),
-      /** @type {Function} */
-      get getNameMethod () {
-        const { contract } = this
-
-        return contract.methods.name
-      },
 
       /** @type {string} */
       symbol: ModelValueText.create(),
-      /** @type {Function} */
-      get getSymbolMethod () {
-        const { contract } = this
-
-        return contract.methods[symbolMethodName]
-      },
-
       /** @type {number} */
       decimal,
 
@@ -122,13 +128,10 @@ export default {
 
       /** @type {string} */
       totalSupply: ModelValueEther.create(valueOpts),
-      /** @type {Function} */
-      get getTotalSupplyMethod () {
-        const { contract } = this
 
-        return contract.methods[totalSupplyMethodName]
-      },
-
+      /**
+       *  Amount
+       */
       minAmount: ModelValueEther.create({
         ...valueOpts,
         ether: 1
@@ -160,10 +163,16 @@ export default {
         return result
       },
 
-      /** @type {boolean} */
-      infiniteAllowance: false,
+      /**
+       *  是否允许无限授权数量
+       *  @type {boolean}
+       */
+      isInfiniteAllowance: false,
 
-      /** @type {boolean} */
+      /**
+       *  是否需要重置授权
+       *  @type {boolean}
+       */
       needResetAllowance: false,
 
       /**
@@ -172,16 +181,16 @@ export default {
        *  @param {boolean=} infinite
        */
       async ensureAllowance (amount, toContractAddress) {
-        // const { precision, error, maxAmount, infiniteAllowance, needResetAllowance } = this
+        // const { precision, error, maxAmount, isInfiniteAllowance, needResetAllowance } = this
 
         // const amountEther = BN(amount).times(precision)
         // if (!this.isValidAmount(amountEther)) {
         //   return false
         // }
 
-        // const allowanceEther = BN(await this.getAllowanceMethod(store.wallet.address, toContractAddress).call())
+        // const allowanceEther = BN(await methods.getAllowanceMethod(store.wallet.address, toContractAddress).call())
 
-        // if (infiniteAllowance) {
+        // if (isInfiniteAllowance) {
         //   // allowanceEther < maxAmount.ether / 2
         //   // Half used
         //   allowanceEther.lt(BN(maxAmount.ether).div(2))
@@ -199,7 +208,7 @@ export default {
         // // needResetAllowance
 
 
-        // // infiniteAllowance
+        // // isInfiniteAllowance
         // //   ? maxAmount.ether
         // //   : amountEther
 
@@ -227,40 +236,18 @@ export default {
         // //   }
         // // }
       },
-      /** @type {Function} */
-      get getAllowanceMethod () {
-        const { contract } = this
-
-        return contract.methods.allowance
-      },
-
-      get getApproveMethod () {
-        const { contract } = this
-
-        return contract.methods.approve
-      },
 
       /**
        *  Wallet
        */
-
-      walletBalanceOf: ModelValueEther.create({
-        ...valueOpts
-
+      walletBalanceOf: ModelWalletEther.create({
+        ...valueOpts,
+        async trigger (address) {
+          const result = await methods.getBalanceOfMethod(address).call()
+          return result
+        }
       }),
-      /**
-       *  - sync walletBalanceOf
-       *  @return {string}
-       */
-      async getWalletBalanceOf () {
-        const { walletBalanceOf } = this
 
-        walletBalanceOf.ether = await mixin.contract.methods[balanceOfMethodName](store.wallet.address).call()
-
-        return walletBalanceOf.handled
-      },
-
-      getBalanceOfMethod: mixin.contract.methods[balanceOfMethodName],
       /**
        *  @param {string} address
        *  @return {string}
@@ -269,44 +256,7 @@ export default {
         const result = await this.getBalanceOfMethod(address).call()
 
         return result
-      },
-
-
-
-
-      price: ModelValueEther.create(valueOpts),
-
-
-
-
-
-      underlyingCoins: {},
-
-      hasTokensCoins: false,
-      tokensCoins: {},
-
-
-
-
-
-      
-
-
-      // ------------------------------
-      // FIXME: TEMP
-      priceUnitAddress: process.env.VUE_APP_DAI_TOKEN, // DAI
-      // // TODO: priceUnit
-      // async getPrice (priceUnit) {
-      //   const { address, priceUnitAddress, price } = this
-      //   const result = await storeprice.getPrice(priceUnitAddress, address)
-
-      //   // XXX: ether?
-      //   price.ether = result
-
-      //   return result
-      // },
-
-
+      }
     }
   }
 }

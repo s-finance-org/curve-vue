@@ -46,10 +46,15 @@ import { GAUGE_DUSD_ABI } from './gauge'
 
 import ModelToken from '../model/token'
 import ModelLpToken from '../model/lptoken'
-import ModelValueEther from '../model/value/ether'
-import ModelValueDate from '../model/value/date'
 
 import request from './request'
+import wallet from './wallet'
+
+import {
+  ModelValueEther,
+  ModelValueDate,
+  ModelWalletEther
+} from '../model/index1'
 
 const requiresResetAllowance = [
   process.env.VUE_APP_USDT_TOKEN, // USDT
@@ -3406,11 +3411,7 @@ store.request = request
 //   token
 //   lptoken
 // }
-store.wallet = {
-  get address () {
-    return currentContract.default_account
-  }
-}
+store.wallet = wallet
 
 store.token = {
   DAI: ModelToken.create({

@@ -153,8 +153,7 @@ export const onboard = Onboard({
       if(account === undefined) {
         if(localStorage.getItem('-walletlink:https://www.walletlink.org:session:id') === null)
         changeWallets()
-      }
-      else {
+      } else {
         if(state.contract.default_account && state.contract.initializedContracts)
           common.update_fee_info()
         state.contract.default_account = account;
