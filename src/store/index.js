@@ -2175,7 +2175,7 @@ store.gauges = {
     mortgagesUnit: 'iUSD LP token',
     address: process.env.VUE_APP_DFI_GAUGE,
     // abi: abiDfi, // FIXME: ???
-    abi: abiSUSDv2,
+    abi: ABI.USD5.mining,
     __contract: null,
     get contract () {
       const { __contract, abi, address } = this
@@ -2197,6 +2197,11 @@ store.gauges = {
 
         dailyApy: valueModel.create(),
         totalApy: valueModel.create(),
+
+        ratioStaking: valueModel.create(),
+        needLockAmount: valueModel.create(),
+        factorOf: valueModel.create(),
+        needLockDay: ModelValueDate.create(),
 
         userStake: valueModel.create(),
         stakeSliderSelected: 0,
@@ -2287,7 +2292,38 @@ store.gauges = {
 
         dailyApy: valueModel.create(),
         totalApy: valueModel.create(),
+        totalMaxApy: valueModel.create(),
       }
+    },
+
+
+    async getNeedLockAmount(target, stakingPerLPT, balanceOf, lockSfgBalanceOf) {
+      const { contract, mortgages } = this
+// FIXME: 1E18
+      const result = Math.max(
+        BN(await stakingPerLPT / 1e18).times(await balanceOf / 1e18).minus(await lockSfgBalanceOf / 1e18),
+        0
+      )
+      target.ether = result * 1e18
+
+      return result
+    },
+
+    async getRatioStaking(target, accountAddress) {
+      const { contract } = this
+
+      return target.ether = await contract.methods.ratioStaking(accountAddress).call()
+    },
+
+    // FIXME: 秒而非 ether
+    async getNeedLockDay (target, stakeTimeOf) {
+      const result = Math.max(
+        // FIXME: 
+        ((+await stakeTimeOf + 80 * 86400) - Date.now() / 1000) / 86400,
+        0
+      )
+      target.handled = result
+      return result
     },
 
     async getTotalStaking (target) {
@@ -2298,12 +2334,15 @@ store.gauges = {
 
     dailyAPY: valueModel.create(),
     totalApy: valueModel.create(),
+    myApy: valueModel.create(),
+    maxApy: valueModel.create(),
     // TEMP: 
     async getAPY (price, dailyYield, totalStaking, lpTokenPrice) {
       const { mortgages, contract, dailyAPY, totalApy, rewards } = this
 
       const req = await fetch('https://api.dfi.money/apy.json')
       mortgages.iUSD_LPT.dailyApy.handled = BN((await req.json()).dai.replace('%','')).dividedBy(100 * 365).toString()
+      // mortgages.iUSD_LPT.dailyApy.handled = 0
 
       rewards.sfg.dailyYield.handled = BN(await dailyYield / 1e18).times(rewards.sfg.weighting.handled).toString()
       rewards.sfg.dailyApy.handled = BN(await price / 1e18).times(rewards.sfg.dailyYield.handled).dividedBy(BN(await totalStaking).times(await lpTokenPrice / 1e18)).toString()
@@ -2312,6 +2351,40 @@ store.gauges = {
       mortgages.iUSD_LPT.totalApy.handled = +mortgages.iUSD_LPT.dailyApy.handled * 365
       rewards.sfg.totalApy.handled = +rewards.sfg.dailyApy.handled * 365
       totalApy.handled = BN(rewards.sfg.totalApy.handled).plus(mortgages.iUSD_LPT.totalApy.handled).toString()
+
+      // FIXME: SFG min apy
+      return rewards.sfg.totalApy.handled
+    },
+
+    async getMyApy (sfgMinApy, factorOf) {
+      const { myApy, mortgages } = this
+
+      const result = BN(await sfgMinApy).times(await factorOf / 1e18).plus(mortgages.iUSD_LPT.totalApy.handled).toString()
+
+      myApy.handled = result
+      return result
+    },
+
+
+    async getMaxApy (sfgMinApy, multiple) {
+      const { maxApy, mortgages, rewards } = this
+
+      rewards.sfg.totalMaxApy.handled = BN(await sfgMinApy).times(await multiple / 1e18).toString()
+
+      const result = BN(rewards.sfg.totalMaxApy.handled).plus(mortgages.iUSD_LPT.totalApy.handled).toString()
+
+      return maxApy.handled = result
+    },
+
+    /** 加速系数 */
+    async getFactorOf (target, address) {
+      const { contract } = this
+      // TODO: ether?
+      const result = await contract.methods.factorOf(address).call()
+
+      target.ether = result
+
+      return result
     },
 
     async getBalanceOf (target, accountAddress) {
@@ -2321,6 +2394,16 @@ store.gauges = {
       target.ether = result
       return result
     },
+
+    virtualTotalSupply: valueModel.create(),
+    async getVirtualTotalSupply () {
+      const { contract, virtualTotalSupply } = this
+      const result = await contract.methods.virtualTotalSupply().call()
+
+      virtualTotalSupply.ether = result
+      return result
+    },
+
     async getUserPendingReward_SFG (target, accountAddress) {
       const { contract } = this
 

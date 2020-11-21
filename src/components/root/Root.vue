@@ -506,12 +506,16 @@
         tokens.kun.getPrice(),
       )
 
-      gauges.dfi.getAPY(
-        sfgPrice,
-        sfgDailyYield,
-        gauges.dfi.getTotalStaking(gauges.dfi.mortgages.iUSD_LPT.totalStaking),
-        tokens.iUSD_LPT.getPrice(),
+      gauges.dfi.getMaxApy(
+        gauges.dfi.getAPY(
+          sfgPrice,
+          sfgDailyYield,
+          gauges.dfi.getTotalStaking(gauges.dfi.mortgages.iUSD_LPT.totalStaking),
+          tokens.iUSD_LPT.getPrice(),
+        ),
+        multiple
       )
+
 			// contract.web3 && contract.multicall && this.getCurveRewards() && this.getBalances();
 		},
 		beforeDestroy() {
@@ -530,20 +534,6 @@
         const { gauges } = store
         const { okuu, dusd, iUSD_LPT, usd5, qusd5 } = store.tokens
         const now = new Date().getTime()
-
-        // const apys = {
-        //   // okuu: (+okuu.price.handled - 1) / ((now - 1603800000000) / 86400000) * 365 * 100,
-        //   'dusd': (+dusd.price.handled - 1) / ((now - 1603468800000) / 86400000) * 365 * 100,
-        //   'dfi': (+iUSD_LPT.price.handled - 1) / ((now - 1602345600000) / 86400000) * 365 * 100,
-        //   'usd5': (+usd5.price.handled - 1) / ((now - 1604149200000) / 86400000) * 365 * 100,
-        //   'qusd5': (+qusd5.price.handled - 1) / ((now - 1604649443000) / 86400000) * 365 * 100
-        // }
-
-        // const textCont = (apy) => {
-        //   return apy > 0
-        //     ? apy.toFixed(2)
-        //     : '-'
-        // }
 
         let dailyVols = {
           'qusd5': [store.pool.QUSD5.dailyVol.handled, -1],
@@ -621,6 +611,7 @@
               currencies: {dai: 'DAI', usdc: 'USDC', usdt: "USDT"},
               funds: '-',
               apy: gauges.dfi.totalApy,
+              maxApy: gauges.dfi.maxApy,
               link: '/dfi'
             },
             // {

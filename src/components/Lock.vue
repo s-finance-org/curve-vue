@@ -513,6 +513,10 @@
               _gauges: gauges.usd5,
               _mortgage: gauges.usd5.mortgages.usd5,
             },
+            dfi: {
+              _gauges: gauges.dfi,
+              _mortgage: gauges.dfi.mortgages.iUSD_LPT,
+            },
             bpt: {
               _gauges: gauges.bpt,
               _mortgage: gauges.bpt.mortgages.bpt,
@@ -546,7 +550,8 @@
             ],
             items: {
               stablecoin: [
-                result.usd5
+                result.usd5,
+                result.dfi
               ],
               sfg: [
                 result.bpt
@@ -659,6 +664,30 @@
             )
 
             gauges.bpt.getNeedLockDay(gauges.bpt.mortgages.bpt.needLockDay, stakeTimeOfEther)
+
+            // dfi
+            await lock.SFG.getWeightOfGauge(gauges.dfi.rewards.sfg.weighting, gauges.dfi.address)
+
+            gauges.dfi.getMyApy(
+              gauges.dfi.getAPY(
+                sfgPrice,
+                sfgDailyYield,
+                gauges.dfi.getVirtualTotalSupply(), // gauges.dfi.getTotalStaking(gauges.dfi.mortgages.iUSD_LPT.totalStaking),
+                tokens.iUSD_LPT.getPrice(),
+              ),
+              sfgFactorOf
+            )
+
+            gauges.dfi.getFactorOf(gauges.dfi.mortgages.iUSD_LPT.factorOf, walletAddress)
+
+            gauges.dfi.getNeedLockAmount(
+              gauges.dfi.mortgages.iUSD_LPT.needLockAmount,
+              lock.SFG.getStakingPerLPT(gauges.dfi.address),
+              gauges.dfi.getBalanceOf(gauges.dfi.mortgages.iUSD_LPT.userStaking, walletAddress),
+              sfgBalanceOf,
+            )
+
+            gauges.dfi.getNeedLockDay(gauges.dfi.mortgages.iUSD_LPT.needLockDay, stakeTimeOfEther)
           },
           countDownChanged(val) {
             this.dismissCountDown = val
@@ -681,9 +710,6 @@
 </script>
 
 <style>
-  .acceleration {
-    
-  }
   .acceleration thead {
     padding: 0 10px;
   }
