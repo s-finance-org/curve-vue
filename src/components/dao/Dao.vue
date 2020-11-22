@@ -719,37 +719,6 @@
                 </span>
               </text-overlay-loading>
             </div>
-
-
-            <div class="row mb-3 line-bottom flex-wrap align-items-center">
-              <span class="d-md-flex d-none flex-wrap align-items-center">
-                <text-overlay-loading class="d-flex col-auto pb-3 col-12 col-sm-auto" inline :show="store.gauges.dfi.rewards.sfg.totalApy.loading">
-                  <img :src="getTokenIcon(store.gauges.dfi.rewards.sfg.code)" class="mr-2 icon-w-48 icon" :class="[store.gauges.dfi.rewards.sfg.code+'-icon']">
-                  <span class="d-flex h4 mb-0 flex-column">
-                    <span class="h6 mb-0 inline-block text-black-65">{{ store.gauges.dfi.rewards.sfg.name }} {{ $t('global.apr') }}</span>
-                    {{ store.gauges.dfi.rewards.sfg.totalApy.percent }}%
-                  </span>
-                </text-overlay-loading>
-                <span class="icon-w-20 icon-plus mb-3"></span>
-                <text-overlay-loading class="d-flex col-auto pb-3 col-12 col-sm-auto" inline :show="store.gauges.dfi.mortgages.iUSD_LPT.totalApy.loading">
-                  <img :src="getTokenIcon(store.gauges.dfi.mortgages.iUSD_LPT.code)" class="mr-2 icon-w-48 icon" :class="[store.gauges.dfi.mortgages.iUSD_LPT.code+'-icon']">
-                  <span class="d-flex h4 mb-0 flex-column">
-                    <span class="h6 mb-0 inline-block text-black-65">{{ store.gauges.dfi.mortgages.iUSD_LPT.name1 }} {{ $t('global.apr') }}</span>
-                    {{ store.gauges.dfi.mortgages.iUSD_LPT.totalApy.percent }}%
-                  </span>
-                </text-overlay-loading>
-                <span class="icon-w-20 icon-equal mb-3"></span>
-              </span>
-              <text-overlay-loading class="d-flex col-auto pb-3 col-12 col-sm-auto" inline :show="store.gauges.dfi.totalApy.loading || store.gauges.dfi.maxApy.loading">
-                <span class="d-flex h4 mb-0 flex-column">
-                  <span class="h6 mb-0 inline-block text-black-65">{{ $t('dao.total') }} {{ $t('global.apr') }}</span>
-
-                  {{ store.gauges.dfi.totalApy.percent }}% ~ {{ store.gauges.dfi.maxApy.percent }}%
-                </span>
-              </text-overlay-loading>
-            </div>
-
-
             <div class="row mb-3 line-bottom">
               <span class="col-12 col-md-6 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.totalStaking') }}</h6>
