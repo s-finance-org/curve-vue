@@ -2170,7 +2170,7 @@ store.gauges = {
   },
   dfi: {
     code: 'dfi',
-    name: 'DFI',
+    name: 'iUSD',
     propagateMark: 'dfi',
     mortgagesUnit: 'iUSD LP token',
     address: process.env.VUE_APP_DFI_GAUGE,
