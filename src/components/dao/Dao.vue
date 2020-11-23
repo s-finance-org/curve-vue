@@ -2112,36 +2112,6 @@
 
             const multiple = lock.SFG.getMultiple()
 
-            // TODO: temp
-            this.gaugeContract = gauges.susdv2.contract
-            await lock.SFG.getWeightOfGauge(gauges.susdv2.rewards.sfg.weighting, gauges.susdv2.address)
-
-            store.gauges.susdv2.getAPY(
-              sfgPrice,
-              sfgDailyYield,
-              store.gauges.susdv2.getTotalSupply(this.currentPool.totalSupply),
-              store.tokens.susdv2LpToken.getPrice(),
-            )
-
-            store.gauges.susdv2.getBalanceOf(this.currentPool.gaugeBalance, currentContract.default_account)
-
-            store.gauges.susdv2.getSfgTotalReward(
-              sfg.totalReward,
-              store.gauges.susdv2.getSfgPendingReward(sfg.pendingReward, currentContract.default_account),
-              store.gauges.susdv2.getSfgPaidReward(sfg.paidReward, currentContract.default_account)
-            )
-
-            store.gauges.susdv2.getCrvTotalReward(
-              crv.totalReward,
-              store.gauges.susdv2.getCrvPendingReward(crv.pendingReward, currentContract.default_account),
-              store.gauges.susdv2.getCrvPaidReward(crv.paidReward, currentContract.default_account)
-            )
-
-            store.gauges.susdv2.getSnxTotalReward(
-              snx.totalReward,
-              store.gauges.susdv2.getSnxPendingReward(snx.pendingReward, currentContract.default_account),
-              store.gauges.susdv2.getSnxPaidReward(snx.paidReward, currentContract.default_account)
-            )
 
             const { dfi, bpt, dusd, okuu, usd5, qusd5, usdg5 } = store.gauges
 
@@ -2231,7 +2201,7 @@
               sfgDailyYield,
               usdg5.getTotalStaking(usdg5.mortgages.usdg5.totalStaking),
               store.tokens.usdg5.getPrice(),
-              store.tokens.kun.getPrice(),
+              store.tokens.gt.getPrice(),
             )
 
             store.tokens.usdg5.getBalanceOf(usdg5.mortgages.usdg5.userBalanceOf, currentContract.default_account)
@@ -2245,9 +2215,9 @@
             )
 
             usdg5.getUserTotalReward_GT(
-              usdg5.rewards.kun.userTotalReward,
-              usdg5.getUserPendingReward_GT(usdg5.rewards.kun.userPendingReward, currentContract.default_account),
-              usdg5.getUserPaidReward_GT(usdg5.rewards.kun.userPaidReward, currentContract.default_account)
+              usdg5.rewards.gt.userTotalReward,
+              usdg5.getUserPendingReward_GT(usdg5.rewards.gt.userPendingReward, currentContract.default_account),
+              usdg5.getUserPaidReward_GT(usdg5.rewards.gt.userPaidReward, currentContract.default_account)
             )
 
             // bpt
@@ -2296,6 +2266,37 @@
               dfi.rewards.sfg.userTotalReward,
               dfi.getUserPendingReward_SFG(dfi.rewards.sfg.userPendingReward, currentContract.default_account),
               dfi.getUserPaidReward_SFG(dfi.rewards.sfg.userPaidReward, currentContract.default_account)
+            )
+
+            // TODO: temp
+            this.gaugeContract = gauges.susdv2.contract
+            await lock.SFG.getWeightOfGauge(gauges.susdv2.rewards.sfg.weighting, gauges.susdv2.address)
+
+            store.gauges.susdv2.getAPY(
+              sfgPrice,
+              sfgDailyYield,
+              store.gauges.susdv2.getTotalSupply(this.currentPool.totalSupply),
+              store.tokens.susdv2LpToken.getPrice(),
+            )
+
+            store.gauges.susdv2.getBalanceOf(this.currentPool.gaugeBalance, currentContract.default_account)
+
+            store.gauges.susdv2.getSfgTotalReward(
+              sfg.totalReward,
+              store.gauges.susdv2.getSfgPendingReward(sfg.pendingReward, currentContract.default_account),
+              store.gauges.susdv2.getSfgPaidReward(sfg.paidReward, currentContract.default_account)
+            )
+
+            store.gauges.susdv2.getCrvTotalReward(
+              crv.totalReward,
+              store.gauges.susdv2.getCrvPendingReward(crv.pendingReward, currentContract.default_account),
+              store.gauges.susdv2.getCrvPaidReward(crv.paidReward, currentContract.default_account)
+            )
+
+            store.gauges.susdv2.getSnxTotalReward(
+              snx.totalReward,
+              store.gauges.susdv2.getSnxPendingReward(snx.pendingReward, currentContract.default_account),
+              store.gauges.susdv2.getSnxPaidReward(snx.paidReward, currentContract.default_account)
             )
           },
           countDownChanged(val) {
