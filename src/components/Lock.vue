@@ -610,7 +610,7 @@
             )
 
             const stakeTimeOfEther = lock.SFG.getStakeTimeOf(lock.SFG.mortgages.SFG.stakeTimeOf, walletAddress)
-            const sfgFactorOf = lock.SFG.getFactorOf(lock.SFG.mortgages.SFG.factorOf, walletAddress)
+            lock.SFG.getFactorOf(lock.SFG.mortgages.SFG.factorOf, walletAddress)
 
             const sfgPrice = tokens.sfg.getPrice()
             const sfgDailyYield = tokens.sfg.getDailyYield()
@@ -627,10 +627,8 @@
                 gauges.usd5.getVirtualTotalSupply(), // gauges.usd5.getTotalStaking(gauges.usd5.mortgages.usd5.totalStaking),
                 tokens.usd5.getPrice(),
               ),
-              sfgFactorOf
+              gauges.usd5.getFactorOf(gauges.usd5.mortgages.usd5.factorOf, walletAddress)
             )
-
-            gauges.usd5.getFactorOf(gauges.usd5.mortgages.usd5.factorOf, walletAddress)
 
             gauges.usd5.getNeedLockAmount(
               gauges.usd5.mortgages.usd5.needLockAmount,
@@ -651,10 +649,8 @@
                 gauges.bpt.getVirtualTotalSupply(), // gauges.usd5.getTotalStaking(gauges.usd5.mortgages.usd5.totalStaking),
                 tokens.bpt.getPrice(),
               ),
-              sfgFactorOf
+              gauges.bpt.getFactorOf(gauges.bpt.mortgages.bpt.factorOf, walletAddress)
             )
-
-            gauges.bpt.getFactorOf(gauges.bpt.mortgages.bpt.factorOf, walletAddress)
 
             gauges.bpt.getNeedLockAmount(
               gauges.bpt.mortgages.bpt.needLockAmount,
@@ -675,10 +671,8 @@
                 gauges.dfi.getVirtualTotalSupply(), // gauges.dfi.getTotalStaking(gauges.dfi.mortgages.iUSD_LPT.totalStaking),
                 tokens.iUSD_LPT.getPrice(),
               ),
-              sfgFactorOf
+              gauges.dfi.getFactorOf(gauges.dfi.mortgages.iUSD_LPT.factorOf, walletAddress)
             )
-
-            gauges.dfi.getFactorOf(gauges.dfi.mortgages.iUSD_LPT.factorOf, walletAddress)
 
             gauges.dfi.getNeedLockAmount(
               gauges.dfi.mortgages.iUSD_LPT.needLockAmount,
