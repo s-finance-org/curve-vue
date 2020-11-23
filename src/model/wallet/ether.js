@@ -61,7 +61,6 @@ export default {
         const { address, addressDefault } = __store__
         const result = currentContract ? currentContract.default_account : address
 
-
         const bool = !!result && result !== address && result !== addressDefault
 
         return bool
@@ -128,10 +127,10 @@ export default {
       /** @type {string} */
       get cont () {
         const { contDefault } = __store__
-        const { handled, contDecimal, loading, isValidAddress } = this
+        const { handled, contDecimal, loading, isValidAddress, address } = this
         let result = contDefault
 
-        if (isValidAddress && !loading) {
+        if (address && !loading) {
           // FIXME: formatNumber toFixed -> round()
           result = __store__.cont = helpers.formatNumber(contMethod(handled, contDecimal), contDecimal)
         }

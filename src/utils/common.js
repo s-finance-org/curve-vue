@@ -24,6 +24,7 @@ let requiresResetAllowance = [
   process.env.VUE_APP_OKUU_TOKEN, // s.finance OKU/USDT
   process.env.VUE_APP_USD5_TOKEN, // s.finance DAI/USDC/USDT/TUSD/PAX
   process.env.VUE_APP_QUSD5_TOKEN, // s.finance QUSD/DAI/USDC/USDT/TUSD/PAX
+  process.env.VUE_APP_USDG5_TOKEN, // s.finance USDG/DAI/USDC/USDT/TUSD/PAX
 ]
 
 export function approve (contract, amount, account, toContract) {
@@ -210,7 +211,7 @@ export async function ensure_allowance(amounts, plain = false, contractName, N_C
   return false
 }
 
-// qusd5
+// qusd5/usdg5
 export async function ensure_allowance_base(amounts, plain = false, contractName, N_COINS, infinite = false, that = null) {
   var default_account = currentContract.default_account
   let cont = currentContract
@@ -226,7 +227,7 @@ export async function ensure_allowance_base(amounts, plain = false, contractName
 
   let fromContract = coins
 
-  if(['qusd5'].includes(currentContract.currentContract)) {
+  if(['qusd5', 'usdg5'].includes(currentContract.currentContract)) {
     if (Object.keys(currentContract.base_coins).length === N_COINS) {
       coins = currentContract.base_coins
       swap = currentContract.deposit_address
@@ -276,7 +277,7 @@ export async function ensure_underlying_allowance(i, _amount, underlying_coins =
     let coins = underlying_coins
     if(wrapped) coins = contract.coins
 
-    if (['qusd5'].includes(contract.currentContract)) {
+    if (['qusd5', 'usdg5'].includes(contract.currentContract)) {
       if (wrapped) {
         coins = currentContract.underlying_coins
       } else {
@@ -379,7 +380,7 @@ export function update_rates(version = 'new', contract) {
     let calls = [];
     let callscoins = []
 
-    if (['qusd5'].includes(contract.currentContract)) {
+    if (['qusd5', 'usdg5'].includes(contract.currentContract)) {
       let i = 0
       for (i; i < allabis[contract.currentContract].underlying_coins.length; i++) {
         let address = allabis[contract.currentContract].underlying_coins[i]
@@ -480,7 +481,7 @@ export async function update_fee_info(version = 'new', contract, update = true) 
 
     let rates_calls = update_rates(version, contract);
     calls.push(...rates_calls)
-    if(['susdv2','sbtc', 'iearn', 'y', 'dfi', 'dusd', 'okuu', 'usd5', 'qusd5'].includes(contract.currentContract) && update)
+    if(['susdv2','sbtc', 'iearn', 'y', 'dfi', 'dusd', 'okuu', 'usd5', 'qusd5', 'usdg5'].includes(contract.currentContract) && update)
         calls.push([allabis[contract.currentContract].sCurveRewards_address, contract.curveRewards.methods.balanceOf(default_account).encodeABI()])
     if(update) {
       console.log('multiInitState--' )
@@ -513,7 +514,7 @@ export async function multiInitState(calls, contract, initContracts = false) {
     let multicall = new web3.eth.Contract(multicall_abi, multicall_address)
     var default_account = currentContract.default_account;
     let aggcalls;
-    // console.log('calls', calls)
+    console.log('calls', calls)
     try {
         aggcalls = await multicall.methods.aggregate(calls).call()
     }
@@ -548,7 +549,7 @@ export async function multiInitState(calls, contract, initContracts = false) {
         contract.curveStakedBalance = decoded[1]
         decoded = decoded.slice(2);
     }
-    if(initContracts && ['sbtc', 'iearn', 'y', 'dfi', 'dusd', 'okuu', 'usd5', 'qusd5'].includes(contract.currentContract)) {
+    if(initContracts && ['sbtc', 'iearn', 'y', 'dfi', 'dusd', 'okuu', 'usd5', 'qusd5', 'usdg5'].includes(contract.currentContract)) {
         contract.curveStakedBalance = decoded[0]
         decoded = decoded.slice(1);
     }
@@ -578,7 +579,7 @@ export async function multiInitState(calls, contract, initContracts = false) {
       //         coin_abi = synthERC20_abi
       //         underlying_abi = synthERC20_abi
       //     }
-      //     if(['iearn', 'busd', 'susd', 'pax', 'dfi', 'okuu', 'usd5', 'qusd5'].includes(contract.currentContract)) coin_abi = yERC20_abi
+      //     if(['iearn', 'busd', 'susd', 'pax', 'dfi', 'okuu', 'usd5', 'qusd5', 'usdg5].includes(contract.currentContract)) coin_abi = yERC20_abi
       //     contract.coins.push(new web3.eth.Contract(coin_abi, addr));
       //     contract.underlying_coins.push(new web3.eth.Contract(underlying_abi, underlying_addr));
       // })
@@ -590,7 +591,7 @@ export async function multiInitState(calls, contract, initContracts = false) {
         if (contract.currentContract == 'susdv2' && i == 3 || contract.currentContract == 'sbtc' && i == 2) {
           abi = synthERC20_abi
         }
-        if(['iearn', 'busd', 'susd', 'pax', 'dfi', 'okuu', 'usd5', 'qusd5'].includes(contract.currentContract)) coin_abi = yERC20_abi
+        if(['iearn', 'busd', 'susd', 'pax', 'dfi', 'okuu', 'usd5', 'qusd5', 'usdg5'].includes(contract.currentContract)) coin_abi = yERC20_abi
 
         if (allabis[contract.currentContract].underlying_coins.length > i) {
           contract.underlying_coins.push(new web3.eth.Contract(abi, addr));
@@ -599,7 +600,7 @@ export async function multiInitState(calls, contract, initContracts = false) {
         }
       })
 
-      if (['qusd5'].includes(contract.currentContract)) {
+      if (['qusd5', 'usdg5'].includes(contract.currentContract)) {
         let abi = ERC20_abi
         allabis[contract.currentContract].base_coins.forEach(item => {
           contract.base_coins.push(new web3.eth.Contract(abi, item));
@@ -614,7 +615,7 @@ export async function multiInitState(calls, contract, initContracts = false) {
       ratesDecoded = decoded.slice(4+allabis[contract.currentContract].underlying_coins.length, decoded.length-(allabis[contract.currentContract].underlying_coins.length + allabis[contract.currentContract].coins.length))
     }
 
-    if(['iearn', 'busd', 'susd', 'pax', 'dfi', 'dusd', 'okuu', 'usd5', 'qusd5'].includes(contract.currentContract)) {
+    if(['iearn', 'busd', 'susd', 'pax', 'dfi', 'dusd', 'okuu', 'usd5', 'qusd5', 'usdg5'].includes(contract.currentContract)) {
       // ratesDecoded.map((v, i) => {
       //   if(checkTethered(contract, i)) {
       //     Vue.set(contract.c_rates, i, 1 / allabis[contract.currentContract].coin_precisions[i]);
@@ -626,7 +627,7 @@ export async function multiInitState(calls, contract, initContracts = false) {
       // })
       const underlying_coins_len = allabis[contract.currentContract].underlying_coins.length
       ratesDecoded.map((v, i) => {
-        if (['qusd5'].includes(contract.currentContract)) {
+        if (['qusd5', 'usdg5'].includes(contract.currentContract)) {
           if (underlying_coins_len > i) {
             if(checkTethered(contract, i)) {
               Vue.set(contract.c_rates, i, 1 / allabis[contract.currentContract].coin_precisions[i]);
@@ -680,7 +681,7 @@ export async function multiInitState(calls, contract, initContracts = false) {
         contract.total += balances[i] * contract.c_rates[i];
     })
 
-    if(!initContracts && ['susdv2', 'sbtc', 'iearn', 'y', 'dfi', 'dusd', 'okuu', 'usd5', 'qusd5'].includes(contract.currentContract))
+    if(!initContracts && ['susdv2', 'sbtc', 'iearn', 'y', 'dfi', 'dusd', 'okuu', 'usd5', 'qusd5', 'usdg5'].includes(contract.currentContract))
         contract.curveStakedBalance = decoded[decoded.length-1]
 
     if (default_account) {
@@ -811,7 +812,7 @@ export async function calc_slippage_base(values, deposit, zap_values, to_currenc
     let precisions = []
     let swapAddress = ''
     let c_rates = []
-    if(['qusd5'].includes(currentContract.currentContract)) {
+    if(['qusd5', 'usdg5'].includes(currentContract.currentContract)) {
       if (currentContract.base_coins.length === N_COINS) {
         calc_token_amount_method = currentContract.deposit_zap.methods.calc_token_amount
         precisions = allabis[currentContract.currentContract].base_precisions
@@ -848,7 +849,7 @@ export async function calc_slippage_base(values, deposit, zap_values, to_currenc
 
     calls.push(...[...Array(N_COINS).keys()].map(i => {
       let result = []
-      if (currentContract.base_coins.length === N_COINS && ['qusd5'].includes(currentContract.currentContract) && currentContract.base_coins_idx[i] != null ) {
+      if (currentContract.base_coins.length === N_COINS && ['qusd5', 'usdg5'].includes(currentContract.currentContract) && currentContract.base_coins_idx[i] != null ) {
         result = [currentContract.base_pool._address, currentContract.base_pool.methods.balances(currentContract.base_coins_idx[i]).encodeABI()]
       } else {
         result = [currentContract.swap._address, currentContract.swap.methods.balances(i).encodeABI()]

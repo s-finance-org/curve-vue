@@ -138,6 +138,7 @@
         [process.env.VUE_APP_OKUU_TOKEN]: 'okuu',
         [process.env.VUE_APP_USD5_TOKEN]: 'usd5',
         [process.env.VUE_APP_QUSD5_TOKEN]: 'qusd5',
+        [process.env.VUE_APP_USDG5_TOKEN]: 'usdg5',
 			},
 			selectedGauge: "0x0000000000000000000000000000000000000000",
 			weight: 1,
@@ -272,6 +273,12 @@
 						swap_token: process.env.VUE_APP_QUSD5_SWAP,
 						name: store.gauges.qusd5.code,
 						gauge: process.env.VUE_APP_QUSD5_GAUGE
+          },
+          usdg5: {
+						swap: process.env.VUE_APP_USDG5_TOKEN,
+						swap_token: process.env.VUE_APP_USDG5_SWAP,
+						name: store.gauges.usdg5.code,
+						gauge: process.env.VUE_APP_USDG5_GAUGE
 					},
 				}
 		}),
