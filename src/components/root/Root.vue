@@ -540,16 +540,16 @@
 
       stablePools () {
         const { volumes } = this
-        const { gauges } = store
+        const { gauges, pool } = store
         const { okuu, dusd, iUSD_LPT, usd5, qusd5, usdg5 } = store.tokens
         const now = new Date().getTime()
 
         let dailyVols = {
-          'usdg5': [store.pool.USDG5.dailyVol.handled, -1],
-          'qusd5': [store.pool.QUSD5.dailyVol.handled, -1],
-          'usd5': [store.pool.USD5.dailyVol.handled, -1],
-          'dusd': [store.pool.dUSD.dailyVol.handled, -1],
-          'dfi': [store.pool.iUSD.dailyVol.handled, -1]
+          'usdg5': [store.pool.USDG5.dailyVol.USD.handled, -1],
+          'qusd5': [store.pool.QUSD5.dailyVol.USD.handled, -1],
+          'usd5': [store.pool.USD5.dailyVol.USD.handled, -1],
+          'dusd': [store.pool.dUSD.dailyVol.USD.handled, -1],
+          'dfi': [store.pool.iUSD.dailyVol.USD.handled, -1]
         }
 
         return {

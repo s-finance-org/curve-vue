@@ -734,7 +734,7 @@
               'dfi': 'iUSD',
             }
             if (transforms[this.currentPool]) {
-              result = store.pool[transforms[this.currentPool]].dailyVol
+              result = store.pool[transforms[this.currentPool]].dailyVol.USD
             }
 
             return result

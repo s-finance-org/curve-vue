@@ -44,11 +44,11 @@ export default {
 
     res.data.pools.forEach((item, idx) => {
       if (transforms[idx]) {
-        transforms[idx].dailyVol.handled = item.vol.vol_24h
+        transforms[idx].dailyVol.USD.handled = item.vol.vol_24h
       }
     })
 
-    store.sFinance.dailyVol.handled = res.data.total_daily_swap
+    store.sFinance.dailyVol.USD.handled = res.data.total_daily_swap
     store.sFinance.totalValueStaked.handled = res.data.total_lptoken_value_staked
   },
   async getDforceApy () {
@@ -62,7 +62,7 @@ export default {
     return {
       rates: {
         // USDT: res.last
-        USDT: '0.4778'
+        USDT: '0.486'
       }
     }
   }

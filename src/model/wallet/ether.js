@@ -112,6 +112,7 @@ export default {
       /** @type {string} */
       get cont () {
         const { contDefault } = __store__
+        // FIXME: address
         const { handled, contDecimal, loading, address } = this
         let result = contDefault
 

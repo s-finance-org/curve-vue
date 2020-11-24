@@ -53,7 +53,9 @@ import wallet from './wallet'
 import {
   ModelValueEther,
   ModelValueDate,
-  ModelWalletEther
+  // ModelWalletEther,
+  ModelCurrencyRates,
+  ModelPool
 } from '../model/index1'
 
 const ABI_QUSD5_TOKEN = [{"name":"Transfer","inputs":[{"type":"address","name":"_from","indexed":true},{"type":"address","name":"_to","indexed":true},{"type":"uint256","name":"_value","indexed":false}],"anonymous":false,"type":"event"},{"name":"Approval","inputs":[{"type":"address","name":"_owner","indexed":true},{"type":"address","name":"_spender","indexed":true},{"type":"uint256","name":"_value","indexed":false}],"anonymous":false,"type":"event"},{"outputs":[],"inputs":[{"type":"string","name":"_name"},{"type":"string","name":"_symbol"},{"type":"uint256","name":"_decimals"},{"type":"uint256","name":"_supply"}],"stateMutability":"nonpayable","type":"constructor"},{"name":"set_minter","outputs":[],"inputs":[{"type":"address","name":"_minter"}],"stateMutability":"nonpayable","type":"function","gas":36218},{"name":"set_name","outputs":[],"inputs":[{"type":"string","name":"_name"},{"type":"string","name":"_symbol"}],"stateMutability":"nonpayable","type":"function","gas":177979},{"name":"totalSupply","outputs":[{"type":"uint256","name":""}],"inputs":[],"stateMutability":"view","type":"function","gas":1121},{"name":"allowance","outputs":[{"type":"uint256","name":""}],"inputs":[{"type":"address","name":"_owner"},{"type":"address","name":"_spender"}],"stateMutability":"view","type":"function","gas":1581},{"name":"transfer","outputs":[{"type":"bool","name":""}],"inputs":[{"type":"address","name":"_to"},{"type":"uint256","name":"_value"}],"stateMutability":"nonpayable","type":"function","gas":74803},{"name":"transferFrom","outputs":[{"type":"bool","name":""}],"inputs":[{"type":"address","name":"_from"},{"type":"address","name":"_to"},{"type":"uint256","name":"_value"}],"stateMutability":"nonpayable","type":"function","gas":112302},{"name":"approve","outputs":[{"type":"bool","name":""}],"inputs":[{"type":"address","name":"_spender"},{"type":"uint256","name":"_value"}],"stateMutability":"nonpayable","type":"function","gas":39049},{"name":"mint","outputs":[{"type":"bool","name":""}],"inputs":[{"type":"address","name":"_to"},{"type":"uint256","name":"_value"}],"stateMutability":"nonpayable","type":"function","gas":75779},{"name":"burnFrom","outputs":[{"type":"bool","name":""}],"inputs":[{"type":"address","name":"_to"},{"type":"uint256","name":"_value"}],"stateMutability":"nonpayable","type":"function","gas":75797},{"name":"name","outputs":[{"type":"string","name":""}],"inputs":[],"stateMutability":"view","type":"function","gas":7733},{"name":"symbol","outputs":[{"type":"string","name":""}],"inputs":[],"stateMutability":"view","type":"function","gas":6786},{"name":"decimals","outputs":[{"type":"uint256","name":""}],"inputs":[],"stateMutability":"view","type":"function","gas":1391},{"name":"balanceOf","outputs":[{"type":"uint256","name":""}],"inputs":[{"type":"address","name":"arg0"}],"stateMutability":"view","type":"function","gas":1636}]
@@ -3568,7 +3570,7 @@ store.gauges = {
     __contract: null,
     get contract () {
       const { __contract, abi, address } = this
-  
+
       return __contract ||
         (this.__contract = new web3.eth.Contract(abi, address))
     },
@@ -3689,10 +3691,10 @@ store.gauges = {
 
     async getTotalStaking (target) {
       const { contract } = this
-  
+
       return target.ether = await contract.methods.totalSupply().call()
     },
-  
+
     // dailyAPY: valueModel.create(),
     totalApy: valueModel.create(),
     // TEMP:
@@ -3851,7 +3853,7 @@ store.gauges = {
   
       const { name, address, contract, mortgages, rewards } = this
   
-      var { dismiss } = notifyNotification(`Please confirm claiming ${rewards.kun.name}`)
+      var { dismiss } = notifyNotification(`Please confirm claiming ${rewards.gt.name}`)
   
       await contract.methods.claim_rewards(accountAddress).send({
           from: accountAddress
@@ -4019,7 +4021,7 @@ store.swap = {
 
 store.request = request
 
-// ====================== test ======================
+// ====================== V2 ======================
 
 // {
 //   pool
@@ -4042,7 +4044,16 @@ store.token = {
     decimal: 6,
     abi: ABI.USDT.token,
   }),
+
+  // LPT
+  QUSD5: ModelToken.create({
+    code: 'QUSD5',
+    address: process.env.VUE_APP_USDT_TOKEN,
+    decimal: 6,
+    abi: ABI.USDT.token,
+  }),
 }
+
 
 const BPT_LPT = ModelLpToken.create({
   code: 'BPT',
@@ -4295,40 +4306,55 @@ store.lock = {
 }
 
 store.pool = {
-  BPT: {
-    code: 'BPT',
+  SFG_DAI_BPT: {
+    code: 'SFG_DAI_BPT',
     name: 'SFG',
     lptoken: BPT_LPT,
     mining: {
-
-      apy: {}
+      apy: {
+        base: {},
+        max: {},
+      }
     }
   },
-  USDG5: {
-    // USD
-    dailyVol: ModelValueEther.create({ contDecimal: 2 })
-  },
-  QUSD5: {
-    // USD
-    dailyVol: ModelValueEther.create({ contDecimal: 2 })
-  },
+  /**
+   *  USDG5
+   *  - (USDG/USD5)
+   *  - (USDG/DAI/USDC/USDT/TUSD/PAX)
+   */
+  USDG5: ModelPool.create({
+    code: 'USDG5',
+    token: {
+      address: process.env.VUE_APP_USDG5_TOKEN,
+      abi: ABI_QUSD5_TOKEN,
+    },
+    swap: {
+      address: process.env.VUE_APP_USDG5_SWAP,
+      abi: swapAbi_iUSD_LPT,
+    }
+  }),
+  QUSD5: ModelPool.create({
+    code: 'QUSD5',
+    token: store.token.QUSD5,
+    swap: {
+      address: process.env.VUE_APP_QUSD5_SWAP,
+      abi: swapAbi_iUSD_LPT,
+    }
+  }),
   USD5: {
-    // USD
-    dailyVol: ModelValueEther.create({ contDecimal: 2 })
+    dailyVol: ModelCurrencyRates.create()
   },
   dUSD: {
-    // USD
-    dailyVol: ModelValueEther.create({ contDecimal: 2 })
+    dailyVol: ModelCurrencyRates.create()
   },
   iUSD: {
-    // USD
-    dailyVol: ModelValueEther.create({ contDecimal: 2 })
+    dailyVol: ModelCurrencyRates.create()
   }
 }
 
 store.sFinance = {
-  dailyVol: ModelValueEther.create({ contDecimal: 2 }),
-  totalValueStaked: ModelValueEther.create({ contDecimal: 2 })
+  dailyVol: ModelCurrencyRates.create(),
+  totalValueStaked: ModelCurrencyRates.create()
 }
 
 store.lptoken = {

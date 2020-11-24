@@ -14,8 +14,8 @@
           </div>
           <div class="total-box col px-4 py-3">
             <h6 class="text-black-65">{{ $t('global.dailyVol') }}</h6>
-            <text-overlay-loading :show="totals.dailyVol.loading">
-              <h4 class="mb-0">${{ totals.dailyVol.cont }}</h4>
+            <text-overlay-loading :show="totals.dailyVol.USD.loading">
+              <h4 class="mb-0">${{ totals.dailyVol.USD.cont }}</h4>
             </text-overlay-loading>
           </div>
         </div>
