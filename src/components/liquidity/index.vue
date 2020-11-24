@@ -20,14 +20,14 @@
               :src='getTokenIcon(currency)'>
           </div>
           <h3 class="mb-0 col py-3">{{ currentPoolName }}<br/>{{ $t('liquidity.name') }}</h3>
-          <div class="col-12 col-md d-flex px-0">
+          <div class="col-12 col-md-auto d-flex px-0">
             <div class="total-box col px-4 py-3 mr-4">
               <h6 class="text-black-65">{{ $t('global.totalBalances') }}</h6>
               <text-overlay-loading :show="totalBalances === null">
                 <h4 class="mb-0">${{ totalBalances | formatNumber(2) }}</h4>
               </text-overlay-loading>
             </div>
-            <div class="total-box col px-4 py-3" v-if="poolDailyVolUSD !== ''">
+            <div class="total-box col px-4 py-3" v-if="currentPoolName !== 'usdg'">
               <h6 class="text-black-65">{{ $t('global.dailyVol') }}</h6>
               <text-overlay-loading :show="poolDailyVolUSD.loading">
                 <h4 class="mb-0">${{ poolDailyVolUSD.cont }}</h4>

@@ -19,14 +19,14 @@
               :src='getTokenIcon(currency)'>
           </div>
           <h3 class="mb-0 col py-3">{{ currentPoolName }}<br/>{{ $t('liquidity.name') }}</h3>
-          <div class="col-12 col-md d-flex px-0">
+          <div class="col-12 col-md-auto d-flex px-0">
             <div class="total-box col px-4 py-3 mr-4">
               <h6 class="text-black-65">{{ $t('global.totalBalances') }}</h6>
               <text-overlay-loading :show="totalBalances === null">
                 <h4 class="mb-0">${{ totalBalances | formatNumber(2) }}</h4>
               </text-overlay-loading>
             </div>
-            <div class="total-box col px-4 py-3" v-if="poolDailyVolUSD !== ''">
+            <div class="total-box col px-4 py-3" v-if="currentPoolName !== 'usdg'">
               <h6 class="text-black-65">{{ $t('global.dailyVol') }}</h6>
               <text-overlay-loading :show="poolDailyVolUSD.loading">
                 <h4 class="mb-0">${{ poolDailyVolUSD.cont }}</h4>
@@ -541,7 +541,7 @@
             },
             show_loading: false,
             waitingMessage: '',
-            userInteracted: false,
+            // userInteracted: false,
 
             estimateGas: 0,
             ethPrice: 0,
@@ -602,7 +602,7 @@
               immediate: true
           },
           fromInput() {
-              this.userInteracted = true
+            // this.userInteracted = true
           },
         },
         computed: {
@@ -767,7 +767,7 @@
                 return 0.01
             },
             selldisabled() {
-              return this.maxBalance != -1 && +this.fromInput > +this.maxBalance / this.precisions[this.from_currency] && this.userInteracted
+              return this.maxBalance != -1 && +this.fromInput > +this.maxBalance / this.precisions[this.from_currency]
             },
             notEnoughBalanceSynth() {
               return this.currentPool == 'susdv2' && this.from_currency == 3 && cBN(this.fromInput).gt(cBN(this.maxSynthBalance))
@@ -1055,7 +1055,7 @@
             async handle_trade() {
                 if(this.loadingAction) return false
 
-                this.userInteracted = true
+                // this.userInteracted = true
                 // this.setLoadingAction();
                 this.loadingAction = true
 

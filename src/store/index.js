@@ -65,7 +65,9 @@ const requiresResetAllowance = [
   '0xdF5e0e81Dff6FAF3A7e52BA697820c5e32D806A8', // Curve.fi yDAI/yUSDC/yUSDT/yTUSD
   process.env.VUE_APP_DFI_TOKEN, // s.finance iUSDT/iDAI/iUSDC
   process.env.VUE_APP_DUSD_TOKEN, // s.finance dDAI/dUSDC/dUSDT/dUSDx
-  process.env.VUE_APP_OKUU_TOKEN, // s.finance OKU/USDT
+  process.env.VUE_APP_USD5_TOKEN, // s.finance DAI/USDC/USDT/TUSD/PAX
+  process.env.VUE_APP_QUSD5_TOKEN, // s.finance QUSD/DAI/USDC/USDT/TUSD/PAX
+  process.env.VUE_APP_USDG5_TOKEN, // s.finance USDG/DAI/USDC/USDT/TUSD/PAX
 ]
 
 // FIXME: 
@@ -220,14 +222,6 @@ store.tokens = {
       return __contract ||
         (this.__contract = new web3.eth.Contract(abi, address))
     },
-    async getBalances (address) {
-    },
-    async getBalanceOf (address) {
-
-    },
-    async doAllowance () {
-
-    }
   },
 
   df: {
@@ -1202,22 +1196,6 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
     },
   },
 
-  dai: {
-    address: process.env.VUE_APP_DAI_TOKEN,
-    // TEMP: 
-    price: {
-      handled: 1.0115
-    },
-    // async getPrice () {
-    //   const { address, price } = this
-    //   // FIXME:
-    //   const result = await store.price.getPrice(store.tokens.usdt.address, address)
-
-    //   price.ether = result
-
-    //   return result
-    // }
-  },
   sfg: {
     name: 'SFG',
 
@@ -3677,7 +3655,7 @@ store.gauges = {
         }
       }
     },
-  
+
     // FIXME: auto create
     rewardsUnit: ['SFG', 'GT'],
     rewards: {
@@ -3708,7 +3686,7 @@ store.gauges = {
         totalApy: valueModel.create(),
       }
     },
-  
+
     async getTotalStaking (target) {
       const { contract } = this
   
@@ -3738,10 +3716,10 @@ store.gauges = {
       rewards.sfg.totalApy.handled = +rewards.sfg.dailyApy.handled * 365
       rewards.gt.dailyApy.handled = BN(await gtPrice / 1e18).times(rewards.gt.dailyYield.handled).dividedBy(lpt)
       rewards.gt.totalApy.handled = +rewards.gt.dailyApy.handled * 365
-  
+
       totalApy.handled = BN(rewards.sfg.totalApy.handled).plus(rewards.gt.totalApy.handled).toString()
     },
-  
+
     async getBalanceOf (target, accountAddress) {
       const { contract } = this
       const result = await contract.methods.balanceOf(accountAddress).call()
@@ -3798,7 +3776,7 @@ store.gauges = {
         notifyHandler(hash)
       })
     },
-  
+
     async onRedemption (accountAddress, infApproval) {
       const { name, address, contract, mortgages } = this
       // TODO: target
@@ -4057,8 +4035,13 @@ store.token = {
     code: 'DAI',
     address: process.env.VUE_APP_DAI_TOKEN,
     abi: ABI.DAI.token,
-    // needResetAllowance: true
-  })
+  }),
+  USDT: ModelToken.create({
+    code: 'USDT',
+    address: process.env.VUE_APP_USDT_TOKEN,
+    decimal: 6,
+    abi: ABI.USDT.token,
+  }),
 }
 
 const BPT_LPT = ModelLpToken.create({
@@ -4396,14 +4379,5 @@ store.lptoken = {
     }
   }
 }
-
-// SFG weighting
-// store.gauges.susdv2.rewards.sfg.weighting.handled = 0.05
-// store.gauges.dusd.rewards.sfg.weighting.handled = 0.1
-// store.gauges.qusd5.rewards.sfg.weighting.handled = 0.1
-// store.gauges.usd5.rewards.sfg.weighting.handled = 0.25
-// store.gauges.dfi.rewards.sfg.weighting.handled = 0.1
-
-// store.gauges.bpt.rewards.sfg.weighting.handled = 0.4
 
 export default Vue.observable(store)

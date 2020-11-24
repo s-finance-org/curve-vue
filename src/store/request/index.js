@@ -1,28 +1,6 @@
 import store from '../../store'
-var request = require('request');
 
 import requests from '../../utils/requests'
-
-function Request (params,cp){
-  request(params, function(error, response, body) {
-      if(error) {
-          cp(error);
-      }else{
-          cp(body);
-      }
-  });
-}
-
-const API_QUERY_URL = 'https://data.gateapi.io/'
-const TICKER_URL = 'api2/1/ticker'
-const USER_AGENT = ''
-var gate = {
-  getTicker:function (param,cp) {
-    Request({method: 'GET', url: API_QUERY_URL + TICKER_URL + '/' + param, headers: { 'User-Agent' : USER_AGENT } },cp);
-  },
-}
-
-
 
 export default {
   async getAllAnnouncements () {
@@ -79,15 +57,12 @@ export default {
     return res
   },
   async getTokenGt () {
-    gate.getTicker('gt_usdt', function (res) {
-      console.log(res);
-  });
-    // const res = await axios.get('https://data.gateapi.io/api2/1/ticker/gt_usdt')
-    const res = await requests.get('https://data.gateapi.io/api2/1/ticker/gt_usdt')
-console.log(res)
+    // const res = await requests.get('https://data.gateapi.io/api2/1/ticker/gt_usdt')
+
     return {
       rates: {
-        USDT: res.last
+        // USDT: res.last
+        USDT: '0.4778'
       }
     }
   }

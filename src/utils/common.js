@@ -21,7 +21,6 @@ let requiresResetAllowance = [
   '0xdF5e0e81Dff6FAF3A7e52BA697820c5e32D806A8', // Curve.fi yDAI/yUSDC/yUSDT/yTUSD
   process.env.VUE_APP_DFI_TOKEN, // s.finance iUSDT/iDAI/iUSDC
   process.env.VUE_APP_DUSD_TOKEN, // s.finance dDAI/dUSDC/dUSDT/dUSDx
-  process.env.VUE_APP_OKUU_TOKEN, // s.finance OKU/USDT
   process.env.VUE_APP_USD5_TOKEN, // s.finance DAI/USDC/USDT/TUSD/PAX
   process.env.VUE_APP_QUSD5_TOKEN, // s.finance QUSD/DAI/USDC/USDT/TUSD/PAX
   process.env.VUE_APP_USDG5_TOKEN, // s.finance USDG/DAI/USDC/USDT/TUSD/PAX
