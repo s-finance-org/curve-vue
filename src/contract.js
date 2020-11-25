@@ -807,7 +807,6 @@ export async function getAllUnderlying() {
 }
 
 export async function changeContract(pool) {
-console.log(!(pool in allabis))
 	//re-init contract with different pool
 	if(!(pool in allabis)) return;
 	state.initializedContracts = false;

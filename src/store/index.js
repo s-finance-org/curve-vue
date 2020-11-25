@@ -1486,6 +1486,11 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
         (this.__contract = new web3.eth.Contract(abi, address))
     },
   },
+
+  dai: {
+    address: process.env.VUE_APP_DAI_TOKEN,
+  },
+
   bpt: {
     address: process.env.VUE_APP_BPT_TOKEN,
     abi: abiBpt,
@@ -2203,9 +2208,9 @@ store.gauges = {
 
     async getNeedLockAmount(target, stakingPerLPT, balanceOf, lockSfgBalanceOf) {
       const { contract, mortgages } = this
-// FIXME: 1E18
+      // FIXME: 1E18
       const result = Math.max(
-        BN(await stakingPerLPT / 1e18).times(await balanceOf / 1e18).minus(await lockSfgBalanceOf / 1e18),
+        BN(await stakingPerLPT / 1e18).times(await balanceOf / 1e18).minus(await lockSfgBalanceOf / 1e18).toString(),
         0
       )
       target.ether = result * 1e18
