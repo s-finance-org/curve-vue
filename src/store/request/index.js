@@ -49,7 +49,7 @@ export default {
     })
 
     store.sFinance.dailyVol.USD.handled = res.data.total_daily_swap
-    store.sFinance.totalValueStaked.handled = res.data.total_lptoken_value_staked
+    store.sFinance.totalValueStaked.USD.handled = res.data.total_lptoken_value_staked
   },
   async getDforceApy () {
     const res = await requests.get('https://markets.dforce.network/api/v2/getApy/')
@@ -62,7 +62,7 @@ export default {
     return {
       rates: {
         // USDT: res.last
-        USDT: '0.486'
+        USDT: '0.4740'
       }
     }
   }

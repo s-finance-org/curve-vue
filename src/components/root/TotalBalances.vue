@@ -8,8 +8,8 @@
         <div class="col-12 col-md d-flex px-0">
           <div class="total-box col px-4 py-3 mr-4">
             <h6 class="text-black-65">{{ $t('global.totalPoolsDeposits') }}</h6>
-            <text-overlay-loading :show="totals.totalValueStaked.loading">
-              <h4 class="mb-0">${{ totals.totalValueStaked.cont }}</h4>
+            <text-overlay-loading :show="totals.totalValueStaked.USD.loading">
+              <h4 class="mb-0">${{ totals.totalValueStaked.USD.cont }}</h4>
             </text-overlay-loading>
           </div>
           <div class="total-box col px-4 py-3">
