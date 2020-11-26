@@ -112,6 +112,18 @@ const currencies = {
 		usdt: 'USDT',
 		tusd: 'TUSD',
 		pax: 'PAX',
+  },
+  usdg5: {
+		usdg: 'USDG',
+		usd5: 'USD5',
+  },
+  usdg5_base: {
+		usdg: 'USDG',
+		dai: 'DAI',
+		usdc: 'USDC',
+		usdt: 'USDT',
+		tusd: 'TUSD',
+		pax: 'PAX',
   }
 }
 
@@ -133,6 +145,7 @@ export const poolMenu = {
   okuu: 'OKUU',
   usd5: 'usd5',
   qusd5: 'qusd5',
+  usdg5: 'usdg5',
 }
 
 export const gas = {
@@ -196,6 +209,10 @@ export const gas = {
     qusd5: {
 			exchange: (i, j) => 800000,
 			exchange_underlying: (i, j) => 1600000
+    },
+    usdg5: {
+			exchange: (i, j) => 800000,
+			exchange_underlying: (i, j) => 1600000
 		},
 	},
 	deposit: {
@@ -214,6 +231,7 @@ export const gas = {
 		okuu: 1300000,
 		usd5: 1300000,
 		qusd5: 1300000,
+		usdg5: 1300000,
 	},
 	withdraw: {
 		compound: {
@@ -259,6 +277,9 @@ export const gas = {
 			imbalance: x => (12642*x + 474068)*2.5 | 0,
     },
     qusd5: {
+			imbalance: x => (12642*x + 474068)*2.5 | 0,
+    },
+    usdg5: {
 			imbalance: x => (12642*x + 474068)*2.5 | 0,
 		},
 	},
@@ -346,6 +367,12 @@ export const gas = {
 			withdrawImbalance: x => (276069*x + 516861)*2.5 | 0,
     },
     qusd5: {
+			deposit: x => (225377*x + 522674)*2 | 0,
+			withdraw: 3500000 / 1.4,
+			withdrawShare: 3000000,
+			withdrawImbalance: x => (276069*x + 516861)*2.5 | 0,
+    },
+    usdg5: {
 			deposit: x => (225377*x + 522674)*2 | 0,
 			withdraw: 3500000 / 1.4,
 			withdrawShare: 3000000,
@@ -462,6 +489,11 @@ const state = Vue.observable({
     },
     qusd5: {
 			currentContract: 'qusd5',
+			aRewards: null,
+			...initState(),
+    },
+    usdg5: {
+			currentContract: 'usdg5',
 			aRewards: null,
 			...initState(),
 		},
@@ -681,6 +713,10 @@ export async function init(contract, refresh = false) {
     contract.curveRewards = new state.web3.eth.Contract(allabis.qusd5.sCurveRewards_abi, allabis.qusd5.sCurveRewards_address)
     calls.push([contract.curveRewards._address, contract.curveRewards.methods.balanceOf(default_account).encodeABI()])
   }
+  if(['usdg5'].includes(contract.currentContract)) {
+    contract.curveRewards = new state.web3.eth.Contract(allabis.usdg5.sCurveRewards_abi, allabis.usdg5.sCurveRewards_address)
+    calls.push([contract.curveRewards._address, contract.curveRewards.methods.balanceOf(default_account).encodeABI()])
+  }
   if(['tbtc', 'ren', 'sbtc'].includes(contract.currentContract)) {
     //initial_A
     calls.push([allabis[contract.currentContract].swap_address, '0x5409491a'])
@@ -696,7 +732,7 @@ export async function init(contract, refresh = false) {
   contract.swap = new state.web3.eth.Contract(allabis[contract.currentContract].swap_abi, allabis[contract.currentContract].swap_address);
   contract.swap_token = new state.web3.eth.Contract(ERC20_abi, allabis[contract.currentContract].token_address);
 
-  if (['qusd5'].includes(contract.currentContract)) {
+  if (['qusd5', 'usdg5'].includes(contract.currentContract)) {
     allabis[contract.currentContract].base_pool_address && 
       (contract.base_pool = new state.web3.eth.Contract(allabis[contract.currentContract].base_pool_abi, allabis[contract.currentContract].base_pool_address) );
     allabis[contract.currentContract].base_pool_token_address && 
@@ -730,14 +766,14 @@ export async function init(contract, refresh = false) {
   //   calls.push([contract.swap._address, underlyingCoinsCall])
   // }
   for (let i = 0; i < allabis[contract.currentContract].underlying_coins.length; i++) {
-    let underlyingCoinsCall = ['tbtc', 'ren', 'sbtc', 'okuu', 'usd5', 'qusd5'].includes(contract.currentContract)
+    let underlyingCoinsCall = ['tbtc', 'ren', 'sbtc', 'okuu', 'usd5', 'qusd5', 'usdg5'].includes(contract.currentContract)
       ? contract.swap.methods.coins(i).encodeABI()
       : contract.swap.methods.underlying_coins(i).encodeABI()
 
     calls.push([contract.swap._address, underlyingCoinsCall])
   }
   for (let i = 0; i < allabis[contract.currentContract].coins.length; i++) {
-    let coinsCall = ['qusd5'].includes(contract.currentContract)
+    let coinsCall = ['qusd5', 'usdg5'].includes(contract.currentContract)
       ? contract.swap.methods.base_coins(i).encodeABI()
       : contract.swap.methods.coins(i).encodeABI()
 
@@ -764,14 +800,13 @@ export async function getAllUnderlying() {
     allState.underlying_coins[key] = [];
 		for(let i = 0; i < contract.N_COINS; i++) {
       var addr = await allState.swap[key].methods.coins(i).call();
-      var underlying_addr = await allState.swap[key].swap.methods[(key == 'okuu' || key == 'usd5' || key == 'qusd5') ? coins : underlying_coins](i).call();
+      var underlying_addr = await allState.swap[key].swap.methods[(key == 'okuu' || key == 'usd5' || key == 'qusd5' || key == 'usdg5') ? coins : underlying_coins](i).call();
       allState.underlying_coins[key][i] = new state.web3.eth.Contract(ERC20_abi, underlying_addr);
 		}
 	}
 }
 
 export async function changeContract(pool) {
-console.log(!(pool in allabis))
 	//re-init contract with different pool
 	if(!(pool in allabis)) return;
 	state.initializedContracts = false;

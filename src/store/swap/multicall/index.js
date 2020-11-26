@@ -1,5 +1,4 @@
 import web3 from '../../../model/web3'
-import BN from 'bignumber.js'
 
 import ModelSwap from '../../../model/swap'
 import abi from './abi'

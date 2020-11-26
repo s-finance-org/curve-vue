@@ -86,6 +86,10 @@ const currencies = {
   qusd5: {
 		qusd: 'QUSD',
 		usd5: 'USD5',
+  },
+  usdg5: {
+		usdg: 'USDG',
+		usd5: 'USD5',
   }
 }
 

@@ -471,6 +471,7 @@
       await lock.SFG.getWeightOfGauge(gauges.dusd.rewards.sfg.weighting, gauges.dusd.address)
       await lock.SFG.getWeightOfGauge(gauges.usd5.rewards.sfg.weighting, gauges.usd5.address)
       await lock.SFG.getWeightOfGauge(gauges.qusd5.rewards.sfg.weighting, gauges.qusd5.address)
+      await lock.SFG.getWeightOfGauge(gauges.usdg5.rewards.sfg.weighting, gauges.usdg5.address)
       await lock.SFG.getWeightOfGauge(gauges.dfi.rewards.sfg.weighting, gauges.dfi.address)
 
       gauges.susdv2.getAPY(
@@ -506,6 +507,14 @@
         tokens.kun.getPrice(),
       )
 
+      gauges.usdg5.getAPY(
+        sfgPrice,
+        sfgDailyYield,
+        gauges.usdg5.getTotalStaking(gauges.usdg5.mortgages.usdg5.totalStaking),
+        tokens.usdg5.getPrice(),
+        tokens.gt.getPrice(),
+      )
+
       gauges.dfi.getMaxApy(
         gauges.dfi.getAPY(
           sfgPrice,
@@ -531,15 +540,16 @@
 
       stablePools () {
         const { volumes } = this
-        const { gauges } = store
-        const { okuu, dusd, iUSD_LPT, usd5, qusd5 } = store.tokens
+        const { gauges, pool } = store
+        const { okuu, dusd, iUSD_LPT, usd5, qusd5, usdg5 } = store.tokens
         const now = new Date().getTime()
 
         let dailyVols = {
-          'qusd5': [store.pool.QUSD5.dailyVol.handled, -1],
-          'usd5': [store.pool.USD5.dailyVol.handled, -1],
-          'dusd': [store.pool.dUSD.dailyVol.handled, -1],
-          'dfi': [store.pool.iUSD.dailyVol.handled, -1]
+          'usdg5': [store.pool.USDG5.dailyVol.USD.handled, -1],
+          'qusd5': [store.pool.QUSD5.dailyVol.USD.handled, -1],
+          'usd5': [store.pool.USD5.dailyVol.USD.handled, -1],
+          'dusd': [store.pool.dUSD.dailyVol.USD.handled, -1],
+          'dfi': [store.pool.iUSD.dailyVol.USD.handled, -1]
         }
 
         return {
@@ -552,6 +562,18 @@
             'operating'
           ],
           items: [
+            {
+              id: -1,
+              toDeposit: '/liquidity/usdg5',
+              toDao: '/dao',
+              pooltext: 'usdg',
+              pools: 'USDG USD5',
+              volData: dailyVols.usdg5,
+              currencies: {usdg: 'USDG', usd5: 'USD5'},
+              funds: '-',
+              apy: gauges.usdg5.totalApy,
+              link: '/usdg5'
+            },
             {
               id: -1,
               toDeposit: '/liquidity/qusd5',

@@ -52,23 +52,7 @@ export default {
        */
       initializedAddress: false,
       /**
-       *  是否为有效地址
-       *  @type {boolean}
-       */
-      get isValidAddress () {
-        // const { addressDefault } = __store__
-        // const { address } = this
-        const { address, addressDefault } = __store__
-        const result = currentContract ? currentContract.default_account : address
-
-
-        const bool = !!result && result !== address && result !== addressDefault
-
-        return bool
-      },
-      /**
        *  更新钱包地址
-       *  - 由 isValidAddress 触发
        *  @type {string}
        */
       get address () {
@@ -128,10 +112,11 @@ export default {
       /** @type {string} */
       get cont () {
         const { contDefault } = __store__
-        const { handled, contDecimal, loading, isValidAddress } = this
+        // FIXME: address
+        const { handled, contDecimal, loading, address } = this
         let result = contDefault
 
-        if (isValidAddress && !loading) {
+        if (!loading) {
           // FIXME: formatNumber toFixed -> round()
           result = __store__.cont = helpers.formatNumber(contMethod(handled, contDecimal), contDecimal)
         }

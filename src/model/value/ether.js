@@ -32,13 +32,11 @@ const ModelValueEther = {
 
       /** @type {boolean} */
       loading: true,
-      _update () {
-        const { loading } = this
-
-        // init
-        if (loading) {
-          this.loading = false
-        }
+      beforeUpdate () {
+        this.loading = true
+      },
+      afterUpdate () {
+        this.loading = false
       },
 
       /**
@@ -70,7 +68,7 @@ const ModelValueEther = {
       set handled (val) {
         __store__.handled = val
 
-        this._update()
+        this.afterUpdate()
       },
 
       contDecimal,

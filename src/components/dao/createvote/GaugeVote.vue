@@ -225,6 +225,7 @@
         [process.env.VUE_APP_OKUU_TOKEN]: 'okuu',
         [process.env.VUE_APP_USD5_TOKEN]: 'usd5',
         [process.env.VUE_APP_QUSD5_TOKEN]: 'qusd5',
+        [process.env.VUE_APP_USDG5_TOKEN]: 'usdg5',
 			},
 
 		}),

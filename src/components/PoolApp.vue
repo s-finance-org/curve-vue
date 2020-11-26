@@ -134,6 +134,7 @@
       okuu: 'OKUU',
       usd5: '5pool',
       qusd5: 'qian',
+      usdg5: 'usdg',
     }
 
   export default {
@@ -160,6 +161,7 @@
         okuu: 'okuu',
         usd5: 'usd5',
         qusd5: 'qusd5',
+        usdg5: 'usdg5',
       }
     }),
     components: {

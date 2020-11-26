@@ -3,7 +3,7 @@ import store from '../../store'
 import requests from '../../utils/requests'
 
 export default {
-  getAllAnnouncements: async () => {
+  async getAllAnnouncements () {
     const res = await requests.get('https://api.s.finance/f/a/all')
 
     // sync
@@ -30,11 +30,12 @@ export default {
       !idx && (announcement.statement = result)
     })
   },
-  getAllInfo: async () => {
+  async getAllInfo () {
     const res = await requests.get('https://api.s.finance/v1/sfinance')
 
     const { pool, sFinance } = store
     const transforms = {
+      // '0': pool.USDG5,
       '0': pool.QUSD5,
       '1': pool.USD5,
       '2': pool.dUSD,
@@ -43,16 +44,26 @@ export default {
 
     res.data.pools.forEach((item, idx) => {
       if (transforms[idx]) {
-        transforms[idx].dailyVol.handled = item.vol.vol_24h
+        transforms[idx].dailyVol.USD.handled = item.vol.vol_24h
       }
     })
 
-    store.sFinance.dailyVol.handled = res.data.total_daily_swap
-    store.sFinance.totalValueStaked.handled = res.data.total_lptoken_value_staked
+    store.sFinance.dailyVol.USD.handled = res.data.total_daily_swap
+    store.sFinance.totalValueStaked.USD.handled = res.data.total_lptoken_value_staked
   },
-  getDforceApy: async () => {
+  async getDforceApy () {
     const res = await requests.get('https://markets.dforce.network/api/v2/getApy/')
 
     return res
+  },
+  async getTokenGt () {
+    // const res = await requests.get('https://data.gateapi.io/api2/1/ticker/gt_usdt')
+
+    return {
+      rates: {
+        // USDT: res.last
+        USDT: '0.4740'
+      }
+    }
   }
 }

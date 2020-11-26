@@ -18,7 +18,9 @@ const Request = (method, url, data,
        *  - include, same-origin, *omit
        */
       credentials,
-      headers: new Headers(headers),
+      headers: new Headers({
+        'User-Agent': ''
+      }),
       /**
        *  - *GET, POST, PUT, DELETE, etc
        */
