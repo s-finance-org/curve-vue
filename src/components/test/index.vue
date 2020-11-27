@@ -10,19 +10,31 @@
 
 
       <li>{{ store.lptoken.BPT.walletBalanceOf }}</li> -->
-      <!-- <li>{{ store.token.DAI.walletBalanceOf  }}</li> -->
-      <li>{{ store.token.DAI.symbol.cont  }}</li>
-      <li>{{ store.token.DAI.name.cont  }}</li>
-      <li>{{ store.token.DAI.totalSupply.cont  }}</li>
+      <!-- <li>{{ store.tokens.DAI.walletBalanceOf  }}</li> -->
+
+      <li>{{ storeV2.tokens.DAI.symbol.cont  }}</li>
+      <li>{{ storeV2.tokens.DAI.name.cont  }}</li>
+      <li>{{ storeV2.tokens.DAI.totalSupply.cont  }}</li>
 
       <li>
-        <text-overlay-loading inline :show="store.token.DAI.walletBalanceOf.loading">
-          {{ store.token.DAI.walletBalanceOf.cont }}
+        <text-overlay-loading inline :show="storeV2.tokens.DAI.walletBalanceOf.loading">
+          {{ storeV2.tokens.DAI.walletBalanceOf.cont }}
         </text-overlay-loading>
-        {{ store.token.DAI.walletBalanceOf.cont }}
+        {{ storeV2.tokens.DAI.walletBalanceOf.cont }}
       </li>
 
-      <li>{{ store.pool.QUSD5.token  }}</li>
+      <!-- <li>------ pool dfi iUSD</li>
+      <li>{{ store.pool.iUSD.info.name }}</li>
+      <li>mortgagesUnit</li>
+      <li>rewardsUnit.join(' ')</li>
+
+      <li>总抵押 {{ store.pool.iUSD.mining.staking.totalStaking.cont }}</li>
+      <li>getVirtualTotalSupply {{ store.pool.iUSD.mining.staking.virtualTotalSupply.cont }}</li> -->
+      <!-- <li>可抵押 {{ store.pool.iUSD.lpt.walletBalanceOf.cont }}</li>
+
+      <li>待领取 {{ store.pool.iUSD.mining.minted.SFG.pending.cont }}</li>
+      <li>已领取 {{ store.pool.iUSD.mining.minted.SFG.paid.cont }}</li>
+      <li>合计 {{ store.pool.iUSD.mining.minted.SFG.total.cont }}</li> -->
     </ul>
 
 
@@ -895,6 +907,8 @@
     import { getBTCPrice } from '../common/priceStore'
 
     import store from '../../store'
+    import storeV2 from '../../store_v2'
+
     import { valueModel } from '../../model'
     import { floor } from '../../utils/math/round'
   	import * as volumeStore from '@/components/common/volumeStore'
@@ -1140,6 +1154,9 @@
               this.withdrawSliderSelected = val
             }
           },
+          storeV2 () {
+            return storeV2
+          }
         },
         created() {
           // FIXME: ?
@@ -1292,11 +1309,11 @@
             piegauges[highest].selected = true;
 
             // TEST:
-            // store.lptoken.BPT.getWalletBalanceOf()
-            // store.lptoken.BPT.initiate()
+            // storeV2.lptoken.BPT.getWalletBalanceOf()
+            // storeV2.lptoken.BPT.initiate()
 
-            // store.token.DAI.getWalletBalanceOf()
-            store.token.DAI.initiate()
+            // storeV2.tokens.DAI.getWalletBalanceOf()
+            storeV2.tokens.DAI.initiate()
 
 
 

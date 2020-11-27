@@ -4037,27 +4037,6 @@ store.request = request
 // }
 store.wallet = wallet
 
-store.token = {
-  DAI: ModelToken.create({
-    code: 'DAI',
-    address: process.env.VUE_APP_DAI_TOKEN,
-    abi: ABI.DAI.token,
-  }),
-  USDT: ModelToken.create({
-    code: 'USDT',
-    address: process.env.VUE_APP_USDT_TOKEN,
-    decimal: 6,
-    abi: ABI.USDT.token,
-  }),
-
-  // LPT
-  QUSD5: ModelToken.create({
-    code: 'QUSD5',
-    address: process.env.VUE_APP_USDT_TOKEN,
-    decimal: 6,
-    abi: ABI.USDT.token,
-  }),
-}
 
 
 const BPT_LPT = ModelLpToken.create({
@@ -4340,7 +4319,7 @@ store.pool = {
   }),
   QUSD5: ModelPool.create({
     code: 'QUSD5',
-    token: store.token.QUSD5,
+    // token: store.token.QUSD5,
     swap: {
       address: process.env.VUE_APP_QUSD5_SWAP,
       abi: swapAbi_iUSD_LPT,
