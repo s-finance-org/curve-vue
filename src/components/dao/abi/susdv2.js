@@ -35,6 +35,8 @@ export default [
       "type":"event",
       "signature":"0x884e`dad9ce6fa2440d8a54cc123490eb96d2768479d49ff9c7366125a9424364"
   },
+  {"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"factorOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
+  {"inputs":[],"name":"virtualTotalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
   {
       "name":"UpdateLiquidityLimit",
       "inputs":[
