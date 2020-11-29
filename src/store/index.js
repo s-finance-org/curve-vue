@@ -2593,7 +2593,7 @@ store.gauges = {
       const { maxApy, mortgages, rewards } = this
 
       rewards.sfg.totalMaxApy.handled = BN(await sfgMinApy).times(await multiple / 1e18).toString()
-
+// XXX:
       const result = BN(rewards.sfg.totalMaxApy.handled).plus(mortgages.iUSD_LPT.totalApy.handled).toString()
 
       return maxApy.handled = result
@@ -3769,9 +3769,9 @@ store.gauges = {
     },
 
     async getMyApy (sfgMinApy, factorOf) {
-      const { myApy, mortgages } = this
+      const { myApy, mortgages, rewards } = this
 
-      const result = BN(await sfgMinApy).times(await factorOf / 1e18).plus(mortgages.usdg5.totalApy.handled).toString()
+      const result = BN(await sfgMinApy).times(await factorOf / 1e18).plus(rewards.gt.totalApy.handled).toString()
 
       myApy.handled = result
       return result
@@ -3782,7 +3782,7 @@ store.gauges = {
 
       rewards.sfg.totalMaxApy.handled = BN(await sfgMinApy).times(await multiple / 1e18).toString()
 
-      const result = BN(rewards.sfg.totalMaxApy.handled).plus(mortgages.usdg5.totalApy.handled).toString()
+      const result = BN(rewards.sfg.totalMaxApy.handled).plus(rewards.gt.totalApy.handled).toString()
 
       return maxApy.handled = result
     },
