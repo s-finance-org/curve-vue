@@ -45,7 +45,7 @@ export default {
           const { contDefault } = __store__
           const { handled, contDecimal, loading } = this
           let result = contDefault
-console.log('handled', handled, contDecimal)
+
           if (!loading) {
             // FIXME: formatNumber toFixed -> round()
             result = __store__.cont = helpers.formatNumber(contMethod(handled, contDecimal), contDecimal)

@@ -33,18 +33,22 @@ export default {
   async getAllInfo () {
     const res = await requests.get('https://api.s.finance/v1/sfinance')
 
+    if (res.code !== '10000') return false
+
     const { pool, sFinance } = store
     const transforms = {
-      // '0': pool.USDG5,
-      '0': pool.QUSD5,
-      '1': pool.USD5,
-      '2': pool.dUSD,
-      '3': pool.iUSD,
+      'USDG-USD5': pool.USDG5,
+      'QUSD-USD5': pool.QUSD5,
+      'DAI-USDC-USDT-TUSD-PAX': pool.USD5,
+      '(d)DAI-(d)USDC-(d)USDT-(d)USDx': pool.dUSD,
+      '(i)DAI-(i)USDC-(i)USDT': pool.iUSD,
+      // 'DAI-USDT-USDC-sUSD': pool.sUSDv2,
+      // 'SFG-DAI': pool.SFG_DAI_BPT,
     }
 
     res.data.pools.forEach((item, idx) => {
-      if (transforms[idx]) {
-        transforms[idx].dailyVol.USD.handled = item.vol.vol_24h
+      if (transforms[item.pair]) {
+        transforms[item.pair].dailyVol.USD.handled = item.vol.vol_24h
       }
     })
 

@@ -15,12 +15,10 @@
       <li>{{ storeV2.tokens.DAI.symbol.cont  }}</li>
       <li>{{ storeV2.tokens.DAI.name.cont  }}</li>
       <li>{{ storeV2.tokens.DAI.totalSupply.cont  }}</li>
-
       <li>
         <text-overlay-loading inline :show="storeV2.tokens.DAI.walletBalanceOf.loading">
           {{ storeV2.tokens.DAI.walletBalanceOf.cont }}
         </text-overlay-loading>
-        {{ storeV2.tokens.DAI.walletBalanceOf.cont }}
       </li>
 
       <!-- <li>------ pool dfi iUSD</li>
@@ -35,6 +33,17 @@
       <li>待领取 {{ store.pool.iUSD.mining.minted.SFG.pending.cont }}</li>
       <li>已领取 {{ store.pool.iUSD.mining.minted.SFG.paid.cont }}</li>
       <li>合计 {{ store.pool.iUSD.mining.minted.SFG.total.cont }}</li> -->
+      <li>---------- DF</li>
+      <li>{{ storeV2.tokens.DF.symbol.cont  }}</li>
+      <li>{{ storeV2.tokens.DF.name.cont  }}</li>
+      <li>{{ storeV2.tokens.DF.totalSupply.cont  }}</li>
+      <!-- <li>{{ storeV2.tokens.DF.price.cont  }}</li> -->
+
+      <!-- <li>
+        <text-overlay-loading inline :show="storeV2.tokens.DF.walletBalanceOf.loading">
+          {{ storeV2.tokens.DF.walletBalanceOf.cont }}
+        </text-overlay-loading>
+      </li> -->
     </ul>
 
 
@@ -1314,6 +1323,7 @@
 
             // storeV2.tokens.DAI.getWalletBalanceOf()
             storeV2.tokens.DAI.initiate()
+            storeV2.tokens.DF.initiate()
 
 
 
