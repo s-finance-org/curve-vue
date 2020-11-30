@@ -3567,7 +3567,7 @@ store.gauges = {
   usdg5: {
     code: 'usdg5',
     name: 'usdg5',
-    propagateMark: 'usdg',
+    propagateMark: 'gate',
     mortgagesUnit: 'usdg5 LP token',
     address: process.env.VUE_APP_USDG5_GAUGE,
     // abi: abiDfi, // FIXME: ???

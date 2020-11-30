@@ -4,7 +4,7 @@
     <div class="total-bg">
       <b-container class="d-flex py-4 px-md-5">
         <b-navbar-nav class="navbar-tabs flex-row flex-wrap px-md-5">
-          <b-nav-item :to="{ name: 'Swap', params: { pool: 'usdg5' } }">usdg</b-nav-item>
+          <b-nav-item :to="{ name: 'Swap', params: { pool: 'usdg5' } }">gate</b-nav-item>
           <b-nav-item :to="{ name: 'Swap', params: { pool: 'usd5' } }">5pool</b-nav-item>
           <b-nav-item :to="{ name: 'Swap', params: { pool: 'qusd5' } }">qian</b-nav-item>
           <b-nav-item :to="{ name: 'Swap', params: { pool: 'dusd' } }">dForce</b-nav-item>
@@ -26,7 +26,7 @@
                 <h4 class="mb-0">${{ totalBalances | formatNumber(2) }}</h4>
               </text-overlay-loading>
             </div>
-            <div class="total-box col px-4 py-3" v-if="currentPoolName !== 'usdg'">
+            <div class="total-box col px-4 py-3" v-if="currentPoolName !== 'gate'">
               <h6 class="text-black-65">{{ $t('global.dailyVol') }}</h6>
               <text-overlay-loading :show="poolDailyVolUSD.loading">
                 <h4 class="mb-0">${{ poolDailyVolUSD.cont }}</h4>
@@ -613,7 +613,7 @@
               okuu: 'oku',
               usd5: '5pool',
               qusd5: 'qian',
-              usdg5: 'usdg',
+              usdg5: 'gate',
             }
 
             return poolName[this.currentPool] || this.currentPool
