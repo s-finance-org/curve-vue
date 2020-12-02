@@ -1,5 +1,6 @@
-const ModelValueText = {
+export default {
   /**
+   *  @return {!Object}
    */
   create () {
     const __store__ = {
@@ -29,6 +30,18 @@ const ModelValueText = {
         this.afterUpdate()
       },
 
+      /**
+       *  赋值 value
+       *  - 链式
+       *  @param {*} val
+       *  @return {!Object}
+       */
+      setValue (val) {
+        this.value = val
+
+        return this
+      },
+
       /** @type {string} */
       get cont () {
         const { value, loading } = this
@@ -42,5 +55,3 @@ const ModelValueText = {
     }
   }
 }
-
-export default ModelValueText

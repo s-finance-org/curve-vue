@@ -25,32 +25,17 @@ export default {
    *  @return {!Object}
    */
   create ({
-    code = '',
-    lpt = {
-      address: '',
-      abi: []
-    },
-    meta = {
-      address: '',
-      abi: []
-    },
-    // swap = {
-    //   address: '',
-    //   abi: []
-    // },
+    address = '',
+    abi = [],
     decimal = 18,
     contDecimal = 4,
     // symbolMethodName = 'symbol',
     // balanceOfMethodName = 'balanceOf',
     // totalSupplyMethodName = 'totalSupply'
+    getVirtualPriceMethodName = 'get_virtual_price'
   } = {}) {
     const __store__ = {
-      token: {
-        contract: null,
-      },
-      swap: {
-        contract: null,
-      },
+
       decimal,
       precision: 0,
     }
@@ -60,24 +45,31 @@ export default {
       contDecimal
     }
 
-    // const mixin = {
-    //   /** @type {Object} */
-    //   get contract () {
-    //     const { contract } = __store__
+    const mixin = {
+      /** @type {Object} */
+      get contract () {
+        const { contract } = __store__
 
-    //     return contract
-    //       || (__store__.contract = new web3.eth.Contract(abi, address))
-    //   }
-    // }
+        return contract
+          || (__store__.contract = new web3.eth.Contract(abi, address))
+      }
+    }
 
-    // const methods = {
-    //   getNameMethod: mixin.contract.methods.name,
-    //   getSymbolMethod: mixin.contract.methods[symbolMethodName],
-    //   getTotalSupplyMethod: mixin.contract.methods[totalSupplyMethodName],
-    //   getBalanceOfMethod: mixin.contract.methods[balanceOfMethodName],
-    //   getAllowanceMethod: mixin.contract.methods.allowance,
-    //   getApproveMethod: mixin.contract.methods.approve,
-    // }
+    const methods = {
+      getUnderlyingCoins: mixin.contract.methods.coins,
+      getWrappedCoins: mixin.contract.methods.base_coins,
+      getBalance: mixin.contract.methods.balances,
+
+      getVirtualPriceMethod: mixin.contract.methods[getVirtualPriceMethodName],
+      getFee: mixin.contract.methods.fee,
+      getAdminFee: mixin.contract.methods.admin_fee,
+
+
+      // getTotalSupplyMethod: mixin.contract.methods[totalSupplyMethodName],
+      // getBalanceOfMethod: mixin.contract.methods[balanceOfMethodName],
+      // getAllowanceMethod: mixin.contract.methods.allowance,
+      // getApproveMethod: mixin.contract.methods.approve,
+    }
 
     return {
       // ...mixin,
@@ -85,54 +77,56 @@ export default {
       /**
        *  Base
        */
-      code,
-      lpt,
-      meta,
-
       error: ModelValueError.create(),
 
-      // async initiate () {
-      //   const {
-      //     address,
-      //     name,
-      //     symbol,
-      //     totalSupply,
-      //   } = this
-      //   const {
-      //     getNameMethod,
-      //     getSymbolMethod,
-      //     getTotalSupplyMethod
-      //   } = methods
+      async initiate () {
+        // const {
+        //   address,
+        //   name,
+        //   symbol,
+        //   totalSupply,
+        // } = this
+        // const {
+        //   getNameMethod,
+        //   getSymbolMethod,
+        //   getTotalSupplyMethod
+        // } = methods
 
-      //   const queues = [
-      //     { decodeType: 'string', call: [address, getNameMethod().encodeABI()], target: name },
-      //     { decodeType: 'string', call: [address, getSymbolMethod().encodeABI()], target: symbol },
-      //     { decodeType: 'uint256', call: [address, getTotalSupplyMethod().encodeABI()], target: totalSupply }
-      //   ]
+        const queues = [
+          // { decodeType: 'string', call: [address, getNameMethod().encodeABI()], target: name },
+          // { decodeType: 'string', call: [address, getSymbolMethod().encodeABI()], target: symbol },
+          // { decodeType: 'uint256', call: [address, getTotalSupplyMethod().encodeABI()], target: totalSupply }
+        ]
 
-      //   const result = await multicall.batcher(queues)
+        const result = await multicall.batcher(queues)
 
-      //   return result
-      // },
+        return result
+      },
 
-      // // price: ModelValueEther.create(valueOpts),
+      // price: ModelValueEther.create(valueOpts),
 
-      // /** @type {string} */
-      // name: ModelValueText.create(),
+      /** @type {number} */
+      decimal,
 
-      // /** @type {string} */
-      // symbol: ModelValueText.create(),
-      // /** @type {number} */
-      // decimal,
+      /** @type {number} */
+      get precision () {
+        const { precision } = __store__
+        const { decimal } = this
 
-      // /** @type {number} */
-      // get precision () {
-      //   const { precision } = __store__
-      //   const { decimal } = this
+        return precision
+          || (__store__.precision = Math.pow(10, decimal))
+      },
 
-      //   return precision
-      //     || (__store__.precision = Math.pow(10, decimal))
-      // },
+      underlyingCoins: {},
+      getUnderlyingCoinsMethod: {},
+      wrappedCoins: {},
+
+      totalBalances: {},
+
+      virtualPrice: ModelValueEther.create(valueOpts),
+
+      fee: ModelValueEther.create(valueOpts),
+      adminFee: ModelValueEther.create(valueOpts),
 
       // /** @type {string} */
       // totalSupply: ModelValueEther.create(valueOpts),
@@ -266,7 +260,7 @@ export default {
       //   return result
       // },
 
-      dailyVol: ModelCurrencyRates.create()
+      // dailyVol: ModelCurrencyRates.create()
     }
   }
 }

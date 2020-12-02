@@ -566,7 +566,7 @@
               id: -1,
               toDeposit: '/liquidity/usdg5',
               toDao: '/dao',
-              pooltext: 'usdg',
+              pooltext: 'gate',
               pools: 'USDG USD5',
               volData: dailyVols.usdg5,
               currencies: {usdg: 'USDG', usd5: 'USD5'},

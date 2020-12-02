@@ -36,16 +36,35 @@
       <li>---------- DF</li>
       <li>{{ storeV2.tokens.DF.symbol.cont  }}</li>
       <li>{{ storeV2.tokens.DF.name.cont  }}</li>
-      <li>{{ storeV2.tokens.DF.totalSupply.cont  }}</li>
-      <!-- <li>{{ storeV2.tokens.DF.price.cont  }}</li> -->
+      <li>totalSupply: {{ storeV2.tokens.DF.totalSupply.cont  }}</li>
+      <li>price: {{ storeV2.tokens.DF.price.cont }} {{ storeV2.tokens.DF.moneyOfAccount.code }}</li>
+      <li>walletBalanceOf: {{ storeV2.tokens.DF.walletBalanceOf.cont }}</li>
 
       <!-- <li>
         <text-overlay-loading inline :show="storeV2.tokens.DF.walletBalanceOf.loading">
           {{ storeV2.tokens.DF.walletBalanceOf.cont }}
         </text-overlay-loading>
       </li> -->
+
+      <li>
+        
+      </li>
     </ul>
 
+    <ol>
+      <div v-for="(token, code) in storeV2.tokens">
+        <h5>{{ code }}</h5>
+        <li class="d-flex alert" v-for="(item, idx) in token"
+          :key=idx
+          v-if="item && (item.handled != null || item.cont != null)"
+          :class="{'alert-error': item.loading}"
+          >
+          <span class="col-2">{{ idx }}:</span>
+          <p class="col-4 mb-0">{{ item.handled }}</p>
+          <p class="col-4 mb-0">{{ item.cont }}</p>
+        </li>
+      </div>
+    </ol>
 
     <div class="total-bg">
       <b-container class="py-4 pl-5 d-flex align-items-center">
@@ -921,6 +940,7 @@
     import { valueModel } from '../../model'
     import { floor } from '../../utils/math/round'
   	import * as volumeStore from '@/components/common/volumeStore'
+import Table from '../ren/Table.vue'
 
     const __store__ = {
       loadingAction: true,
@@ -944,7 +964,8 @@
         Slippage,
         GasPrice,
         TextOverlayLoading,
-        RootSub
+        RootSub,
+        Table
     	},
     	data: () => ({
         store,
@@ -1322,8 +1343,11 @@
             // storeV2.lptoken.BPT.initiate()
 
             // storeV2.tokens.DAI.getWalletBalanceOf()
-            storeV2.tokens.DAI.initiate()
-            storeV2.tokens.DF.initiate()
+            // storeV2.tokens.DAI.initiate()
+            // storeV2.tokens.DF.initiate()
+            // storeV2.tokens.USDG.initiate()
+
+            // storeV2.tokens.USDT.initiate()
 
 
 

@@ -2116,7 +2116,7 @@
             // usdg5
             await lock.SFG.getWeightOfGauge(gauges.usdg5.rewards.sfg.weighting, gauges.usdg5.address)
 
-            usdg5.getTotalStaking(usdg5.mortgages.usdg5.totalStaking),
+            usdg5.getTotalStaking(usdg5.mortgages.usdg5.totalStaking)
             store.gauges.usdg5.getMaxApy(
               store.gauges.usdg5.getAPY(
                 sfgPrice,

@@ -37,14 +37,10 @@ import { contract as currentContract} from '../contract'
 import uniswapV2Router2 from './swap/uniswap_v2_router2'
 import multicall from './swap/multicall'
 
-// import TOKEN_USDT_ABI from './token/abi/USDT'
-// import TOKEN_DF_ABI from './token/abi/DF'
-import TOKEN_DUSD_ABI from './token/abi/dUSD'
-
+import tokensV2 from '../store_v2/tokens'
 
 import { GAUGE_DUSD_ABI } from './gauge'
 
-import ModelToken from '../model/token'
 import ModelLpToken from '../model/lptoken'
 
 import request from './request'
@@ -58,7 +54,6 @@ import {
   ModelPool
 } from '../model/index1'
 
-const ABI_QUSD5_TOKEN = [{"name":"Transfer","inputs":[{"type":"address","name":"_from","indexed":true},{"type":"address","name":"_to","indexed":true},{"type":"uint256","name":"_value","indexed":false}],"anonymous":false,"type":"event"},{"name":"Approval","inputs":[{"type":"address","name":"_owner","indexed":true},{"type":"address","name":"_spender","indexed":true},{"type":"uint256","name":"_value","indexed":false}],"anonymous":false,"type":"event"},{"outputs":[],"inputs":[{"type":"string","name":"_name"},{"type":"string","name":"_symbol"},{"type":"uint256","name":"_decimals"},{"type":"uint256","name":"_supply"}],"stateMutability":"nonpayable","type":"constructor"},{"name":"set_minter","outputs":[],"inputs":[{"type":"address","name":"_minter"}],"stateMutability":"nonpayable","type":"function","gas":36218},{"name":"set_name","outputs":[],"inputs":[{"type":"string","name":"_name"},{"type":"string","name":"_symbol"}],"stateMutability":"nonpayable","type":"function","gas":177979},{"name":"totalSupply","outputs":[{"type":"uint256","name":""}],"inputs":[],"stateMutability":"view","type":"function","gas":1121},{"name":"allowance","outputs":[{"type":"uint256","name":""}],"inputs":[{"type":"address","name":"_owner"},{"type":"address","name":"_spender"}],"stateMutability":"view","type":"function","gas":1581},{"name":"transfer","outputs":[{"type":"bool","name":""}],"inputs":[{"type":"address","name":"_to"},{"type":"uint256","name":"_value"}],"stateMutability":"nonpayable","type":"function","gas":74803},{"name":"transferFrom","outputs":[{"type":"bool","name":""}],"inputs":[{"type":"address","name":"_from"},{"type":"address","name":"_to"},{"type":"uint256","name":"_value"}],"stateMutability":"nonpayable","type":"function","gas":112302},{"name":"approve","outputs":[{"type":"bool","name":""}],"inputs":[{"type":"address","name":"_spender"},{"type":"uint256","name":"_value"}],"stateMutability":"nonpayable","type":"function","gas":39049},{"name":"mint","outputs":[{"type":"bool","name":""}],"inputs":[{"type":"address","name":"_to"},{"type":"uint256","name":"_value"}],"stateMutability":"nonpayable","type":"function","gas":75779},{"name":"burnFrom","outputs":[{"type":"bool","name":""}],"inputs":[{"type":"address","name":"_to"},{"type":"uint256","name":"_value"}],"stateMutability":"nonpayable","type":"function","gas":75797},{"name":"name","outputs":[{"type":"string","name":""}],"inputs":[],"stateMutability":"view","type":"function","gas":7733},{"name":"symbol","outputs":[{"type":"string","name":""}],"inputs":[],"stateMutability":"view","type":"function","gas":6786},{"name":"decimals","outputs":[{"type":"uint256","name":""}],"inputs":[],"stateMutability":"view","type":"function","gas":1391},{"name":"balanceOf","outputs":[{"type":"uint256","name":""}],"inputs":[{"type":"address","name":"arg0"}],"stateMutability":"view","type":"function","gas":1636}]
 
 const requiresResetAllowance = [
   process.env.VUE_APP_USDT_TOKEN, // USDT
@@ -220,7 +215,6 @@ store.tokens = {
   df: {
     name: 'DF',
     address: process.env.VUE_APP_DF_TOKEN,
-    // abi: TOKEN_DF_ABI,
     abi: abiSFG,
     __contract: null,
     get contract () {
@@ -339,7 +333,7 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
   qusd5: {
     name: 'QUSD5',
     address: process.env.VUE_APP_QUSD5_TOKEN,
-    abi: ABI_QUSD5_TOKEN,
+    abi: tokensV2.QUSD5.abi,
     __contract: null,
     get contract () {
       const { __contract, abi, address } = this
@@ -464,7 +458,7 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
   usdg5: {
     name: 'USDG5',
     address: process.env.VUE_APP_USDG5_TOKEN,
-    abi: ABI_QUSD5_TOKEN,
+    abi: tokensV2.QUSD5.abi,
     __contract: null,
     get contract () {
       const { __contract, abi, address } = this
@@ -589,7 +583,6 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
   kun: {
     name: 'KUN',
     address: process.env.VUE_APP_KUN_TOKEN,
-    // abi: TOKEN_DF_ABI,
     abi: abiSFG,
     __contract: null,
     get contract () {
@@ -747,13 +740,13 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
     // TODO: priceUnit
     async getPrice (priceUnit) {
       const { price } = this
-      const { rates } = await request.getTokenGt()
+      const rates = await request.getTokenGt()
 
       const result = price.ether = BN(rates.USDT).times(1e18).toString()
   
       return result
     },
-  
+
     // amount: 0,
     // approveAmount: 0,
     // TODO: common & format type
@@ -826,7 +819,6 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
   okuu: {
     name: 'OKUU',
     address: process.env.VUE_APP_OKUU_TOKEN,
-    // abi: TOKEN_DF_ABI,
     abi: abiSFG,
     __contract: null,
     get contract () {
@@ -952,7 +944,6 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
   usd5: {
     name: 'usd5',
     address: process.env.VUE_APP_USD5_TOKEN,
-    // abi: TOKEN_DF_ABI,
     abi: abiSFG,
     __contract: null,
     get contract () {
@@ -1079,7 +1070,7 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
     name: 'dUSD LP token',
     address: process.env.VUE_APP_DUSD_TOKEN,
     swapAddress: process.env.VUE_APP_DUSD_SWAP,
-    abi: TOKEN_DUSD_ABI,
+    abi: tokensV2.dUSD.abi,
     // abi: abiSFG,
     swapAbi: swapAbi_iUSD_LPT,
     __contract: null,
@@ -3555,7 +3546,7 @@ store.gauges = {
   usdg5: {
     code: 'usdg5',
     name: 'usdg5',
-    propagateMark: 'usdg',
+    propagateMark: 'gate',
     mortgagesUnit: 'usdg5 LP token',
     address: process.env.VUE_APP_USDG5_GAUGE,
     // abi: abiDfi, // FIXME: ???
@@ -4382,7 +4373,7 @@ store.pool = {
     code: 'USDG5',
     token: {
       address: process.env.VUE_APP_USDG5_TOKEN,
-      abi: ABI_QUSD5_TOKEN,
+      abi: tokensV2.QUSD5.abi,
     },
     swap: {
       address: process.env.VUE_APP_USDG5_SWAP,
@@ -4422,7 +4413,7 @@ store.lptoken = {
     name: 'dUSD LP token',
     address: process.env.VUE_APP_DUSD_TOKEN,
     swapAddress: process.env.VUE_APP_DUSD_SWAP,
-    abi: TOKEN_DUSD_ABI,
+    abi: tokensV2.dUSD.abi,
     // abi: abiSFG,
     swapAbi: swapAbi_iUSD_LPT,
     __contract: null,

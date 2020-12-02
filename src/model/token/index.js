@@ -10,13 +10,18 @@ import store from '../../store'
 import * as errorStore from '../../components/common/errorStore'
 import { notifyHandler, notifyNotification } from '../../init'
 
-import multicall from '../../store/swap/multicall'
+import swaps from '../../store_v2/swaps'
 
 import ModelValueEther from '../value/ether'
+import ModelValueEther1 from '../value/ether1'
 import ModelWalletEther from '../wallet/ether'
 import ModelValueString from '../value/string'
 import ModelValueBytes32 from '../value/bytes32'
+import ModelValueUint8 from '../value/uint8'
 import ModelValueError from '../value/error'
+
+import { TOKEN_MIN_AMOUNT_ETHER, TOKEN_MAX_AMOUNT_ETHER } from '../helpers/constant'
+import { USD } from '../../store_v2/currencies'
 
 export default {
   /**
@@ -28,6 +33,7 @@ export default {
    *  @param {number=} opts.decimal
    *  @param {number=} opts.contDecimal
    *  @param {Object=} opts.moneyOfAccount
+   *  @param {Object=} opts.getPrice
    *  @param {Object=} opts.symbol
    *  @param {string=} opts.symbolMethodName
    *  @param {string=} opts.balanceOfMethodName
@@ -38,24 +44,36 @@ export default {
     code = '',
     address = '',
     abi = [],
+    isLpToken = false,
     name = ModelValueString.create(),
     decimal = 18,
+    decimals = ModelValueUint8.create(),
     contDecimal = 4,
+    moneyOfAccount = USD,
     // XXX: default
-    moneyOfAccount = null,
+    getPrice = null,
     symbol = ModelValueString.create(),
+    // ERC20
+    nameMethodName = 'name',
     symbolMethodName = 'symbol',
+    decimalsMethodName = 'decimals',
     balanceOfMethodName = 'balanceOf',
+    approveMethodName = 'approve',
+    allowanceMethodName = 'allowance',
     totalSupplyMethodName = 'totalSupply',
+    transferFromMethodName = 'transferFrom',
+    transferMethodName = 'transfer',
   } = {}) {
     const __store__ = {
       contract: null,
+      initialized: false,
       decimal,
       precision: 0,
     }
 
     const valueOpts = {
       decimal,
+      decimals,
       contDecimal
     }
 
@@ -70,12 +88,15 @@ export default {
     }
 
     const methods = {
-      getNameMethod: mixin.contract.methods.name,
+      getNameMethod: mixin.contract.methods[nameMethodName],
       getSymbolMethod: mixin.contract.methods[symbolMethodName],
+      getDecimalsMethod: mixin.contract.methods[decimalsMethodName],
       getTotalSupplyMethod: mixin.contract.methods[totalSupplyMethodName],
       getBalanceOfMethod: mixin.contract.methods[balanceOfMethodName],
-      getAllowanceMethod: mixin.contract.methods.allowance,
-      getApproveMethod: mixin.contract.methods.approve,
+      getAllowanceMethod: mixin.contract.methods[allowanceMethodName],
+      getApproveMethod: mixin.contract.methods[approveMethodName],
+      getTransferFromMethod: mixin.contract.methods[transferFromMethodName],
+      getTransferMethod: mixin.contract.methods[transferMethodName],
     }
 
     return {
@@ -89,9 +110,24 @@ export default {
       address,
       abi,
 
+      /**
+       *  是否为 LP token
+       *  - TODO:
+       *  @type {boolean}
+       */
+      isLpToken,
+
       error: ModelValueError.create(),
 
-      async initiate () {
+      /**
+       *  是否已初始化
+       *  @type {boolean}
+       */
+      get initialized () {
+        return __store__.initialized
+      },
+
+      async initiate (isSerie = false) {
         const {
           address,
           name,
@@ -99,30 +135,47 @@ export default {
           totalSupply,
         } = this
         const {
-          getNameMethod,
-          getSymbolMethod,
-          getTotalSupplyMethod
-        } = methods
+          decimals
+        } = valueOpts
 
         /* sync */
-        // this.getPriceMethod
-        // this.getPriceMethod && await this.getPriceMethod()
+        // XXX: this.getPriceMethod 为合约方法，getPrice为自定义方法，取其一
+        this.getPrice && await this.getPrice()
 
-        const queues = [
-          { decodeType: name.type, call: [address, getNameMethod().encodeABI()], target: name },
-          { decodeType: symbol.type, call: [address, getSymbolMethod().encodeABI()], target: symbol },
-          { decodeType: totalSupply.type, call: [address, getTotalSupplyMethod().encodeABI()], target: totalSupply }
+        const base = [
+          { decodeType: decimals.type, call: [address, methods.getDecimalsMethod().encodeABI()], target: decimals }
         ]
 
-        const result = await multicall.batcher(queues)
+        const once = [
+          { decodeType: name.type, call: [address, methods.getNameMethod().encodeABI()], target: name },
+          { decodeType: symbol.type, call: [address, methods.getSymbolMethod().encodeABI()], target: symbol },
+          { decodeType: totalSupply.type, call: [address, methods.getTotalSupplyMethod().encodeABI()], target: totalSupply }
+        ]
 
-        return result
+        const wallet = [
+        ]
+
+        let queues = []
+
+        if (!__store__.initialized) {
+          __store__.initialized = true
+          queues = base.concat(once)
+        }
+
+        // XXX:
+        queues = queues.concat(wallet)
+
+        // await swaps.multicall.batcher(queues)
+
+        return queues
       },
 
-      price: ModelValueEther.create(valueOpts),
+      price: ModelValueEther1.create(valueOpts),
+      getPrice,
       /* 计价货币 */
       moneyOfAccount,
-      getPriceMethod: null,
+      // XXX: 未设定
+      // getPriceMethod,
 
       /** @type {string} */
       name,
@@ -130,7 +183,10 @@ export default {
       /** @type {string} */
       symbol,
       /** @type {number} */
-      decimal,
+      // decimal,
+
+      // decimals,
+      ...valueOpts,
 
       /** @type {number} */
       get precision () {
@@ -142,19 +198,20 @@ export default {
       },
 
       /** @type {string} */
-      totalSupply: ModelValueEther.create(valueOpts),
+      totalSupply: ModelValueEther1.create(valueOpts),
 
       /**
        *  Amount
        */
-      minAmount: ModelValueEther.create({
+      minAmount: ModelValueEther1.create({
         ...valueOpts,
-        ether: 1
+        ether: TOKEN_MIN_AMOUNT_ETHER,
+        contDecimal: 0
       }),
-      maxAmount: ModelValueEther.create({
+      maxAmount: ModelValueEther1.create({
         ...valueOpts,
-        // TODO: div(2) ?
-        ether: BN(2).pow(256).minus(1).toString()
+        ether: TOKEN_MAX_AMOUNT_ETHER,
+        contDecimal: 0
       }),
       // TODO:
       // amount:
@@ -268,7 +325,7 @@ export default {
        *  @return {string}
        */
       async getBalanceOf (address) {
-        const result = await this.getBalanceOfMethod(address).call()
+        const result = await methods.getBalanceOfMethod(address).call()
 
         return result
       }
