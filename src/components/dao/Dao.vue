@@ -20,11 +20,11 @@
           <div class="box mb-4 px-4 py-3">
             <div class="row mb-3 line-bottom flex-wrap align-items-center">
               <span class="d-md-flex d-none flex-wrap align-items-center">
-                <text-overlay-loading class="d-flex col-auto pb-3 col-12 col-sm-auto" inline :show="store.gauges.usdg5.rewards.sfg.totalApy.loading">
+                <text-overlay-loading class="d-flex col-auto pb-3 col-12 col-sm-auto" inline :show="store.gauges.usdg5.rewards.sfg.totalApy.loading || store.gauges.usdg5.rewards.sfg.totalMaxApy.loading">
                   <img :src="getTokenIcon(store.gauges.usdg5.rewards.sfg.code)" class="mr-2 icon-w-48 icon" :class="[store.gauges.usdg5.rewards.sfg.code+'-icon']">
                   <span class="d-flex h4 mb-0 flex-column">
                     <span class="h6 mb-0 inline-block text-black-65">{{ store.gauges.usdg5.rewards.sfg.name }} {{ $t('global.apr') }}</span>
-                    {{ store.gauges.usdg5.rewards.sfg.totalApy.percent }}%
+                    {{ store.gauges.usdg5.rewards.sfg.totalApy.percent }}% ~ {{ store.gauges.usdg5.rewards.sfg.totalMaxApy.percent }}%
                   </span>
                 </text-overlay-loading>
                 <span class="icon-w-20 icon-plus mb-3"></span>
@@ -37,10 +37,10 @@
                 </text-overlay-loading>
                 <span class="icon-w-20 icon-equal mb-3"></span>
               </span>
-              <text-overlay-loading class="d-flex col-auto pb-3 col-12 col-sm-auto" inline :show="store.gauges.usdg5.totalApy.loading">
+              <text-overlay-loading class="d-flex col-auto pb-3 col-12 col-sm-auto" inline :show="store.gauges.usdg5.totalApy.loading || store.gauges.usdg5.maxApy.loading">
                 <span class="d-flex h4 mb-0 flex-column">
                   <span class="h6 mb-0 inline-block text-black-65">{{ $t('dao.total') }} {{ $t('global.apr') }}</span>
-                  {{ store.gauges.usdg5.totalApy.percent }}%
+                  {{ store.gauges.usdg5.totalApy.percent }}% ~ {{ store.gauges.usdg5.maxApy.percent }}%
                 </span>
               </text-overlay-loading>
             </div>
@@ -2116,12 +2116,26 @@
             // usdg5
             await lock.SFG.getWeightOfGauge(gauges.usdg5.rewards.sfg.weighting, gauges.usdg5.address)
 
-            store.gauges.usdg5.getAPY(
-              sfgPrice,
-              sfgDailyYield,
-              usdg5.getTotalStaking(usdg5.mortgages.usdg5.totalStaking),
-              store.tokens.usdg5.getPrice(),
-              store.tokens.gt.getPrice(),
+            usdg5.getTotalStaking(usdg5.mortgages.usdg5.totalStaking)
+
+// console.log('----',await usdg5.getVirtualTotalSupply())
+console.log(await store.tokens.usdg5.getPrice())
+console.log(await store.gauges.usdg5.getAPY(
+                sfgPrice,
+                sfgDailyYield,
+                usdg5.getVirtualTotalSupply(),
+                store.tokens.usdg5.getPrice(),
+                store.tokens.gt.getPrice(),
+              ))
+            store.gauges.usdg5.getMaxApy(
+              store.gauges.usdg5.getAPY(
+                sfgPrice,
+                sfgDailyYield,
+                usdg5.getVirtualTotalSupply(),
+                store.tokens.usdg5.getPrice(),
+                store.tokens.gt.getPrice(),
+              ),
+              multiple
             )
 
             store.tokens.usdg5.getBalanceOf(usdg5.mortgages.usdg5.userBalanceOf, currentContract.default_account)

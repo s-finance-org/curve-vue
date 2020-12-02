@@ -33,6 +33,7 @@ export default ModelSwap.create({
      */
     async getPrice (targetTokenObj, unitTokenObj, amount = 1) {
       const amountIn = BN(amount).times(targetTokenObj.precision).toString()
+
       const amounts = await this.getAmountsOut(
         amountIn,
         [targetTokenObj.address, unitTokenObj.address]

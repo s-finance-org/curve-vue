@@ -28,7 +28,7 @@
               </text-overlay-loading>
             </div>
             
-            <div class="total-box col px-4 py-3" v-if="!['gate', 'susdv2'].includes(currentPoolName)">
+            <div class="total-box col px-4 py-3" v-if="!['susdv2'].includes(currentPoolName)">
               <h6 class="text-black-65">{{ $t('global.dailyVol') }}</h6>
               <text-overlay-loading :show="poolDailyVolUSD.loading">
                 <h4 class="mb-0">${{ poolDailyVolUSD.cont }}</h4>
@@ -1241,6 +1241,7 @@
             'dusd': 'dUSD',
             'dfi': 'iUSD',
           }
+
           if (transforms[this.currentPool]) {
             result = store.pool[transforms[this.currentPool]].dailyVol.USD
           }

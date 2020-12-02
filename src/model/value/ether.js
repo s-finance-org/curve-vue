@@ -21,6 +21,8 @@ const ModelValueEther = {
     }
 
     const model = {
+      type: 'uint256',
+
       /** @type {number} */
       decimal,
       /** @type {number} */

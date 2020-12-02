@@ -14,7 +14,8 @@ import multicall from '../../store/swap/multicall'
 
 import ModelValueEther from '../value/ether'
 import ModelWalletEther from '../wallet/ether'
-import ModelValueText from '../value/text'
+import ModelValueString from '../value/string'
+import ModelValueBytes32 from '../value/bytes32'
 import ModelValueError from '../value/error'
 
 export default {
@@ -23,8 +24,11 @@ export default {
    *  @param {string} opts.code
    *  @param {string} opts.address
    *  @param {Array} opts.abi
+   * @param {Object=} opts.name
    *  @param {number=} opts.decimal
    *  @param {number=} opts.contDecimal
+   *  @param {Object=} opts.moneyOfAccount
+   *  @param {Object=} opts.symbol
    *  @param {string=} opts.symbolMethodName
    *  @param {string=} opts.balanceOfMethodName
    *  @param {string=} opts.totalSupplyMethodName
@@ -34,11 +38,15 @@ export default {
     code = '',
     address = '',
     abi = [],
+    name = ModelValueString.create(),
     decimal = 18,
     contDecimal = 4,
+    // XXX: default
+    moneyOfAccount = null,
+    symbol = ModelValueString.create(),
     symbolMethodName = 'symbol',
     balanceOfMethodName = 'balanceOf',
-    totalSupplyMethodName = 'totalSupply'
+    totalSupplyMethodName = 'totalSupply',
   } = {}) {
     const __store__ = {
       contract: null,
@@ -96,10 +104,14 @@ export default {
           getTotalSupplyMethod
         } = methods
 
+        /* sync */
+        // this.getPriceMethod
+        // this.getPriceMethod && await this.getPriceMethod()
+
         const queues = [
-          { decodeType: 'string', call: [address, getNameMethod().encodeABI()], target: name },
-          { decodeType: 'string', call: [address, getSymbolMethod().encodeABI()], target: symbol },
-          { decodeType: 'uint256', call: [address, getTotalSupplyMethod().encodeABI()], target: totalSupply }
+          { decodeType: name.type, call: [address, getNameMethod().encodeABI()], target: name },
+          { decodeType: symbol.type, call: [address, getSymbolMethod().encodeABI()], target: symbol },
+          { decodeType: totalSupply.type, call: [address, getTotalSupplyMethod().encodeABI()], target: totalSupply }
         ]
 
         const result = await multicall.batcher(queues)
@@ -108,12 +120,15 @@ export default {
       },
 
       price: ModelValueEther.create(valueOpts),
+      /* 计价货币 */
+      moneyOfAccount,
+      getPriceMethod: null,
 
       /** @type {string} */
-      name: ModelValueText.create(),
+      name,
 
       /** @type {string} */
-      symbol: ModelValueText.create(),
+      symbol,
       /** @type {number} */
       decimal,
 

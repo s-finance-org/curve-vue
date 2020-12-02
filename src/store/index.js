@@ -204,10 +204,6 @@ store.tokens = {
     name: 'Tether USD',
     symbol: 'USDT',
     deprecated: false,
-    totalSupply: 0, // XXX:
-    address: process.env.VUE_APP_USDT_TOKEN,
-
-    decimal: 6,
     /**
      *  @type {number}
      */
@@ -216,14 +212,9 @@ store.tokens = {
 
       return Math.pow(10, decimal)
     },
-
-    __contract: null,
-    get contract () {
-      const { __contract, abi, address } = this
-
-      return __contract ||
-        (this.__contract = new web3.eth.Contract(abi, address))
-    },
+    totalSupply: 0, // XXX:
+    address: process.env.VUE_APP_USDT_TOKEN,
+    decimal: 6,
   },
 
   df: {
@@ -268,6 +259,7 @@ store.tokens = {
       const { address, price } = this
 
       let amountsTether = await uniswapV2Router2.getPrice(this, store.tokens.usdt)
+
       // FIXME: try
       amountsTether = BN(amountsTether).times(1e18).toString()
       price.ether = amountsTether
@@ -1907,11 +1899,10 @@ store.gauges = {
 
       // TEMP:
       const dfSwapABI = [{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"reward","type":"uint256"}],"name":"RewardAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"reward","type":"uint256"}],"name":"RewardPaid","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"Staked","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"Withdrawn","type":"event"},{"constant":true,"inputs":[],"name":"DURATION","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"df","outputs":[{"internalType":"contract IERC20","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"earned","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"exit","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"getReward","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"isOwner","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"lastTimeRewardApplicable","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"lastUpdateTime","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"lockedDetails","outputs":[{"internalType":"bool","name":"","type":"bool"},{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"lp","outputs":[{"internalType":"contract IERC20","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"reward","type":"uint256"}],"name":"notifyRewardAmount","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"periodFinish","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"renounceOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"rewardPerToken","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"rewardPerTokenStored","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"rewardRate","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"rewards","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"_rewardDistribution","type":"address"}],"name":"setRewardDistribution","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"stake","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"userRewardPerTokenPaid","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"withdraw","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}]
-      const contractDfSwap = new web3.eth.Contract(dfSwapABI, '0xD26033b5CEEDce6d8cdDF532c6Cd1eBc2f0ccadf')
+      const contractDfSwap = new web3.eth.Contract(dfSwapABI, process.env.VUE_APP_DF_SWAP)
 
       rewards.sfg.dailyYield.handled = BN(await dailyYield / 1e18).times(rewards.sfg.weighting.handled).toString()
       rewards.df.dailyYield.handled = BN(await dfPrice).times(86400).times(await contractDfSwap.methods.rewardRate().call() / 1e18).toString()
-
       mortgages.dusd.dailyApy.handled = BN(dDAI_apy)
         .plus(dUSDC_apy)
         .plus(dUSDT_apy)
@@ -1926,7 +1917,6 @@ store.gauges = {
       mortgages.dusd.totalApy.handled = +mortgages.dusd.dailyApy.handled * 365
       rewards.sfg.totalApy.handled = +rewards.sfg.dailyApy.handled * 365
       rewards.df.totalApy.handled = +rewards.df.dailyApy.handled * 365
-
 
       totalApy.handled = BN(mortgages.dusd.totalApy.handled)
         .plus(rewards.sfg.totalApy.handled)
@@ -2521,7 +2511,6 @@ store.gauges = {
       }
     },
 
-
     async getNeedLockAmount(target, stakingPerLPT, balanceOf, lockSfgBalanceOf) {
       const { contract, mortgages } = this
 // FIXME: 1E18
@@ -2590,12 +2579,11 @@ store.gauges = {
       return result
     },
 
-
     async getMaxApy (sfgMinApy, multiple) {
       const { maxApy, mortgages, rewards } = this
 
       rewards.sfg.totalMaxApy.handled = BN(await sfgMinApy).times(await multiple / 1e18).toString()
-
+// XXX:
       const result = BN(rewards.sfg.totalMaxApy.handled).plus(mortgages.iUSD_LPT.totalApy.handled).toString()
 
       return maxApy.handled = result
@@ -3589,6 +3577,14 @@ store.gauges = {
         userStaking: valueModel.create(),
         userBalanceOf: valueModel.create(),
   
+        dailyApy: valueModel.create(),
+        totalApy: valueModel.create(),
+
+        ratioStaking: valueModel.create(),
+        needLockAmount: valueModel.create(),
+        factorOf: valueModel.create(),
+        needLockDay: ModelValueDate.create(),
+
         userStake: valueModel.create(),
         stakeSliderSelected: 0,
         // FIXME: common
@@ -3678,6 +3674,7 @@ store.gauges = {
   
         dailyApy: valueModel.create(),
         totalApy: valueModel.create(),
+        totalMaxApy: valueModel.create(),
       },
       gt: {
         code: 'gt',
@@ -3694,6 +3691,35 @@ store.gauges = {
       }
     },
 
+    async getNeedLockAmount(target, stakingPerLPT, balanceOf, lockSfgBalanceOf) {
+      const { contract, mortgages } = this
+// FIXME: 1E18
+      const result = Math.max(
+        BN(await stakingPerLPT / 1e18).times(await balanceOf / 1e18).minus(await lockSfgBalanceOf / 1e18),
+        0
+      )
+      target.ether = result * 1e18
+
+      return result
+    },
+
+    async getRatioStaking(target, accountAddress) {
+      const { contract } = this
+
+      return target.ether = await contract.methods.ratioStaking(accountAddress).call()
+    },
+
+    // FIXME: 秒而非 ether
+    async getNeedLockDay (target, stakeTimeOf) {
+      const result = Math.max(
+        // FIXME: 
+        ((+await stakeTimeOf + 80 * 86400) - Date.now() / 1000) / 86400,
+        0
+      )
+      target.handled = result
+      return result
+    },
+
     async getTotalStaking (target) {
       const { contract } = this
 
@@ -3702,6 +3728,8 @@ store.gauges = {
 
     // dailyAPY: valueModel.create(),
     totalApy: valueModel.create(),
+    myApy: valueModel.create(),
+    maxApy: valueModel.create(),
     // TEMP:
     async getAPY (price, dailyYield, totalStaking, lpTokenPrice, gtPrice) {
       const { contract, dailyAPY, totalApy, rewards } = this
@@ -3725,6 +3753,39 @@ store.gauges = {
       rewards.gt.totalApy.handled = +rewards.gt.dailyApy.handled * 365
 
       totalApy.handled = BN(rewards.sfg.totalApy.handled).plus(rewards.gt.totalApy.handled).toString()
+    
+      // FIXME: SFG min apy
+      return rewards.sfg.totalApy.handled
+    },
+
+    async getMyApy (sfgMinApy, factorOf) {
+      const { myApy, mortgages, rewards } = this
+
+      const result = BN(await sfgMinApy).times(await factorOf / 1e18).plus(rewards.gt.totalApy.handled).toString()
+
+      myApy.handled = result
+      return result
+    },
+
+    async getMaxApy (sfgMinApy, multiple) {
+      const { maxApy, mortgages, rewards } = this
+
+      rewards.sfg.totalMaxApy.handled = BN(await sfgMinApy).times(await multiple / 1e18).toString()
+
+      const result = BN(rewards.sfg.totalMaxApy.handled).plus(rewards.gt.totalApy.handled).toString()
+
+      return maxApy.handled = result
+    },
+
+    /** 加速系数 */
+    async getFactorOf (target, address) {
+      const { contract } = this
+      // TODO: ether?
+      const result = await contract.methods.factorOf(address).call()
+
+      target.ether = result
+
+      return result
     },
 
     async getBalanceOf (target, accountAddress) {
@@ -3734,6 +3795,16 @@ store.gauges = {
       target.ether = result
       return result
     },
+
+    virtualTotalSupply: valueModel.create(),
+    async getVirtualTotalSupply () {
+      const { contract, virtualTotalSupply } = this
+      const result = await contract.methods.virtualTotalSupply().call()
+
+      virtualTotalSupply.ether = result
+      return result
+    },
+
     async getUserPendingReward_SFG (target, accountAddress) {
       const { contract } = this
   
@@ -4037,27 +4108,6 @@ store.request = request
 // }
 store.wallet = wallet
 
-store.token = {
-  DAI: ModelToken.create({
-    code: 'DAI',
-    address: process.env.VUE_APP_DAI_TOKEN,
-    abi: ABI.DAI.token,
-  }),
-  USDT: ModelToken.create({
-    code: 'USDT',
-    address: process.env.VUE_APP_USDT_TOKEN,
-    decimal: 6,
-    abi: ABI.USDT.token,
-  }),
-
-  // LPT
-  QUSD5: ModelToken.create({
-    code: 'QUSD5',
-    address: process.env.VUE_APP_USDT_TOKEN,
-    decimal: 6,
-    abi: ABI.USDT.token,
-  }),
-}
 
 
 const BPT_LPT = ModelLpToken.create({
@@ -4320,7 +4370,8 @@ store.pool = {
         base: {},
         max: {},
       }
-    }
+    },
+    dailyVol: ModelCurrencyRates.create()
   },
   /**
    *  USDG5
@@ -4340,7 +4391,7 @@ store.pool = {
   }),
   QUSD5: ModelPool.create({
     code: 'QUSD5',
-    token: store.token.QUSD5,
+    // token: store.token.QUSD5,
     swap: {
       address: process.env.VUE_APP_QUSD5_SWAP,
       abi: swapAbi_iUSD_LPT,
@@ -4353,6 +4404,9 @@ store.pool = {
     dailyVol: ModelCurrencyRates.create()
   },
   iUSD: {
+    dailyVol: ModelCurrencyRates.create()
+  },
+  sUSDv2: {
     dailyVol: ModelCurrencyRates.create()
   }
 }
