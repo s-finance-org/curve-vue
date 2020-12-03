@@ -80,7 +80,7 @@
 			    delete pools.tbtc
 			    delete pools.y
 			    for(let [key, contract] of Object.entries(pools)) {
-			    	console.log(key, "THE KEY")
+			    	// console.log(key, "THE KEY")
 			        tokenContracts[key] = new web3.eth.Contract(ERC20_abi, contract.token_address);
 			        swapContracts[key] = new web3.eth.Contract(contract.swap_abi, contract.swap_address);
 			        calls.push([tokenContracts[key]._address, tokenContracts[key].methods.totalSupply().encodeABI()])

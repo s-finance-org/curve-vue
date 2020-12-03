@@ -43,9 +43,8 @@
           {{ $t('global.apr') }}
         </template>
         <template v-slot:cell(apr)="data">
-          <text-overlay-loading :show="data.item.apy.loading">
-            {{ data.item.apy.percent || daily_apy[data.item.id] }}%
-            <span v-if="data.item.maxApy">~{{ data.item.maxApy.percent }}%</span>
+          <text-overlay-loading :show="data.item.apyBusy">
+            {{ data.item.apy }}
           </text-overlay-loading>
         </template>
         <template v-slot:head(operating)>
@@ -468,12 +467,6 @@
       const multiple = lock.SFG.getMultiple()
 
       await lock.SFG.getWeightOfGauge(gauges.susdv2.rewards.sfg.weighting, gauges.susdv2.address)
-      await lock.SFG.getWeightOfGauge(gauges.dusd.rewards.sfg.weighting, gauges.dusd.address)
-      await lock.SFG.getWeightOfGauge(gauges.usd5.rewards.sfg.weighting, gauges.usd5.address)
-      await lock.SFG.getWeightOfGauge(gauges.qusd5.rewards.sfg.weighting, gauges.qusd5.address)
-      await lock.SFG.getWeightOfGauge(gauges.usdg5.rewards.sfg.weighting, gauges.usdg5.address)
-      await lock.SFG.getWeightOfGauge(gauges.dfi.rewards.sfg.weighting, gauges.dfi.address)
-
       gauges.susdv2.getAPY(
         sfgPrice,
         sfgDailyYield,
@@ -481,14 +474,19 @@
         tokens.susdv2LpToken.getPrice(),
       )
 
-      gauges.dusd.getAPY(
-        sfgPrice,
-        sfgDailyYield,
-        gauges.dusd.getTotalStaking(gauges.dusd.mortgages.dusd.totalStaking),
-        tokens.dusd.getPrice(),
-        tokens.df.getPrice(),
+      await lock.SFG.getWeightOfGauge(gauges.dusd.rewards.sfg.weighting, gauges.dusd.address)
+      gauges.dusd.getMaxApy(
+        gauges.dusd.getAPY(
+          sfgPrice,
+          sfgDailyYield,
+          gauges.dusd.getTotalStaking(gauges.dusd.mortgages.dusd.totalStaking),
+          tokens.dusd.getPrice(),
+          tokens.df.getPrice(),
+        ),
+        multiple
       )
 
+      await lock.SFG.getWeightOfGauge(gauges.usd5.rewards.sfg.weighting, gauges.usd5.address)
       gauges.usd5.getMaxApy(
         gauges.usd5.getAPY(
           sfgPrice,
@@ -499,22 +497,31 @@
         multiple
       )
 
-      gauges.qusd5.getAPY(
-        sfgPrice,
-        sfgDailyYield,
-        gauges.qusd5.getTotalStaking(gauges.qusd5.mortgages.qusd5.totalStaking),
-        tokens.qusd5.getPrice(),
-        tokens.kun.getPrice(),
+      await lock.SFG.getWeightOfGauge(gauges.qusd5.rewards.sfg.weighting, gauges.qusd5.address)
+      gauges.qusd5.getMaxApy(
+        gauges.qusd5.getAPY(
+          sfgPrice,
+          sfgDailyYield,
+          gauges.qusd5.getTotalStaking(gauges.qusd5.mortgages.qusd5.totalStaking),
+          tokens.qusd5.getPrice(),
+          tokens.kun.getPrice(),
+        ),
+        multiple
       )
 
-      gauges.usdg5.getAPY(
-        sfgPrice,
-        sfgDailyYield,
-        gauges.usdg5.getTotalStaking(gauges.usdg5.mortgages.usdg5.totalStaking),
-        tokens.usdg5.getPrice(),
-        tokens.gt.getPrice(),
+      await lock.SFG.getWeightOfGauge(gauges.usdg5.rewards.sfg.weighting, gauges.usdg5.address)
+      gauges.usdg5.getMaxApy(
+        gauges.usdg5.getAPY(
+          sfgPrice,
+          sfgDailyYield,
+          gauges.usdg5.getTotalStaking(gauges.usdg5.mortgages.usdg5.totalStaking),
+          tokens.usdg5.getPrice(),
+          tokens.gt.getPrice(),
+        ),
+        multiple
       )
 
+      await lock.SFG.getWeightOfGauge(gauges.dfi.rewards.sfg.weighting, gauges.dfi.address)
       gauges.dfi.getMaxApy(
         gauges.dfi.getAPY(
           sfgPrice,
@@ -542,15 +549,6 @@
         const { volumes } = this
         const { gauges, pool } = store
         const { okuu, dusd, iUSD_LPT, usd5, qusd5, usdg5 } = store.tokens
-        const now = new Date().getTime()
-
-        let dailyVols = {
-          'usdg5': [store.pool.USDG5.dailyVol.USD.handled, -1],
-          'qusd5': [store.pool.QUSD5.dailyVol.USD.handled, -1],
-          'usd5': [store.pool.USD5.dailyVol.USD.handled, -1],
-          'dusd': [store.pool.dUSD.dailyVol.USD.handled, -1],
-          'dfi': [store.pool.iUSD.dailyVol.USD.handled, -1]
-        }
 
         return {
           fields: [
@@ -568,10 +566,11 @@
               toDao: '/dao',
               pooltext: 'gate',
               pools: 'USDG USD5',
-              volData: dailyVols.usdg5,
+              volData: [store.pool.USDG5.dailyVol.USD.handled, -1],
               currencies: {usdg: 'USDG', usd5: 'USD5'},
               funds: '-',
-              apy: gauges.usdg5.totalApy,
+              apyBusy: gauges.usdg5.totalApy.loading || gauges.usdg5.maxApy.loading,
+              apy: `${gauges.usdg5.totalApy.percent}% ~ ${gauges.usdg5.maxApy.percent}%`,
               link: '/usdg5'
             },
             {
@@ -580,10 +579,11 @@
               toDao: '/dao',
               pooltext: 'qian',
               pools: 'QUSD USD5',
-              volData: dailyVols.qusd5,
+              volData: [store.pool.QUSD5.dailyVol.USD.handled, -1],
               currencies: {qusd: 'QUSD', usd5: 'USD5'},
               funds: '-',
-              apy: gauges.qusd5.totalApy,
+              apyBusy: gauges.qusd5.totalApy.loading || gauges.qusd5.maxApy.loading,
+              apy: `${gauges.qusd5.totalApy.percent}% ~ ${gauges.qusd5.maxApy.percent}%`,
               link: '/qusd5'
             },
             {
@@ -592,35 +592,24 @@
               toDao: '/dao',
               pooltext: '5pool',
               pools: 'DAI USDC USDT TUSD PAX',
-              volData: dailyVols.usd5,
+              volData: [store.pool.USD5.dailyVol.USD.handled, -1],
               currencies: {dai: 'DAI', usdc: 'USDC', usdt: 'USDT', tusd: 'TUSD', pax: 'PAX'},
               funds: '-',
-              apy: gauges.usd5.totalApy,
-              maxApy: gauges.usd5.maxApy,
+              apyBusy: gauges.usd5.totalApy.loading || gauges.usd5.maxApy.loading,
+              apy: `${gauges.usd5.totalApy.percent}% ~ ${gauges.usd5.maxApy.percent}%`,
               link: '/usd5'
             },
-            // {
-            //   id: -1,
-            //   toDeposit: '/liquidity/okuu',
-            //   toDao: '/dao',
-            //   pooltext: 'OKU',
-            //   pools: 'OKU USDT',
-            //   volData: null,
-            //   currencies: {oku: 'OKU', usdt: 'USDT'},
-            //   funds: '-',
-            //   apy: textCont(apys.okuu),
-            //   link: '/okuu'
-            // },
             {
               id: -1,
               toDeposit: '/liquidity/dusd',
               toDao: '/dao',
               pooltext: 'dUSD',
               pools: '(d)DAI (d)USDC (d)USDT (d)USDx',
-              volData: dailyVols.dusd,
+              volData: [store.pool.dUSD.dailyVol.USD.handled, -1],
               currencies: {dai: 'DAI', usdc: 'USDC', usdt: 'USDT', usdx: 'USDx'},
               funds: '-',
-              apy: gauges.dusd.totalApy,
+              apyBusy: gauges.dusd.totalApy.loading || gauges.dusd.maxApy.loading,
+              apy: `${gauges.dusd.totalApy.percent}% ~ ${gauges.dusd.maxApy.percent}%`,
               link: '/dusd'
             },
             {
@@ -629,49 +618,13 @@
               toDao: '/dao',
               pooltext: 'dfi',
               pools: '(i)DAI (i)USDC (i)USDT',
-              volData: dailyVols.dfi, // volData.dfi
+              volData: [store.pool.iUSD.dailyVol.USD.handled, -1], // volData.dfi
               currencies: {dai: 'DAI', usdc: 'USDC', usdt: "USDT"},
               funds: '-',
-              apy: gauges.dfi.totalApy,
-              maxApy: gauges.dfi.maxApy,
+              apyBusy: gauges.dfi.totalApy.loading || gauges.dfi.maxApy.loading,
+              apy: `${gauges.dfi.totalApy.percent}% ~ ${gauges.dfi.maxApy.percent}%`,
               link: '/dfi'
             },
-            // {
-            //   id: 0,
-            //   to: '/compound',
-            //   pooltext: 'Compound',
-            //   pools: '(c)DAI (c)USDC',
-            //   volData: volumes.compound,
-            //   funds: '-',
-            //   link: '/compound'
-            // },
-            // {
-            //   id: 5,
-            //   to: '/pax',
-            //   pooltext: 'PAX',
-            //   pools: '(yc)DAI (yc)USDC (yc)USDT PAX',
-            //   volData: volumes.pax,
-            //   funds: '-',
-            //   link: '/pax'
-            // },
-            // {
-            //   id: 2,
-            //   to: '/y',
-            //   pooltext: 'Y',
-            //   pools: '(y)DAI (y)USDC (y)USDT (y)TUSD',
-            //   volData: volumes.y,
-            //   funds: '-',
-            //   link: '/y'
-            // },
-            // {
-            //   id: 2,
-            //   to: '/busd',
-            //   pooltext: 'BUSD',
-            //   pools: '(y)DAI (y)USDC (y)USDT (y)BUSD',
-            //   volData: volumes.busd,
-            //   funds: '-',
-            //   link: '/busd'
-            // },
             {
               id: 4,
               toDeposit: '/liquidity/susdv2',
@@ -679,29 +632,12 @@
               pooltext: 'sUSD',
               pools: 'DAI USDC USDT sUSD',
               volData: volumes.susd,
-              apy: gauges.susdv2.totalApy,
+              apyBusy: gauges.susdv2.totalApy.loading,
+              apy: `${gauges.susdv2.totalApy.percent}%`,
               currencies: {dai: 'DAI', usdc: 'USDC', usdt: "USDT", susd: "sUSD"},
               funds: '-',
               link: '/susdv2'
             },
-            // {
-            //   id: 7,
-            //   to: '/ren',
-            //   pooltext: 'REN',
-            //   pools: 'renBTC wBTC',
-            //   volData: volumes.ren,
-            //   funds: '-',
-            //   link: '/ren'
-            // },
-            // {
-            //   id: 7,
-            //   to: '/sbtc',
-            //   pooltext: 'sBTC',
-            //   pools: 'renBTC wBTC sBTC',
-            //   volData: volumes.sbtc,
-            //   funds: '-',
-            //   link: '/sbtc'
-            // },
           ]
         }
       }

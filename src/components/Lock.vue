@@ -525,6 +525,14 @@
               _gauges: gauges.usdg5,
               _mortgage: gauges.usdg5.mortgages.usdg5,
             },
+            qusd5: {
+              _gauges: gauges.qusd5,
+              _mortgage: gauges.qusd5.mortgages.qusd5,
+            },
+            dusd: {
+              _gauges: gauges.dusd,
+              _mortgage: gauges.dusd.mortgages.dusd,
+            },
           }
 
           for (let key in result) {
@@ -557,6 +565,8 @@
                 result.usd5,
                 result.dfi,
                 result.usdg5,
+                result.qusd5,
+                result.dusd,
               ],
               sfg: [
                 result.bpt
@@ -710,6 +720,52 @@
             )
 
             gauges.usdg5.getNeedLockDay(gauges.usdg5.mortgages.usdg5.needLockDay, stakeTimeOfEther)
+
+            // qusd5
+            await lock.SFG.getWeightOfGauge(gauges.qusd5.rewards.sfg.weighting, gauges.qusd5.address)
+
+            gauges.qusd5.getMyApy(
+              gauges.qusd5.getAPY(
+                sfgPrice,
+                sfgDailyYield,
+                gauges.qusd5.getVirtualTotalSupply(), // qusd5.getTotalStaking(qusd5.mortgages.qusd5.totalStaking),
+                tokens.qusd5.getPrice(),
+                tokens.kun.getPrice(),
+              ),
+              gauges.qusd5.getFactorOf(gauges.qusd5.mortgages.qusd5.factorOf, walletAddress)
+            )
+
+            gauges.qusd5.getNeedLockAmount(
+              gauges.qusd5.mortgages.qusd5.needLockAmount,
+              lock.SFG.getStakingPerLPT(gauges.qusd5.address),
+              gauges.qusd5.getBalanceOf(gauges.qusd5.mortgages.qusd5.userStaking, walletAddress),
+              sfgBalanceOf,
+            )
+
+            gauges.qusd5.getNeedLockDay(gauges.qusd5.mortgages.qusd5.needLockDay, stakeTimeOfEther)
+
+            // dusd
+            await lock.SFG.getWeightOfGauge(gauges.dusd.rewards.sfg.weighting, gauges.dusd.address)
+
+            gauges.dusd.getMyApy(
+              gauges.dusd.getAPY(
+                sfgPrice,
+                sfgDailyYield,
+                gauges.dusd.getVirtualTotalSupply(), // dusd.getTotalStaking(dusd.mortgages.dusd.totalStaking),
+                tokens.dusd.getPrice(),
+                tokens.df.getPrice(),
+              ),
+              gauges.dusd.getFactorOf(gauges.dusd.mortgages.dusd.factorOf, walletAddress)
+            )
+
+            gauges.dusd.getNeedLockAmount(
+              gauges.dusd.mortgages.dusd.needLockAmount,
+              lock.SFG.getStakingPerLPT(gauges.dusd.address),
+              gauges.dusd.getBalanceOf(gauges.dusd.mortgages.dusd.userStaking, walletAddress),
+              sfgBalanceOf,
+            )
+
+            gauges.dusd.getNeedLockDay(gauges.dusd.mortgages.dusd.needLockDay, stakeTimeOfEther)
           },
           countDownChanged(val) {
             this.dismissCountDown = val

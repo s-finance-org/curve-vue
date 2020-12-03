@@ -513,7 +513,7 @@ export async function multiInitState(calls, contract, initContracts = false) {
     let multicall = new web3.eth.Contract(multicall_abi, multicall_address)
     var default_account = currentContract.default_account;
     let aggcalls;
-    console.log('calls', calls)
+    // console.log('calls', calls)
     try {
         aggcalls = await multicall.methods.aggregate(calls).call()
     }

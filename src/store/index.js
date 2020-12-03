@@ -177,8 +177,8 @@ store.price = {
   },
   async getPrice (UnitAddress, targetAddress) {
     const { contract } = this
-
-    return await contract.methods.getSpotPrice(UnitAddress, targetAddress).call()
+    const result = await contract.methods.getSpotPrice(UnitAddress, targetAddress).call()
+    return result
   }
 }
 
@@ -1203,7 +1203,6 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
     async getPrice () {
       const { address, priceUnitAddress, price } = this
       const result = await store.price.getPrice(priceUnitAddress, process.env.VUE_APP_SFG_PRICE_TOKEN)
-
       // XXX: ether?
       price.ether = result
 
@@ -1760,11 +1759,16 @@ store.gauges = {
         totalStaking: valueModel.create(),
         userStaking: valueModel.create(),
         userBalanceOf: valueModel.create(),
-        userStake: valueModel.create(),
 
         dailyApy: valueModel.create(),
         totalApy: valueModel.create(),
 
+        ratioStaking: valueModel.create(),
+        needLockAmount: valueModel.create(),
+        factorOf: valueModel.create(),
+        needLockDay: ModelValueDate.create(),
+
+        userStake: valueModel.create(),
         stakeSliderSelected: 0,
         // FIXME: common
         stakeSliderOptions: [
@@ -1852,6 +1856,7 @@ store.gauges = {
 
         dailyApy: valueModel.create(),
         totalApy: valueModel.create(),
+        totalMaxApy: valueModel.create(),
       },
       df: {
         code: 'df',
@@ -1868,6 +1873,35 @@ store.gauges = {
       }
     },
 
+    async getNeedLockAmount(target, stakingPerLPT, balanceOf, lockSfgBalanceOf) {
+      const { contract, mortgages } = this
+// FIXME: 1E18
+      const result = Math.max(
+        BN(await stakingPerLPT / 1e18).times(await balanceOf / 1e18).minus(await lockSfgBalanceOf / 1e18),
+        0
+      )
+      target.ether = result * 1e18
+
+      return result
+    },
+
+    async getRatioStaking(target, accountAddress) {
+      const { contract } = this
+
+      return target.ether = await contract.methods.ratioStaking(accountAddress).call()
+    },
+
+    // FIXME: 秒而非 ether
+    async getNeedLockDay (target, stakeTimeOf) {
+      const result = Math.max(
+        // FIXME: 
+        ((+await stakeTimeOf + 80 * 86400) - Date.now() / 1000) / 86400,
+        0
+      )
+      target.handled = result
+      return result
+    },
+
     async getTotalStaking (target) {
       const { contract } = this
 
@@ -1876,6 +1910,8 @@ store.gauges = {
 
     dailyAPY: valueModel.create(),
     totalApy: valueModel.create(),
+    myApy: valueModel.create(),
+    maxApy: valueModel.create(),
     // TEMP: 
     async getAPY (price, dailyYield, totalStaking, lpTokenPrice, dfPrice) {
       const { mortgages, contract, dailyAPY, totalApy, rewards } = this
@@ -1913,6 +1949,34 @@ store.gauges = {
         .plus(rewards.sfg.totalApy.handled)
         .plus(rewards.df.totalApy.handled)
         .toString()
+
+      // FIXME: SFG min apy
+      return rewards.sfg.totalApy.handled
+    },
+
+    async getMyApy (sfgMinApy, factorOf) {
+      const { myApy, mortgages, rewards } = this
+
+      const result = BN(await sfgMinApy).times(await factorOf / 1e18)
+        .plus(rewards.df.totalApy.handled)
+        .plus(mortgages.dusd.totalApy.handled)
+        .toString()
+
+      myApy.handled = result
+      return result
+    },
+
+    async getMaxApy (sfgMinApy, multiple) {
+      const { maxApy, mortgages, rewards } = this
+
+      rewards.sfg.totalMaxApy.handled = BN(await sfgMinApy).times(await multiple / 1e18).toString()
+
+      const result = BN(rewards.sfg.totalMaxApy.handled)
+        .plus(rewards.df.totalApy.handled)
+        .plus(mortgages.dusd.totalApy.handled)
+        .toString()
+
+      return maxApy.handled = result
     },
 
     async getBalanceOf (target, accountAddress) {
@@ -1922,6 +1986,16 @@ store.gauges = {
       target.ether = result
       return result
     },
+
+    virtualTotalSupply: valueModel.create(),
+    async getVirtualTotalSupply () {
+      const { contract, virtualTotalSupply } = this
+      const result = await contract.methods.virtualTotalSupply().call()
+
+      virtualTotalSupply.ether = result
+      return result
+    },
+
     async getUserPendingReward_SFG (target, accountAddress) {
       const { contract } = this
 
@@ -2056,7 +2130,17 @@ store.gauges = {
           dismiss()
           notifyHandler(hash)
         })
-    }
+    },
+
+    /** 加速系数 */
+    async getFactorOf (target, address) {
+      const { contract } = this
+      // TODO: ether?
+      const result = await contract.methods.factorOf(address).call()
+  
+      target.ether = result
+      return result
+    },
   },
 
   bpt: {
@@ -3261,6 +3345,14 @@ store.gauges = {
         userStaking: valueModel.create(),
         userBalanceOf: valueModel.create(),
   
+        dailyApy: valueModel.create(),
+        totalApy: valueModel.create(),
+
+        ratioStaking: valueModel.create(),
+        needLockAmount: valueModel.create(),
+        factorOf: valueModel.create(),
+        needLockDay: ModelValueDate.create(),
+        
         userStake: valueModel.create(),
         stakeSliderSelected: 0,
         // FIXME: common
@@ -3350,6 +3442,7 @@ store.gauges = {
 
         dailyApy: valueModel.create(),
         totalApy: valueModel.create(),
+        totalMaxApy: valueModel.create(),
       },
       kun: {
         code: 'kun',
@@ -3366,6 +3459,35 @@ store.gauges = {
       }
     },
 
+    async getNeedLockAmount(target, stakingPerLPT, balanceOf, lockSfgBalanceOf) {
+      const { contract, mortgages } = this
+// FIXME: 1E18
+      const result = Math.max(
+        BN(await stakingPerLPT / 1e18).times(await balanceOf / 1e18).minus(await lockSfgBalanceOf / 1e18),
+        0
+      )
+      target.ether = result * 1e18
+
+      return result
+    },
+
+    async getRatioStaking(target, accountAddress) {
+      const { contract } = this
+
+      return target.ether = await contract.methods.ratioStaking(accountAddress).call()
+    },
+
+    // FIXME: 秒而非 ether
+    async getNeedLockDay (target, stakeTimeOf) {
+      const result = Math.max(
+        // FIXME: 
+        ((+await stakeTimeOf + 80 * 86400) - Date.now() / 1000) / 86400,
+        0
+      )
+      target.handled = result
+      return result
+    },
+
     async getTotalStaking (target) {
       const { contract } = this
 
@@ -3374,6 +3496,8 @@ store.gauges = {
 
     // dailyAPY: valueModel.create(),
     totalApy: valueModel.create(),
+    myApy: valueModel.create(),
+    maxApy: valueModel.create(),
     // TEMP:
     async getAPY (price, dailyYield, totalStaking, lpTokenPrice, kunPrice) {
       const { contract, dailyAPY, totalApy, rewards } = this
@@ -3388,6 +3512,28 @@ store.gauges = {
       rewards.kun.totalApy.handled = +rewards.kun.dailyApy.handled * 365
 
       totalApy.handled = BN(rewards.sfg.totalApy.handled).plus(rewards.kun.totalApy.handled).toString()
+      
+      // FIXME: SFG min apy
+      return rewards.sfg.totalApy.handled
+    },
+
+    async getMyApy (sfgMinApy, factorOf) {
+      const { myApy, mortgages, rewards } = this
+
+      const result = BN(await sfgMinApy).times(await factorOf / 1e18).plus(rewards.kun.totalApy.handled).toString()
+
+      myApy.handled = result
+      return result
+    },
+
+    async getMaxApy (sfgMinApy, multiple) {
+      const { maxApy, mortgages, rewards } = this
+
+      rewards.sfg.totalMaxApy.handled = BN(await sfgMinApy).times(await multiple / 1e18).toString()
+
+      const result = BN(rewards.sfg.totalMaxApy.handled).plus(rewards.kun.totalApy.handled).toString()
+
+      return maxApy.handled = result
     },
 
     async getBalanceOf (target, accountAddress) {
@@ -3397,6 +3543,16 @@ store.gauges = {
       target.ether = result
       return result
     },
+    virtualTotalSupply: valueModel.create(),
+    async getVirtualTotalSupply () {
+      const { contract, virtualTotalSupply } = this
+      const result = await contract.methods.virtualTotalSupply().call()
+
+      virtualTotalSupply.ether = result
+      return result
+    },
+
+
     async getUserPendingReward_SFG (target, accountAddress) {
       const { contract } = this
   

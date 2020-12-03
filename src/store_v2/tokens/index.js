@@ -10,8 +10,6 @@ import iUSD from './iUSD'
 import dUSD from './dUSD'
 import USDG5 from './USDG5'
 
-console.log('multicall', swaps.multicall)
-
 const tokens = {
   DAI,
   USDT,

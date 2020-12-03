@@ -444,11 +444,11 @@
           <div class="box mb-4 px-4 py-3">
             <div class="row mb-3 line-bottom flex-wrap align-items-center">
               <span class="d-md-flex d-none flex-wrap align-items-center">
-                <text-overlay-loading class="d-flex col-auto pb-3 col-12 col-sm-auto" inline :show="store.gauges.qusd5.rewards.sfg.totalApy.loading">
+                <text-overlay-loading class="d-flex col-auto pb-3 col-12 col-sm-auto" inline :show="store.gauges.qusd5.rewards.sfg.totalApy.loading || store.gauges.qusd5.rewards.sfg.totalMaxApy.loading">
                   <img :src="getTokenIcon(store.gauges.qusd5.rewards.sfg.code)" class="mr-2 icon-w-48 icon" :class="[store.gauges.qusd5.rewards.sfg.code+'-icon']">
                   <span class="d-flex h4 mb-0 flex-column">
                     <span class="h6 mb-0 inline-block text-black-65">{{ store.gauges.qusd5.rewards.sfg.name }} {{ $t('global.apr') }}</span>
-                    {{ store.gauges.qusd5.rewards.sfg.totalApy.percent }}%
+                    {{ store.gauges.qusd5.rewards.sfg.totalApy.percent }}% ~ {{ store.gauges.qusd5.rewards.sfg.totalMaxApy.percent }}%
                   </span>
                 </text-overlay-loading>
                 <span class="icon-w-20 icon-plus mb-3"></span>
@@ -461,10 +461,10 @@
                 </text-overlay-loading>
                 <span class="icon-w-20 icon-equal mb-3"></span>
               </span>
-              <text-overlay-loading class="d-flex col-auto pb-3 col-12 col-sm-auto" inline :show="store.gauges.qusd5.totalApy.loading">
+              <text-overlay-loading class="d-flex col-auto pb-3 col-12 col-sm-auto" inline :show="store.gauges.qusd5.totalApy.loading || store.gauges.qusd5.maxApy.loading">
                 <span class="d-flex h4 mb-0 flex-column">
                   <span class="h6 mb-0 inline-block text-black-65">{{ $t('dao.total') }} {{ $t('global.apr') }}</span>
-                  {{ store.gauges.qusd5.totalApy.percent }}%
+                  {{ store.gauges.qusd5.totalApy.percent }}% ~ {{ store.gauges.qusd5.maxApy.percent }}%
                 </span>
               </text-overlay-loading>
             </div>
@@ -691,11 +691,11 @@
           <div class="box mb-4 px-4 py-3">
             <div class="row mb-3 line-bottom flex-wrap align-items-center">
               <span class="d-md-flex d-none flex-wrap align-items-center">
-                <text-overlay-loading class="d-flex col-auto pb-3 col-12 col-sm-auto" inline :show="store.gauges.dusd.rewards.sfg.totalApy.loading">
+                <text-overlay-loading class="d-flex col-auto pb-3 col-12 col-sm-auto" inline :show="store.gauges.dusd.rewards.sfg.totalApy.loading || store.gauges.dusd.rewards.sfg.totalMaxApy.loading">
                   <img :src="getTokenIcon(store.gauges.dusd.rewards.sfg.code)" class="mr-2 icon-w-48 icon" :class="[store.gauges.dusd.rewards.sfg.code+'-icon']">
                   <span class="d-flex h4 mb-0 flex-column">
                     <span class="h6 mb-0 inline-block text-black-65">{{ store.gauges.dusd.rewards.sfg.name }} {{ $t('global.apr') }}</span>
-                    {{ store.gauges.dusd.rewards.sfg.totalApy.percent }}%
+                    {{ store.gauges.dusd.rewards.sfg.totalApy.percent }}% ~ {{ store.gauges.dusd.rewards.sfg.totalMaxApy.percent }}%
                   </span>
                 </text-overlay-loading>
                 <span class="icon-w-20 icon-plus mb-3"></span>
@@ -716,10 +716,10 @@
                 </text-overlay-loading>
                 <span class="icon-w-20 icon-equal mb-3"></span>
               </span>
-              <text-overlay-loading class="d-flex col-auto pb-3 col-12 col-sm-auto" inline :show="store.gauges.dusd.totalApy.loading">
+              <text-overlay-loading class="d-flex col-auto pb-3 col-12 col-sm-auto" inline :show="store.gauges.dusd.totalApy.loading || store.gauges.dusd.maxApy.loading">
                 <span class="d-flex h4 mb-0 flex-column">
                   <span class="h6 mb-0 inline-block text-black-65">{{ $t('dao.total') }} {{ $t('global.apr') }}</span>
-                  {{ store.gauges.dusd.totalApy.percent }}%
+                  {{ store.gauges.dusd.totalApy.percent }}% ~ {{ store.gauges.dusd.maxApy.percent }}%
                 </span>
               </text-overlay-loading>
             </div>
@@ -1546,91 +1546,6 @@
       </b-tabs>
 
     </b-container>
-
-
-
-
-    <fieldset v-if=false>
-			<!-- <div class='pool-info'>
-				<button @click='applyBoost' class='applyBoost' v-show='canApplyBoost && claimableTokens == 0'>Apply boost</button>
-				<span class='greentext' v-show='canApplyBoost && claimableTokens > 0'>You can apply boost by claiming CRV</span>
-				<div class='gaugeRelativeWeight'>
-					Gauge relative weight: {{ gaugeRelativeWeight.toFixed(2) }}%
-				</div>
-				<div class='mintedCRVFrom'>
-					Minted CRV from this gauge: {{ mintedFormat }}
-				</div>
-				<div v-show="['susdv2', 'sbtc'].includes(gauge.name) && claimedRewards > 0" class='claimedRewards'>
-					Claimed 
-					<span v-show="gauge.name == 'susdv2'">SNX</span>
-					<span v-show="gauge.name == 'sbtc'">BPT</span>: {{ claimedRewardsFormat }}
-				</div>
-				<div class='boost' v-show='boost !== null && !isNaN(boost)'>
-					Boost: {{ boost && boost.toFixed(4) }}
-				</div>
-				<div class='boost' v-show='currentBoost !== null && !isNaN(currentBoost)'>
-					Current boost: {{ currentBoost && currentBoost.toFixed(4) }}
-				</div>
-			</div> -->
-			<div>
-				<div class='flex-break'></div>
-				<!-- <div class='simple-error' v-show="['susdv2', 'sbtc'].includes(gauge.name) && synthsUnavailable">
-					Synthetix are upgrading their contract now and claiming SNX is not available
-					{{ synthsUnavailable }}
-				</div> -->
-				<div class='pool'>
-          LPT deposit:<br/>
-					<div class='poolBalance'>Balance: <span class='hoverpointer'>_{ poolBalanceFormat }}</span> _{ gauge.name }} LP token</div>
-					<div class='input'>
-						<label for='deposit'>Amount:</label>
-						<!-- <input id='deposit' type='text' v-model='depositAmount'> -->
-					</div>
-					<div class='range' v-show=false>
-						<div class='label'>
-							<label for='zoom'>{{ depositSlider }}%</label>
-						</div>
-					</div>
-					<div>
-						<p>
-              <input id="'inf-approval-susdv2" type="checkbox" name="inf-approval" v-model='inf_approval'>
-              <label for="'inf-approval-susdv2" class='inf-approval-label'>Infinite approval </label>
-            </p>
-						<div>
-							<button @click='deposit'>
-								Deposit and stake
-							</button>
-						</div>
-					</div>
-				</div>
-        <div class='flex-break'></div>
-        LPT withdraw:<br/>
-
-				<div class='gauge'>
-					<div class='gaugeBalance'>Balance: <span class='hoverpointer'>{{ currentPool.gaugeBalance.cont }}</span> in gauge</div>
-					<div class='input'>
-						<label for='withdraw'>Amount:</label>
-						<input id='withdraw' type='text' v-model='currentPool.withdraw.amount'>
-					</div>
-					<div class='range' v-show=false>
-						<div class='label'>
-							<label for='zoom'>{{ withdrawSlider }}%</label>
-						</div>
-					</div>
-					<button @click='withdraw'>Withdraw</button>
-				</div>
-				<div class='flex-break'></div>
-
-        <!-- SFG claimableTokens: {{ currentPool.tokens.sfg.mining.pendingRewardTether }} -->
-        <button @click='claim' class='claimtokens'>Claim </button>
-        <div class='flex-break'></div>
-
-        CRV claimableReward: {{ claimableReward }}
-        <button @click='claimRewards' class='claimrewards'>
-          Claim {{ this.claimableReward / 1e18 }}
-          <span>SNX</span>
-        </button>
-			</div>
-		</fieldset>
 	</div>
 </template>
 
@@ -2171,12 +2086,16 @@
             // dusd
             await lock.SFG.getWeightOfGauge(gauges.dusd.rewards.sfg.weighting, gauges.dusd.address)
 
-            store.gauges.dusd.getAPY(
-              sfgPrice,
-              sfgDailyYield,
-              dusd.getTotalStaking(dusd.mortgages.dusd.totalStaking),
-              store.tokens.dusd.getPrice(),
-              store.tokens.df.getPrice(),
+            dusd.getTotalStaking(dusd.mortgages.dusd.totalStaking)
+            store.gauges.dusd.getMaxApy(
+              store.gauges.dusd.getAPY(
+                sfgPrice,
+                sfgDailyYield,
+                dusd.getVirtualTotalSupply(),
+                store.tokens.dusd.getPrice(),
+                store.tokens.df.getPrice(),
+              ),
+              multiple
             )
 
             store.tokens.dusd.getBalanceOf(dusd.mortgages.dusd.userBalanceOf, currentContract.default_account)
@@ -2198,12 +2117,16 @@
             // qusd5
             await lock.SFG.getWeightOfGauge(gauges.qusd5.rewards.sfg.weighting, gauges.qusd5.address)
 
-            store.gauges.qusd5.getAPY(
-              sfgPrice,
-              sfgDailyYield,
-              qusd5.getTotalStaking(qusd5.mortgages.qusd5.totalStaking),
-              store.tokens.qusd5.getPrice(),
-              store.tokens.kun.getPrice(),
+            qusd5.getTotalStaking(qusd5.mortgages.qusd5.totalStaking)
+            store.gauges.qusd5.getMaxApy(
+              store.gauges.qusd5.getAPY(
+                sfgPrice,
+                sfgDailyYield,
+                qusd5.getVirtualTotalSupply(),
+                store.tokens.qusd5.getPrice(),
+                store.tokens.kun.getPrice(),
+              ),
+              multiple
             )
 
             store.tokens.qusd5.getBalanceOf(qusd5.mortgages.qusd5.userBalanceOf, currentContract.default_account)
