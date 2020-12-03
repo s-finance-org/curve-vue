@@ -78,13 +78,24 @@ export default {
     }
 
     const mixin = {
+      /** @type {string} */
+      address,
+
+      /** @type {Object}} */
+      name,
+      /** @type {Object} */
+      symbol,
+
       /** @type {Object} */
       get contract () {
         const { contract } = __store__
 
         return contract
           || (__store__.contract = new web3.eth.Contract(abi, address))
-      }
+      },
+
+      /** @type {string} */
+      totalSupply: ModelValueEther1.create(valueOpts),
     }
 
     const methods = {
@@ -107,7 +118,6 @@ export default {
        */
 
       code,
-      address,
       abi,
 
       /**
@@ -127,6 +137,42 @@ export default {
         return __store__.initialized
       },
 
+      series: {
+        get initiate () {
+          // FIXME:
+          return [
+            ...this.base,
+            ...this.once
+          ]
+        },
+        get base () {
+          const {
+            decimals
+          } = valueOpts
+          const {
+            address
+          } = mixin
+
+          return [
+            { decodeType: decimals.type, call: [address, methods.getDecimalsMethod().encodeABI()], target: decimals }
+          ]
+        },
+        get once () {
+          const {
+            address,
+            name,
+            symbol,
+            totalSupply
+          } = mixin
+
+          return [
+            { decodeType: name.type, call: [address, methods.getNameMethod().encodeABI()], target: name },
+            { decodeType: symbol.type, call: [address, methods.getSymbolMethod().encodeABI()], target: symbol },
+            { decodeType: totalSupply.type, call: [address, methods.getTotalSupplyMethod().encodeABI()], target: totalSupply }
+          ]
+        }
+      },
+
       async initiate (isSerie = false) {
         const {
           address,
@@ -134,23 +180,14 @@ export default {
           symbol,
           totalSupply,
         } = this
-        const {
-          decimals
-        } = valueOpts
 
         /* sync */
         // XXX: this.getPriceMethod 为合约方法，getPrice为自定义方法，取其一
         this.getPrice && await this.getPrice()
 
-        const base = [
-          { decodeType: decimals.type, call: [address, methods.getDecimalsMethod().encodeABI()], target: decimals }
-        ]
+        
 
-        const once = [
-          { decodeType: name.type, call: [address, methods.getNameMethod().encodeABI()], target: name },
-          { decodeType: symbol.type, call: [address, methods.getSymbolMethod().encodeABI()], target: symbol },
-          { decodeType: totalSupply.type, call: [address, methods.getTotalSupplyMethod().encodeABI()], target: totalSupply }
-        ]
+        
 
         const wallet = [
         ]
@@ -177,11 +214,7 @@ export default {
       // XXX: 未设定
       // getPriceMethod,
 
-      /** @type {string} */
-      name,
 
-      /** @type {string} */
-      symbol,
       /** @type {number} */
       // decimal,
 
@@ -197,8 +230,6 @@ export default {
           || (__store__.precision = Math.pow(10, decimal))
       },
 
-      /** @type {string} */
-      totalSupply: ModelValueEther1.create(valueOpts),
 
       /**
        *  Amount

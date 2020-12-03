@@ -124,7 +124,7 @@ export default ModelSwap.create({
      */
     async batcher (targetQueues) {
       const result = await this.aggregate(targetQueues.map(item => item.call))
-
+console.log('batcher', targetQueues)
       targetQueues.forEach((item, idx) => {
         item.result = web3.eth.abi.decodeParameter(item.decodeType, result.returnData[idx])
 

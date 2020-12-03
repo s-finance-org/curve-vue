@@ -54,7 +54,7 @@
     <ol>
       <div v-for="(token, code) in storeV2.tokens">
         <h5>{{ code }}</h5>
-        <li class="d-flex alert" v-for="(item, idx) in token"
+        <li class="d-flex alert mb-0" v-for="(item, idx) in token"
           :key=idx
           v-if="item && (item.handled != null || item.cont != null)"
           :class="{'alert-error': item.loading}"

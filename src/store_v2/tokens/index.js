@@ -25,10 +25,10 @@ const tokens = {
   USDG5
 }
 
+// FIXME:
 let aaa = []
 Object.values(tokens).forEach(item => {
-  aaa = aaa.concat(item.initiate())
-  console.log(aaa)
+  aaa = aaa.concat(item.series.initiate)
 })
 
 swaps.multicall.batcher(aaa)
