@@ -3503,7 +3503,7 @@ store.gauges = {
       const { contract, dailyAPY, totalApy, rewards } = this
 
       rewards.sfg.dailyYield.handled = BN(await dailyYield / 1e18).times(rewards.sfg.weighting.handled).toString()
-      rewards.kun.dailyYield.handled = 3333.3333
+      rewards.kun.dailyYield.handled = 0
 
       const lpt = BN(await totalStaking).times(await lpTokenPrice / 1e18)
       rewards.sfg.dailyApy.handled = BN(await price / 1e18).times(rewards.sfg.dailyYield.handled).dividedBy(lpt).toString()
