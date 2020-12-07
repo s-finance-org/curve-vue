@@ -30,16 +30,12 @@ import abi_susdv2_swap from '../components/dao/abi/susdv2_swap'
 import { ERC20_abi as abiSusdv2LpToken } from '../allabis'
 import ABI from '../constant/abi'
 
-// TEMP:
-import { contract as currentContract} from '../contract'
-
 // Swap
 import uniswapV2Router2 from './swap/uniswap_v2_router2'
 import multicall from './swap/multicall'
 
 import tokensV2 from '../store_v2/tokens'
 
-import { GAUGE_DUSD_ABI } from './gauge'
 
 import ModelLpToken from '../model/lptoken'
 
@@ -4511,7 +4507,6 @@ store.pool = {
   SFG_DAI_BPT: {
     code: 'SFG_DAI_BPT',
     name: 'SFG',
-    lptoken: BPT_LPT,
     mining: {
       apy: {
         base: {},
@@ -4561,55 +4556,6 @@ store.pool = {
 store.sFinance = {
   dailyVol: ModelCurrencyRates.create(),
   totalValueStaked: ModelCurrencyRates.create()
-}
-
-store.lptoken = {
-  BPT: BPT_LPT,
-  dUSD: {
-    name: 'dUSD LP token',
-    address: process.env.VUE_APP_DUSD_TOKEN,
-    swapAddress: process.env.VUE_APP_DUSD_SWAP,
-    abi: tokensV2.dUSD.abi,
-    // abi: abiSFG,
-    swapAbi: swapAbi_iUSD_LPT,
-    __contract: null,
-    get contract () {
-      const { __contract, abi, address } = this
-
-      return __contract ||
-        (this.__contract = new web3.eth.Contract(abi, address))
-    },
-
-    __contractSwap: null,
-    get contractSwap () {
-      const { __contractSwap, swapAbi, swapAddress } = this
-
-      return __contractSwap ||
-        (this.__contractSwap = new web3.eth.Contract(swapAbi, swapAddress))
-    },
-
-    userBalanceOf: valueModel.create(),
-    async getBalanceOf (target, accountAddress) {
-      const { contract, userBalanceOf } = this
-      const result = await contract.methods.balanceOf(accountAddress).call()
-
-      userBalanceOf.ether = target.ether = result
-
-      return result
-    },
-
-    error: errorModel.create(),
-
-    price: valueModel.create(),
-    async getPrice () {
-      const { contractSwap, price } = this
-      const result = await contractSwap.methods.get_virtual_price().call()
-
-      price.ether = result
-
-      return price.handled
-    }
-  }
 }
 
 export default Vue.observable(store)

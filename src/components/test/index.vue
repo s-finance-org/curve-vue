@@ -2,24 +2,6 @@
 	<div>
     <ul>
       <li>{{ store.wallet.address }}</li>
-      <!-- <li>{{ store.lptoken.BPT.walletBalanceOf  }}</li>
-      <li>{{ store.lptoken.BPT.symbol  }}</li>
-      <li>{{ store.lptoken.BPT.symbol.cont  }}</li>
-      <li>{{ store.lptoken.BPT.name.cont  }}</li>
-      <li>{{ store.lptoken.BPT.totalSupply.cont  }}</li>
-
-
-      <li>{{ store.lptoken.BPT.walletBalanceOf }}</li> -->
-      <!-- <li>{{ store.tokens.DAI.walletBalanceOf  }}</li> -->
-
-      <li>{{ storeV2.tokens.DAI.symbol.cont  }}</li>
-      <li>{{ storeV2.tokens.DAI.name.cont  }}</li>
-      <li>{{ storeV2.tokens.DAI.totalSupply.cont  }}</li>
-      <li>
-        <text-overlay-loading inline :show="storeV2.tokens.DAI.walletBalanceOf.loading">
-          {{ storeV2.tokens.DAI.walletBalanceOf.cont }}
-        </text-overlay-loading>
-      </li>
 
       <!-- <li>------ pool dfi iUSD</li>
       <li>{{ store.pool.iUSD.info.name }}</li>
@@ -1348,7 +1330,6 @@ import Table from '../ren/Table.vue'
             // storeV2.tokens.USDG.initiate()
 
             // storeV2.tokens.USDT.initiate()
-
 
 
 

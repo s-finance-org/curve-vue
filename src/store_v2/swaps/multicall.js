@@ -111,27 +111,52 @@ export default ModelSwap.create({
             returnData: Array, // returnData
           }
          */
+console.log('multicall aggregate', calls)
         result = await contract.methods.aggregate(calls).call()
       } catch (err) {
-        console.error('nulticall aggregate()', err)
+        console.error('Multicall aggregate()', err)
       }
 
       return result
     },
     /**
-     *  @param {Array} targetQueues [{ decodeType: '', call: [], [target: Object,] [result: null] }, ...]
+     *  @param {Array} targetQueues [
+     *    { call: [
+     *        address,
+     *        methods.a().encodeABI()
+     *      ],
+     *      [decodeType: '',] // 缺省来自 target.type
+     *      [target: Object,] // 目标数据对象(ModelValue类型，需要有 value key)
+     *      [result: null] // 返回的原始值
+     *      [handler: Function] // 原始值处理
+     *      [isMultiResult: false] // 是否为多个结果输出（针对数组、对象的结果）
+     *    },
+     *    ...]
      *  @return {Array}
      */
     async batcher (targetQueues) {
       const result = await this.aggregate(targetQueues.map(item => item.call))
-console.log('batcher', targetQueues)
-      targetQueues.forEach((item, idx) => {
-        item.result = web3.eth.abi.decodeParameter(item.decodeType, result.returnData[idx])
+console.log('targetQueues', targetQueues, result)
+      try {
+        targetQueues.forEach((item, idx) => {
+          const decodeType = item.decodeType || item.target.type
+console.log('item.isMultiResult', item.isMultiResult)
+          // const decodeMethod = item.isMultiResult ? web3.eth.abi.decodeParameter : web3.eth.abi.decodeParameter
+if (item.isMultiResult) {
+  console.log('isMultiResult', decodeType, result.returnData[idx])
+  item.result = web3.eth.abi.decodeParameters(decodeType, result.returnData[idx]) || null
+} else {
+  item.result = web3.eth.abi.decodeParameter(decodeType, result.returnData[idx]) || null
+}
 
-        if (item.target) {
-          item.target.value = item.result
-        }
-      })
+          // FIXME: 
+          if (item.target) {
+            item.target.value = item.result
+          }
+        })
+      } catch (err) {
+        console.error('Multicall batcher()', err)
+      }
 
       return targetQueues
     }

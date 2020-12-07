@@ -8,12 +8,17 @@ export default ModelSwap.create({
   address: process.env.VUE_APP_UNISWAP_V2_ROUTER2_SWAP,
   abi,
   methods: {
+    // get getAmountsOut () {
+    //   const { contract } = this
+
+    //   return contract.methods.getAmountsOut
+    // },
     /**
      *  @param {number} amountIn unit256
      *  @param {Array} path address[]
      *  @return {Array} [amountIn, totalPrice]
      */
-    async getAmountsOut (amountIn, path) {
+    async _getAmountsOut (amountIn, path) {
       const { contract } = this
       let result = []
 
@@ -34,7 +39,7 @@ export default ModelSwap.create({
      */
     async getPrice (targetTokenObj, unitTokenObj, amount = 1) {
       const amountIn = BN(amount).times(targetTokenObj.precision).toString()
-      const amounts = await this.getAmountsOut(
+      const amounts = await this._getAmountsOut(
         amountIn,
         [targetTokenObj.address, unitTokenObj.address]
       )

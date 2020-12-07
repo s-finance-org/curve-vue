@@ -29,7 +29,7 @@ export default {
    *  @param {string} opts.code
    *  @param {string} opts.address
    *  @param {Array} opts.abi
-   * @param {Object=} opts.name
+   *  @param {Object=} opts.name
    *  @param {number=} opts.decimal
    *  @param {number=} opts.contDecimal
    *  @param {Object=} opts.moneyOfAccount
@@ -63,6 +63,10 @@ export default {
     totalSupplyMethodName = 'totalSupply',
     transferFromMethodName = 'transferFrom',
     transferMethodName = 'transfer',
+
+    // TEST:
+    getPriceSerie = null,
+    hasPrice = false
   } = {}) {
     const __store__ = {
       contract: null,
@@ -96,6 +100,56 @@ export default {
 
       /** @type {string} */
       totalSupply: ModelValueEther1.create(valueOpts),
+
+      price: ModelValueEther1.create(valueOpts),
+      /* 计价货币 */
+      moneyOfAccount,
+
+      // TEST:
+      // getPriceSerie,
+      getPriceSerie () {
+        console.log(this)
+        const { price, address, moneyOfAccount } = this
+        const { uniswapV2Router2 } = swaps
+    console.log('getPriceSerie', getPriceSerie, uniswapV2Router2.address)
+    console.log('getPriceSerie', address, moneyOfAccount.address)
+    uniswapV2Router2.contract.methods.getAmountsOut(
+      '1000000000000000000',
+      [address, moneyOfAccount.address]
+    ).call()
+    .then(e => {
+      console.log('getPriceSerie value', e )
+    })
+
+    swaps.multicall.contract.methods.aggregate([
+      [uniswapV2Router2.address,
+        uniswapV2Router2.contract.methods.getAmountsOut(
+          '1000000000000000000',
+          [address, moneyOfAccount.address]
+        ).encodeABI()],
+        ["0x6B175474E89094C44Da98b954EedeAC495271d0F", "0x06fdde03"]
+    ]).call()
+      .then(e => {
+        console.log('getPriceSerie value -----', e)
+      })
+
+
+
+
+        return {
+          // decodeType: price.type,
+          decodeType: ['uint256', 'uint256'],
+          isMultiResult: true,
+          call: [
+            uniswapV2Router2.address,
+            uniswapV2Router2.contract.methods.getAmountsOut(
+              '1000000000000000000',
+              [address, moneyOfAccount.address]
+            ).encodeABI()
+          ],
+          target: price
+        }
+      }
     }
 
     const methods = {
@@ -142,9 +196,14 @@ export default {
           // FIXME:
           return [
             ...this.base,
-            ...this.once
+            ...this.once,
+            ...this.sync,
+            ...this.wallet,
           ]
         },
+        /**
+         *  最优先
+         */
         get base () {
           const {
             decimals
@@ -157,6 +216,9 @@ export default {
             { decodeType: decimals.type, call: [address, methods.getDecimalsMethod().encodeABI()], target: decimals }
           ]
         },
+        /**
+         *  仅一次
+         */
         get once () {
           const {
             address,
@@ -170,6 +232,23 @@ export default {
             { decodeType: symbol.type, call: [address, methods.getSymbolMethod().encodeABI()], target: symbol },
             { decodeType: totalSupply.type, call: [address, methods.getTotalSupplyMethod().encodeABI()], target: totalSupply }
           ]
+        },
+        /**
+         *  时效性
+         */
+        get sync () {
+          let result = []
+          if (hasPrice) {
+            result = result.concat(mixin.getPriceSerie() )
+            console.log('getPriceSerie result', result)
+          }
+          return result
+        },
+        /**
+         *  钱包
+         */
+        get wallet () {
+          return []
         }
       },
 
@@ -185,9 +264,6 @@ export default {
         // XXX: this.getPriceMethod 为合约方法，getPrice为自定义方法，取其一
         this.getPrice && await this.getPrice()
 
-        
-
-        
 
         const wallet = [
         ]
@@ -207,13 +283,10 @@ export default {
         return queues
       },
 
-      price: ModelValueEther1.create(valueOpts),
       getPrice,
-      /* 计价货币 */
-      moneyOfAccount,
+
       // XXX: 未设定
       // getPriceMethod,
-
 
       /** @type {number} */
       // decimal,

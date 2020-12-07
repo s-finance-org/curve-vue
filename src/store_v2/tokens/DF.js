@@ -12,11 +12,30 @@ export default ModelToken.create({
   name: ModelValueBytes32.create(),
   symbol: ModelValueBytes32.create(),
   moneyOfAccount: USDT,
-  async getPrice () {
-    const { price, moneyOfAccount } = this
+  // async getPrice () {
+  //   const { price, moneyOfAccount } = this
 
-    const result = await swaps.uniswapV2Router2.getPrice(this, moneyOfAccount)
+  //   const result = await swaps.uniswapV2Router2.getPrice(this, moneyOfAccount)
 
-    return price.handled = result
+  //   return price.handled = result
+  // }
+  hasPrice: true,
+  getPriceSerie () {
+    console.log(this)
+    const { price, address, moneyOfAccount } = this
+    const { uniswapV2Router2 } = swaps
+console.log('getPriceSerie', uniswapV2Router2.address)
+console.log('getPriceSerie', moneyOfAccount, address, moneyOfAccount.address)
+    return {
+      decodeType: price.type,
+      call: [
+        uniswapV2Router2.address,
+        uniswapV2Router2.contract.methods.getAmountsOut(
+          '1000000000000000000',
+          [address, moneyOfAccount.address]
+        ).encodeABI()
+      ],
+      target: price
+    }
   }
 })
