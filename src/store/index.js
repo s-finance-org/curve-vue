@@ -1569,20 +1569,15 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
       const { sfg, dai } = store.tokens
 
       // FIXME:
-      const getalanceDaiInBpt = await contract.methods.getBalance(dai.address).call()
+      const getalanceDaiInBpt = await contract.methods.getBalance(dai.address).call() / 1e18
       const getalanceSfgInBpt = await contract.methods.getBalance(sfg.address).call() / 1e18
-      const getTotalSupply = await contract.methods.totalSupply().call()
+      const getTotalSupply = await contract.methods.totalSupply().call() / 1e18
 
-      price.handled = BN(getalanceDaiInBpt)
-        // FIXME: Dai price
-        // .times(1.02)
-        .plus(
-          BN(getalanceSfgInBpt)
-          .times(sfg.price.handled)
-        )
-        .dividedBy(
-          getTotalSupply
-        ).toString()
+      const poolLiquidity = BN(getalanceDaiInBpt)
+        .plus(BN(getalanceSfgInBpt).times(sfg.price.handled)).toString()
+
+      price.handled = BN(poolLiquidity)
+        .dividedBy(getTotalSupply).toString()
 
       return price.handled
     },
@@ -2315,6 +2310,7 @@ store.gauges = {
       const { contract, dailyAPY, totalApy, rewards } = this
 
       rewards.sfg.dailyYield.handled = BN(await dailyYield / 1e18).times(rewards.sfg.weighting.handled).toString()
+
       rewards.sfg.dailyApy.handled = BN(await price / 1e18).times(rewards.sfg.dailyYield.handled).dividedBy(BN(await totalStaking / 1e18).times(await lpTokenPrice)).toString()
       dailyAPY.handled = rewards.sfg.dailyApy.handled
 
