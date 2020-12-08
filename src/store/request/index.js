@@ -1,5 +1,6 @@
-import store from '../../store'
+import BN from 'bignumber.js'
 
+import store from '../../store'
 import requests from '../../utils/requests'
 
 export default {
@@ -59,6 +60,35 @@ export default {
     const res = await requests.get('https://markets.dforce.network/api/v2/getApy/')
 
     return res
+  },
+  async getDfiApy () {
+    const res = await requests.get('https://api.dfi.money/apy.json')
+
+    // TODO:
+    const $BN_DAI_totalApy = BN(res.dai.replace('%','')).dividedBy(100)
+    const $BN_USDC_totalApy = BN(res.usdc.replace('%','')).dividedBy(100)
+    const $BN_USDT_totalApy = BN(res.usdt.replace('%','')).dividedBy(100)
+
+    return {
+      DAI: {
+        apy: {
+          daily: $BN_DAI_totalApy.dividedBy(365).toString(),
+          total: $BN_DAI_totalApy.toString()
+        }
+      },
+      USDC: {
+        apy: {
+          daily: $BN_USDC_totalApy.dividedBy(365).toString(),
+          total: $BN_USDC_totalApy.toString()
+        }
+      },
+      USDT: {
+        apy: {
+          daily: $BN_USDT_totalApy.dividedBy(365).toString(),
+          total: $BN_USDT_totalApy.toString()
+        }
+      }
+    }
   },
   async getTokenGt () {
     // const res = await requests.get('https://data.gateapi.io/api2/1/ticker/gt_usdt')

@@ -2629,9 +2629,12 @@ store.gauges = {
     async getAPY (price, dailyYield, totalStaking, lpTokenPrice) {
       const { mortgages, contract, dailyAPY, totalApy, rewards } = this
 
-      const req = await fetch('https://api.dfi.money/apy.json')
-      mortgages.iUSD_LPT.dailyApy.handled = BN((await req.json()).dai.replace('%','')).dividedBy(100 * 365).toString()
-      // mortgages.iUSD_LPT.dailyApy.handled = 0
+      const { DAI, USDC, USDT } = await request.getDfiApy()
+
+      // Itoken APY = 0.2*DAI APY + 0.4*USDC APY +0.4*USDT APY
+      mortgages.iUSD_LPT.dailyApy.handled = BN(DAI.apy.daily).times(0.2)
+        .plus(BN(USDC.apy.daily).times(0.4))
+        .plus(BN(USDT.apy.daily).times(0.4))
 
       rewards.sfg.dailyYield.handled = BN(await dailyYield / 1e18).times(rewards.sfg.weighting.handled).toString()
       rewards.sfg.dailyApy.handled = BN(await price / 1e18).times(rewards.sfg.dailyYield.handled).dividedBy(BN(await totalStaking).times(await lpTokenPrice / 1e18)).toString()
