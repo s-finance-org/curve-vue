@@ -33,6 +33,7 @@
     usd5: 'usd5',
     qusd5: 'qusd5',
     usdg5: 'usdg5',
+    bsd5: 'busd5',
   }
 
 	export default {

@@ -4,6 +4,7 @@
     <div class="total-bg">
       <b-container class="d-flex py-4 px-md-5">
         <b-navbar-nav class="navbar-tabs flex-row flex-wrap px-md-5">
+          <b-nav-item :to="{ name: 'Swap', params: { pool: 'busd5' } }">binance</b-nav-item>
           <b-nav-item :to="{ name: 'Swap', params: { pool: 'usdg5' } }">gate</b-nav-item>
           <b-nav-item :to="{ name: 'Swap', params: { pool: 'usd5' } }">5pool</b-nav-item>
           <b-nav-item :to="{ name: 'Swap', params: { pool: 'qusd5' } }">qian</b-nav-item>
@@ -26,7 +27,7 @@
                 <h4 class="mb-0">${{ totalBalances | formatNumber(2) }}</h4>
               </text-overlay-loading>
             </div>
-            <div class="total-box col px-4 py-3">
+            <div class="total-box col px-4 py-3" v-if="!['binance'].includes(currentPoolName)">
               <h6 class="text-black-65">{{ $t('global.dailyVol') }}</h6>
               <text-overlay-loading :show="poolDailyVolUSD.loading">
                 <h4 class="mb-0">${{ poolDailyVolUSD.cont }}</h4>
@@ -595,7 +596,7 @@
                   let j = this.to_currency
                   let promises = await Promise.all([helpers.getETHPrice()])
                   this.ethPrice = promises[0]
-                  this.estimateGas = (this.swapwrapped || ['okuu', 'usd5', 'qusd5', 'usdg5'].includes(this.currentPool))
+                  this.estimateGas = (this.swapwrapped || ['okuu', 'usd5', 'qusd5', 'usdg5', 'busd5'].includes(this.currentPool))
                     ? contractGas.swap[this.currentPool].exchange(i, j) / 2
                     : contractGas.swap[this.currentPool].exchange_underlying(i, j) / 2
               },
@@ -614,6 +615,7 @@
               usd5: '5pool',
               qusd5: 'qian',
               usdg5: 'gate',
+              busd5: 'binance',
             }
 
             return poolName[this.currentPool] || this.currentPool
@@ -624,6 +626,7 @@
               'dusd': 'd',
               'qusd5': 'usd5',
               'usdg5': 'usd5',
+              'busd5': 'usd5',
             }
 
             return conversions[this.currentPool] || ''
@@ -656,7 +659,7 @@
           currencie_coins () {
             let result = []
 
-            if (['qusd5', 'usdg5'].includes(currentContract.currentContract)) {
+            if (['qusd5', 'usdg5', 'busd5'].includes(currentContract.currentContract)) {
               if (this.swapwrapped) {
                 result = this.currencies
               } else {
@@ -727,6 +730,7 @@
             let result = ''
 
             const transforms = {
+              'busd5': 'BUSD5',
               'usdg5': 'USDG5',
               'qusd5': 'QUSD5',
               'usd5': 'USD5',
@@ -745,7 +749,7 @@
           precisions() {
             let coin_precisions = allabis[currentContract.currentContract].coin_precisions
 
-            if (['qusd5', 'usdg5'].includes(this.currentPool)) {
+            if (['qusd5', 'usdg5', 'busd5'].includes(this.currentPool)) {
               coin_precisions = allabis[currentContract.currentContract].base_precisions
             }
             return this.swapwrapped
@@ -824,7 +828,7 @@
               if(['ren', 'sbtc'].includes(currentContract.currentContract)) this.btcPrice = await priceStore.getBTCPrice()
               if(['tbtc', 'ren', 'sbtc'].includes(currentContract.currentContract)) this.fromInput = '0.0001'
 
-              if (['qusd5', 'usdg5'].includes(currentContract.currentContract)) {
+              if (['qusd5', 'usdg5', 'busd5'].includes(currentContract.currentContract)) {
                 let underlying_coins_len = currentContract.underlying_coins.length
 
                 this.c_rates = this.swapwrapped
@@ -1014,7 +1018,7 @@
                   var dx = cBN(Math.round(dx_ * this.precisions[i])).toFixed(0,1);
                   let calls = []
 
-                  if (!this.swapwrapped && ['qusd5', 'usdg5'].includes(this.currentPool) && currentContract.base_coins_idx[i] != null ) {
+                  if (!this.swapwrapped && ['qusd5', 'usdg5', 'busd5'].includes(this.currentPool) && currentContract.base_coins_idx[i] != null ) {
                     calls.push([currentContract.base_pool._address, currentContract.base_pool.methods.balances(currentContract.base_coins_idx[i]).encodeABI()])
               // console.log('-- base_pool', i, await currentContract.base_pool.methods.balances(currentContract.base_coins_idx[i]).call() )
                   } else {
@@ -1065,7 +1069,7 @@
 
                 var b = 0;
 
-                if (!this.swapwrapped && ['qusd5', 'usdg5'].includes(this.currentPool) && currentContract.base_coins_idx[i] != null ) {
+                if (!this.swapwrapped && ['qusd5', 'usdg5', 'busd5'].includes(this.currentPool) && currentContract.base_coins_idx[i] != null ) {
                   b = parseInt(await currentContract.base_pool.methods.balances(currentContract.base_coins_idx[i]).call()) / this.c_rates[i]
                 } else {
                   b = parseInt(await currentContract.swap.methods.balances(i).call()) / this.c_rates[i]

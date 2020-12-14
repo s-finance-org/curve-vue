@@ -135,6 +135,7 @@
       usd5: '5pool',
       qusd5: 'qian',
       usdg5: 'usdg',
+      busd5: 'binance',
     }
 
   export default {
@@ -162,6 +163,7 @@
         usd5: 'usd5',
         qusd5: 'qusd5',
         usdg5: 'usdg5',
+        busd5: 'busd5',
       }
     }),
     components: {

@@ -90,6 +90,10 @@ const currencies = {
   usdg5: {
 		usdg: 'USDG',
 		usd5: 'USD5',
+  },
+  busd5: {
+		busd: 'BUSD',
+		usd5: 'USD5',
   }
 }
 

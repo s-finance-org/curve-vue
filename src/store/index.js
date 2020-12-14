@@ -65,6 +65,7 @@ const requiresResetAllowance = [
   process.env.VUE_APP_USD5_TOKEN, // s.finance DAI/USDC/USDT/TUSD/PAX
   process.env.VUE_APP_QUSD5_TOKEN, // s.finance QUSD/DAI/USDC/USDT/TUSD/PAX
   process.env.VUE_APP_USDG5_TOKEN, // s.finance USDG/DAI/USDC/USDT/TUSD/PAX
+  process.env.VUE_APP_BUSD5_TOKEN, // s.finance BUSD/DAI/USDC/USDT/TUSD/PAX
 ]
 
 // FIXME: 
@@ -468,6 +469,131 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
     },
 
     swapAddress: process.env.VUE_APP_USDG5_SWAP,
+    swapAbi: swapAbi_iUSD_LPT,
+    __contractSwap: null,
+    get contractSwap () {
+      const { __contractSwap, swapAbi, swapAddress } = this
+
+      return __contractSwap ||
+        (this.__contractSwap = new web3.eth.Contract(swapAbi, swapAddress))
+    },
+
+    decimal: 18,
+    /**
+     *  @type {number}
+     */
+    get precision () {
+      const { decimal } = this
+
+      return Math.pow(10, decimal)
+    },
+
+    userBalanceOf: valueModel.create(),
+    async getBalanceOf (target, accountAddress) {
+      const { contract, userBalanceOf } = this
+      const result = await contract.methods.balanceOf(accountAddress).call()
+
+      userBalanceOf.ether = target.ether = result
+      return result
+    },
+
+    error: errorModel.create(),
+
+    price: valueModel.create(),
+    priceUnit: 'USDT',
+    // FIXME: 
+    async getPrice () {
+      const { price, contractSwap } = this
+
+      const result = await contractSwap.methods.get_virtual_price().call()
+
+      price.ether = result
+
+      return price.handled
+    },
+
+    // amount: 0,
+    // approveAmount: 0,
+    // TODO: common & format type
+    // ether
+    minAllowance: 1,
+    // ether
+    maxAllowance: BN(2).pow(256).minus(1),
+    async hasValidAmount (val) {
+      const { minAllowance, maxAllowance, error } = this
+      const _val = BN(val).times(1e18)
+      // FIXME: balance Of
+      const result = _val.gte(minAllowance) &&
+        // TODO: div(2) why?
+        _val.lte(maxAllowance.div(2))
+
+      if (!result) {
+        error.message = store.i18n.$i18n.t('model.valueOutValidRange')
+      }
+
+      return result
+    },
+    async hasApprove (amount, accountAddress, toContract) {
+      const { contract, error } = this
+      const _amount = BN(amount).times(1e18)
+      // FIXME:
+      const allowance = BN(await contract.methods.allowance(accountAddress, toContract).call())
+console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->', _amount.toString(), _amount.toString() / 1e18 )
+      // allowance >= amount && amount > 0
+      const result = allowance.gte(_amount) && BN(_amount).gt(0)
+
+      if (!result) {
+        error.message = store.i18n.$i18n.t('model.approveOperation')
+      }
+
+      return result
+    },
+    async onApproveAmount (amount, accountAddress, toContract, infinite = false) {
+      const { contract, maxAllowance } = this
+      const _amount = BN(amount).times(1e18)
+
+      console.log('amount', amount)
+      if (!await this.hasValidAmount(amount)) return false
+
+      // FIXME:
+      const allowance = BN(await contract.methods.allowance(accountAddress, toContract).call())
+
+      if (infinite) {
+        // allowance < maxAllowance / 2 && amount > 0
+        // TODO: div(2) why?
+        if (allowance.lt(maxAllowance.div(2))) {
+          if (allowance.gt(0) && requiresResetAllowance.includes(contract._address)) {
+            await approve(contract, 0, accountAddress, toContract)
+          } else {
+            await approve(contract, maxAllowance, accountAddress, toContract)
+          }
+        }
+      } else {
+        // allowance < amount && amount > 0
+        if (allowance.lt(_amount)) {
+          if (allowance.gt(0) && requiresResetAllowance.includes(contract._address)) {
+            await approve(contract, 0, accountAddress, toContract)
+          } else {
+            await approve(contract, _amount, accountAddress, toContract)
+          }
+        }
+      }
+    },
+  },
+
+  busd5: {
+    name: 'BUSD5',
+    address: process.env.VUE_APP_BUSD5_TOKEN,
+    abi: tokensV2.QUSD5.abi,
+    __contract: null,
+    get contract () {
+      const { __contract, abi, address } = this
+
+      return __contract ||
+        (this.__contract = new web3.eth.Contract(abi, address))
+    },
+
+    swapAddress: process.env.VUE_APP_BUSD5_SWAP,
     swapAbi: swapAbi_iUSD_LPT,
     __contractSwap: null,
     get contractSwap () {
@@ -4540,6 +4666,14 @@ store.pool = {
     // token: store.token.QUSD5,
     swap: {
       address: process.env.VUE_APP_QUSD5_SWAP,
+      abi: swapAbi_iUSD_LPT,
+    }
+  }),
+  BUSD5: ModelPool.create({
+    code: 'BUSD5',
+    // token: store.token.QUSD5,
+    swap: {
+      address: process.env.VUE_APP_BUSD5_SWAP,
       abi: swapAbi_iUSD_LPT,
     }
   }),

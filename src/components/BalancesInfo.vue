@@ -264,9 +264,9 @@
         return helpers.formatNumber(number, dec)
       },
       async updateShares() {
-        if(!(this.usdShare1 > 0 || (['susdv2', 'sbtc', 'y', 'iearn', 'dfi', 'dusd', 'okuu', 'usd5', 'qusd5', 'usdg5'].includes(this.currentPool) && this.usdStake1) > 0)) return;
+        if(!(this.usdShare1 > 0 || (['susdv2', 'sbtc', 'y', 'iearn', 'dfi', 'dusd', 'okuu', 'usd5', 'qusd5', 'usdg5', 'busd5'].includes(this.currentPool) && this.usdStake1) > 0)) return;
         let pool = this.currentPool
-        pool = pool == 'iearn' ? 'y' : pool == 'susdv2' ? 'susd' : pool == 'ren' ? 'ren2' : pool == 'sbtc' ? 'rens' : pool  
+        pool = pool == 'iearn' ? 'y' : pool == 'susdv2' ? 'susd' : pool == 'ren' ? 'ren2' : pool == 'sbtc' ? 'rens' : pool
         let req = await fetch(`${window.domain}/raw-stats/${pool}-1m.json`)
         this.lastPoint = await req.json()
         this.lastPoint = this.lastPoint[this.lastPoint.length - 1]

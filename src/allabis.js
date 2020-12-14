@@ -1927,6 +1927,336 @@ export const synthERC20_abi = [
   }
 ]
 
+const sCurveRewards_abi = [
+  {
+    'anonymous': false,
+    'inputs': [
+      {
+        'indexed': true,
+        'internalType': 'address',
+        'name': 'previousOwner',
+        'type': 'address'
+      },
+      {
+        'indexed': true,
+        'internalType': 'address',
+        'name': 'newOwner',
+        'type': 'address'
+      }
+    ],
+    'name': 'OwnershipTransferred',
+    'type': 'event'
+  },
+  {
+    'anonymous': false,
+    'inputs': [
+      {
+        'indexed': false,
+        'internalType': 'uint256',
+        'name': 'reward',
+        'type': 'uint256'
+      }
+    ],
+    'name': 'RewardAdded',
+    'type': 'event'
+  },
+  {
+    'anonymous': false,
+    'inputs': [
+      {
+        'indexed': true,
+        'internalType': 'address',
+        'name': 'user',
+        'type': 'address'
+      },
+      {
+        'indexed': false,
+        'internalType': 'uint256',
+        'name': 'reward',
+        'type': 'uint256'
+      }
+    ],
+    'name': 'RewardPaid',
+    'type': 'event'
+  },
+  {
+    'anonymous': false,
+    'inputs': [
+      {
+        'indexed': true,
+        'internalType': 'address',
+        'name': 'user',
+        'type': 'address'
+      },
+      {
+        'indexed': false,
+        'internalType': 'uint256',
+        'name': 'amount',
+        'type': 'uint256'
+      }
+    ],
+    'name': 'Staked',
+    'type': 'event'
+  },
+  {
+    'anonymous': false,
+    'inputs': [
+      {
+        'indexed': true,
+        'internalType': 'address',
+        'name': 'user',
+        'type': 'address'
+      },
+      {
+        'indexed': false,
+        'internalType': 'uint256',
+        'name': 'amount',
+        'type': 'uint256'
+      }
+    ],
+    'name': 'Withdrawn',
+    'type': 'event'
+  },
+  {
+    'constant': true,
+    'inputs': [],
+    'name': 'DURATION',
+    'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
+    'payable': false,
+    'stateMutability': 'view',
+    'type': 'function'
+  },
+  {
+    'constant': true,
+    'inputs': [
+      { 'internalType': 'address', 'name': 'account', 'type': 'address' }
+    ],
+    'name': 'balanceOf',
+    'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
+    'payable': false,
+    'stateMutability': 'view',
+    'type': 'function'
+  },
+  {
+    'constant': true,
+    'inputs': [
+      { 'internalType': 'address', 'name': 'account', 'type': 'address' }
+    ],
+    'name': 'earned',
+    'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
+    'payable': false,
+    'stateMutability': 'view',
+    'type': 'function'
+  },
+  {
+    'constant': false,
+    'inputs': [],
+    'name': 'exit',
+    'outputs': [],
+    'payable': false,
+    'stateMutability': 'nonpayable',
+    'type': 'function'
+  },
+  {
+    'constant': false,
+    'inputs': [],
+    'name': 'getReward',
+    'outputs': [],
+    'payable': false,
+    'stateMutability': 'nonpayable',
+    'type': 'function'
+  },
+  {
+    'constant': true,
+    'inputs': [],
+    'name': 'isOwner',
+    'outputs': [{ 'internalType': 'bool', 'name': '', 'type': 'bool' }],
+    'payable': false,
+    'stateMutability': 'view',
+    'type': 'function'
+  },
+  {
+    'constant': true,
+    'inputs': [],
+    'name': 'lastTimeRewardApplicable',
+    'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
+    'payable': false,
+    'stateMutability': 'view',
+    'type': 'function'
+  },
+  {
+    'constant': true,
+    'inputs': [],
+    'name': 'lastUpdateTime',
+    'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
+    'payable': false,
+    'stateMutability': 'view',
+    'type': 'function'
+  },
+  {
+    'constant': false,
+    'inputs': [
+      { 'internalType': 'uint256', 'name': 'reward', 'type': 'uint256' }
+    ],
+    'name': 'notifyRewardAmount',
+    'outputs': [],
+    'payable': false,
+    'stateMutability': 'nonpayable',
+    'type': 'function'
+  },
+  {
+    'constant': true,
+    'inputs': [],
+    'name': 'owner',
+    'outputs': [{ 'internalType': 'address', 'name': '', 'type': 'address' }],
+    'payable': false,
+    'stateMutability': 'view',
+    'type': 'function'
+  },
+  {
+    'constant': true,
+    'inputs': [],
+    'name': 'periodFinish',
+    'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
+    'payable': false,
+    'stateMutability': 'view',
+    'type': 'function'
+  },
+  {
+    'constant': false,
+    'inputs': [],
+    'name': 'renounceOwnership',
+    'outputs': [],
+    'payable': false,
+    'stateMutability': 'nonpayable',
+    'type': 'function'
+  },
+  {
+    'constant': true,
+    'inputs': [],
+    'name': 'rewardPerToken',
+    'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
+    'payable': false,
+    'stateMutability': 'view',
+    'type': 'function'
+  },
+  {
+    'constant': true,
+    'inputs': [],
+    'name': 'rewardPerTokenStored',
+    'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
+    'payable': false,
+    'stateMutability': 'view',
+    'type': 'function'
+  },
+  {
+    'constant': true,
+    'inputs': [],
+    'name': 'rewardRate',
+    'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
+    'payable': false,
+    'stateMutability': 'view',
+    'type': 'function'
+  },
+  {
+    'constant': true,
+    'inputs': [{ 'internalType': 'address', 'name': '', 'type': 'address' }],
+    'name': 'rewards',
+    'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
+    'payable': false,
+    'stateMutability': 'view',
+    'type': 'function'
+  },
+  {
+    'constant': false,
+    'inputs': [
+      {
+        'internalType': 'address',
+        'name': '_rewardDistribution',
+        'type': 'address'
+      }
+    ],
+    'name': 'setRewardDistribution',
+    'outputs': [],
+    'payable': false,
+    'stateMutability': 'nonpayable',
+    'type': 'function'
+  },
+  {
+    'constant': false,
+    'inputs': [
+      { 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }
+    ],
+    'name': 'stake',
+    'outputs': [],
+    'payable': false,
+    'stateMutability': 'nonpayable',
+    'type': 'function'
+  },
+  {
+    'constant': true,
+    'inputs': [],
+    'name': 'totalSupply',
+    'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
+    'payable': false,
+    'stateMutability': 'view',
+    'type': 'function'
+  },
+  {
+    'constant': false,
+    'inputs': [
+      { 'internalType': 'address', 'name': 'newOwner', 'type': 'address' }
+    ],
+    'name': 'transferOwnership',
+    'outputs': [],
+    'payable': false,
+    'stateMutability': 'nonpayable',
+    'type': 'function'
+  },
+  {
+    'constant': true,
+    'inputs': [{ 'internalType': 'address', 'name': '', 'type': 'address' }],
+    'name': 'userRewardPerTokenPaid',
+    'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
+    'payable': false,
+    'stateMutability': 'view',
+    'type': 'function'
+  },
+  {
+    'constant': false,
+    'inputs': [
+      { 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }
+    ],
+    'name': 'withdraw',
+    'outputs': [],
+    'payable': false,
+    'stateMutability': 'nonpayable',
+    'type': 'function'
+  },
+  {
+    'constant': true,
+    'inputs': [],
+    'name': 'y',
+    'outputs': [
+      { 'internalType': 'contract IERC20', 'name': '', 'type': 'address' }
+    ],
+    'payable': false,
+    'stateMutability': 'view',
+    'type': 'function'
+  },
+  {
+    'constant': true,
+    'inputs': [],
+    'name': 'yfi',
+    'outputs': [
+      { 'internalType': 'contract IERC20', 'name': '', 'type': 'address' }
+    ],
+    'payable': false,
+    'stateMutability': 'view',
+    'type': 'function'
+  }
+]
+
 var compound = {
   N_COINS: 2,
   coin_precisions: [1e18, 1e6],
@@ -5875,335 +6205,7 @@ var iearn = {
       'gas': 2321
     }
   ],
-  sCurveRewards_abi: [
-    {
-      'anonymous': false,
-      'inputs': [
-        {
-          'indexed': true,
-          'internalType': 'address',
-          'name': 'previousOwner',
-          'type': 'address'
-        },
-        {
-          'indexed': true,
-          'internalType': 'address',
-          'name': 'newOwner',
-          'type': 'address'
-        }
-      ],
-      'name': 'OwnershipTransferred',
-      'type': 'event'
-    },
-    {
-      'anonymous': false,
-      'inputs': [
-        {
-          'indexed': false,
-          'internalType': 'uint256',
-          'name': 'reward',
-          'type': 'uint256'
-        }
-      ],
-      'name': 'RewardAdded',
-      'type': 'event'
-    },
-    {
-      'anonymous': false,
-      'inputs': [
-        {
-          'indexed': true,
-          'internalType': 'address',
-          'name': 'user',
-          'type': 'address'
-        },
-        {
-          'indexed': false,
-          'internalType': 'uint256',
-          'name': 'reward',
-          'type': 'uint256'
-        }
-      ],
-      'name': 'RewardPaid',
-      'type': 'event'
-    },
-    {
-      'anonymous': false,
-      'inputs': [
-        {
-          'indexed': true,
-          'internalType': 'address',
-          'name': 'user',
-          'type': 'address'
-        },
-        {
-          'indexed': false,
-          'internalType': 'uint256',
-          'name': 'amount',
-          'type': 'uint256'
-        }
-      ],
-      'name': 'Staked',
-      'type': 'event'
-    },
-    {
-      'anonymous': false,
-      'inputs': [
-        {
-          'indexed': true,
-          'internalType': 'address',
-          'name': 'user',
-          'type': 'address'
-        },
-        {
-          'indexed': false,
-          'internalType': 'uint256',
-          'name': 'amount',
-          'type': 'uint256'
-        }
-      ],
-      'name': 'Withdrawn',
-      'type': 'event'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'DURATION',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [
-        { 'internalType': 'address', 'name': 'account', 'type': 'address' }
-      ],
-      'name': 'balanceOf',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [
-        { 'internalType': 'address', 'name': 'account', 'type': 'address' }
-      ],
-      'name': 'earned',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [],
-      'name': 'exit',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [],
-      'name': 'getReward',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'isOwner',
-      'outputs': [{ 'internalType': 'bool', 'name': '', 'type': 'bool' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'lastTimeRewardApplicable',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'lastUpdateTime',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [
-        { 'internalType': 'uint256', 'name': 'reward', 'type': 'uint256' }
-      ],
-      'name': 'notifyRewardAmount',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'owner',
-      'outputs': [{ 'internalType': 'address', 'name': '', 'type': 'address' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'periodFinish',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [],
-      'name': 'renounceOwnership',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'rewardPerToken',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'rewardPerTokenStored',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'rewardRate',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [{ 'internalType': 'address', 'name': '', 'type': 'address' }],
-      'name': 'rewards',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [
-        {
-          'internalType': 'address',
-          'name': '_rewardDistribution',
-          'type': 'address'
-        }
-      ],
-      'name': 'setRewardDistribution',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [
-        { 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }
-      ],
-      'name': 'stake',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'totalSupply',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [
-        { 'internalType': 'address', 'name': 'newOwner', 'type': 'address' }
-      ],
-      'name': 'transferOwnership',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [{ 'internalType': 'address', 'name': '', 'type': 'address' }],
-      'name': 'userRewardPerTokenPaid',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [
-        { 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }
-      ],
-      'name': 'withdraw',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'y',
-      'outputs': [
-        { 'internalType': 'contract IERC20', 'name': '', 'type': 'address' }
-      ],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'yfi',
-      'outputs': [
-        { 'internalType': 'contract IERC20', 'name': '', 'type': 'address' }
-      ],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    }
-  ],
+  sCurveRewards_abi,
   sCurveRewards_address: '0x0001FB050Fe7312791bF6475b96569D83F695C9f',
   aRewards_abi: [
     {
@@ -14840,335 +14842,7 @@ var dfi = {
     }
   ],
   sCurveRewards_address: '0x0001FB050Fe7312791bF6475b96569D83F695C9f',
-  sCurveRewards_abi: [
-    {
-      'anonymous': false,
-      'inputs': [
-        {
-          'indexed': true,
-          'internalType': 'address',
-          'name': 'previousOwner',
-          'type': 'address'
-        },
-        {
-          'indexed': true,
-          'internalType': 'address',
-          'name': 'newOwner',
-          'type': 'address'
-        }
-      ],
-      'name': 'OwnershipTransferred',
-      'type': 'event'
-    },
-    {
-      'anonymous': false,
-      'inputs': [
-        {
-          'indexed': false,
-          'internalType': 'uint256',
-          'name': 'reward',
-          'type': 'uint256'
-        }
-      ],
-      'name': 'RewardAdded',
-      'type': 'event'
-    },
-    {
-      'anonymous': false,
-      'inputs': [
-        {
-          'indexed': true,
-          'internalType': 'address',
-          'name': 'user',
-          'type': 'address'
-        },
-        {
-          'indexed': false,
-          'internalType': 'uint256',
-          'name': 'reward',
-          'type': 'uint256'
-        }
-      ],
-      'name': 'RewardPaid',
-      'type': 'event'
-    },
-    {
-      'anonymous': false,
-      'inputs': [
-        {
-          'indexed': true,
-          'internalType': 'address',
-          'name': 'user',
-          'type': 'address'
-        },
-        {
-          'indexed': false,
-          'internalType': 'uint256',
-          'name': 'amount',
-          'type': 'uint256'
-        }
-      ],
-      'name': 'Staked',
-      'type': 'event'
-    },
-    {
-      'anonymous': false,
-      'inputs': [
-        {
-          'indexed': true,
-          'internalType': 'address',
-          'name': 'user',
-          'type': 'address'
-        },
-        {
-          'indexed': false,
-          'internalType': 'uint256',
-          'name': 'amount',
-          'type': 'uint256'
-        }
-      ],
-      'name': 'Withdrawn',
-      'type': 'event'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'DURATION',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [
-        { 'internalType': 'address', 'name': 'account', 'type': 'address' }
-      ],
-      'name': 'balanceOf',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [
-        { 'internalType': 'address', 'name': 'account', 'type': 'address' }
-      ],
-      'name': 'earned',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [],
-      'name': 'exit',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [],
-      'name': 'getReward',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'isOwner',
-      'outputs': [{ 'internalType': 'bool', 'name': '', 'type': 'bool' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'lastTimeRewardApplicable',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'lastUpdateTime',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [
-        { 'internalType': 'uint256', 'name': 'reward', 'type': 'uint256' }
-      ],
-      'name': 'notifyRewardAmount',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'owner',
-      'outputs': [{ 'internalType': 'address', 'name': '', 'type': 'address' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'periodFinish',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [],
-      'name': 'renounceOwnership',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'rewardPerToken',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'rewardPerTokenStored',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'rewardRate',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [{ 'internalType': 'address', 'name': '', 'type': 'address' }],
-      'name': 'rewards',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [
-        {
-          'internalType': 'address',
-          'name': '_rewardDistribution',
-          'type': 'address'
-        }
-      ],
-      'name': 'setRewardDistribution',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [
-        { 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }
-      ],
-      'name': 'stake',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'totalSupply',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [
-        { 'internalType': 'address', 'name': 'newOwner', 'type': 'address' }
-      ],
-      'name': 'transferOwnership',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [{ 'internalType': 'address', 'name': '', 'type': 'address' }],
-      'name': 'userRewardPerTokenPaid',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [
-        { 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }
-      ],
-      'name': 'withdraw',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'y',
-      'outputs': [
-        { 'internalType': 'contract IERC20', 'name': '', 'type': 'address' }
-      ],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'yfi',
-      'outputs': [
-        { 'internalType': 'contract IERC20', 'name': '', 'type': 'address' }
-      ],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    }
-  ],
+  sCurveRewards_abi,
   aRewards_abi: [
     {
       'inputs': [],
@@ -15272,335 +14946,7 @@ var dusd = {
   deposit_address: process.env.VUE_APP_DUSD_DEPOSIT,
   deposit_abi: [{"outputs":[],"inputs":[{"type":"address[4]","name":"_coins"},{"type":"address[4]","name":"_underlying_coins"},{"type":"address","name":"_curve"},{"type":"address","name":"_token"}],"constant":false,"payable":false,"type":"constructor"},{"name":"add_liquidity","outputs":[],"inputs":[{"type":"uint256[4]","name":"uamounts"},{"type":"uint256","name":"min_mint_amount"}],"constant":false,"payable":false,"type":"function","gas":164595},{"name":"remove_liquidity","outputs":[],"inputs":[{"type":"uint256","name":"_amount"},{"type":"uint256[4]","name":"min_uamounts"}],"constant":false,"payable":false,"type":"function","gas":99556},{"name":"remove_liquidity_imbalance","outputs":[],"inputs":[{"type":"uint256[4]","name":"uamounts"},{"type":"uint256","name":"max_burn_amount"}],"constant":false,"payable":false,"type":"function","gas":118596},{"name":"calc_withdraw_one_coin","outputs":[{"type":"uint256","name":""}],"inputs":[{"type":"uint256","name":"_token_amount"},{"type":"int128","name":"i"}],"constant":false,"payable":false,"type":"function","gas":3879720},{"name":"remove_liquidity_one_coin","outputs":[],"inputs":[{"type":"uint256","name":"_token_amount"},{"type":"int128","name":"i"},{"type":"uint256","name":"min_uamount"}],"constant":false,"payable":false,"type":"function"},{"name":"remove_liquidity_one_coin","outputs":[],"inputs":[{"type":"uint256","name":"_token_amount"},{"type":"int128","name":"i"},{"type":"uint256","name":"min_uamount"},{"type":"bool","name":"donate_dust"}],"constant":false,"payable":false,"type":"function"},{"name":"withdraw_donated_dust","outputs":[],"inputs":[],"constant":false,"payable":false,"type":"function","gas":64003},{"name":"coins","outputs":[{"type":"address","name":""}],"inputs":[{"type":"int128","name":"arg0"}],"constant":true,"payable":false,"type":"function","gas":1710},{"name":"underlying_coins","outputs":[{"type":"address","name":""}],"inputs":[{"type":"int128","name":"arg0"}],"constant":true,"payable":false,"type":"function","gas":1740},{"name":"curve","outputs":[{"type":"address","name":""}],"inputs":[],"constant":true,"payable":false,"type":"function","gas":1571},{"name":"token","outputs":[{"type":"address","name":""}],"inputs":[],"constant":true,"payable":false,"type":"function","gas":1601}],
   infura_url: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`,
-  sCurveRewards_abi: [
-    {
-      'anonymous': false,
-      'inputs': [
-        {
-          'indexed': true,
-          'internalType': 'address',
-          'name': 'previousOwner',
-          'type': 'address'
-        },
-        {
-          'indexed': true,
-          'internalType': 'address',
-          'name': 'newOwner',
-          'type': 'address'
-        }
-      ],
-      'name': 'OwnershipTransferred',
-      'type': 'event'
-    },
-    {
-      'anonymous': false,
-      'inputs': [
-        {
-          'indexed': false,
-          'internalType': 'uint256',
-          'name': 'reward',
-          'type': 'uint256'
-        }
-      ],
-      'name': 'RewardAdded',
-      'type': 'event'
-    },
-    {
-      'anonymous': false,
-      'inputs': [
-        {
-          'indexed': true,
-          'internalType': 'address',
-          'name': 'user',
-          'type': 'address'
-        },
-        {
-          'indexed': false,
-          'internalType': 'uint256',
-          'name': 'reward',
-          'type': 'uint256'
-        }
-      ],
-      'name': 'RewardPaid',
-      'type': 'event'
-    },
-    {
-      'anonymous': false,
-      'inputs': [
-        {
-          'indexed': true,
-          'internalType': 'address',
-          'name': 'user',
-          'type': 'address'
-        },
-        {
-          'indexed': false,
-          'internalType': 'uint256',
-          'name': 'amount',
-          'type': 'uint256'
-        }
-      ],
-      'name': 'Staked',
-      'type': 'event'
-    },
-    {
-      'anonymous': false,
-      'inputs': [
-        {
-          'indexed': true,
-          'internalType': 'address',
-          'name': 'user',
-          'type': 'address'
-        },
-        {
-          'indexed': false,
-          'internalType': 'uint256',
-          'name': 'amount',
-          'type': 'uint256'
-        }
-      ],
-      'name': 'Withdrawn',
-      'type': 'event'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'DURATION',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [
-        { 'internalType': 'address', 'name': 'account', 'type': 'address' }
-      ],
-      'name': 'balanceOf',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [
-        { 'internalType': 'address', 'name': 'account', 'type': 'address' }
-      ],
-      'name': 'earned',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [],
-      'name': 'exit',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [],
-      'name': 'getReward',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'isOwner',
-      'outputs': [{ 'internalType': 'bool', 'name': '', 'type': 'bool' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'lastTimeRewardApplicable',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'lastUpdateTime',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [
-        { 'internalType': 'uint256', 'name': 'reward', 'type': 'uint256' }
-      ],
-      'name': 'notifyRewardAmount',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'owner',
-      'outputs': [{ 'internalType': 'address', 'name': '', 'type': 'address' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'periodFinish',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [],
-      'name': 'renounceOwnership',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'rewardPerToken',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'rewardPerTokenStored',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'rewardRate',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [{ 'internalType': 'address', 'name': '', 'type': 'address' }],
-      'name': 'rewards',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [
-        {
-          'internalType': 'address',
-          'name': '_rewardDistribution',
-          'type': 'address'
-        }
-      ],
-      'name': 'setRewardDistribution',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [
-        { 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }
-      ],
-      'name': 'stake',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'totalSupply',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [
-        { 'internalType': 'address', 'name': 'newOwner', 'type': 'address' }
-      ],
-      'name': 'transferOwnership',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [{ 'internalType': 'address', 'name': '', 'type': 'address' }],
-      'name': 'userRewardPerTokenPaid',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [
-        { 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }
-      ],
-      'name': 'withdraw',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'y',
-      'outputs': [
-        { 'internalType': 'contract IERC20', 'name': '', 'type': 'address' }
-      ],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'yfi',
-      'outputs': [
-        { 'internalType': 'contract IERC20', 'name': '', 'type': 'address' }
-      ],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    }
-  ],
+  sCurveRewards_abi,
   sCurveRewards_address: '0x0001FB050Fe7312791bF6475b96569D83F695C9f',
 }
 
@@ -15849,335 +15195,7 @@ var okuu = {
     process.env.VUE_APP_OKU_TOKEN,
     process.env.VUE_APP_USDT_TOKEN
   ],
-  sCurveRewards_abi: [
-    {
-      'anonymous': false,
-      'inputs': [
-        {
-          'indexed': true,
-          'internalType': 'address',
-          'name': 'previousOwner',
-          'type': 'address'
-        },
-        {
-          'indexed': true,
-          'internalType': 'address',
-          'name': 'newOwner',
-          'type': 'address'
-        }
-      ],
-      'name': 'OwnershipTransferred',
-      'type': 'event'
-    },
-    {
-      'anonymous': false,
-      'inputs': [
-        {
-          'indexed': false,
-          'internalType': 'uint256',
-          'name': 'reward',
-          'type': 'uint256'
-        }
-      ],
-      'name': 'RewardAdded',
-      'type': 'event'
-    },
-    {
-      'anonymous': false,
-      'inputs': [
-        {
-          'indexed': true,
-          'internalType': 'address',
-          'name': 'user',
-          'type': 'address'
-        },
-        {
-          'indexed': false,
-          'internalType': 'uint256',
-          'name': 'reward',
-          'type': 'uint256'
-        }
-      ],
-      'name': 'RewardPaid',
-      'type': 'event'
-    },
-    {
-      'anonymous': false,
-      'inputs': [
-        {
-          'indexed': true,
-          'internalType': 'address',
-          'name': 'user',
-          'type': 'address'
-        },
-        {
-          'indexed': false,
-          'internalType': 'uint256',
-          'name': 'amount',
-          'type': 'uint256'
-        }
-      ],
-      'name': 'Staked',
-      'type': 'event'
-    },
-    {
-      'anonymous': false,
-      'inputs': [
-        {
-          'indexed': true,
-          'internalType': 'address',
-          'name': 'user',
-          'type': 'address'
-        },
-        {
-          'indexed': false,
-          'internalType': 'uint256',
-          'name': 'amount',
-          'type': 'uint256'
-        }
-      ],
-      'name': 'Withdrawn',
-      'type': 'event'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'DURATION',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [
-        { 'internalType': 'address', 'name': 'account', 'type': 'address' }
-      ],
-      'name': 'balanceOf',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [
-        { 'internalType': 'address', 'name': 'account', 'type': 'address' }
-      ],
-      'name': 'earned',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [],
-      'name': 'exit',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [],
-      'name': 'getReward',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'isOwner',
-      'outputs': [{ 'internalType': 'bool', 'name': '', 'type': 'bool' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'lastTimeRewardApplicable',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'lastUpdateTime',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [
-        { 'internalType': 'uint256', 'name': 'reward', 'type': 'uint256' }
-      ],
-      'name': 'notifyRewardAmount',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'owner',
-      'outputs': [{ 'internalType': 'address', 'name': '', 'type': 'address' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'periodFinish',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [],
-      'name': 'renounceOwnership',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'rewardPerToken',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'rewardPerTokenStored',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'rewardRate',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [{ 'internalType': 'address', 'name': '', 'type': 'address' }],
-      'name': 'rewards',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [
-        {
-          'internalType': 'address',
-          'name': '_rewardDistribution',
-          'type': 'address'
-        }
-      ],
-      'name': 'setRewardDistribution',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [
-        { 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }
-      ],
-      'name': 'stake',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'totalSupply',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [
-        { 'internalType': 'address', 'name': 'newOwner', 'type': 'address' }
-      ],
-      'name': 'transferOwnership',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [{ 'internalType': 'address', 'name': '', 'type': 'address' }],
-      'name': 'userRewardPerTokenPaid',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [
-        { 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }
-      ],
-      'name': 'withdraw',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'y',
-      'outputs': [
-        { 'internalType': 'contract IERC20', 'name': '', 'type': 'address' }
-      ],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'yfi',
-      'outputs': [
-        { 'internalType': 'contract IERC20', 'name': '', 'type': 'address' }
-      ],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    }
-  ],
+  sCurveRewards_abi,
   sCurveRewards_address: '0x0001FB050Fe7312791bF6475b96569D83F695C9f'
 }
 
@@ -18602,335 +17620,7 @@ var usd5 = {
     process.env.VUE_APP_TUSD_TOKEN,
     process.env.VUE_APP_PAX_TOKEN,
   ],
-  sCurveRewards_abi: [
-    {
-      'anonymous': false,
-      'inputs': [
-        {
-          'indexed': true,
-          'internalType': 'address',
-          'name': 'previousOwner',
-          'type': 'address'
-        },
-        {
-          'indexed': true,
-          'internalType': 'address',
-          'name': 'newOwner',
-          'type': 'address'
-        }
-      ],
-      'name': 'OwnershipTransferred',
-      'type': 'event'
-    },
-    {
-      'anonymous': false,
-      'inputs': [
-        {
-          'indexed': false,
-          'internalType': 'uint256',
-          'name': 'reward',
-          'type': 'uint256'
-        }
-      ],
-      'name': 'RewardAdded',
-      'type': 'event'
-    },
-    {
-      'anonymous': false,
-      'inputs': [
-        {
-          'indexed': true,
-          'internalType': 'address',
-          'name': 'user',
-          'type': 'address'
-        },
-        {
-          'indexed': false,
-          'internalType': 'uint256',
-          'name': 'reward',
-          'type': 'uint256'
-        }
-      ],
-      'name': 'RewardPaid',
-      'type': 'event'
-    },
-    {
-      'anonymous': false,
-      'inputs': [
-        {
-          'indexed': true,
-          'internalType': 'address',
-          'name': 'user',
-          'type': 'address'
-        },
-        {
-          'indexed': false,
-          'internalType': 'uint256',
-          'name': 'amount',
-          'type': 'uint256'
-        }
-      ],
-      'name': 'Staked',
-      'type': 'event'
-    },
-    {
-      'anonymous': false,
-      'inputs': [
-        {
-          'indexed': true,
-          'internalType': 'address',
-          'name': 'user',
-          'type': 'address'
-        },
-        {
-          'indexed': false,
-          'internalType': 'uint256',
-          'name': 'amount',
-          'type': 'uint256'
-        }
-      ],
-      'name': 'Withdrawn',
-      'type': 'event'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'DURATION',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [
-        { 'internalType': 'address', 'name': 'account', 'type': 'address' }
-      ],
-      'name': 'balanceOf',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [
-        { 'internalType': 'address', 'name': 'account', 'type': 'address' }
-      ],
-      'name': 'earned',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [],
-      'name': 'exit',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [],
-      'name': 'getReward',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'isOwner',
-      'outputs': [{ 'internalType': 'bool', 'name': '', 'type': 'bool' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'lastTimeRewardApplicable',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'lastUpdateTime',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [
-        { 'internalType': 'uint256', 'name': 'reward', 'type': 'uint256' }
-      ],
-      'name': 'notifyRewardAmount',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'owner',
-      'outputs': [{ 'internalType': 'address', 'name': '', 'type': 'address' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'periodFinish',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [],
-      'name': 'renounceOwnership',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'rewardPerToken',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'rewardPerTokenStored',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'rewardRate',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [{ 'internalType': 'address', 'name': '', 'type': 'address' }],
-      'name': 'rewards',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [
-        {
-          'internalType': 'address',
-          'name': '_rewardDistribution',
-          'type': 'address'
-        }
-      ],
-      'name': 'setRewardDistribution',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [
-        { 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }
-      ],
-      'name': 'stake',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'totalSupply',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [
-        { 'internalType': 'address', 'name': 'newOwner', 'type': 'address' }
-      ],
-      'name': 'transferOwnership',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [{ 'internalType': 'address', 'name': '', 'type': 'address' }],
-      'name': 'userRewardPerTokenPaid',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [
-        { 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }
-      ],
-      'name': 'withdraw',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'y',
-      'outputs': [
-        { 'internalType': 'contract IERC20', 'name': '', 'type': 'address' }
-      ],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'yfi',
-      'outputs': [
-        { 'internalType': 'contract IERC20', 'name': '', 'type': 'address' }
-      ],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    }
-  ],
+  sCurveRewards_abi,
   sCurveRewards_address: '0x0001FB050Fe7312791bF6475b96569D83F695C9f'
 }
 const qusd5_abi = [{"name":"TokenExchange","inputs":[{"type":"address","name":"buyer","indexed":true},{"type":"int128","name":"sold_id","indexed":false},{"type":"uint256","name":"tokens_sold","indexed":false},{"type":"int128","name":"bought_id","indexed":false},{"type":"uint256","name":"tokens_bought","indexed":false}],"anonymous":false,"type":"event"},{"name":"TokenExchangeUnderlying","inputs":[{"type":"address","name":"buyer","indexed":true},{"type":"int128","name":"sold_id","indexed":false},{"type":"uint256","name":"tokens_sold","indexed":false},{"type":"int128","name":"bought_id","indexed":false},{"type":"uint256","name":"tokens_bought","indexed":false}],"anonymous":false,"type":"event"},{"name":"AddLiquidity","inputs":[{"type":"address","name":"provider","indexed":true},{"type":"uint256[2]","name":"token_amounts","indexed":false},{"type":"uint256[2]","name":"fees","indexed":false},{"type":"uint256","name":"invariant","indexed":false},{"type":"uint256","name":"token_supply","indexed":false}],"anonymous":false,"type":"event"},{"name":"RemoveLiquidity","inputs":[{"type":"address","name":"provider","indexed":true},{"type":"uint256[2]","name":"token_amounts","indexed":false},{"type":"uint256[2]","name":"fees","indexed":false},{"type":"uint256","name":"token_supply","indexed":false}],"anonymous":false,"type":"event"},{"name":"RemoveLiquidityOne","inputs":[{"type":"address","name":"provider","indexed":true},{"type":"uint256","name":"token_amount","indexed":false},{"type":"uint256","name":"coin_amount","indexed":false},{"type":"uint256","name":"token_supply","indexed":false}],"anonymous":false,"type":"event"},{"name":"RemoveLiquidityImbalance","inputs":[{"type":"address","name":"provider","indexed":true},{"type":"uint256[2]","name":"token_amounts","indexed":false},{"type":"uint256[2]","name":"fees","indexed":false},{"type":"uint256","name":"invariant","indexed":false},{"type":"uint256","name":"token_supply","indexed":false}],"anonymous":false,"type":"event"},{"name":"CommitNewAdmin","inputs":[{"type":"uint256","name":"deadline","indexed":true},{"type":"address","name":"admin","indexed":true}],"anonymous":false,"type":"event"},{"name":"NewAdmin","inputs":[{"type":"address","name":"admin","indexed":true}],"anonymous":false,"type":"event"},{"name":"CommitNewFee","inputs":[{"type":"uint256","name":"deadline","indexed":true},{"type":"uint256","name":"fee","indexed":false},{"type":"uint256","name":"admin_fee","indexed":false}],"anonymous":false,"type":"event"},{"name":"NewFee","inputs":[{"type":"uint256","name":"fee","indexed":false},{"type":"uint256","name":"admin_fee","indexed":false}],"anonymous":false,"type":"event"},{"name":"RampA","inputs":[{"type":"uint256","name":"old_A","indexed":false},{"type":"uint256","name":"new_A","indexed":false},{"type":"uint256","name":"initial_time","indexed":false},{"type":"uint256","name":"future_time","indexed":false}],"anonymous":false,"type":"event"},{"name":"StopRampA","inputs":[{"type":"uint256","name":"A","indexed":false},{"type":"uint256","name":"t","indexed":false}],"anonymous":false,"type":"event"},{"outputs":[],"inputs":[{"type":"address","name":"_owner"},{"type":"address[2]","name":"_coins"},{"type":"address","name":"_pool_token"},{"type":"address","name":"_base_pool"},{"type":"uint256","name":"_A"},{"type":"uint256","name":"_fee"},{"type":"uint256","name":"_admin_fee"}],"stateMutability":"nonpayable","type":"constructor"},{"name":"A","outputs":[{"type":"uint256","name":""}],"inputs":[],"stateMutability":"view","type":"function","gas":5205},{"name":"A_precise","outputs":[{"type":"uint256","name":""}],"inputs":[],"stateMutability":"view","type":"function","gas":5167},{"name":"get_virtual_price","outputs":[{"type":"uint256","name":""}],"inputs":[],"stateMutability":"view","type":"function","gas":992854},{"name":"calc_token_amount","outputs":[{"type":"uint256","name":""}],"inputs":[{"type":"uint256[2]","name":"amounts"},{"type":"bool","name":"is_deposit"}],"stateMutability":"view","type":"function","gas":3939870},{"name":"add_liquidity","outputs":[{"type":"uint256","name":""}],"inputs":[{"type":"uint256[2]","name":"amounts"},{"type":"uint256","name":"min_mint_amount"}],"stateMutability":"nonpayable","type":"function","gas":6138492},{"name":"get_dy","outputs":[{"type":"uint256","name":""}],"inputs":[{"type":"int128","name":"i"},{"type":"int128","name":"j"},{"type":"uint256","name":"dx"}],"stateMutability":"view","type":"function","gas":2390368},{"name":"get_dy_underlying","outputs":[{"type":"uint256","name":""}],"inputs":[{"type":"int128","name":"i"},{"type":"int128","name":"j"},{"type":"uint256","name":"dx"}],"stateMutability":"view","type":"function","gas":2393552},{"name":"exchange","outputs":[{"type":"uint256","name":""}],"inputs":[{"type":"int128","name":"i"},{"type":"int128","name":"j"},{"type":"uint256","name":"dx"},{"type":"uint256","name":"min_dy"}],"stateMutability":"nonpayable","type":"function","gas":2617568},{"name":"exchange_underlying","outputs":[{"type":"uint256","name":""}],"inputs":[{"type":"int128","name":"i"},{"type":"int128","name":"j"},{"type":"uint256","name":"dx"},{"type":"uint256","name":"min_dy"}],"stateMutability":"nonpayable","type":"function","gas":2632543},{"name":"remove_liquidity","outputs":[{"type":"uint256[2]","name":""}],"inputs":[{"type":"uint256","name":"_amount"},{"type":"uint256[2]","name":"min_amounts"}],"stateMutability":"nonpayable","type":"function","gas":163289},{"name":"remove_liquidity_imbalance","outputs":[{"type":"uint256","name":""}],"inputs":[{"type":"uint256[2]","name":"amounts"},{"type":"uint256","name":"max_burn_amount"}],"stateMutability":"nonpayable","type":"function","gas":6138317},{"name":"calc_withdraw_one_coin","outputs":[{"type":"uint256","name":""}],"inputs":[{"type":"uint256","name":"_token_amount"},{"type":"int128","name":"i"}],"stateMutability":"view","type":"function","gas":4335},{"name":"remove_liquidity_one_coin","outputs":[{"type":"uint256","name":""}],"inputs":[{"type":"uint256","name":"_token_amount"},{"type":"int128","name":"i"},{"type":"uint256","name":"_min_amount"}],"stateMutability":"nonpayable","type":"function","gas":3827137},{"name":"ramp_A","outputs":[],"inputs":[{"type":"uint256","name":"_future_A"},{"type":"uint256","name":"_future_time"}],"stateMutability":"nonpayable","type":"function","gas":151906},{"name":"stop_ramp_A","outputs":[],"inputs":[],"stateMutability":"nonpayable","type":"function","gas":148667},{"name":"commit_new_fee","outputs":[],"inputs":[{"type":"uint256","name":"new_fee"},{"type":"uint256","name":"new_admin_fee"}],"stateMutability":"nonpayable","type":"function","gas":110491},{"name":"apply_new_fee","outputs":[],"inputs":[],"stateMutability":"nonpayable","type":"function","gas":97272},{"name":"revert_new_parameters","outputs":[],"inputs":[],"stateMutability":"nonpayable","type":"function","gas":21925},{"name":"commit_transfer_ownership","outputs":[],"inputs":[{"type":"address","name":"_owner"}],"stateMutability":"nonpayable","type":"function","gas":74663},{"name":"apply_transfer_ownership","outputs":[],"inputs":[],"stateMutability":"nonpayable","type":"function","gas":60740},{"name":"revert_transfer_ownership","outputs":[],"inputs":[],"stateMutability":"nonpayable","type":"function","gas":22015},{"name":"admin_balances","outputs":[{"type":"uint256","name":""}],"inputs":[{"type":"uint256","name":"i"}],"stateMutability":"view","type":"function","gas":3511},{"name":"withdraw_admin_fees","outputs":[],"inputs":[],"stateMutability":"nonpayable","type":"function","gas":9248},{"name":"donate_admin_fees","outputs":[],"inputs":[],"stateMutability":"nonpayable","type":"function","gas":74995},{"name":"kill_me","outputs":[],"inputs":[],"stateMutability":"nonpayable","type":"function","gas":38028},{"name":"unkill_me","outputs":[],"inputs":[],"stateMutability":"nonpayable","type":"function","gas":22165},{"name":"coins","outputs":[{"type":"address","name":""}],"inputs":[{"type":"uint256","name":"arg0"}],"stateMutability":"view","type":"function","gas":2250},{"name":"balances","outputs":[{"type":"uint256","name":""}],"inputs":[{"type":"uint256","name":"arg0"}],"stateMutability":"view","type":"function","gas":2280},{"name":"fee","outputs":[{"type":"uint256","name":""}],"inputs":[],"stateMutability":"view","type":"function","gas":2201},{"name":"admin_fee","outputs":[{"type":"uint256","name":""}],"inputs":[],"stateMutability":"view","type":"function","gas":2231},{"name":"owner","outputs":[{"type":"address","name":""}],"inputs":[],"stateMutability":"view","type":"function","gas":2261},{"name":"base_pool","outputs":[{"type":"address","name":""}],"inputs":[],"stateMutability":"view","type":"function","gas":2291},{"name":"base_virtual_price","outputs":[{"type":"uint256","name":""}],"inputs":[],"stateMutability":"view","type":"function","gas":2321},{"name":"base_cache_updated","outputs":[{"type":"uint256","name":""}],"inputs":[],"stateMutability":"view","type":"function","gas":2351},{"name":"base_coins","outputs":[{"type":"address","name":""}],"inputs":[{"type":"uint256","name":"arg0"}],"stateMutability":"view","type":"function","gas":2490},{"name":"initial_A","outputs":[{"type":"uint256","name":""}],"inputs":[],"stateMutability":"view","type":"function","gas":2411},{"name":"future_A","outputs":[{"type":"uint256","name":""}],"inputs":[],"stateMutability":"view","type":"function","gas":2441},{"name":"initial_A_time","outputs":[{"type":"uint256","name":""}],"inputs":[],"stateMutability":"view","type":"function","gas":2471},{"name":"future_A_time","outputs":[{"type":"uint256","name":""}],"inputs":[],"stateMutability":"view","type":"function","gas":2501},{"name":"admin_actions_deadline","outputs":[{"type":"uint256","name":""}],"inputs":[],"stateMutability":"view","type":"function","gas":2531},{"name":"transfer_ownership_deadline","outputs":[{"type":"uint256","name":""}],"inputs":[],"stateMutability":"view","type":"function","gas":2561},{"name":"future_fee","outputs":[{"type":"uint256","name":""}],"inputs":[],"stateMutability":"view","type":"function","gas":2591},{"name":"future_admin_fee","outputs":[{"type":"uint256","name":""}],"inputs":[],"stateMutability":"view","type":"function","gas":2621},{"name":"future_owner","outputs":[{"type":"address","name":""}],"inputs":[],"stateMutability":"view","type":"function","gas":2651}]
@@ -18991,335 +17681,7 @@ var qusd5 = {
     process.env.VUE_APP_TUSD_TOKEN,
     process.env.VUE_APP_PAX_TOKEN,
   ],
-  sCurveRewards_abi: [
-    {
-      'anonymous': false,
-      'inputs': [
-        {
-          'indexed': true,
-          'internalType': 'address',
-          'name': 'previousOwner',
-          'type': 'address'
-        },
-        {
-          'indexed': true,
-          'internalType': 'address',
-          'name': 'newOwner',
-          'type': 'address'
-        }
-      ],
-      'name': 'OwnershipTransferred',
-      'type': 'event'
-    },
-    {
-      'anonymous': false,
-      'inputs': [
-        {
-          'indexed': false,
-          'internalType': 'uint256',
-          'name': 'reward',
-          'type': 'uint256'
-        }
-      ],
-      'name': 'RewardAdded',
-      'type': 'event'
-    },
-    {
-      'anonymous': false,
-      'inputs': [
-        {
-          'indexed': true,
-          'internalType': 'address',
-          'name': 'user',
-          'type': 'address'
-        },
-        {
-          'indexed': false,
-          'internalType': 'uint256',
-          'name': 'reward',
-          'type': 'uint256'
-        }
-      ],
-      'name': 'RewardPaid',
-      'type': 'event'
-    },
-    {
-      'anonymous': false,
-      'inputs': [
-        {
-          'indexed': true,
-          'internalType': 'address',
-          'name': 'user',
-          'type': 'address'
-        },
-        {
-          'indexed': false,
-          'internalType': 'uint256',
-          'name': 'amount',
-          'type': 'uint256'
-        }
-      ],
-      'name': 'Staked',
-      'type': 'event'
-    },
-    {
-      'anonymous': false,
-      'inputs': [
-        {
-          'indexed': true,
-          'internalType': 'address',
-          'name': 'user',
-          'type': 'address'
-        },
-        {
-          'indexed': false,
-          'internalType': 'uint256',
-          'name': 'amount',
-          'type': 'uint256'
-        }
-      ],
-      'name': 'Withdrawn',
-      'type': 'event'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'DURATION',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [
-        { 'internalType': 'address', 'name': 'account', 'type': 'address' }
-      ],
-      'name': 'balanceOf',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [
-        { 'internalType': 'address', 'name': 'account', 'type': 'address' }
-      ],
-      'name': 'earned',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [],
-      'name': 'exit',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [],
-      'name': 'getReward',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'isOwner',
-      'outputs': [{ 'internalType': 'bool', 'name': '', 'type': 'bool' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'lastTimeRewardApplicable',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'lastUpdateTime',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [
-        { 'internalType': 'uint256', 'name': 'reward', 'type': 'uint256' }
-      ],
-      'name': 'notifyRewardAmount',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'owner',
-      'outputs': [{ 'internalType': 'address', 'name': '', 'type': 'address' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'periodFinish',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [],
-      'name': 'renounceOwnership',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'rewardPerToken',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'rewardPerTokenStored',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'rewardRate',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [{ 'internalType': 'address', 'name': '', 'type': 'address' }],
-      'name': 'rewards',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [
-        {
-          'internalType': 'address',
-          'name': '_rewardDistribution',
-          'type': 'address'
-        }
-      ],
-      'name': 'setRewardDistribution',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [
-        { 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }
-      ],
-      'name': 'stake',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'totalSupply',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [
-        { 'internalType': 'address', 'name': 'newOwner', 'type': 'address' }
-      ],
-      'name': 'transferOwnership',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [{ 'internalType': 'address', 'name': '', 'type': 'address' }],
-      'name': 'userRewardPerTokenPaid',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [
-        { 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }
-      ],
-      'name': 'withdraw',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'y',
-      'outputs': [
-        { 'internalType': 'contract IERC20', 'name': '', 'type': 'address' }
-      ],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'yfi',
-      'outputs': [
-        { 'internalType': 'contract IERC20', 'name': '', 'type': 'address' }
-      ],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    }
-  ],
+  sCurveRewards_abi,
   sCurveRewards_address: '0x0001FB050Fe7312791bF6475b96569D83F695C9f'
 }
 
@@ -19378,335 +17740,65 @@ var usdg5 = {
     process.env.VUE_APP_TUSD_TOKEN,
     process.env.VUE_APP_PAX_TOKEN,
   ],
-  sCurveRewards_abi: [
-    {
-      'anonymous': false,
-      'inputs': [
-        {
-          'indexed': true,
-          'internalType': 'address',
-          'name': 'previousOwner',
-          'type': 'address'
-        },
-        {
-          'indexed': true,
-          'internalType': 'address',
-          'name': 'newOwner',
-          'type': 'address'
-        }
-      ],
-      'name': 'OwnershipTransferred',
-      'type': 'event'
-    },
-    {
-      'anonymous': false,
-      'inputs': [
-        {
-          'indexed': false,
-          'internalType': 'uint256',
-          'name': 'reward',
-          'type': 'uint256'
-        }
-      ],
-      'name': 'RewardAdded',
-      'type': 'event'
-    },
-    {
-      'anonymous': false,
-      'inputs': [
-        {
-          'indexed': true,
-          'internalType': 'address',
-          'name': 'user',
-          'type': 'address'
-        },
-        {
-          'indexed': false,
-          'internalType': 'uint256',
-          'name': 'reward',
-          'type': 'uint256'
-        }
-      ],
-      'name': 'RewardPaid',
-      'type': 'event'
-    },
-    {
-      'anonymous': false,
-      'inputs': [
-        {
-          'indexed': true,
-          'internalType': 'address',
-          'name': 'user',
-          'type': 'address'
-        },
-        {
-          'indexed': false,
-          'internalType': 'uint256',
-          'name': 'amount',
-          'type': 'uint256'
-        }
-      ],
-      'name': 'Staked',
-      'type': 'event'
-    },
-    {
-      'anonymous': false,
-      'inputs': [
-        {
-          'indexed': true,
-          'internalType': 'address',
-          'name': 'user',
-          'type': 'address'
-        },
-        {
-          'indexed': false,
-          'internalType': 'uint256',
-          'name': 'amount',
-          'type': 'uint256'
-        }
-      ],
-      'name': 'Withdrawn',
-      'type': 'event'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'DURATION',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [
-        { 'internalType': 'address', 'name': 'account', 'type': 'address' }
-      ],
-      'name': 'balanceOf',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [
-        { 'internalType': 'address', 'name': 'account', 'type': 'address' }
-      ],
-      'name': 'earned',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [],
-      'name': 'exit',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [],
-      'name': 'getReward',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'isOwner',
-      'outputs': [{ 'internalType': 'bool', 'name': '', 'type': 'bool' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'lastTimeRewardApplicable',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'lastUpdateTime',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [
-        { 'internalType': 'uint256', 'name': 'reward', 'type': 'uint256' }
-      ],
-      'name': 'notifyRewardAmount',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'owner',
-      'outputs': [{ 'internalType': 'address', 'name': '', 'type': 'address' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'periodFinish',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [],
-      'name': 'renounceOwnership',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'rewardPerToken',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'rewardPerTokenStored',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'rewardRate',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [{ 'internalType': 'address', 'name': '', 'type': 'address' }],
-      'name': 'rewards',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [
-        {
-          'internalType': 'address',
-          'name': '_rewardDistribution',
-          'type': 'address'
-        }
-      ],
-      'name': 'setRewardDistribution',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [
-        { 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }
-      ],
-      'name': 'stake',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'totalSupply',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [
-        { 'internalType': 'address', 'name': 'newOwner', 'type': 'address' }
-      ],
-      'name': 'transferOwnership',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [{ 'internalType': 'address', 'name': '', 'type': 'address' }],
-      'name': 'userRewardPerTokenPaid',
-      'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': false,
-      'inputs': [
-        { 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }
-      ],
-      'name': 'withdraw',
-      'outputs': [],
-      'payable': false,
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'y',
-      'outputs': [
-        { 'internalType': 'contract IERC20', 'name': '', 'type': 'address' }
-      ],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    },
-    {
-      'constant': true,
-      'inputs': [],
-      'name': 'yfi',
-      'outputs': [
-        { 'internalType': 'contract IERC20', 'name': '', 'type': 'address' }
-      ],
-      'payable': false,
-      'stateMutability': 'view',
-      'type': 'function'
-    }
+  sCurveRewards_abi,
+  sCurveRewards_address: '0x0001FB050Fe7312791bF6475b96569D83F695C9f'
+}
+
+var busd5 = {
+  swap_abi: qusd5_abi,
+  deposit_abi: qusd5_deposit_abi,
+  N_COINS: 2,
+  coin_precisions: [1e18, 1e18],
+  wrapped_precisions: [1e18, 1e18],
+  tethered: [false, false],
+  use_lending: [false, false],
+  is_plain: [true, true],
+  swap_address: process.env.VUE_APP_BUSD5_SWAP,
+  token_address: process.env.VUE_APP_BUSD5_TOKEN,
+  infura_url: `https://${process.env.VUE_APP_INFURA_ENDPOINTS_DOMIAN}/v3/${process.env.VUE_APP_INFURA_KEY}`,
+  deposit_address: process.env.VUE_APP_BUSD5_DEPOSIT,
+  underlying_coins: [
+    process.env.VUE_APP_BUSD_TOKEN,
+    process.env.VUE_APP_USD5_TOKEN,
   ],
+  coins_precisions: [1e18, 1e6, 1e6, 1e18, 1e18],
+  coins_wrapped_precisions: [1e18, 1e6, 1e6, 1e18, 1e18],
+  coins_tethered: [false, false, true, false, false],
+  coins_use_lending: [false, false, false, true, false],
+  coins_is_plain: [true, true, true, true, true],
+  coins: [
+    process.env.VUE_APP_DAI_TOKEN,
+    process.env.VUE_APP_USDC_TOKEN,
+    process.env.VUE_APP_USDT_TOKEN,
+    process.env.VUE_APP_TUSD_TOKEN,
+    process.env.VUE_APP_PAX_TOKEN,
+  ],
+  base_precisions: [1e18, 1e18, 1e6, 1e6, 1e18, 1e18],
+  base_tethered: [false, false, false, true, false, false],
+  base_use_lending: [false, false, false, false, true, false],
+  base_is_plain: [true, true, true, true, true, true],
+  base_pool_address: process.env.VUE_APP_USD5_SWAP,
+  base_pool_abi: qusd5_abi,
+  base_pool_token_address: process.env.VUE_APP_USD5_TOKEN,
+  base_pool_token_abi: ERC20_abi,
+  base_coins_idx: {
+    1: 0,
+    2: 1,
+    3: 2,
+    4: 3,
+    5: 4,
+  },
+  fromUnderlyingBaseCoinIdx: 1,
+  toBaseCoinIdxs: [1,2,3,4,5],
+  base_coins: [
+    process.env.VUE_APP_BUSD_TOKEN,
+    process.env.VUE_APP_DAI_TOKEN,
+    process.env.VUE_APP_USDC_TOKEN,
+    process.env.VUE_APP_USDT_TOKEN,
+    process.env.VUE_APP_TUSD_TOKEN,
+    process.env.VUE_APP_PAX_TOKEN,
+  ],
+  sCurveRewards_abi,
   sCurveRewards_address: '0x0001FB050Fe7312791bF6475b96569D83F695C9f'
 }
 
@@ -21161,5 +19253,6 @@ export default {
   okuu,
   usd5,
   qusd5,
-  usdg5
+  usdg5,
+  busd5
 }

@@ -10,7 +10,7 @@
 
 	export default {
 		data: () => ({
-			pools: ['compound', 'usdt', 'iearn', 'busd', 'susdv2', 'pax', 'tbtc', 'ren', 'dfi', 'dusd', 'okuu', 'usd5', 'qusd5', 'usdg5'],
+			pools: ['compound', 'usdt', 'iearn', 'busd', 'susdv2', 'pax', 'tbtc', 'ren', 'dfi', 'dusd', 'okuu', 'usd5', 'qusd5', 'usdg5', 'busd5'],
 			swapContracts: [],
 			gas: {},
 		}),
