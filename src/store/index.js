@@ -706,6 +706,123 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
     },
   },
 
+  bnb: {
+    name: 'BNB',
+    address: process.env.VUE_APP_BNB_TOKEN,
+    abi: abiSFG,
+    __contract: null,
+    get contract () {
+      const { __contract, abi, address } = this
+  
+      return __contract ||
+        (this.__contract = new web3.eth.Contract(abi, address))
+    },
+  
+    decimal: 18,
+    /**
+     *  @type {number}
+     */
+    get precision () {
+      const { decimal } = this
+
+      return Math.pow(10, decimal)
+    },
+  
+    userBalanceOf: valueModel.create(),
+    async getBalanceOf (target, accountAddress) {
+      const { contract, userBalanceOf } = this
+      const result = await contract.methods.balanceOf(accountAddress).call()
+  
+      userBalanceOf.ether = target.ether = result
+  
+      return result
+    },
+  
+    error: errorModel.create(),
+
+    // FIXME: change
+    priceUnit: 'USDT',
+    price: valueModel.create(),
+    // TODO: priceUnit
+    async getPrice (priceUnit) {
+      const { price } = this
+      const rates = await request.getTokenGt()
+
+      // BN(rates.USDT).times(1e18).toString()
+      const result = price.ether = 0
+  
+      return result
+    },
+
+    // amount: 0,
+    // approveAmount: 0,
+    // TODO: common & format type
+    // ether
+    minAllowance: 1,
+    // ether
+    maxAllowance: BN(2).pow(256).minus(1),
+    async hasValidAmount (val) {
+      const { minAllowance, maxAllowance, error } = this
+      const _val = BN(val).times(1e18)
+      // FIXME: balance Of
+      const result = _val.gte(minAllowance) &&
+        // TODO: div(2) why?
+        _val.lte(maxAllowance.div(2))
+  
+      if (!result) {
+        error.message = store.i18n.$i18n.t('model.valueOutValidRange')
+      }
+  
+      return result
+    },
+    async hasApprove (amount, accountAddress, toContract) {
+      const { contract, error } = this
+      const _amount = BN(amount).times(1e18)
+      // FIXME:
+      const allowance = BN(await contract.methods.allowance(accountAddress, toContract).call())
+  console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->', _amount.toString(), _amount.toString() / 1e18 )
+      // allowance >= amount && amount > 0
+      const result = allowance.gte(_amount) && BN(_amount).gt(0)
+  
+      if (!result) {
+        error.message = store.i18n.$i18n.t('model.approveOperation')
+      }
+  
+      return result
+    },
+    async onApproveAmount (amount, accountAddress, toContract, infinite = false) {
+      const { contract, maxAllowance } = this
+      const _amount = BN(amount).times(1e18)
+  
+      console.log('amount', amount)
+      if (!await this.hasValidAmount(amount)) return false
+  
+      // FIXME:
+      const allowance = BN(await contract.methods.allowance(accountAddress, toContract).call())
+  
+      if (infinite) {
+        // allowance < maxAllowance / 2 && amount > 0
+        // TODO: div(2) why?
+        if (allowance.lt(maxAllowance.div(2))) {
+          if (allowance.gt(0) && requiresResetAllowance.includes(contract._address)) {
+            await approve(contract, 0, accountAddress, toContract)
+          } else {
+            await approve(contract, maxAllowance, accountAddress, toContract)
+          }
+        }
+      } else {
+        // allowance < amount && amount > 0
+        if (allowance.lt(_amount)) {
+          if (allowance.gt(0) && requiresResetAllowance.includes(contract._address)) {
+            await approve(contract, 0, accountAddress, toContract)
+          } else {
+            await approve(contract, _amount, accountAddress, toContract)
+          }
+        }
+      }
+    },
+  },
+
   kun: {
     name: 'KUN',
     address: process.env.VUE_APP_KUN_TOKEN,
@@ -1594,11 +1711,9 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
         (this.__contract = new web3.eth.Contract(abi, address))
     },
   },
-
   dai: {
     address: process.env.VUE_APP_DAI_TOKEN,
   },
-
   bpt: {
     address: process.env.VUE_APP_BPT_TOKEN,
     abi: abiBpt,
@@ -3844,11 +3959,11 @@ store.gauges = {
         code: 'usdg5',
         name: 'usdg5 LP token',
         priceDecimal: 5,
-  
+
         totalStaking: valueModel.create(),
         userStaking: valueModel.create(),
         userBalanceOf: valueModel.create(),
-  
+
         dailyApy: valueModel.create(),
         totalApy: valueModel.create(),
 
@@ -4103,6 +4218,386 @@ store.gauges = {
       return target.ether = await contract.methods.claimed_rewards_for(accountAddress).call()
     },
     async getUserTotalReward_GT (target, pendingReward, paidReward) {
+      return target.ether = BN(await pendingReward).plus(await paidReward).toString()
+    },
+  
+    async onStake (accountAddress, infApproval) {
+      const { tokens } = store
+      const { name, address, contract, mortgages } = this
+      // TODO: target
+      const deposit = BN(mortgages.usdg5.userStake.revised).times(1e18)
+  
+      // await common.approveAmount(tokens.bpt.contract, deposit, accountAddress, address, infApproval)
+  
+      var { dismiss } = notifyNotification(`Please confirm depositing into ${name} gauge`)
+  
+      await contract.methods.deposit(deposit.toFixed(0,1)).send({
+        from: accountAddress,
+        // gasPrice: gasPriceStore.gasPriceWei,
+        // gas: this.currentPool.deposit.gas,
+      })
+      .once('transactionHash', hash => {
+        dismiss()
+        notifyHandler(hash)
+      })
+    },
+
+    async onRedemption (accountAddress, infApproval) {
+      const { name, address, contract, mortgages } = this
+      // TODO: target
+      let withdraw = BN(mortgages.usdg5.userRedemption.revised).times(1e18)
+      let balance = BN(await contract.methods.balanceOf(accountAddress).call())
+  
+      console.log('withdraw', withdraw, 'balance', balance)
+  
+      if(withdraw.gt(balance))
+        withdraw = balance
+  
+      // let gas = this.currentPool.deposit.gas
+      let withdrawMethod = contract.methods.withdraw(withdraw.toFixed(0,1))
+  
+      // try {
+      //   // update
+      //   gas = await withdrawMethod.estimateGas()
+      // }
+      // catch(err) { }
+  
+      var { dismiss } = notifyNotification(`Please confirm withdrawing from ${name} gauge`)
+  
+      await withdrawMethod.send({
+        from: accountAddress,
+        // gasPrice: gasPriceStore.gasPriceWei,
+        // gas: gas * 1.5 | 0,
+      })
+      .once('transactionHash', hash => {
+        dismiss()
+        notifyHandler(hash)
+      })
+    },
+  
+    async onHarvest (accountAddress) {
+      const { name, address, contract, mortgages, rewards } = this
+      // let minter = new web3.eth.Contract(daoabis.minter_abi, process.env.VUE_APP_PS_MINTER)
+  
+      const mint = await gaugeStore.state.minter.methods.mint(address)
+      // let gas = await mint.estimateGas()
+  
+      var { dismiss } = notifyNotification(`Please confirm claiming ${rewards.sfg.name} from ${name} gauge`)
+  
+      await mint.send({
+        from: accountAddress,
+        // gasPrice: gasPriceStore.gasPriceWei,
+        // gas: gas * 1.5 | 0,
+      })
+      .once('transactionHash', hash => {
+        dismiss()
+        notifyHandler(hash)
+      })
+    },
+  
+    async onClaimRewards (accountAddress) {
+      // const { name, address, contract, mortgages, rewards } = this
+      // // let minter = new web3.eth.Contract(daoabis.minter_abi, process.env.VUE_APP_PS_MINTER)
+  
+      // // const mint = await gaugeStore.state.minter.methods.mint(address)
+      // // let gas = await mint.estimateGas()
+  
+      // var { dismiss } = notifyNotification(`Please confirm claiming ${rewards.sfg.name} from ${name} gauge`)
+  
+      // await mint.send({
+      //   from: accountAddress,
+      //   // gasPrice: gasPriceStore.gasPriceWei,
+      //   // gas: gas * 1.5 | 0,
+      // })
+      // .once('transactionHash', hash => {
+      //   dismiss()
+      //   notifyHandler(hash)
+      // })
+  
+      const { name, address, contract, mortgages, rewards } = this
+  
+      var { dismiss } = notifyNotification(`Please confirm claiming ${rewards.gt.name}`)
+  
+      await contract.methods.claim_rewards(accountAddress).send({
+          from: accountAddress
+        })
+        .once('transactionHash', hash => {
+          dismiss()
+          notifyHandler(hash)
+        })
+    },
+  
+    /** 加速系数 */
+    async getFactorOf (target, address) {
+      const { contract } = this
+      // TODO: ether?
+      const result = await contract.methods.factorOf(address).call()
+  
+      target.ether = result
+      return result
+    },
+  },
+
+  busd5: {
+    code: 'busd5',
+    name: 'busd5',
+    propagateMark: 'binance',
+    mortgagesUnit: 'busd5 LP token',
+    address: process.env.VUE_APP_BUSD5_GAUGE,
+    // abi: abiDfi, // FIXME: ???
+    abi: abiSUSDv2,
+    __contract: null,
+    get contract () {
+      const { __contract, abi, address } = this
+
+      return __contract ||
+        (this.__contract = new web3.eth.Contract(abi, address))
+    },
+    mortgages: {
+      busd5: {
+        code: 'busd5',
+        name: 'busd5 LP token',
+        priceDecimal: 5,
+
+        totalStaking: valueModel.create(),
+        userStaking: valueModel.create(),
+        userBalanceOf: valueModel.create(),
+
+        dailyApy: valueModel.create(),
+        totalApy: valueModel.create(),
+
+        ratioStaking: valueModel.create(),
+        needLockAmount: valueModel.create(),
+        factorOf: valueModel.create(),
+        needLockDay: ModelValueDate.create(),
+
+        userStake: valueModel.create(),
+        stakeSliderSelected: 0,
+        // FIXME: common
+        stakeSliderOptions: [
+          { text: '25%', value: 0.25 },
+          { text: '50%', value: 0.5 },
+          { text: '75%', value: 0.75 },
+          { text: '100%', value: 1 }
+        ],
+        get stakeAmountInput () {
+          const { userStake } = this
+  
+          return userStake.revised || ''
+        },
+        set stakeAmountInput (val) {
+          const { userStake } = this
+  
+          userStake.revised = val
+          this.stakeSliderSelected = 0
+        },
+  
+        get stakeSliderSelectedRadio () {
+          return this.stakeSliderSelected
+        },
+        set stakeSliderSelectedRadio (val) {
+          const { userStake, priceDecimal, userBalanceOf } = this
+  
+          if (val === 0) return false
+  
+          // FIXME: format
+          userStake.revised = +userBalanceOf.handled > 0
+            ? floor(BN(val).times(userBalanceOf.handled).toString(), priceDecimal)
+            : 0
+          this.stakeSliderSelected = val
+        },
+  
+        userRedemption: valueModel.create(),
+        redemptionSliderSelected: 0,
+        // FIXME: common
+        redemptionSliderOptions: [
+          { text: '25%', value: 0.25 },
+          { text: '50%', value: 0.5 },
+          { text: '75%', value: 0.75 },
+          { text: '100%', value: 1 }
+        ],
+        get redemptionAmountInput () {
+          const { userRedemption } = this
+  
+          return userRedemption.revised || ''
+        },
+        set redemptionAmountInput (val) {
+          const { userRedemption } = this
+  
+          userRedemption.revised = val
+          this.redemptionSliderSelected = 0
+        },
+  
+        get redemptionSliderSelectedRadio () {
+          return this.redemptionSliderSelected
+        },
+        set redemptionSliderSelectedRadio (val) {
+          const { userRedemption, priceDecimal, userStaking } = this
+  
+          if (val === 0) return false
+  
+          // FIXME: format
+          userRedemption.revised = +userStaking.handled > 0
+            ? floor(BN(val).times(userStaking.handled).toString(), priceDecimal)
+            : 0
+          this.stakeSliderSelected = val
+        }
+      }
+    },
+
+    // FIXME: auto create
+    // rewardsUnit: ['SFG', 'BNB'],
+    rewardsUnit: ['SFG'],
+    rewards: {
+      sfg: {
+        code: 'sfg',
+        name: 'SFG',
+        weighting: valueModel.create(),
+  
+        userPendingReward: valueModel.create(),
+        userPaidReward: valueModel.create(),
+        userTotalReward: valueModel.create(),
+        dailyYield: valueModel.create(),
+  
+        dailyApy: valueModel.create(),
+        totalApy: valueModel.create(),
+        totalMaxApy: valueModel.create(),
+      },
+      bnb: {
+        code: 'bnb',
+        name: 'BNB',
+        weighting: valueModel.create(),
+  
+        userPendingReward: valueModel.create(),
+        userPaidReward: valueModel.create(),
+        userTotalReward: valueModel.create(),
+        dailyYield: valueModel.create(),
+  
+        dailyApy: valueModel.create(),
+        totalApy: valueModel.create(),
+      }
+    },
+
+    async getNeedLockAmount(target, stakingPerLPT, balanceOf, lockSfgBalanceOf) {
+      const { contract, mortgages } = this
+// FIXME: 1E18
+      const result = Math.max(
+        BN(await stakingPerLPT / 1e18).times(await balanceOf / 1e18).minus(await lockSfgBalanceOf / 1e18),
+        0
+      )
+      target.ether = result * 1e18
+
+      return result
+    },
+
+    async getRatioStaking(target, accountAddress) {
+      const { contract } = this
+
+      return target.ether = await contract.methods.ratioStaking(accountAddress).call()
+    },
+
+    // FIXME: 秒而非 ether
+    async getNeedLockDay (target, stakeTimeOf) {
+      const result = Math.max(
+        // FIXME: 
+        ((+await stakeTimeOf + 80 * 86400) - Date.now() / 1000) / 86400,
+        0
+      )
+      target.handled = result
+      return result
+    },
+
+    async getTotalStaking (target) {
+      const { contract } = this
+
+      return target.ether = await contract.methods.totalSupply().call()
+    },
+
+    // dailyAPY: valueModel.create(),
+    totalApy: valueModel.create(),
+    myApy: valueModel.create(),
+    maxApy: valueModel.create(),
+    // TEMP:
+    async getAPY (price, dailyYield, totalStaking, lpTokenPrice, bnbPrice) {
+      const { contract, dailyAPY, totalApy, rewards } = this
+
+      rewards.sfg.dailyYield.handled = BN(await dailyYield / 1e18).times(rewards.sfg.weighting.handled).toString()
+
+      rewards.bnb.dailyYield.ether = '0'
+
+      const lpt = BN(await totalStaking).times(await lpTokenPrice / 1e18)
+      rewards.sfg.dailyApy.handled = BN(await price / 1e18).times(rewards.sfg.dailyYield.handled).dividedBy(lpt).toString()
+      rewards.sfg.totalApy.handled = +rewards.sfg.dailyApy.handled * 365
+      rewards.bnb.dailyApy.handled = BN(await bnbPrice / 1e18).times(rewards.bnb.dailyYield.handled).dividedBy(lpt)
+      rewards.bnb.totalApy.handled = +rewards.bnb.dailyApy.handled * 365
+
+      totalApy.handled = BN(rewards.sfg.totalApy.handled).plus(rewards.bnb.totalApy.handled).toString()
+
+      // FIXME: SFG min apy
+      return rewards.sfg.totalApy.handled
+    },
+
+    async getMyApy (sfgMinApy, factorOf) {
+      const { myApy, mortgages, rewards } = this
+
+      const result = BN(await sfgMinApy).times(await factorOf / 1e18).plus(rewards.bnb.totalApy.handled).toString()
+
+      myApy.handled = result
+      return result
+    },
+
+    async getMaxApy (sfgMinApy, multiple) {
+      const { maxApy, mortgages, rewards } = this
+
+      rewards.sfg.totalMaxApy.handled = BN(await sfgMinApy).times(await multiple / 1e18).toString()
+
+      const result = BN(rewards.sfg.totalMaxApy.handled).plus(rewards.bnb.totalApy.handled).toString()
+
+      return maxApy.handled = result
+    },
+    async getBalanceOf (target, accountAddress) {
+      const { contract } = this
+      const result = await contract.methods.balanceOf(accountAddress).call()
+  
+      target.ether = result
+      return result
+    },
+
+    virtualTotalSupply: valueModel.create(),
+    async getVirtualTotalSupply () {
+      const { contract, virtualTotalSupply } = this
+      const result = await contract.methods.virtualTotalSupply().call()
+
+      virtualTotalSupply.ether = result
+      return result
+    },
+
+    async getUserPendingReward_SFG (target, accountAddress) {
+      const { contract } = this
+  
+      return target.ether = await contract.methods.claimable_tokens(accountAddress).call()
+    },
+    async getUserPaidReward_SFG (target, accountAddress) {
+      const { contract } = this
+  
+      // return target.ether = await contract.methods.integrate_fraction(accountAddress).call()
+      return target.ether = await gaugeStore.state.minter.methods.minted(accountAddress, this.address).call()
+    },
+    async getUserTotalReward_SFG (target, pendingReward, paidReward) {
+      return target.ether = BN(await pendingReward).plus(await paidReward).toString()
+    },
+  
+    async getUserPendingReward_BNB (target, accountAddress) {
+      const { contract } = this
+  
+      return target.ether = await contract.methods.claimable_reward(accountAddress).call()
+    },
+    async getUserPaidReward_BNB (target, accountAddress) {
+      const { contract } = this
+
+      return target.ether = await contract.methods.claimed_rewards_for(accountAddress).call()
+    },
+    async getUserTotalReward_BNB (target, pendingReward, paidReward) {
       return target.ether = BN(await pendingReward).plus(await paidReward).toString()
     },
   

@@ -466,6 +466,19 @@
       const sfgDailyYield = await tokens.sfg.getDailyYield()
       const multiple = lock.SFG.getMultiple()
 
+      // busd5
+      await lock.SFG.getWeightOfGauge(gauges.busd5.rewards.sfg.weighting, gauges.busd5.address)
+      // gauges.busd5.getMaxApy(
+        gauges.busd5.getAPY(
+          sfgPrice,
+          sfgDailyYield,
+          gauges.busd5.getTotalStaking(gauges.busd5.mortgages.busd5.totalStaking),
+          tokens.busd5.getPrice(),
+          tokens.bnb.getPrice(),
+        ),
+      //   multiple
+      // )
+
       await lock.SFG.getWeightOfGauge(gauges.susdv2.rewards.sfg.weighting, gauges.susdv2.address)
       gauges.susdv2.getAPY(
         sfgPrice,
@@ -548,7 +561,7 @@
       stablePools () {
         const { volumes } = this
         const { gauges, pool } = store
-        const { okuu, dusd, iUSD_LPT, usd5, qusd5, usdg5 } = store.tokens
+        const { okuu, dusd, iUSD_LPT, usd5, qusd5, usdg5, busd5 } = store.tokens
 
         return {
           fields: [
@@ -560,6 +573,21 @@
             'operating'
           ],
           items: [
+            {
+              id: -1,
+              toDeposit: '/liquidity/busd5',
+              toDao: '/dao',
+              pooltext: 'binance',
+              pools: 'BUSD USD5',
+              volData: [store.pool.BUSD5.dailyVol.USD.handled, -1],
+              currencies: {busd: 'BUSD', usd5: 'USD5'},
+              funds: '-',
+              // apyBusy: gauges.busd5.totalApy.loading || gauges.busd5.maxApy.loading,
+              // apy: `${gauges.busd5.totalApy.percent}% ~ ${gauges.busd5.maxApy.percent}%`,
+              apyBusy: gauges.busd5.totalApy.loading,
+              apy: `${gauges.busd5.totalApy.percent}%`,
+              link: '/busd5'
+            },
             {
               id: -1,
               toDeposit: '/liquidity/usdg5',
