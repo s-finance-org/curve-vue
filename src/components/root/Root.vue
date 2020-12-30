@@ -34,11 +34,11 @@
         <template v-slot:head(volume)>
           {{ $t('global.dailyVol') }}
         </template>
-        <template v-slot:cell(volume)="data">
+        <!-- <template v-slot:cell(volume)="data">
           <text-overlay-loading :show="data.item.volData && data.item.volData[0] < 0">
             ${{ (data.item.volData && data.item.volData[0] | 0) | formatNumber(0) }}
           </text-overlay-loading>
-        </template>
+        </template> -->
         <template v-slot:head(apr)>
           {{ $t('global.apr') }}
         </template>
@@ -568,7 +568,7 @@
             { key: 'name', stickyColumn: true, isRowHeader: true },
             'pools',
             // 'funds',
-            'volume',
+            // 'volume',
             'apr',
             'operating'
           ],
@@ -600,19 +600,6 @@
               apyBusy: gauges.usdg5.totalApy.loading || gauges.usdg5.maxApy.loading,
               apy: `${gauges.usdg5.totalApy.percent}% ~ ${gauges.usdg5.maxApy.percent}%`,
               link: '/usdg5'
-            },
-            {
-              id: -1,
-              toDeposit: '/liquidity/qusd5',
-              toDao: '/dao',
-              pooltext: 'qian',
-              pools: 'QUSD USD5',
-              volData: [store.pool.QUSD5.dailyVol.USD.handled, -1],
-              currencies: {qusd: 'QUSD', usd5: 'USD5'},
-              funds: '-',
-              apyBusy: gauges.qusd5.totalApy.loading || gauges.qusd5.maxApy.loading,
-              apy: `${gauges.qusd5.totalApy.percent}% ~ ${gauges.qusd5.maxApy.percent}%`,
-              link: '/qusd5'
             },
             {
               id: -1,
@@ -652,6 +639,19 @@
               apyBusy: gauges.dfi.totalApy.loading || gauges.dfi.maxApy.loading,
               apy: `${gauges.dfi.totalApy.percent}% ~ ${gauges.dfi.maxApy.percent}%`,
               link: '/dfi'
+            },
+            {
+              id: -1,
+              toDeposit: '/liquidity/qusd5',
+              toDao: '/dao',
+              pooltext: 'qian',
+              pools: 'QUSD USD5',
+              volData: [store.pool.QUSD5.dailyVol.USD.handled, -1],
+              currencies: {qusd: 'QUSD', usd5: 'USD5'},
+              funds: '-',
+              apyBusy: gauges.qusd5.totalApy.loading || gauges.qusd5.maxApy.loading,
+              apy: `${gauges.qusd5.totalApy.percent}% ~ ${gauges.qusd5.maxApy.percent}%`,
+              link: '/qusd5'
             },
             {
               id: 4,

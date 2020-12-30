@@ -7,9 +7,9 @@
           <b-nav-item :to="{ name: 'Swap', params: { pool: 'busd5' } }">binance</b-nav-item>
           <b-nav-item :to="{ name: 'Swap', params: { pool: 'usdg5' } }">gate</b-nav-item>
           <b-nav-item :to="{ name: 'Swap', params: { pool: 'usd5' } }">5pool</b-nav-item>
-          <b-nav-item :to="{ name: 'Swap', params: { pool: 'qusd5' } }">qian</b-nav-item>
           <b-nav-item :to="{ name: 'Swap', params: { pool: 'dusd' } }">dForce</b-nav-item>
           <b-nav-item :to="{ name: 'Swap', params: { pool: 'dfi' } }">dfi</b-nav-item>
+          <b-nav-item :to="{ name: 'Swap', params: { pool: 'qusd5' } }">qian</b-nav-item>
         </b-navbar-nav>
       </b-container>
       <b-container class="py-4 px-md-5">

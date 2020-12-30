@@ -7,9 +7,9 @@
           <b-nav-item :to="{ name: 'Liquidity', params: { pool: 'busd5' } }">binance</b-nav-item>
           <b-nav-item :to="{ name: 'Liquidity', params: { pool: 'usdg5' } }">gate</b-nav-item>
           <b-nav-item :to="{ name: 'Liquidity', params: { pool: 'usd5' } }">5pool</b-nav-item>
-          <b-nav-item :to="{ name: 'Liquidity', params: { pool: 'qusd5' } }">qian</b-nav-item>
           <b-nav-item :to="{ name: 'Liquidity', params: { pool: 'dusd' } }">dForce</b-nav-item>
           <b-nav-item :to="{ name: 'Liquidity', params: { pool: 'dfi' } }">dfi</b-nav-item>
+          <b-nav-item :to="{ name: 'Liquidity', params: { pool: 'qusd5' } }">qian</b-nav-item>
           <b-nav-item :to="{ name: 'Liquidity', params: { pool: 'susdv2' } }">sUSD</b-nav-item>
         </b-navbar-nav>
       </b-container>
