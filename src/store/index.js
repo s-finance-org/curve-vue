@@ -4903,7 +4903,7 @@ store.lock = {
         code: 'SFG',
         name: 'SFG',
         priceDecimal: 4,
-        gainUrl: 'https://legacy.balancer.exchange/#/swap/0x8a6ACA71A218301c7081d4e96D64292D3B275ce0',
+        gainUrl: 'https://balancer.exchange/#/swap/ether/0x8a6aca71a218301c7081d4e96d64292d3b275ce0',
 
         // totalStaking: ModelValueEther.create(),
         userStaking: ModelValueEther.create(),
