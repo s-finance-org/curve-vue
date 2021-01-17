@@ -29,7 +29,7 @@
     sbtc: 'sBTC',
     dfi: 'dfi',
     dusd: 'dUSD',
-    okuu: 'OKUU',
+    basu: 'BASU',
     usd5: 'usd5',
     qusd5: 'qusd5',
     usdg5: 'usdg5',

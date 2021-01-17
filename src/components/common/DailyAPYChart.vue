@@ -322,7 +322,7 @@
 		        	})
 		    	}
 
-		    	if(['y', 'iearn', 'dfi', 'dusd', 'okuu'].includes(this.pool)) {
+		    	if(['y', 'iearn', 'dfi', 'dusd', 'basu'].includes(this.pool)) {
 		    		//YFI token deployed
 		        	let startTime = 1594972885
 		        	let endTime = this.data[this.data.length - 1].timestamp
@@ -438,7 +438,7 @@
 	    			color: '#7bb5ec',
 	    		})
 
-		        if(!['susdv2', 'tbtc', 'ren', 'sbtc', 'y', 'iearn', 'dfi', 'dusd', 'okuu'].includes(this.pool)) {
+		        if(!['susdv2', 'tbtc', 'ren', 'sbtc', 'y', 'iearn', 'dfi', 'dusd', 'basu'].includes(this.pool)) {
 		        	let totalAPYs = chartData.map(([timestamp, apy], i) => [timestamp, apy + lendingrates[i][1]])
 
 		        	this.chart.addSeries({

@@ -2294,7 +2294,7 @@
 
             const { crv, snx, sfg } = this.currentPool.tokens
             const { lock, gauges } = store
-            const { dfi, bpt, dusd, okuu, usd5, qusd5, usdg5, busd5 } = store.gauges
+            const { dfi, bpt, dusd, basu, usd5, qusd5, usdg5, busd5 } = store.gauges
 
             // susdv2
             store.tokens.susdv2LpToken.getBalanceOf(this.currentPool.balanceOf, currentContract.default_account)

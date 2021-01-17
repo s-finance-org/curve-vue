@@ -1280,26 +1280,6 @@ import Table from '../ren/Table.vue'
             store.gauges.dusd.onClaimRewards(currentContract.default_account)
           },
 
-          // FIXME:
-          async onOkuuStake () {
-            const { gauges, tokens } = store
-            // this.alert('notice.approveOperationWarning', 'stake')
-
-            if (!await tokens.okuu.hasValidAmount(gauges.okuu.mortgages.okuu.userStake.revised)) return false
-
-            if (await tokens.okuu.hasApprove(gauges.okuu.mortgages.okuu.userStake.revised, currentContract.default_account, gauges.okuu.address)) {
-              gauges.okuu.onStake(currentContract.default_account, this.inf_approval)
-            } else {
-              tokens.okuu.onApproveAmount(gauges.okuu.mortgages.okuu.userStake.revised, currentContract.default_account, gauges.okuu.address, this.inf_approval)
-            }
-          },
-          async onOkuuRedemption () {
-            store.gauges.okuu.onRedemption(currentContract.default_account, this.inf_approval)
-          },
-          async onOkuuHarvest () {
-            store.gauges.okuu.onHarvest(currentContract.default_account)
-          },
-
           async mounted() {
             this.currentPool.gauge = process.env.VUE_APP_PSS_GAUGE
 
@@ -1389,7 +1369,7 @@ import Table from '../ren/Table.vue'
               store.gauges.susdv2.getSnxPaidReward(snx.paidReward, currentContract.default_account)
             )
 
-            const { dfi, bpt, dusd, okuu } = store.gauges
+            const { dfi, bpt, dusd, basu } = store.gauges
 
             // dusd
             store.gauges.dusd.rewards.sfg.weighting.handled = 0.2

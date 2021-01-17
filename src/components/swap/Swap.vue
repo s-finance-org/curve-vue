@@ -4,6 +4,7 @@
     <div class="total-bg">
       <b-container class="d-flex py-4 px-md-5">
         <b-navbar-nav class="navbar-tabs flex-row flex-wrap px-md-5">
+          <b-nav-item :to="{ name: 'Swap', params: { pool: 'basu' } }">basis</b-nav-item>
           <b-nav-item :to="{ name: 'Swap', params: { pool: 'busd5' } }">binance</b-nav-item>
           <b-nav-item :to="{ name: 'Swap', params: { pool: 'usdg5' } }">gate</b-nav-item>
           <b-nav-item :to="{ name: 'Swap', params: { pool: 'usd5' } }">5pool</b-nav-item>
@@ -27,7 +28,7 @@
                 <h4 class="mb-0">${{ totalBalances | formatNumber(2) }}</h4>
               </text-overlay-loading>
             </div>
-            <div class="total-box col px-4 py-3" v-if="!['binance'].includes(currentPoolName)">
+            <div class="total-box col px-4 py-3" v-if="!['binance', 'basis'].includes(currentPoolName)">
               <h6 class="text-black-65">{{ $t('global.dailyVol') }}</h6>
               <text-overlay-loading :show="poolDailyVolUSD.loading">
                 <h4 class="mb-0">${{ poolDailyVolUSD.cont }}</h4>
@@ -226,7 +227,7 @@
 
           <div class="mt-4">
             <b-form-checkbox v-model="inf_approval" name="inf-approval">{{ $t('global.infiniteApproval') }}</b-form-checkbox>
-            <b-form-checkbox v-model="swapwrapped" name="swapw" v-show = "!['susdv2', 'tbtc', 'ren', 'sbtc', 'okuu', 'usd5'].includes(currentPool)">{{ $t('instantSwap.swapWrapped', [currentPoolTokenCoinMark]) }}</b-form-checkbox>
+            <b-form-checkbox v-model="swapwrapped" name="swapw" v-show = "!['susdv2', 'tbtc', 'ren', 'sbtc', 'basu', 'usd5'].includes(currentPool)">{{ $t('instantSwap.swapWrapped', [currentPoolTokenCoinMark]) }}</b-form-checkbox>
           </div>
 
           <div class="row mt-3 align-items-end text-black-65 flex-wrap">
@@ -596,7 +597,7 @@
                   let j = this.to_currency
                   let promises = await Promise.all([helpers.getETHPrice()])
                   this.ethPrice = promises[0]
-                  this.estimateGas = (this.swapwrapped || ['okuu', 'usd5', 'qusd5', 'usdg5', 'busd5'].includes(this.currentPool))
+                  this.estimateGas = (this.swapwrapped || ['basu', 'usd5', 'qusd5', 'usdg5', 'busd5'].includes(this.currentPool))
                     ? contractGas.swap[this.currentPool].exchange(i, j) / 2
                     : contractGas.swap[this.currentPool].exchange_underlying(i, j) / 2
               },
@@ -611,7 +612,7 @@
           currentPoolName () {
             const poolName = {
               dusd: 'dForce',
-              okuu: 'oku',
+              basu: 'basic',
               usd5: '5pool',
               qusd5: 'qian',
               usdg5: 'gate',
@@ -1026,7 +1027,7 @@
             //  console.log('-- swap', i, await currentContract.swap.methods.balances(i).call() )
                   }
 
-                  if(!this.swapwrapped && !['susdv2', 'tbtc', 'ren', 'okuu', 'usd5'].includes(this.currentPool)) {
+                  if(!this.swapwrapped && !['susdv2', 'tbtc', 'ren', 'basu', 'usd5'].includes(this.currentPool)) {
           // console.log('get_dy_underlying', i, j, dx)
                     calls.push([currentContract.swap._address, currentContract.swap.methods.get_dy_underlying(i, j, dx).encodeABI()])
           // console.log(await currentContract.swap.methods.get_dy_underlying(i, j, dx).call() )
@@ -1092,7 +1093,7 @@
                   dx = BN(this.maxSynthBalance).times(1e18).toFixed(0,1)
                 }
                 let min_dy_method = 'get_dy_underlying'
-                if(this.swapwrapped || ['susdv2', 'tbtc', 'ren', 'sbtc', 'okuu', 'usd5'].includes(this.currentPool)) {
+                if(this.swapwrapped || ['susdv2', 'tbtc', 'ren', 'sbtc', 'basu', 'usd5'].includes(this.currentPool)) {
                     min_dy_method = 'get_dy'
                 }
 
@@ -1127,7 +1128,7 @@
                 var { dismiss } = notifyNotification(this.waitingMessage)
                 min_dy = cBN(min_dy).toFixed(0);
                 let exchangeMethod = currentContract.swap.methods[
-                  ['okuu', 'usd5'].includes(this.currentPool)
+                  ['basu', 'usd5'].includes(this.currentPool)
                     ? 'exchange'
                     : 'exchange_underlying'
                 ]

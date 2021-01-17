@@ -58,7 +58,7 @@ import * as common from '../utils/common.js'
 
 Vue.use(VueRouter)
 
-const defaultPool = 'busd5'
+const defaultPool = 'basu'
 
 let routes = [
   {
@@ -299,7 +299,7 @@ let routes = [
     component: RootDefault,
     children: [
       {
-        path: ':pool(susdv2|dfi|dusd|usd5|qusd5|usdg5|busd5)?',
+        path: ':pool(susdv2|dfi|dusd|usd5|qusd5|usdg5|busd5|basu)?',
         name: 'Liquidity',
         beforeEnter: (to, from, next) => {
           !to.params.pool
@@ -316,7 +316,7 @@ let routes = [
     component: RootDefault,
     children: [
       {
-        path: ':pool(dfi|dusd|usd5|qusd5|usdg5|busd5)?',
+        path: ':pool(dfi|dusd|usd5|qusd5|usdg5|busd5|basu)?',
         name: 'Swap',
         beforeEnter: (to, from, next) => {
           !to.params.pool
@@ -424,7 +424,8 @@ const pools = [
   'usd5',
   'qusd5',
   'usdg5',
-  'busd5'
+  'busd5',
+  'basu'
 ]
 
 router.beforeEach(async (to, from, next) => {

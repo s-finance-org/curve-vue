@@ -13,7 +13,7 @@ import abis from '../../allabis'
     sbtc: [],
     dfi: [],
     dusd: [],
-    okuu: [],
+    basu: [],
     usd5: [],
     qusd5: [],
     usdg5: [],

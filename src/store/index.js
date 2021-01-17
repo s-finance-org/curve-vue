@@ -1059,9 +1059,9 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
     },
   },
 
-  okuu: {
-    name: 'OKUU',
-    address: process.env.VUE_APP_OKUU_TOKEN,
+  basu: {
+    name: 'BASU',
+    address: process.env.VUE_APP_BASU_TOKEN,
     abi: abiSFG,
     __contract: null,
     get contract () {
@@ -1070,7 +1070,7 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
       return __contract ||
         (this.__contract = new web3.eth.Contract(abi, address))
     },
-    swapAddress: process.env.VUE_APP_OKUU_SWAP,
+    swapAddress: process.env.VUE_APP_BASU_SWAP,
     swapAbi: swapAbi_iUSD_LPT,
     __contractSwap: null,
     get contractSwap () {
@@ -3022,12 +3022,12 @@ store.gauges = {
     }
   },
 
-  okuu: {
-    code: 'okuu',
-    name: 'OKU',
-    propagateMark: 'oku',
-    mortgagesUnit: 'OKUU LP token',
-    address: process.env.VUE_APP_OKUU_GAUGE,
+  basu: {
+    code: 'basu',
+    name: 'BASU',
+    propagateMark: 'basu',
+    mortgagesUnit: 'BASU LP token',
+    address: process.env.VUE_APP_BASU_GAUGE,
     // abi: abiDfi, // FIXME: ???
     abi: abiSUSDv2,
     __contract: null,
@@ -3039,9 +3039,9 @@ store.gauges = {
     },
 
     mortgages: {
-      okuu: {
-        code: 'okuu',
-        name: 'OKUU LP token',
+      basu: {
+        code: 'basu',
+        name: 'BASU LP token',
         priceDecimal: 5,
 
         totalStaking: valueModel.create(),
@@ -3178,7 +3178,7 @@ store.gauges = {
       const { tokens } = store
       const { name, address, contract, mortgages } = this
       // TODO: target
-      const deposit = BN(mortgages.okuu.userStake.revised).times(1e18)
+      const deposit = BN(mortgages.basu.userStake.revised).times(1e18)
 
       // await common.approveAmount(tokens.bpt.contract, deposit, accountAddress, address, infApproval)
 
@@ -3198,7 +3198,7 @@ store.gauges = {
     async onRedemption (accountAddress, infApproval) {
       const { name, address, contract, mortgages } = this
       // TODO: target
-      let withdraw = BN(mortgages.okuu.userRedemption.revised).times(1e18)
+      let withdraw = BN(mortgages.basu.userRedemption.revised).times(1e18)
       let balance = BN(await contract.methods.balanceOf(accountAddress).call())
 
       console.log('withdraw', withdraw, 'balance', balance)
