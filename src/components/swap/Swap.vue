@@ -612,7 +612,7 @@
           currentPoolName () {
             const poolName = {
               dusd: 'dForce',
-              basu: 'basic',
+              basu: 'basis',
               usd5: '5pool',
               qusd5: 'qian',
               usdg5: 'gate',

@@ -47,14 +47,16 @@ export default {
       // 'SFG-DAI': pool.SFG_DAI_BPT,
     }
 
-    res.data.pools.forEach(item => {
-      if (transforms[item.pair]) {
-        transforms[item.pair].dailyVol.USD.handled = item.vol.vol_24h
-      }
-    })
+    if (res.data) {
+      res.data.pools.forEach(item => {
+        if (transforms[item.pair]) {
+          transforms[item.pair].dailyVol.USD.handled = item.vol.vol_24h
+        }
+      })
 
-    sFinance.dailyVol.USD.handled = res.data.total_daily_swap
-    sFinance.totalValueStaked.USD.handled = res.data.total_lptoken_value_staked
+      sFinance.dailyVol.USD.handled = res.data.total_daily_swap
+      sFinance.totalValueStaked.USD.handled = res.data.total_lptoken_value_staked
+    }
   },
   async getDforceApy () {
     const res = await requests.get('https://markets.dforce.network/api/v2/getApy/')
@@ -105,14 +107,15 @@ export default {
       'USDG-USD5': pool.USDG5
     }
 
-    res.data.pools.some(item => {
-      const bool = !!transforms[item.pair]
-      if (bool) {
-        rates.USDT = item.gt_last_price
-      }
+    res.data
+      && res.data.pools.some(item => {
+        const bool = !!transforms[item.pair]
+        if (bool) {
+          rates.USDT = item.gt_last_price
+        }
 
-      return bool
-    })
+        return bool
+      })
 
     return rates
   }
