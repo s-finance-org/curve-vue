@@ -119,6 +119,7 @@ export default {
     reservesTitle: 'Currency Reserves',
     depositTip: 'You can deposit one or more kind of the stable coins below, and the smart contract will automatically balance the deposited assets proportionally',
     depositBalancedProportion: 'Add all coins in a balanced proportion',
+    withdrawBalancedProportion: 'Balance all tokens',
     depositUseMaximumAvailable: 'Use maximum amount of coins available',
     depositWrapped: 'Deposit wrapped',
     depositWrappedPlaceholder: 'Deposit wrapped',
@@ -137,9 +138,7 @@ export default {
     approveLptokenWithdrawal: 'Please approve {0} {1} for withdrawal',
     confirmWithdrawalTransaction: 'Please confirm withdrawal transaction {0}',
     confirmUnstakingToken: 'Please confirm unstaking {0} tokens',
-    UnstakingTokenWithdrawal: `Unstaking {0} tokens for withdrawal.
-    <br />A bit more tokens are needed to unstake to ensure that withdrawal is successful.
-    You'll see them in your unstaked balance afterwards.`,
+    UnstakingTokenWithdrawal: `Unstaking {0} tokens for withdrawal.<br />A bit more tokens are needed to unstake to ensure that withdrawal is successful.<br/>You'll see them in your unstaked balance afterwards.`,
     waitingDepositTransactionBeforeStaking: `Waiting for deposit <a href='http://etherscan.io/tx/{0}'>transaction</a> to confirm before staking`,
     waitingDepositTransactionNoFurther: `Waiting for deposit <a href='http://etherscan.io/tx/{0}'>transaction</a> to confirm no further action required`
   },
