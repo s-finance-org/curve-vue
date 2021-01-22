@@ -43,6 +43,7 @@ export default {
       'DAI-USDC-USDT-TUSD-PAX': pool.USD5,
       '(d)DAI-(d)USDC-(d)USDT-(d)USDx': pool.dUSD,
       '(i)DAI-(i)USDC-(i)USDT': pool.iUSD,
+      'BUSD-USD5': pool.BUSD5,
       // 'DAI-USDT-USDC-sUSD': pool.sUSDv2,
       // 'SFG-DAI': pool.SFG_DAI_BPT,
     }
@@ -59,7 +60,7 @@ export default {
     }
   },
   async getDforceApy () {
-    const res = await requests.get('https://markets.dforce.network/api/v2/getApy/')
+    const res = await requests.get('https://markets.dforce.network/api/v1/getApy/')
 
     return res
   },
@@ -92,30 +93,41 @@ export default {
       }
     }
   },
+  async getTokenBNB () {
+    const tokenGT = 'binancecoin'
+    const res = await requests.get(`https://api.coingecko.com/api/v3/simple/price?ids=${ tokenGT }&vs_currencies=usd`)
+
+    return {
+      USD: res[tokenGT].usd
+    }
+  },
   async getTokenGt () {
     // const res = await requests.get('https://data.gateapi.io/api2/1/ticker/gt_usdt')
-    const res = await requests.get('https://api.s.finance/v1/sfinance')
+    // const res = await requests.get('https://api.s.finance/v1/sfinance')
+    const tokenGT = 'gatechain-token'
+    const res = await requests.get(`https://api.coingecko.com/api/v3/simple/price?ids=${ tokenGT }&vs_currencies=usd`)
 
     const rates = {
-      USDT: '0'
+      USDT: '0',
+      USD: res[tokenGT].usd
     }
 
-    if (res.code !== '10000') return rates
+    // if (res.code !== '10000') return rates
 
-    const { pool } = store
-    const transforms = {
-      'USDG-USD5': pool.USDG5
-    }
+    // const { pool } = store
+    // const transforms = {
+    //   'USDG-USD5': pool.USDG5
+    // }
 
-    res.data
-      && res.data.pools.some(item => {
-        const bool = !!transforms[item.pair]
-        if (bool) {
-          rates.USDT = item.gt_last_price
-        }
+    // res.data
+    //   && res.data.pools.some(item => {
+    //     const bool = !!transforms[item.pair]
+    //     if (bool) {
+    //       rates.USDT = item.gt_last_price
+    //     }
 
-        return bool
-      })
+    //     return bool
+    //   })
 
     return rates
   }

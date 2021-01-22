@@ -466,18 +466,18 @@
       const sfgDailyYield = await tokens.sfg.getDailyYield()
       const multiple = lock.SFG.getMultiple()
 
-      // busd5
-      await lock.SFG.getWeightOfGauge(gauges.basu.rewards.sfg.weighting, gauges.basu.address)
-      // gauges.basu.getMaxApy(
-        gauges.basu.getAPY(
-          sfgPrice,
-          sfgDailyYield,
-          gauges.basu.getTotalStaking(gauges.basu.mortgages.basu.totalStaking),
-          tokens.basu.getPrice(),
-          tokens.bnb.getPrice(),
-        ),
-      //   multiple
-      // )
+      // basu
+      // await lock.SFG.getWeightOfGauge(gauges.basu.rewards.sfg.weighting, gauges.basu.address)
+      // // gauges.basu.getMaxApy(
+      //   gauges.basu.getAPY(
+      //     sfgPrice,
+      //     sfgDailyYield,
+      //     gauges.basu.getTotalStaking(gauges.basu.mortgages.basu.totalStaking),
+      //     tokens.basu.getPrice(),
+      //     tokens.bas.getPrice(),
+      //   ),
+      // //   multiple
+      // // )
 
       // busd5
       await lock.SFG.getWeightOfGauge(gauges.busd5.rewards.sfg.weighting, gauges.busd5.address)
@@ -586,21 +586,21 @@
             'operating'
           ],
           items: [
-            {
-              id: -1,
-              toDeposit: '/liquidity/basu',
-              toDao: '/dao',
-              pooltext: 'basis',
-              pools: 'BAC DAI',
-              volData: [store.pool.BASU.dailyVol.USD.handled, -1],
-              currencies: {bac: 'BAC', dai: 'DAI'},
-              funds: '-',
-              // apyBusy: gauges.basu.totalApy.loading || gauges.basu.maxApy.loading,
-              // apy: `${gauges.basu.totalApy.percent}% ~ ${gauges.basu.maxApy.percent}%`,
-              apyBusy: gauges.basu.totalApy.loading,
-              apy: `${gauges.basu.totalApy.percent}%`,
-              link: '/basu'
-            },
+            // {
+            //   id: -1,
+            //   toDeposit: '/liquidity/basu',
+            //   toDao: '/dao',
+            //   pooltext: 'basis',
+            //   pools: 'BAC DAI',
+            //   volData: [store.pool.BASU.dailyVol.USD.handled, -1],
+            //   currencies: {bac: 'BAC', dai: 'DAI'},
+            //   funds: '-',
+            //   // apyBusy: gauges.basu.totalApy.loading || gauges.basu.maxApy.loading,
+            //   // apy: `${gauges.basu.totalApy.percent}% ~ ${gauges.basu.maxApy.percent}%`,
+            //   apyBusy: gauges.basu.totalApy.loading,
+            //   apy: `${gauges.basu.totalApy.percent}%`,
+            //   link: '/basu'
+            // },
             {
               id: -1,
               toDeposit: '/liquidity/busd5',

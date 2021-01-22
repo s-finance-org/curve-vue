@@ -741,17 +741,14 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
     error: errorModel.create(),
 
     // FIXME: change
-    priceUnit: 'USDT',
+    priceUnit: 'USD',
     price: valueModel.create(),
     // TODO: priceUnit
     async getPrice (priceUnit) {
       const { price } = this
-      const rates = await request.getTokenGt()
-
-      // BN(rates.USDT).times(1e18).toString()
-      const result = price.ether = 0
+      const rates = await request.getTokenBNB()
   
-      return result
+      return rates.USD
     },
 
     // amount: 0,
@@ -978,14 +975,14 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
     error: errorModel.create(),
 
     // FIXME: change
-    priceUnit: 'USDT',
+    priceUnit: 'USD',
     price: valueModel.create(),
     // TODO: priceUnit
     async getPrice (priceUnit) {
       const { price } = this
       const rates = await request.getTokenGt()
 
-      const result = price.ether = BN(rates.USDT).times(1e18).toString()
+      const result = price.ether = BN(rates.USD).times(1e18).toString()
   
       return result
     },
@@ -1279,6 +1276,124 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
       // FIXME:
       const allowance = BN(await contract.methods.allowance(accountAddress, toContract).call())
 
+      if (infinite) {
+        // allowance < maxAllowance / 2 && amount > 0
+        // TODO: div(2) why?
+        if (allowance.lt(maxAllowance.div(2))) {
+          if (allowance.gt(0) && requiresResetAllowance.includes(contract._address)) {
+            await approve(contract, 0, accountAddress, toContract)
+          } else {
+            await approve(contract, maxAllowance, accountAddress, toContract)
+          }
+        }
+      } else {
+        // allowance < amount && amount > 0
+        if (allowance.lt(_amount)) {
+          if (allowance.gt(0) && requiresResetAllowance.includes(contract._address)) {
+            await approve(contract, 0, accountAddress, toContract)
+          } else {
+            await approve(contract, _amount, accountAddress, toContract)
+          }
+        }
+      }
+    },
+  },
+
+  bas: {
+    name: 'BAS',
+    address: process.env.VUE_APP_BAS_TOKEN,
+    abi: abiSFG,
+    __contract: null,
+    get contract () {
+      const { __contract, abi, address } = this
+  
+      return __contract ||
+        (this.__contract = new web3.eth.Contract(abi, address))
+    },
+  
+    decimal: 18,
+    /**
+     *  @type {number}
+     */
+    get precision () {
+      const { decimal } = this
+  
+      return Math.pow(10, decimal)
+    },
+  
+    userBalanceOf: valueModel.create(),
+    async getBalanceOf (target, accountAddress) {
+      const { contract, userBalanceOf } = this
+      const result = await contract.methods.balanceOf(accountAddress).call()
+  
+      userBalanceOf.ether = target.ether = result
+  
+      return result
+    },
+  
+    error: errorModel.create(),
+  
+    price: valueModel.create(),
+    priceUnit: 'DAI',
+    // FIXME: 
+    async getPrice () {
+      const { address, price } = this
+  
+      let amountsTether = await uniswapV2Router2.getPrice(this, store.tokens.dai)
+
+      // FIXME: try
+      amountsTether = BN(amountsTether).times(1e18).toString()
+      price.ether = amountsTether
+  
+      return price.handled
+    },
+  
+    // amount: 0,
+    // approveAmount: 0,
+    // TODO: common & format type
+    // ether
+    minAllowance: 1,
+    // ether
+    maxAllowance: BN(2).pow(256).minus(1),
+    async hasValidAmount (val) {
+      const { minAllowance, maxAllowance, error } = this
+      const _val = BN(val).times(1e18)
+      // FIXME: balance Of
+      const result = _val.gte(minAllowance) &&
+        // TODO: div(2) why?
+        _val.lte(maxAllowance.div(2))
+  
+      if (!result) {
+        error.message = store.i18n.$i18n.t('model.valueOutValidRange')
+      }
+  
+      return result
+    },
+    async hasApprove (amount, accountAddress, toContract) {
+      const { contract, error } = this
+      const _amount = BN(amount).times(1e18)
+      // FIXME:
+      const allowance = BN(await contract.methods.allowance(accountAddress, toContract).call())
+  console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->', _amount.toString(), _amount.toString() / 1e18 )
+      // allowance >= amount && amount > 0
+      const result = allowance.gte(_amount) && BN(_amount).gt(0)
+  
+      if (!result) {
+        error.message = store.i18n.$i18n.t('model.approveOperation')
+      }
+  
+      return result
+    },
+    async onApproveAmount (amount, accountAddress, toContract, infinite = false) {
+      const { contract, maxAllowance } = this
+      const _amount = BN(amount).times(1e18)
+  
+      console.log('amount', amount)
+      if (!await this.hasValidAmount(amount)) return false
+  
+      // FIXME:
+      const allowance = BN(await contract.methods.allowance(accountAddress, toContract).call())
+  
       if (infinite) {
         // allowance < maxAllowance / 2 && amount > 0
         // TODO: div(2) why?
@@ -1831,6 +1946,15 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
   },
   dai: {
     address: process.env.VUE_APP_DAI_TOKEN,
+    /**
+     *  @type {number}
+     */
+    get precision () {
+      const { decimal } = this
+
+      return Math.pow(10, decimal)
+    },
+    decimal: 18,
   },
   bpt: {
     address: process.env.VUE_APP_BPT_TOKEN,
@@ -3265,9 +3389,9 @@ store.gauges = {
         totalApy: valueModel.create(),
         totalMaxApy: valueModel.create(),
       },
-      bac: {
-        code: 'bac',
-        name: 'BAC',
+      bas: {
+        code: 'bas',
+        name: 'BAS',
         weighting: valueModel.create(),
   
         userPendingReward: valueModel.create(),
@@ -3320,20 +3444,18 @@ store.gauges = {
     myApy: valueModel.create(),
     maxApy: valueModel.create(),
     // TEMP:
-    async getAPY (price, dailyYield, totalStaking, lpTokenPrice, bacPrice) {
+    async getAPY (price, dailyYield, totalStaking, lpTokenPrice, basPrice) {
       const { contract, dailyAPY, totalApy, rewards } = this
 
       rewards.sfg.dailyYield.handled = BN(await dailyYield / 1e18).times(rewards.sfg.weighting.handled).toString()
 
-      rewards.bac.dailyYield.ether = '0'
-
       const lpt = BN(await totalStaking).times(await lpTokenPrice / 1e18)
       rewards.sfg.dailyApy.handled = BN(await price / 1e18).times(rewards.sfg.dailyYield.handled).dividedBy(lpt).toString()
       rewards.sfg.totalApy.handled = +rewards.sfg.dailyApy.handled * 365
-      rewards.bac.dailyApy.handled = BN(await bacPrice / 1e18).times(rewards.bac.dailyYield.handled).dividedBy(lpt)
-      rewards.bac.totalApy.handled = +rewards.bac.dailyApy.handled * 365
+      rewards.bas.dailyApy.handled = BN(await basPrice / 1e18).times(rewards.bas.dailyYield.handled).dividedBy(lpt)
+      rewards.bas.totalApy.handled = +rewards.bas.dailyApy.handled * 365
 
-      totalApy.handled = BN(rewards.sfg.totalApy.handled).plus(rewards.bac.totalApy.handled).toString()
+      totalApy.handled = BN(rewards.sfg.totalApy.handled).plus(rewards.bas.totalApy.handled).toString()
 
       // FIXME: SFG min apy
       return rewards.sfg.totalApy.handled
@@ -3342,7 +3464,7 @@ store.gauges = {
     async getMyApy (sfgMinApy, factorOf) {
       const { myApy, mortgages, rewards } = this
 
-      const result = BN(await sfgMinApy).times(await factorOf / 1e18).plus(rewards.bac.totalApy.handled).toString()
+      const result = BN(await sfgMinApy).times(await factorOf / 1e18).plus(rewards.bas.totalApy.handled).toString()
 
       myApy.handled = result
       return result
@@ -3353,7 +3475,7 @@ store.gauges = {
 
       rewards.sfg.totalMaxApy.handled = BN(await sfgMinApy).times(await multiple / 1e18).toString()
 
-      const result = BN(rewards.sfg.totalMaxApy.handled).plus(rewards.bac.totalApy.handled).toString()
+      const result = BN(rewards.sfg.totalMaxApy.handled).plus(rewards.bas.totalApy.handled).toString()
 
       return maxApy.handled = result
     },
@@ -3389,17 +3511,17 @@ store.gauges = {
       return target.ether = BN(await pendingReward).plus(await paidReward).toString()
     },
   
-    async getUserPendingReward_BAC (target, accountAddress) {
+    async getUserPendingReward_BAS (target, accountAddress) {
       const { contract } = this
   
       return target.ether = await contract.methods.claimable_reward(accountAddress).call()
     },
-    async getUserPaidReward_BAC (target, accountAddress) {
+    async getUserPaidReward_BAS (target, accountAddress) {
       const { contract } = this
 
       return target.ether = await contract.methods.claimed_rewards_for(accountAddress).call()
     },
-    async getUserTotalReward_BAC (target, pendingReward, paidReward) {
+    async getUserTotalReward_BAS (target, pendingReward, paidReward) {
       return target.ether = BN(await pendingReward).plus(await paidReward).toString()
     },
   

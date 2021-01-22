@@ -12,18 +12,36 @@
 
       <b-tabs pills nav-class="tabs-nav" class="mt-4">
         <b-tab :title="$t('dao.standTitle')" class="pt-3" active>
+          
           <!-- basu -->
-          <h4 class="mb-2 d-flex flex-wrap align-items-end">
+          <!-- <h4 class="mb-2 d-flex flex-wrap align-items-end">
             <span class="mr-3">{{ $t('dao.tokenTitle', [store.gauges.basu.propagateMark]) }}</span>
             <small class="mr-auto">{{ $t('dao.describe', [store.gauges.basu.mortgagesUnit, store.gauges.basu.rewardsUnit.join(' + ')]) }}</small>
           </h4>
           <div class="box mb-4 px-4 py-3">
             <div class="row mb-3 line-bottom flex-wrap align-items-center">
-              <text-overlay-loading class="d-flex col-auto pb-3 col-12 col-sm-auto" inline :show="store.gauges.basu.rewards.sfg.totalApy.loading">
-                <img :src="getTokenIcon(store.gauges.basu.rewards.sfg.code)" class="mr-2 icon-w-48 icon" :class="[store.gauges.basu.rewards.sfg.code+'-icon']">
+              <span class="d-md-flex d-none flex-wrap align-items-center">
+                <text-overlay-loading class="d-flex col-auto pb-3 col-12 col-sm-auto" inline :show="store.gauges.basu.rewards.sfg.totalApy.loading || store.gauges.basu.rewards.sfg.totalMaxApy.loading">
+                  <img :src="getTokenIcon(store.gauges.basu.rewards.sfg.code)" class="mr-2 icon-w-48 icon" :class="[store.gauges.basu.rewards.sfg.code+'-icon']">
+                  <span class="d-flex h4 mb-0 flex-column">
+                    <span class="h6 mb-0 inline-block text-black-65">{{ store.gauges.basu.rewards.sfg.name }} {{ $t('global.apr') }}</span>
+                    {{ store.gauges.basu.rewards.sfg.totalApy.percent }}% ~ {{ store.gauges.basu.rewards.sfg.totalMaxApy.percent }}%
+                  </span>
+                </text-overlay-loading>
+                <span class="icon-w-20 icon-plus mb-3"></span>
+                <text-overlay-loading class="d-flex col-auto pb-3 col-12 col-sm-auto" inline :show="store.gauges.basu.rewards.bas.totalApy.loading">
+                  <img :src="getTokenIcon(store.gauges.basu.rewards.bas.code)" class="mr-2 icon-w-48 icon" :class="[store.gauges.basu.rewards.sfg.code+'-icon']">
+                  <span class="d-flex h4 mb-0 flex-column">
+                    <span class="h6 mb-0 inline-block text-black-65">{{ store.gauges.basu.rewards.bas.name }} {{ $t('global.apr') }}</span>
+                    {{ store.gauges.basu.rewards.bas.totalApy.percent }}%
+                  </span>
+                </text-overlay-loading>
+                <span class="icon-w-20 icon-equal mb-3"></span>
+              </span>
+              <text-overlay-loading class="d-flex col-auto pb-3 col-12 col-sm-auto" inline :show="store.gauges.basu.totalApy.loading || store.gauges.basu.maxApy.loading">
                 <span class="d-flex h4 mb-0 flex-column">
-                  <span class="h6 mb-0 inline-block text-black-65">{{ store.gauges.basu.rewards.sfg.name }} {{ $t('global.apr') }}</span>
-                  {{ store.gauges.basu.rewards.sfg.totalApy.percent }}%
+                  <span class="h6 mb-0 inline-block text-black-65">{{ $t('dao.total') }} {{ $t('global.apr') }}</span>
+                  {{ store.gauges.basu.totalApy.percent }}% ~ {{ store.gauges.basu.maxApy.percent }}%
                 </span>
               </text-overlay-loading>
             </div>
@@ -54,12 +72,6 @@
                   </span>
                 </text-overlay-loading>
               </span>
-              <!-- <span class="col-12 col-md-6 pb-3">
-                <h6 class="mb-0 text-black-65">{{ $t('dao.rewardWeight', ['SFG']) }}</h6>
-                <text-overlay-loading inline :show="store.gauges.basu.rewards.sfg.weighting.loading">
-                  <span class="h4">{{ store.gauges.basu.rewards.sfg.weighting.percent }}%</span>
-                </text-overlay-loading>
-              </span> -->
               <span class="col-12 col-md-6 pb-3">
                 <h6 class="mb-0 text-black-65">{{ $t('dao.dailyYield', ['SFG']) }}</h6>
                 <text-overlay-loading inline :show="store.gauges.basu.rewards.sfg.dailyYield.loading">
@@ -67,19 +79,17 @@
                     {{ store.gauges.basu.rewards.sfg.dailyYield.cont }}
                     <span class="text-black-65 h6">{{ store.gauges.basu.rewards.sfg.name }}</span>
                   </span>
-                  <!-- <b-avatar text="!" class="iconTip iconTip-warning ml-2" id="tooltip-mining-paid-reward-tip1"></b-avatar>
-                  <b-tooltip placement="topright" target="tooltip-mining-paid-reward-tip1" variant="success">{{ $t('dao.miningPoolOpeningNotice', [store.gauges.basu.propagateMark, store.gauges.basu.mortgagesUnit]) }}</b-tooltip> -->
                 </text-overlay-loading>
               </span>
-              <!-- <span class="col-12 col-md-6 pb-3">
-                <h6 class="mb-0 text-black-65">{{ $t('dao.dailyYield', ['BAC']) }}</h6>
-                <text-overlay-loading inline :show="store.gauges.basu.rewards.bac.dailyYield.loading">
+              <span class="col-12 col-md-6 pb-3">
+                <h6 class="mb-0 text-black-65">{{ $t('dao.dailyYield', ['BAS']) }}</h6>
+                <text-overlay-loading inline :show="store.gauges.basu.rewards.bas.dailyYield.loading">
                   <span class="h4">
-                    {{ store.gauges.basu.rewards.bac.dailyYield.cont }}
-                    <span class="text-black-65 h6">{{ store.gauges.basu.rewards.bac.name }}</span>
+                    {{ store.gauges.basu.rewards.bas.dailyYield.cont }}
+                    <span class="text-black-65 h6">{{ store.gauges.basu.rewards.bas.name }}</span>
                   </span>
                 </text-overlay-loading>
-              </span> -->
+              </span>
             </div>
 
             <b-tabs pills nav-class="tabs-nav" class="mt-1">
@@ -102,7 +112,6 @@
                   <text-overlay-loading class="mr-2" :show="store.gauges.basu.mortgages.basu.userBalanceOf.loading">{{ store.gauges.basu.mortgages.basu.userBalanceOf.cont }} {{ store.gauges.basu.mortgages.basu.name }}</text-overlay-loading>
                   <b-button class="text-blue-1" to='/liquidity/basu' size="xsm" variant="light">{{ $t('dao.stakingConfirmTip', [store.gauges.basu.mortgages.basu.name]) }}</b-button>
                 </small>
-                <!-- FIXME: inf_approval -->
                 <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('global.infiniteApproval') }}</b-form-checkbox>
                 <b-alert class="mt-3" :show="dismissCountDown" variant="dark" dismissible fade
                   @dismissed="dismissCountDown=0"
@@ -144,7 +153,6 @@
                   {{ $t('dao.redemptionBalance') }}：
                   <text-overlay-loading :show="store.gauges.basu.mortgages.basu.userStaking.loading">{{ store.gauges.basu.mortgages.basu.userStaking.cont }} {{ store.gauges.basu.mortgages.basu.name }}</text-overlay-loading>
                 </small>
-                <!-- FIXME: inf_approval -->
                 <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('global.infiniteApproval') }}</b-form-checkbox>
                 <b-alert class="mt-3" :show="dismissCountDown && waitingMessageTargetId === 'withdraw'" variant="dark" dismissible fade
                   @dismissed="dismissCountDown=0"
@@ -198,35 +206,35 @@
                     </text-overlay-loading>
                   </div>
                 </div>
-                <!-- <div class="area">
+                <div class="area">
                   <h5 class="mb-3 d-flex align-items-center">
-                    <img :src="getTokenIcon(store.gauges.basu.rewards.bac.code)" class="mr-2 icon-w-20 icon token-icon" :class="[store.gauges.basu.rewards.bac.code+'-icon']">
-                    {{ store.gauges.basu.rewards.bac.name }}
+                    <img :src="getTokenIcon(store.gauges.basu.rewards.bas.code)" class="mr-2 icon-w-20 icon token-icon" :class="[store.gauges.basu.rewards.bas.code+'-icon']">
+                    {{ store.gauges.basu.rewards.bas.name }}
                   </h5>
                   <h6 class="mb-0 text-black-65">{{ $t('dao.miningPendingReward') }}</h6>
                   <h4 class="mb-1">
-                    <text-overlay-loading inline :show="store.gauges.basu.rewards.bac.userPendingReward.loading">
-                      {{ store.gauges.basu.rewards.bac.userPendingReward.cont }} {{ store.gauges.basu.rewards.bac.name }}
+                    <text-overlay-loading inline :show="store.gauges.basu.rewards.bas.userPendingReward.loading">
+                      {{ store.gauges.basu.rewards.bas.userPendingReward.cont }} {{ store.gauges.basu.rewards.bas.name }}
                     </text-overlay-loading>
                   </h4>
                   <div class="d-flex no-gutters align-items-end">
                     <small class="col row flex-wrap">
                       <span class="col-12 col-lg-auto">
                         {{ $t('dao.miningPaidReward') }}：
-                        <text-overlay-loading inline :show="store.gauges.basu.rewards.bac.userPaidReward.loading">
-                          {{ store.gauges.basu.rewards.bac.userPaidReward.cont }} {{ store.gauges.basu.rewards.bac.name }}
+                        <text-overlay-loading inline :show="store.gauges.basu.rewards.bas.userPaidReward.loading">
+                          {{ store.gauges.basu.rewards.bas.userPaidReward.cont }} {{ store.gauges.basu.rewards.bas.name }}
                         </text-overlay-loading>
                         <em class="px-3 text-black-15">/</em>
                       </span>
                       <span class="col-12 col-lg-auto">
                         {{ $t('dao.miningTotalReward') }}：
-                        <text-overlay-loading inline :show="store.gauges.basu.rewards.bac.userTotalReward.loading">
-                          {{ store.gauges.basu.rewards.bac.userTotalReward.cont }} {{ store.gauges.basu.rewards.bac.name }}
+                        <text-overlay-loading inline :show="store.gauges.basu.rewards.bas.userTotalReward.loading">
+                          {{ store.gauges.basu.rewards.bas.userTotalReward.cont }} {{ store.gauges.basu.rewards.bas.name }}
                         </text-overlay-loading>
                         <em class="px-3 text-black-15">/</em>
                       </span>
-                      <text-overlay-loading class="col-12 col-lg-auto"  inline :show="store.tokens.bac.price.loading">
-                        1 {{ store.tokens.bac.name }} = {{ store.tokens.bac.price.cont }} {{ store.tokens.bac.priceUnit }}
+                      <text-overlay-loading class="col-12 col-lg-auto"  inline :show="store.tokens.bas.price.loading">
+                        1 {{ store.tokens.bas.name }} = {{ store.tokens.bas.price.cont }} {{ store.tokens.bas.priceUnit }}
                       </text-overlay-loading>
                     </small>
                     <text-overlay-loading :show="loadingAction">
@@ -235,10 +243,10 @@
                       </b-button>
                     </text-overlay-loading>
                   </div>
-                </div> -->
+                </div>
               </b-tab>
             </b-tabs>
-          </div>
+          </div> -->
 
           <!-- busd5 -->
           <h4 class="mb-2 d-flex flex-wrap align-items-end">
@@ -2556,33 +2564,33 @@
             const multiple = lock.SFG.getMultiple()
 
             // basu
-            await lock.SFG.getWeightOfGauge(gauges.basu.rewards.sfg.weighting, gauges.basu.address)
+            // await lock.SFG.getWeightOfGauge(gauges.basu.rewards.sfg.weighting, gauges.basu.address)
 
-            // store.gauges.basu.getMaxApy(
-              store.gauges.basu.getAPY(
-                sfgPrice,
-                sfgDailyYield,
-                basu.getTotalStaking(basu.mortgages.basu.totalStaking), // basu.getVirtualTotalSupply(),
-                store.tokens.basu.getPrice(),
-                store.tokens.bac.getPrice(),
-              ),
-            //   multiple
+            // // store.gauges.basu.getMaxApy(
+            //   store.gauges.basu.getAPY(
+            //     sfgPrice,
+            //     sfgDailyYield,
+            //     basu.getTotalStaking(basu.mortgages.basu.totalStaking), // basu.getVirtualTotalSupply(),
+            //     store.tokens.basu.getPrice(),
+            //     store.tokens.bas.getPrice(),
+            //   ),
+            // //   multiple
+            // // )
+
+            // store.tokens.basu.getBalanceOf(basu.mortgages.basu.userBalanceOf, currentContract.default_account)
+
+            // basu.getBalanceOf(basu.mortgages.basu.userStaking, currentContract.default_account)
+
+            // basu.getUserTotalReward_SFG(
+            //   basu.rewards.sfg.userTotalReward,
+            //   basu.getUserPendingReward_SFG(basu.rewards.sfg.userPendingReward, currentContract.default_account),
+            //   basu.getUserPaidReward_SFG(basu.rewards.sfg.userPaidReward, currentContract.default_account)
             // )
 
-            store.tokens.basu.getBalanceOf(basu.mortgages.basu.userBalanceOf, currentContract.default_account)
-
-            basu.getBalanceOf(basu.mortgages.basu.userStaking, currentContract.default_account)
-
-            basu.getUserTotalReward_SFG(
-              basu.rewards.sfg.userTotalReward,
-              basu.getUserPendingReward_SFG(basu.rewards.sfg.userPendingReward, currentContract.default_account),
-              basu.getUserPaidReward_SFG(basu.rewards.sfg.userPaidReward, currentContract.default_account)
-            )
-
-            // basu.getUserTotalReward_BAC(
-            //   basu.rewards.bac.userTotalReward,
-            //   basu.getUserPendingReward_BAC(basu.rewards.bac.userPendingReward, currentContract.default_account),
-            //   basu.getUserPaidReward_BAC(basu.rewards.bac.userPaidReward, currentContract.default_account)
+            // basu.getUserTotalReward_BAS(
+            //   basu.rewards.bas.userTotalReward,
+            //   basu.getUserPendingReward_BAS(basu.rewards.bas.userPendingReward, currentContract.default_account),
+            //   basu.getUserPaidReward_BAS(basu.rewards.bas.userPaidReward, currentContract.default_account)
             // )
 
             // busd5
