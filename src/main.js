@@ -5,7 +5,7 @@ import VueMeta from 'vue-meta'
 import BootstrapVue from 'bootstrap-vue'
 import VueI18n from 'vue-i18n'
 
-import * as Sentry from '@sentry/browser';
+// import * as Sentry from '@sentry/browser';
 import { CaptureConsole, InboundFilters, Vue as VueIntegration } from '@sentry/integrations';
 
 import * as subscriptionStore from './components/common/subscriptionStore'

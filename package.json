@@ -18,7 +18,6 @@
     "@chenfengyuan/vue-qrcode": "^1.0.2",
     "@ledgerhq/hw-transport-webusb": "^5.19.1",
     "@renproject/ren": "^1.0.5",
-    "@sentry/browser": "git+https://github.com/pengiundev/sentry-browser.git",
     "@sentry/integrations": "^5.15.0",
     "bignumber.js": "^9.0.0",
     "bitcoin-address-validation": "^1.0.2",
