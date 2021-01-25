@@ -60,7 +60,7 @@ export default {
     }
   },
   async getDforceApy () {
-    const res = await requests.get('https://markets.dforce.network/api/v1/getApy/')
+    const res = await requests.get('https://markets.dforce.network/api/v2/getApy/')
 
     return res
   },
