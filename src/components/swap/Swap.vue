@@ -25,10 +25,14 @@
             <div class="total-box col px-4 py-3 mr-4">
               <h6 class="text-black-65">{{ $t('global.totalBalances') }}</h6>
               <text-overlay-loading :show="totalBalances === null">
-                <h4 class="mb-0">${{ totalBalances | formatNumber(2) }}</h4>
+                <h4 class="mb-0 d-flex align-items-center">
+                  ${{ totalBalances | formatNumber(2) }}
+                  <b-avatar v-show="['basis'].includes(currentPoolName)" text="!" class="iconTip iconTip-warning ml-2" id="tooltip-basis-cash-v2"></b-avatar>
+                  <b-tooltip placement="topleft" target="tooltip-basis-cash-v2" variant="success">{{ $t('tempBasisCashV2') }}</b-tooltip>
+                </h4>
               </text-overlay-loading>
             </div>
-            <div class="total-box col px-4 py-3" v-if="!['basis'].includes(currentPoolName)">
+            <div class="total-box col px-4 py-3">
               <h6 class="text-black-65">{{ $t('global.dailyVol') }}</h6>
               <text-overlay-loading :show="poolDailyVolUSD.loading">
                 <h4 class="mb-0">${{ poolDailyVolUSD.cont }}</h4>
@@ -737,6 +741,7 @@
               'usd5': 'USD5',
               'dusd': 'dUSD',
               'dfi': 'iUSD',
+              'basu': 'BASU',
             }
             if (transforms[this.currentPool]) {
               result = store.pool[transforms[this.currentPool]].dailyVol.USD

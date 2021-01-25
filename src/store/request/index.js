@@ -44,6 +44,7 @@ export default {
       '(d)DAI-(d)USDC-(d)USDT-(d)USDx': pool.dUSD,
       '(i)DAI-(i)USDC-(i)USDT': pool.iUSD,
       'BUSD-USD5': pool.BUSD5,
+      'BAC-DAI': pool.BASU,
       // 'DAI-USDT-USDC-sUSD': pool.sUSDv2,
       // 'SFG-DAI': pool.SFG_DAI_BPT,
     }
