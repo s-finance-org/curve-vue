@@ -1,5 +1,5 @@
 import multicall from './multicall'
-import uniswapV2Router2 from './uniswap_v2_router2'
+import uniswapV2Router2 from './uniswap-v2-router2'
 
 export default {
   multicall,

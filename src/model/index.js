@@ -55,6 +55,12 @@ export const valueModel = {
         __store__.loading = val
       },
 
+      setValue (val) {
+        this.ether = val
+
+        return this
+      },
+
       /**
        *  TODO: typeNumber?
        *  @type {number}

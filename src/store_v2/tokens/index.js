@@ -9,6 +9,8 @@ import QUSD5 from './QUSD5'
 import iUSD from './iUSD'
 import dUSD from './dUSD'
 import USDG5 from './USDG5'
+import SFGUU from './SFGUU/index'
+import UU from './UU'
 
 const tokens = {
   DAI,
@@ -20,15 +22,17 @@ const tokens = {
   QUSD5,
   iUSD,
   dUSD,
-  USDG5
+  USDG5,
+  SFGUU,
+  UU,
 }
 
 // FIXME:
-let aaa = []
-Object.values(tokens).forEach(item => {
-  aaa = aaa.concat(item.series.initiate)
-})
+// let aaa = []
+// Object.values(tokens).forEach(item => {
+//   aaa = aaa.concat(item.series.initiate)
+// })
 
-swaps.multicall.batcher(aaa)
+// swaps.multicall.batcher(aaa)
 
 export default tokens
