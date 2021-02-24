@@ -215,7 +215,7 @@ store.tokens = {
   },
 
   sfguu: {
-    name: 'SFG-UU',
+    name: 'UU-SFG',
     address: process.env.VUE_APP_SFG_UU_TOKEN,
     abi: tokensV2.SFGUU.abi,
     __contract: null,
@@ -2737,7 +2737,7 @@ store.gauges = {
   bpt: {
     code: 'bpt',
     name: 'BPT',
-    propagateMark: 'SFG',
+    propagateMark: 'Balancer',
     mortgagesUnit: 'BPT',
     address: process.env.VUE_APP_BPT_GAUGE,
     // abi: abiSUSDv2,
@@ -4846,9 +4846,9 @@ store.gauges = {
 
   sfguu: {
     code: 'sfguu',
-    name: 'SFG-UU',
-    propagateMark: 'UNI-V2',
-    mortgagesUnit: 'SFG-UU',
+    name: 'UU-SFG',
+    propagateMark: 'Uniswap',
+    mortgagesUnit: 'UU-SFG',
     address: process.env.VUE_APP_SFG_UU_GAUGE,
     abi: ABI.SFGUU.mining,
     __contract: null,
@@ -4867,7 +4867,7 @@ store.gauges = {
     mortgages: {
       sfguu: {
         code: 'sfguu',
-        name: 'SFG-UU',
+        name: 'UU-SFG',
         priceDecimal: 4,
         gainUrl: 'https://app.uniswap.org/#/add/0x6ad66dac965f61e55479213872a2f36908f30b58/0x8a6ACA71A218301c7081d4e96D64292D3B275ce0',
 

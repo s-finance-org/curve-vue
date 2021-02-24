@@ -40,7 +40,8 @@ pipeline {
                 script {
                     if (env.GIT_BRANCH == 'master') {
                         sh 'npm run prod'
-                    } else {
+                    }
+                    else {
                         sh 'npm run build'
                     }
                 }
@@ -48,25 +49,24 @@ pipeline {
         }
         stage('Deploy') {
             environment {
-                CLOUD_FRONT_DIST_ID = ''
-                S3_BASE_URL = ''
-                S3_REGION = 'ap-northeast-1'
+                REGION = "cn-hongkong"
+                OSS_BUCKET = ""
+                CDN_PATH = ""
             }
             steps {
                 echo '---== Deploy Stage ==---'
                 script {
                     if (env.GIT_BRANCH == 'master') {
-                        CLOUD_FRONT_DIST_ID = 'E1D5X5GWQ7S1VZ'
-                        S3_BASE_URL = 's3://s.finance/prod'
+                        OSS_BUCKET = 's-finance'
+                        CDN_PATH = 'https://s.finance/'
                     } else {
-                        CLOUD_FRONT_DIST_ID = 'E274MPTHP4VXQ'
-                        S3_BASE_URL = 's3://s.finance/test'
+                        OSS_BUCKET = 'test-s-finance'
+                        CDN_PATH = 'https://test.s.finance/'
                     }
                 }
-                withCredentials([usernamePassword(credentialsId: 'aws-deployer', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]){
-                    // Upload Build Files
-                    sh "aws s3 sync ${LOCAL_BUILD_DIR} ${S3_BASE_URL} --acl public-read --delete"
-                    sh "aws cloudfront create-invalidation --distribution-id ${CLOUD_FRONT_DIST_ID} --paths '/*'"
+                withCredentials([usernamePassword(credentialsId: 'aliyun-builder', usernameVariable: 'ACCESS_KEY_ID', passwordVariable: 'ACCESS_KEY_SECRET')]){
+                    sh "aliyun oss cp --region ${REGION} --access-key-id ${ACCESS_KEY_ID} --access-key-secret ${ACCESS_KEY_SECRET} -f -r oss://${OSS_BUCKET}/ ${LOCAL_BUILD_DIR}"
+                    sh "aliyun cdn RefreshObjectCaches --region ${REGION} --access-key-id ${ACCESS_KEY_ID} --access-key-secret ${ACCESS_KEY_SECRET}  --ObjectType Directory --ObjectPath ${CDN_PATH}"
                 }
             }
         }
