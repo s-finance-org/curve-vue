@@ -11,7 +11,348 @@
       <root-sub />
 
       <b-tabs pills nav-class="tabs-nav" class="mt-4">
-        <b-tab :title="$t('dao.standTitle')" class="pt-3" active>
+
+        <b-tab :title="$t('dao.tokenTitle', ['SFG'])" class="pt-3" active>
+          <h4 class="mb-2 d-flex flex-wrap align-items-end">
+            <span class="mr-3">{{ $t('dao.tokenTitle', [store.gauges.sfguu.propagateMark]) }}</span>
+            <small class="mr-auto">{{ $t('dao.describe', [store.gauges.sfguu.mortgagesUnit, store.gauges.sfguu.rewardsUnit.join(' ')]) }}</small>
+          </h4>
+          <div class="box mb-4 px-4 py-3">
+            <div class="row mb-3 line-bottom flex-wrap align-items-center">
+              <text-overlay-loading class="d-flex col-auto pb-3 col-12 col-sm-auto" inline :show="store.gauges.sfguu.rewards.sfg.totalApy.loading || store.gauges.sfguu.maxApy.loading">
+                <img :src="getTokenIcon(store.gauges.sfguu.rewards.sfg.code)" class="mr-2 icon-w-48 icon" :class="[store.gauges.sfguu.rewards.sfg.code+'-icon']">
+                <span class="d-flex h4 mb-0 flex-column">
+                  <span class="h6 mb-0 inline-block text-black-65">{{ store.gauges.sfguu.rewards.sfg.name }} {{ $t('global.apr') }}</span>
+                  {{ store.gauges.sfguu.rewards.sfg.totalApy.percent }}% ~ {{ store.gauges.sfguu.maxApy.percent }}%
+                </span>
+              </text-overlay-loading>
+            </div>
+            <div class="row mb-3 line-bottom">
+              <span class="col-12 col-md-6 pb-3">
+                <h6 class="mb-0 text-black-65">{{ $t('dao.totalStaking') }}</h6>
+                <text-overlay-loading inline :show="store.gauges.sfguu.mortgages.sfguu.totalStaking.loading">
+                  <span class="h4 mr-2">{{ store.gauges.sfguu.mortgages.sfguu.totalStaking.cont }}</span>
+                  <span class="inline-block text-black-65">{{ store.gauges.sfguu.mortgagesUnit }}</span>
+                </text-overlay-loading>
+              </span>
+              <span class="col-12 col-md-6 pb-3">
+                <h6 class="mb-0 text-black-65">{{ $t('dao.myStaking') }}</h6>
+                <text-overlay-loading inline :show="store.gauges.sfguu.mortgages.sfguu.userStaking.loading">
+                  <span class="h4 mr-2">{{ store.gauges.sfguu.mortgages.sfguu.userStaking.cont }}</span>
+                  <span class="inline-block text-black-65">{{ store.gauges.sfguu.mortgagesUnit }}</span>
+                </text-overlay-loading>
+              </span>
+              <span class="col-12 col-md-6 pb-3">
+                <h6 class="mb-0 text-black-65">{{ $t('dao.miningPaidReward') }}</h6>
+                <text-overlay-loading inline :show="store.gauges.sfguu.rewards.sfg.userPaidReward.loading">
+                  <span class="h4 mr-2">{{ store.gauges.sfguu.rewards.sfg.userPaidReward.cont }}</span>
+                  <span class="inline-block text-black-65">{{ store.gauges.sfguu.rewards.sfg.name }}</span>
+                </text-overlay-loading>
+              </span>
+              <!-- <span class="col-12 col-md-6 pb-3">
+                <h6 class="mb-0 text-black-65">{{ $t('dao.rewardWeight', ['SFG']) }}</h6>
+                <text-overlay-loading inline :show="store.gauges.sfguu.rewards.sfg.weighting.loading">
+                  <span class="h4">{{ store.gauges.sfguu.rewards.sfg.weighting.percent }}%</span>
+                </text-overlay-loading>
+              </span> -->
+              <span class="col-12 col-md-6 pb-3">
+                <h6 class="mb-0 text-black-65">{{ $t('dao.dailyYield', ['SFG']) }}</h6>
+                <text-overlay-loading inline :show="store.gauges.sfguu.rewards.sfg.dailyYield.loading">
+                  <span class="h4">
+                    {{ store.gauges.sfguu.rewards.sfg.dailyYield.cont }}
+                    <span class="text-black-65 h6">{{ store.gauges.sfguu.rewards.sfg.name }}</span>
+                  </span>
+                </text-overlay-loading>
+              </span>
+            </div>
+
+            <b-tabs pills nav-class="tabs-nav" class="mt-1">
+              <b-tab :title="$t('dao.staking')" class="pt-3" active>
+                <label class="text-black-65 mb-0">{{ $t('dao.staking') }}</label>
+                <div class="row flex-wrap">
+                  <div class="col-12 col-lg mt-2">
+                    <b-form-input class="h-38" v-model="store.gauges.sfguu.mortgages.sfguu.stakeAmountInput" :placeholder="$t('dao.stakingAmountPlaceholder')"></b-form-input>
+                  </div>
+                  <b-form-radio-group
+                    class="mt-2 col"
+                    v-model="store.gauges.sfguu.mortgages.sfguu.stakeSliderSelectedRadio"
+                    :options="store.gauges.sfguu.mortgages.sfguu.stakeSliderOptions"
+                    buttons
+                    button-variant="outline-secondary"
+                  ></b-form-radio-group>
+                </div>
+                <small class="d-flex mt-1 flex-wrap">
+                  {{ $t('dao.stakingBalance') }}：
+                  <text-overlay-loading class="mr-2" :show="store.gauges.sfguu.mortgages.sfguu.userBalanceOf.loading">{{ store.gauges.sfguu.mortgages.sfguu.userBalanceOf.cont }} {{ store.gauges.sfguu.mortgages.sfguu.name }}</text-overlay-loading>
+                  <b-button class="text-blue-1" target="_blank" :href=store.gauges.sfguu.mortgages.sfguu.gainUrl size="xsm" variant="light">{{ $t('dao.stakingConfirmTip', [store.gauges.sfguu.mortgages.sfguu.name]) }}</b-button>
+                </small>
+                <!-- FIXME: inf_approval -->
+                <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('global.infiniteApproval') }}</b-form-checkbox>
+                <b-alert class="mt-3" :show="dismissCountDown" variant="dark" dismissible fade
+                  @dismissed="dismissCountDown=0"
+                  @dismiss-count-down="countDownChanged"
+                  v-html='waitingMessage'>
+                </b-alert>
+                <b-alert class="mt-3" :show="store.tokens.sfguu.error.dismissCountDown" variant="dark" dismissible fade
+                  @dismissed="store.tokens.sfguu.error.dismissCountDown=0"
+                  v-html='store.tokens.sfguu.error.message'>
+                </b-alert>
+
+                <div class="d-flex align-items-end mt-5 float-right">
+                  <text-overlay-loading :show="loadingAction">
+                    <b-button size="lg" variant="danger" @click=onSfguuStake>
+                      {{ $t('dao.stakingConfirm') }}
+                    </b-button>
+                  </text-overlay-loading>
+                </div>
+              </b-tab>
+              <b-tab :title="$t('dao.redemption')" class="pt-3">
+                <label class="text-black-65 mb-0">{{ $t('dao.redemption') }}</label>
+                <div class="row flex-wrap">
+                  <div class="col-12 col-lg mt-2">
+                    <b-form-input class="h-38" v-model="store.gauges.sfguu.mortgages.sfguu.redemptionAmountInput" :placeholder="$t('dao.redemptionAmountPlaceholder')"></b-form-input>
+                  </div>
+                  <b-form-radio-group
+                    class="mt-2 col"
+                    v-model="store.gauges.sfguu.mortgages.sfguu.redemptionSliderSelectedRadio"
+                    :options="store.gauges.sfguu.mortgages.sfguu.redemptionSliderOptions"
+                    buttons
+                    button-variant="outline-secondary"
+                  ></b-form-radio-group>
+                </div>
+                <small class="d-flex mt-1">
+                  {{ $t('dao.redemptionBalance') }}：
+                  <text-overlay-loading :show="store.gauges.sfguu.mortgages.sfguu.userStaking.loading">{{ store.gauges.sfguu.mortgages.sfguu.userStaking.cont }} {{ store.gauges.sfguu.mortgages.sfguu.name }}</text-overlay-loading>
+                </small>
+                <!-- FIXME: inf_approval -->
+                <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('global.infiniteApproval') }}</b-form-checkbox>
+                <b-alert class="mt-3" :show="dismissCountDown && waitingMessageTargetId === 'withdraw'" variant="dark" dismissible fade
+                  @dismissed="dismissCountDown=0"
+                  @dismiss-count-down="countDownChanged"
+                  v-html='waitingMessage'>
+                </b-alert>
+                <div class="d-flex align-items-end mt-5 float-right">
+                  <text-overlay-loading :show="loadingAction">
+                    <b-button size="lg" variant="danger" @click=onSfguuRedemption>
+                      {{ $t('dao.redemptionConfirm') }}
+                    </b-button>
+                  </text-overlay-loading>
+                </div>
+              </b-tab>
+              <b-tab :title="$t('dao.miningReward')" class="pt-3">
+                <div class="area">
+                  <h5 class="mb-3 d-flex align-items-center">
+                    <img :src="getTokenIcon(store.gauges.sfguu.rewards.sfg.code)" class="mr-2 icon-w-20 icon token-icon" :class="[store.gauges.sfguu.rewards.sfg.code+'-icon']">
+                    {{ store.gauges.sfguu.rewards.sfg.name }}
+                  </h5>
+                  <h6 class="mb-0 text-black-65">{{ $t('dao.miningPendingReward') }}</h6>
+                  <h4 class="mb-1">
+                    <text-overlay-loading inline :show="store.gauges.sfguu.rewards.sfg.userPendingReward.loading">
+                      {{ store.gauges.sfguu.rewards.sfg.userPendingReward.cont }} {{ store.gauges.sfguu.rewards.sfg.name }}
+                    </text-overlay-loading>
+                  </h4>
+                  <div class="d-flex no-gutters align-items-end">
+                    <small class="col row flex-wrap">
+                      <span class="col-12 col-lg-auto">
+                        {{ $t('dao.miningPaidReward') }}：
+                        <text-overlay-loading inline :show="store.gauges.sfguu.rewards.sfg.userPaidReward.loading">
+                          {{ store.gauges.sfguu.rewards.sfg.userPaidReward.cont }} {{ store.gauges.sfguu.rewards.sfg.name }}
+                        </text-overlay-loading>
+                        <em class="px-3 text-black-15">/</em>
+                      </span>
+                      <span class="col-12 col-lg-auto">
+                        {{ $t('dao.miningTotalReward') }}：
+                        <text-overlay-loading inline :show="store.gauges.sfguu.rewards.sfg.userTotalReward.loading">
+                          {{ store.gauges.sfguu.rewards.sfg.userTotalReward.cont }} {{ store.gauges.sfguu.rewards.sfg.name }}
+                        </text-overlay-loading>
+                        <em class="px-3 text-black-15">/</em>
+                      </span>
+                      <text-overlay-loading class="col-12 col-lg-auto"  inline :show="store.tokens.sfg.price.loading">
+                        1 {{ store.tokens.sfg.name }} = {{ store.tokens.sfg.price.cont }} {{ store.tokens.sfg.priceUnit }}
+                      </text-overlay-loading>
+                    </small>
+                    <text-overlay-loading :show="loadingAction">
+                      <b-button variant="danger" @click="onSfguuHarvest">
+                        {{ $t('dao.miningClaimConfirm') }}
+                      </b-button>
+                    </text-overlay-loading>
+                  </div>
+                </div>
+              </b-tab>
+            </b-tabs>
+          </div>
+
+          <h4 class="mb-2 d-flex flex-wrap align-items-end">
+            <span class="mr-3">{{ $t('dao.tokenTitle', [store.gauges.bpt.propagateMark]) }}</span>
+            <small class="mr-auto">{{ $t('dao.describe', [store.gauges.bpt.mortgagesUnit, store.gauges.bpt.rewardsUnit.join(' ')]) }}</small>
+          </h4>
+          <div class="box mb-4 px-4 py-3">
+            <div class="row mb-3 line-bottom flex-wrap align-items-center">
+              <text-overlay-loading class="d-flex col-auto pb-3 col-12 col-sm-auto" inline :show="store.gauges.bpt.rewards.sfg.totalApy.loading || store.gauges.bpt.maxApy.loading">
+                <img :src="getTokenIcon(store.gauges.bpt.rewards.sfg.code)" class="mr-2 icon-w-48 icon" :class="[store.gauges.bpt.rewards.sfg.code+'-icon']">
+                <span class="d-flex h4 mb-0 flex-column">
+                  <span class="h6 mb-0 inline-block text-black-65">{{ store.gauges.bpt.rewards.sfg.name }} {{ $t('global.apr') }}</span>
+                  {{ store.gauges.bpt.rewards.sfg.totalApy.percent }}% ~ {{ store.gauges.bpt.maxApy.percent }}%
+                </span>
+              </text-overlay-loading>
+            </div>
+            <div class="row mb-3 line-bottom">
+              <span class="col-12 col-md-6 pb-3">
+                <h6 class="mb-0 text-black-65">{{ $t('dao.totalStaking') }}</h6>
+                <text-overlay-loading inline :show="store.gauges.bpt.mortgages.bpt.totalStaking.loading">
+                  <span class="h4 mr-2">{{ store.gauges.bpt.mortgages.bpt.totalStaking.cont }}</span>
+                  <span class="inline-block text-black-65">{{ store.gauges.bpt.mortgagesUnit }}</span>
+                </text-overlay-loading>
+              </span>
+              <span class="col-12 col-md-6 pb-3">
+                <h6 class="mb-0 text-black-65">{{ $t('dao.myStaking') }}</h6>
+                <text-overlay-loading inline :show="store.gauges.bpt.mortgages.bpt.userStaking.loading">
+                  <span class="h4 mr-2">{{ store.gauges.bpt.mortgages.bpt.userStaking.cont }}</span>
+                  <span class="inline-block text-black-65">{{ store.gauges.bpt.mortgagesUnit }}</span>
+                </text-overlay-loading>
+              </span>
+              <span class="col-12 col-md-6 pb-3">
+                <h6 class="mb-0 text-black-65">{{ $t('dao.miningPaidReward') }}</h6>
+                <text-overlay-loading inline :show="store.gauges.bpt.rewards.sfg.userPaidReward.loading">
+                  <span class="h4 mr-2">{{ store.gauges.bpt.rewards.sfg.userPaidReward.cont }}</span>
+                  <span class="inline-block text-black-65">{{ store.gauges.bpt.rewards.sfg.name }}</span>
+                </text-overlay-loading>
+              </span>
+              <!-- <span class="col-12 col-md-6 pb-3">
+                <h6 class="mb-0 text-black-65">{{ $t('dao.rewardWeight', ['SFG']) }}</h6>
+                <text-overlay-loading inline :show="store.gauges.bpt.rewards.sfg.weighting.loading">
+                  <span class="h4">{{ store.gauges.bpt.rewards.sfg.weighting.percent }}%</span>
+                </text-overlay-loading>
+              </span> -->
+              <span class="col-12 col-md-6 pb-3">
+                <h6 class="mb-0 text-black-65">{{ $t('dao.dailyYield', ['SFG']) }}</h6>
+                <text-overlay-loading inline :show="store.gauges.bpt.rewards.sfg.dailyYield.loading">
+                  <span class="h4">
+                    {{ store.gauges.bpt.rewards.sfg.dailyYield.cont }}
+                    <span class="text-black-65 h6">{{ store.gauges.bpt.rewards.sfg.name }}</span>
+                  </span>
+                </text-overlay-loading>
+              </span>
+            </div>
+
+            <b-tabs pills nav-class="tabs-nav" class="mt-1">
+              <b-tab :title="$t('dao.staking')" class="pt-3" active>
+                <label class="text-black-65 mb-0">{{ $t('dao.staking') }}</label>
+                <div class="row flex-wrap">
+                  <div class="col-12 col-lg mt-2">
+                    <b-form-input class="h-38" v-model="store.gauges.bpt.mortgages.bpt.stakeAmountInput" :placeholder="$t('dao.stakingAmountPlaceholder')"></b-form-input>
+                  </div>
+                  <b-form-radio-group
+                    class="mt-2 col"
+                    v-model="store.gauges.bpt.mortgages.bpt.stakeSliderSelectedRadio"
+                    :options="store.gauges.bpt.mortgages.bpt.stakeSliderOptions"
+                    buttons
+                    button-variant="outline-secondary"
+                  ></b-form-radio-group>
+                </div>
+                <small class="d-flex mt-1 flex-wrap">
+                  {{ $t('dao.stakingBalance') }}：
+                  <text-overlay-loading class="mr-2" :show="store.gauges.bpt.mortgages.bpt.userBalanceOf.loading">{{ store.gauges.bpt.mortgages.bpt.userBalanceOf.cont }} {{ store.gauges.bpt.mortgages.bpt.name }}</text-overlay-loading>
+                  <b-button class="text-blue-1" target="_blank" :href=store.gauges.bpt.mortgages.bpt.gainUrl size="xsm" variant="light">{{ $t('dao.stakingConfirmTip', [store.gauges.bpt.mortgages.bpt.name]) }}</b-button>
+                </small>
+                <!-- FIXME: inf_approval -->
+                <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('global.infiniteApproval') }}</b-form-checkbox>
+                <b-alert class="mt-3" :show="dismissCountDown" variant="dark" dismissible fade
+                  @dismissed="dismissCountDown=0"
+                  @dismiss-count-down="countDownChanged"
+                  v-html='waitingMessage'>
+                </b-alert>
+                <b-alert class="mt-3" :show="store.tokens.bpt.error.dismissCountDown" variant="dark" dismissible fade
+                  @dismissed="store.tokens.bpt.error.dismissCountDown=0"
+                  v-html='store.tokens.bpt.error.message'>
+                </b-alert>
+
+                <div class="d-flex align-items-end mt-5 float-right">
+                  <text-overlay-loading :show="loadingAction">
+                    <b-button size="lg" variant="danger" @click=onStake>
+                      {{ $t('dao.stakingConfirm') }}
+                    </b-button>
+                  </text-overlay-loading>
+                </div>
+              </b-tab>
+              <b-tab :title="$t('dao.redemption')" class="pt-3">
+                <label class="text-black-65 mb-0">{{ $t('dao.redemption') }}</label>
+                <div class="row flex-wrap">
+                  <div class="col-12 col-lg mt-2">
+                    <b-form-input class="h-38" v-model="store.gauges.bpt.mortgages.bpt.redemptionAmountInput" :placeholder="$t('dao.redemptionAmountPlaceholder')"></b-form-input>
+                  </div>
+                  <b-form-radio-group
+                    class="mt-2 col"
+                    v-model="store.gauges.bpt.mortgages.bpt.redemptionSliderSelectedRadio"
+                    :options="store.gauges.bpt.mortgages.bpt.redemptionSliderOptions"
+                    buttons
+                    button-variant="outline-secondary"
+                  ></b-form-radio-group>
+                </div>
+                <small class="d-flex mt-1">
+                  {{ $t('dao.redemptionBalance') }}：
+                  <text-overlay-loading :show="store.gauges.bpt.mortgages.bpt.userStaking.loading">{{ store.gauges.bpt.mortgages.bpt.userStaking.cont }} {{ store.gauges.bpt.mortgages.bpt.name }}</text-overlay-loading>
+                </small>
+                <!-- FIXME: inf_approval -->
+                <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('global.infiniteApproval') }}</b-form-checkbox>
+                <b-alert class="mt-3" :show="dismissCountDown && waitingMessageTargetId === 'withdraw'" variant="dark" dismissible fade
+                  @dismissed="dismissCountDown=0"
+                  @dismiss-count-down="countDownChanged"
+                  v-html='waitingMessage'>
+                </b-alert>
+                <div class="d-flex align-items-end mt-5 float-right">
+                  <text-overlay-loading :show="loadingAction">
+                    <b-button size="lg" variant="danger" @click=onRedemption>
+                      {{ $t('dao.redemptionConfirm') }}
+                    </b-button>
+                  </text-overlay-loading>
+                </div>
+              </b-tab>
+              <b-tab :title="$t('dao.miningReward')" class="pt-3">
+                <div class="area">
+                  <h5 class="mb-3 d-flex align-items-center">
+                    <img :src="getTokenIcon(store.gauges.bpt.rewards.sfg.code)" class="mr-2 icon-w-20 icon token-icon" :class="[store.gauges.bpt.rewards.sfg.code+'-icon']">
+                    {{ store.gauges.bpt.rewards.sfg.name }}
+                  </h5>
+                  <h6 class="mb-0 text-black-65">{{ $t('dao.miningPendingReward') }}</h6>
+                  <h4 class="mb-1">
+                    <text-overlay-loading inline :show="store.gauges.bpt.rewards.sfg.userPendingReward.loading">
+                      {{ store.gauges.bpt.rewards.sfg.userPendingReward.cont }} {{ store.gauges.bpt.rewards.sfg.name }}
+                    </text-overlay-loading>
+                  </h4>
+                  <div class="d-flex no-gutters align-items-end">
+                    <small class="col row flex-wrap">
+                      <span class="col-12 col-lg-auto">
+                        {{ $t('dao.miningPaidReward') }}：
+                        <text-overlay-loading inline :show="store.gauges.bpt.rewards.sfg.userPaidReward.loading">
+                          {{ store.gauges.bpt.rewards.sfg.userPaidReward.cont }} {{ store.gauges.bpt.rewards.sfg.name }}
+                        </text-overlay-loading>
+                        <em class="px-3 text-black-15">/</em>
+                      </span>
+                      <span class="col-12 col-lg-auto">
+                        {{ $t('dao.miningTotalReward') }}：
+                        <text-overlay-loading inline :show="store.gauges.bpt.rewards.sfg.userTotalReward.loading">
+                          {{ store.gauges.bpt.rewards.sfg.userTotalReward.cont }} {{ store.gauges.bpt.rewards.sfg.name }}
+                        </text-overlay-loading>
+                        <em class="px-3 text-black-15">/</em>
+                      </span>
+                      <text-overlay-loading class="col-12 col-lg-auto"  inline :show="store.tokens.sfg.price.loading">
+                        1 {{ store.tokens.sfg.name }} = {{ store.tokens.sfg.price.cont }} {{ store.tokens.sfg.priceUnit }}
+                      </text-overlay-loading>
+                    </small>
+                    <text-overlay-loading :show="loadingAction">
+                      <b-button variant="danger" @click="onHarvest">
+                        {{ $t('dao.miningClaimConfirm') }}
+                      </b-button>
+                    </text-overlay-loading>
+                  </div>
+                </div>
+              </b-tab>
+            </b-tabs>
+          </div>
+        </b-tab>
+
+        <b-tab :title="$t('dao.standTitle')" class="pt-3">
           
           <!-- basu -->
           <!-- <h4 class="mb-2 d-flex flex-wrap align-items-end">
@@ -1856,346 +2197,6 @@
                     </b-alert>
                   </template>
 
-                </div>
-              </b-tab>
-            </b-tabs>
-          </div>
-        </b-tab>
-
-        <b-tab :title="$t('dao.tokenTitle', ['SFG'])" class="pt-3">
-          <h4 class="mb-2 d-flex flex-wrap align-items-end">
-            <span class="mr-3">{{ $t('dao.tokenTitle', [store.gauges.sfguu.propagateMark]) }}</span>
-            <small class="mr-auto">{{ $t('dao.describe', [store.gauges.sfguu.mortgagesUnit, store.gauges.sfguu.rewardsUnit.join(' ')]) }}</small>
-          </h4>
-          <div class="box mb-4 px-4 py-3">
-            <div class="row mb-3 line-bottom flex-wrap align-items-center">
-              <text-overlay-loading class="d-flex col-auto pb-3 col-12 col-sm-auto" inline :show="store.gauges.sfguu.rewards.sfg.totalApy.loading || store.gauges.sfguu.maxApy.loading">
-                <img :src="getTokenIcon(store.gauges.sfguu.rewards.sfg.code)" class="mr-2 icon-w-48 icon" :class="[store.gauges.sfguu.rewards.sfg.code+'-icon']">
-                <span class="d-flex h4 mb-0 flex-column">
-                  <span class="h6 mb-0 inline-block text-black-65">{{ store.gauges.sfguu.rewards.sfg.name }} {{ $t('global.apr') }}</span>
-                  {{ store.gauges.sfguu.rewards.sfg.totalApy.percent }}% ~ {{ store.gauges.sfguu.maxApy.percent }}%
-                </span>
-              </text-overlay-loading>
-            </div>
-            <div class="row mb-3 line-bottom">
-              <span class="col-12 col-md-6 pb-3">
-                <h6 class="mb-0 text-black-65">{{ $t('dao.totalStaking') }}</h6>
-                <text-overlay-loading inline :show="store.gauges.sfguu.mortgages.sfguu.totalStaking.loading">
-                  <span class="h4 mr-2">{{ store.gauges.sfguu.mortgages.sfguu.totalStaking.cont }}</span>
-                  <span class="inline-block text-black-65">{{ store.gauges.sfguu.mortgagesUnit }}</span>
-                </text-overlay-loading>
-              </span>
-              <span class="col-12 col-md-6 pb-3">
-                <h6 class="mb-0 text-black-65">{{ $t('dao.myStaking') }}</h6>
-                <text-overlay-loading inline :show="store.gauges.sfguu.mortgages.sfguu.userStaking.loading">
-                  <span class="h4 mr-2">{{ store.gauges.sfguu.mortgages.sfguu.userStaking.cont }}</span>
-                  <span class="inline-block text-black-65">{{ store.gauges.sfguu.mortgagesUnit }}</span>
-                </text-overlay-loading>
-              </span>
-              <span class="col-12 col-md-6 pb-3">
-                <h6 class="mb-0 text-black-65">{{ $t('dao.miningPaidReward') }}</h6>
-                <text-overlay-loading inline :show="store.gauges.sfguu.rewards.sfg.userPaidReward.loading">
-                  <span class="h4 mr-2">{{ store.gauges.sfguu.rewards.sfg.userPaidReward.cont }}</span>
-                  <span class="inline-block text-black-65">{{ store.gauges.sfguu.rewards.sfg.name }}</span>
-                </text-overlay-loading>
-              </span>
-              <!-- <span class="col-12 col-md-6 pb-3">
-                <h6 class="mb-0 text-black-65">{{ $t('dao.rewardWeight', ['SFG']) }}</h6>
-                <text-overlay-loading inline :show="store.gauges.sfguu.rewards.sfg.weighting.loading">
-                  <span class="h4">{{ store.gauges.sfguu.rewards.sfg.weighting.percent }}%</span>
-                </text-overlay-loading>
-              </span> -->
-              <span class="col-12 col-md-6 pb-3">
-                <h6 class="mb-0 text-black-65">{{ $t('dao.dailyYield', ['SFG']) }}</h6>
-                <text-overlay-loading inline :show="store.gauges.sfguu.rewards.sfg.dailyYield.loading">
-                  <span class="h4">
-                    {{ store.gauges.sfguu.rewards.sfg.dailyYield.cont }}
-                    <span class="text-black-65 h6">{{ store.gauges.sfguu.rewards.sfg.name }}</span>
-                  </span>
-                </text-overlay-loading>
-              </span>
-            </div>
-
-            <b-tabs pills nav-class="tabs-nav" class="mt-1">
-              <b-tab :title="$t('dao.staking')" class="pt-3" active>
-                <label class="text-black-65 mb-0">{{ $t('dao.staking') }}</label>
-                <div class="row flex-wrap">
-                  <div class="col-12 col-lg mt-2">
-                    <b-form-input class="h-38" v-model="store.gauges.sfguu.mortgages.sfguu.stakeAmountInput" :placeholder="$t('dao.stakingAmountPlaceholder')"></b-form-input>
-                  </div>
-                  <b-form-radio-group
-                    class="mt-2 col"
-                    v-model="store.gauges.sfguu.mortgages.sfguu.stakeSliderSelectedRadio"
-                    :options="store.gauges.sfguu.mortgages.sfguu.stakeSliderOptions"
-                    buttons
-                    button-variant="outline-secondary"
-                  ></b-form-radio-group>
-                </div>
-                <small class="d-flex mt-1 flex-wrap">
-                  {{ $t('dao.stakingBalance') }}：
-                  <text-overlay-loading class="mr-2" :show="store.gauges.sfguu.mortgages.sfguu.userBalanceOf.loading">{{ store.gauges.sfguu.mortgages.sfguu.userBalanceOf.cont }} {{ store.gauges.sfguu.mortgages.sfguu.name }}</text-overlay-loading>
-                  <b-button class="text-blue-1" target="_blank" :href=store.gauges.sfguu.mortgages.sfguu.gainUrl size="xsm" variant="light">{{ $t('dao.stakingConfirmTip', [store.gauges.sfguu.mortgages.sfguu.name]) }}</b-button>
-                </small>
-                <!-- FIXME: inf_approval -->
-                <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('global.infiniteApproval') }}</b-form-checkbox>
-                <b-alert class="mt-3" :show="dismissCountDown" variant="dark" dismissible fade
-                  @dismissed="dismissCountDown=0"
-                  @dismiss-count-down="countDownChanged"
-                  v-html='waitingMessage'>
-                </b-alert>
-                <b-alert class="mt-3" :show="store.tokens.sfguu.error.dismissCountDown" variant="dark" dismissible fade
-                  @dismissed="store.tokens.sfguu.error.dismissCountDown=0"
-                  v-html='store.tokens.sfguu.error.message'>
-                </b-alert>
-
-                <div class="d-flex align-items-end mt-5 float-right">
-                  <text-overlay-loading :show="loadingAction">
-                    <b-button size="lg" variant="danger" @click=onSfguuStake>
-                      {{ $t('dao.stakingConfirm') }}
-                    </b-button>
-                  </text-overlay-loading>
-                </div>
-              </b-tab>
-              <b-tab :title="$t('dao.redemption')" class="pt-3">
-                <label class="text-black-65 mb-0">{{ $t('dao.redemption') }}</label>
-                <div class="row flex-wrap">
-                  <div class="col-12 col-lg mt-2">
-                    <b-form-input class="h-38" v-model="store.gauges.sfguu.mortgages.sfguu.redemptionAmountInput" :placeholder="$t('dao.redemptionAmountPlaceholder')"></b-form-input>
-                  </div>
-                  <b-form-radio-group
-                    class="mt-2 col"
-                    v-model="store.gauges.sfguu.mortgages.sfguu.redemptionSliderSelectedRadio"
-                    :options="store.gauges.sfguu.mortgages.sfguu.redemptionSliderOptions"
-                    buttons
-                    button-variant="outline-secondary"
-                  ></b-form-radio-group>
-                </div>
-                <small class="d-flex mt-1">
-                  {{ $t('dao.redemptionBalance') }}：
-                  <text-overlay-loading :show="store.gauges.sfguu.mortgages.sfguu.userStaking.loading">{{ store.gauges.sfguu.mortgages.sfguu.userStaking.cont }} {{ store.gauges.sfguu.mortgages.sfguu.name }}</text-overlay-loading>
-                </small>
-                <!-- FIXME: inf_approval -->
-                <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('global.infiniteApproval') }}</b-form-checkbox>
-                <b-alert class="mt-3" :show="dismissCountDown && waitingMessageTargetId === 'withdraw'" variant="dark" dismissible fade
-                  @dismissed="dismissCountDown=0"
-                  @dismiss-count-down="countDownChanged"
-                  v-html='waitingMessage'>
-                </b-alert>
-                <div class="d-flex align-items-end mt-5 float-right">
-                  <text-overlay-loading :show="loadingAction">
-                    <b-button size="lg" variant="danger" @click=onSfguuRedemption>
-                      {{ $t('dao.redemptionConfirm') }}
-                    </b-button>
-                  </text-overlay-loading>
-                </div>
-              </b-tab>
-              <b-tab :title="$t('dao.miningReward')" class="pt-3">
-                <div class="area">
-                  <h5 class="mb-3 d-flex align-items-center">
-                    <img :src="getTokenIcon(store.gauges.sfguu.rewards.sfg.code)" class="mr-2 icon-w-20 icon token-icon" :class="[store.gauges.sfguu.rewards.sfg.code+'-icon']">
-                    {{ store.gauges.sfguu.rewards.sfg.name }}
-                  </h5>
-                  <h6 class="mb-0 text-black-65">{{ $t('dao.miningPendingReward') }}</h6>
-                  <h4 class="mb-1">
-                    <text-overlay-loading inline :show="store.gauges.sfguu.rewards.sfg.userPendingReward.loading">
-                      {{ store.gauges.sfguu.rewards.sfg.userPendingReward.cont }} {{ store.gauges.sfguu.rewards.sfg.name }}
-                    </text-overlay-loading>
-                  </h4>
-                  <div class="d-flex no-gutters align-items-end">
-                    <small class="col row flex-wrap">
-                      <span class="col-12 col-lg-auto">
-                        {{ $t('dao.miningPaidReward') }}：
-                        <text-overlay-loading inline :show="store.gauges.sfguu.rewards.sfg.userPaidReward.loading">
-                          {{ store.gauges.sfguu.rewards.sfg.userPaidReward.cont }} {{ store.gauges.sfguu.rewards.sfg.name }}
-                        </text-overlay-loading>
-                        <em class="px-3 text-black-15">/</em>
-                      </span>
-                      <span class="col-12 col-lg-auto">
-                        {{ $t('dao.miningTotalReward') }}：
-                        <text-overlay-loading inline :show="store.gauges.sfguu.rewards.sfg.userTotalReward.loading">
-                          {{ store.gauges.sfguu.rewards.sfg.userTotalReward.cont }} {{ store.gauges.sfguu.rewards.sfg.name }}
-                        </text-overlay-loading>
-                        <em class="px-3 text-black-15">/</em>
-                      </span>
-                      <text-overlay-loading class="col-12 col-lg-auto"  inline :show="store.tokens.sfg.price.loading">
-                        1 {{ store.tokens.sfg.name }} = {{ store.tokens.sfg.price.cont }} {{ store.tokens.sfg.priceUnit }}
-                      </text-overlay-loading>
-                    </small>
-                    <text-overlay-loading :show="loadingAction">
-                      <b-button variant="danger" @click="onSfguuHarvest">
-                        {{ $t('dao.miningClaimConfirm') }}
-                      </b-button>
-                    </text-overlay-loading>
-                  </div>
-                </div>
-              </b-tab>
-            </b-tabs>
-          </div>
-
-          <h4 class="mb-2 d-flex flex-wrap align-items-end">
-            <span class="mr-3">{{ $t('dao.tokenTitle', [store.gauges.bpt.propagateMark]) }}</span>
-            <small class="mr-auto">{{ $t('dao.describe', [store.gauges.bpt.mortgagesUnit, store.gauges.bpt.rewardsUnit.join(' ')]) }}</small>
-          </h4>
-          <div class="box mb-4 px-4 py-3">
-            <div class="row mb-3 line-bottom flex-wrap align-items-center">
-              <text-overlay-loading class="d-flex col-auto pb-3 col-12 col-sm-auto" inline :show="store.gauges.bpt.rewards.sfg.totalApy.loading || store.gauges.bpt.maxApy.loading">
-                <img :src="getTokenIcon(store.gauges.bpt.rewards.sfg.code)" class="mr-2 icon-w-48 icon" :class="[store.gauges.bpt.rewards.sfg.code+'-icon']">
-                <span class="d-flex h4 mb-0 flex-column">
-                  <span class="h6 mb-0 inline-block text-black-65">{{ store.gauges.bpt.rewards.sfg.name }} {{ $t('global.apr') }}</span>
-                  {{ store.gauges.bpt.rewards.sfg.totalApy.percent }}% ~ {{ store.gauges.bpt.maxApy.percent }}%
-                </span>
-              </text-overlay-loading>
-            </div>
-            <div class="row mb-3 line-bottom">
-              <span class="col-12 col-md-6 pb-3">
-                <h6 class="mb-0 text-black-65">{{ $t('dao.totalStaking') }}</h6>
-                <text-overlay-loading inline :show="store.gauges.bpt.mortgages.bpt.totalStaking.loading">
-                  <span class="h4 mr-2">{{ store.gauges.bpt.mortgages.bpt.totalStaking.cont }}</span>
-                  <span class="inline-block text-black-65">{{ store.gauges.bpt.mortgagesUnit }}</span>
-                </text-overlay-loading>
-              </span>
-              <span class="col-12 col-md-6 pb-3">
-                <h6 class="mb-0 text-black-65">{{ $t('dao.myStaking') }}</h6>
-                <text-overlay-loading inline :show="store.gauges.bpt.mortgages.bpt.userStaking.loading">
-                  <span class="h4 mr-2">{{ store.gauges.bpt.mortgages.bpt.userStaking.cont }}</span>
-                  <span class="inline-block text-black-65">{{ store.gauges.bpt.mortgagesUnit }}</span>
-                </text-overlay-loading>
-              </span>
-              <span class="col-12 col-md-6 pb-3">
-                <h6 class="mb-0 text-black-65">{{ $t('dao.miningPaidReward') }}</h6>
-                <text-overlay-loading inline :show="store.gauges.bpt.rewards.sfg.userPaidReward.loading">
-                  <span class="h4 mr-2">{{ store.gauges.bpt.rewards.sfg.userPaidReward.cont }}</span>
-                  <span class="inline-block text-black-65">{{ store.gauges.bpt.rewards.sfg.name }}</span>
-                </text-overlay-loading>
-              </span>
-              <!-- <span class="col-12 col-md-6 pb-3">
-                <h6 class="mb-0 text-black-65">{{ $t('dao.rewardWeight', ['SFG']) }}</h6>
-                <text-overlay-loading inline :show="store.gauges.bpt.rewards.sfg.weighting.loading">
-                  <span class="h4">{{ store.gauges.bpt.rewards.sfg.weighting.percent }}%</span>
-                </text-overlay-loading>
-              </span> -->
-              <span class="col-12 col-md-6 pb-3">
-                <h6 class="mb-0 text-black-65">{{ $t('dao.dailyYield', ['SFG']) }}</h6>
-                <text-overlay-loading inline :show="store.gauges.bpt.rewards.sfg.dailyYield.loading">
-                  <span class="h4">
-                    {{ store.gauges.bpt.rewards.sfg.dailyYield.cont }}
-                    <span class="text-black-65 h6">{{ store.gauges.bpt.rewards.sfg.name }}</span>
-                  </span>
-                </text-overlay-loading>
-              </span>
-            </div>
-
-            <b-tabs pills nav-class="tabs-nav" class="mt-1">
-              <b-tab :title="$t('dao.staking')" class="pt-3" active>
-                <label class="text-black-65 mb-0">{{ $t('dao.staking') }}</label>
-                <div class="row flex-wrap">
-                  <div class="col-12 col-lg mt-2">
-                    <b-form-input class="h-38" v-model="store.gauges.bpt.mortgages.bpt.stakeAmountInput" :placeholder="$t('dao.stakingAmountPlaceholder')"></b-form-input>
-                  </div>
-                  <b-form-radio-group
-                    class="mt-2 col"
-                    v-model="store.gauges.bpt.mortgages.bpt.stakeSliderSelectedRadio"
-                    :options="store.gauges.bpt.mortgages.bpt.stakeSliderOptions"
-                    buttons
-                    button-variant="outline-secondary"
-                  ></b-form-radio-group>
-                </div>
-                <small class="d-flex mt-1 flex-wrap">
-                  {{ $t('dao.stakingBalance') }}：
-                  <text-overlay-loading class="mr-2" :show="store.gauges.bpt.mortgages.bpt.userBalanceOf.loading">{{ store.gauges.bpt.mortgages.bpt.userBalanceOf.cont }} {{ store.gauges.bpt.mortgages.bpt.name }}</text-overlay-loading>
-                  <b-button class="text-blue-1" target="_blank" :href=store.gauges.bpt.mortgages.bpt.gainUrl size="xsm" variant="light">{{ $t('dao.stakingConfirmTip', [store.gauges.bpt.mortgages.bpt.name]) }}</b-button>
-                </small>
-                <!-- FIXME: inf_approval -->
-                <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('global.infiniteApproval') }}</b-form-checkbox>
-                <b-alert class="mt-3" :show="dismissCountDown" variant="dark" dismissible fade
-                  @dismissed="dismissCountDown=0"
-                  @dismiss-count-down="countDownChanged"
-                  v-html='waitingMessage'>
-                </b-alert>
-                <b-alert class="mt-3" :show="store.tokens.bpt.error.dismissCountDown" variant="dark" dismissible fade
-                  @dismissed="store.tokens.bpt.error.dismissCountDown=0"
-                  v-html='store.tokens.bpt.error.message'>
-                </b-alert>
-
-                <div class="d-flex align-items-end mt-5 float-right">
-                  <text-overlay-loading :show="loadingAction">
-                    <b-button size="lg" variant="danger" @click=onStake>
-                      {{ $t('dao.stakingConfirm') }}
-                    </b-button>
-                  </text-overlay-loading>
-                </div>
-              </b-tab>
-              <b-tab :title="$t('dao.redemption')" class="pt-3">
-                <label class="text-black-65 mb-0">{{ $t('dao.redemption') }}</label>
-                <div class="row flex-wrap">
-                  <div class="col-12 col-lg mt-2">
-                    <b-form-input class="h-38" v-model="store.gauges.bpt.mortgages.bpt.redemptionAmountInput" :placeholder="$t('dao.redemptionAmountPlaceholder')"></b-form-input>
-                  </div>
-                  <b-form-radio-group
-                    class="mt-2 col"
-                    v-model="store.gauges.bpt.mortgages.bpt.redemptionSliderSelectedRadio"
-                    :options="store.gauges.bpt.mortgages.bpt.redemptionSliderOptions"
-                    buttons
-                    button-variant="outline-secondary"
-                  ></b-form-radio-group>
-                </div>
-                <small class="d-flex mt-1">
-                  {{ $t('dao.redemptionBalance') }}：
-                  <text-overlay-loading :show="store.gauges.bpt.mortgages.bpt.userStaking.loading">{{ store.gauges.bpt.mortgages.bpt.userStaking.cont }} {{ store.gauges.bpt.mortgages.bpt.name }}</text-overlay-loading>
-                </small>
-                <!-- FIXME: inf_approval -->
-                <b-form-checkbox class="mt-4" v-model="inf_approval" name="inf-approval">{{ $t('global.infiniteApproval') }}</b-form-checkbox>
-                <b-alert class="mt-3" :show="dismissCountDown && waitingMessageTargetId === 'withdraw'" variant="dark" dismissible fade
-                  @dismissed="dismissCountDown=0"
-                  @dismiss-count-down="countDownChanged"
-                  v-html='waitingMessage'>
-                </b-alert>
-                <div class="d-flex align-items-end mt-5 float-right">
-                  <text-overlay-loading :show="loadingAction">
-                    <b-button size="lg" variant="danger" @click=onRedemption>
-                      {{ $t('dao.redemptionConfirm') }}
-                    </b-button>
-                  </text-overlay-loading>
-                </div>
-              </b-tab>
-              <b-tab :title="$t('dao.miningReward')" class="pt-3">
-                <div class="area">
-                  <h5 class="mb-3 d-flex align-items-center">
-                    <img :src="getTokenIcon(store.gauges.bpt.rewards.sfg.code)" class="mr-2 icon-w-20 icon token-icon" :class="[store.gauges.bpt.rewards.sfg.code+'-icon']">
-                    {{ store.gauges.bpt.rewards.sfg.name }}
-                  </h5>
-                  <h6 class="mb-0 text-black-65">{{ $t('dao.miningPendingReward') }}</h6>
-                  <h4 class="mb-1">
-                    <text-overlay-loading inline :show="store.gauges.bpt.rewards.sfg.userPendingReward.loading">
-                      {{ store.gauges.bpt.rewards.sfg.userPendingReward.cont }} {{ store.gauges.bpt.rewards.sfg.name }}
-                    </text-overlay-loading>
-                  </h4>
-                  <div class="d-flex no-gutters align-items-end">
-                    <small class="col row flex-wrap">
-                      <span class="col-12 col-lg-auto">
-                        {{ $t('dao.miningPaidReward') }}：
-                        <text-overlay-loading inline :show="store.gauges.bpt.rewards.sfg.userPaidReward.loading">
-                          {{ store.gauges.bpt.rewards.sfg.userPaidReward.cont }} {{ store.gauges.bpt.rewards.sfg.name }}
-                        </text-overlay-loading>
-                        <em class="px-3 text-black-15">/</em>
-                      </span>
-                      <span class="col-12 col-lg-auto">
-                        {{ $t('dao.miningTotalReward') }}：
-                        <text-overlay-loading inline :show="store.gauges.bpt.rewards.sfg.userTotalReward.loading">
-                          {{ store.gauges.bpt.rewards.sfg.userTotalReward.cont }} {{ store.gauges.bpt.rewards.sfg.name }}
-                        </text-overlay-loading>
-                        <em class="px-3 text-black-15">/</em>
-                      </span>
-                      <text-overlay-loading class="col-12 col-lg-auto"  inline :show="store.tokens.sfg.price.loading">
-                        1 {{ store.tokens.sfg.name }} = {{ store.tokens.sfg.price.cont }} {{ store.tokens.sfg.priceUnit }}
-                      </text-overlay-loading>
-                    </small>
-                    <text-overlay-loading :show="loadingAction">
-                      <b-button variant="danger" @click="onHarvest">
-                        {{ $t('dao.miningClaimConfirm') }}
-                      </b-button>
-                    </text-overlay-loading>
-                  </div>
                 </div>
               </b-tab>
             </b-tabs>
