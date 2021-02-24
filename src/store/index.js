@@ -214,6 +214,52 @@ store.tokens = {
     decimal: 6,
   },
 
+  uu: {
+    name: 'UU',
+    address: process.env.VUE_APP_UU_TOKEN,
+    abi: tokensV2.UU.abi,
+    __contract: null,
+    get contract () {
+      const { __contract, abi, address } = this
+
+      return __contract ||
+        (this.__contract = new web3.eth.Contract(abi, address))
+    },
+
+    decimal: 18,
+    /**
+     *  @type {number}
+     */
+    get precision () {
+      const { decimal } = this
+
+      return Math.pow(10, decimal)
+    },
+
+    userBalanceOf: valueModel.create(),
+    async getBalanceOf (target, accountAddress) {
+      const { contract, userBalanceOf } = this
+      const result = await contract.methods.balanceOf(accountAddress).call()
+
+      userBalanceOf.ether = target.ether = result
+
+      return result
+    },
+
+    error: errorModel.create(),
+
+    price: valueModel.create(),
+    priceUnit: 'USDT',
+    // FIXME: 
+    async getPrice () {
+      const { address, price, contract, precision } = this
+
+      price.ether = await contract.methods.calcPrice().call()
+
+      return price.handled
+    }
+  },
+
   sfguu: {
     name: 'UU-SFG',
     address: process.env.VUE_APP_SFG_UU_TOKEN,
@@ -307,22 +353,14 @@ store.tokens = {
     price: valueModel.create(),
     // TODO: priceUnit
     async getPrice () {
-      // const { price, contract } = this
-      // const { sfg, dai } = store.tokens
-  
-      // // FIXME:
-      // const getalanceDaiInBpt = await contract.methods.getBalance(dai.address).call() / 1e18
-      // const getalanceSfgInBpt = await contract.methods.getBalance(sfg.address).call() / 1e18
-      // const getTotalSupply = await contract.methods.totalSupply().call() / 1e18
-  
-      // const poolLiquidity = BN(getalanceDaiInBpt)
-      //   .plus(BN(getalanceSfgInBpt).times(sfg.price.handled)).toString()
-  
-      // price.handled = BN(poolLiquidity)
-      //   .dividedBy(getTotalSupply).toString()
-  
-      // return price.handled
-      return 1
+      const { sfg, uu } = store.tokens
+
+      await sfg.getPrice()
+      await uu.getPrice()
+
+      // SFG/UU 的兑换价格*2
+      console.log('price', BN(sfg.price.handled).div(uu.price.handled).times(2).toString())
+      return BN(sfg.price.handled).div(uu.price.handled).times(2).toString()
     },
   },
 
@@ -1790,12 +1828,13 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
     priceUnitAddress: process.env.VUE_APP_DAI_TOKEN, // DAI
     price: valueModel.create(),
     async getPrice () {
-      const { address, priceUnitAddress, price } = this
-      const result = await store.price.getPrice(priceUnitAddress, process.env.VUE_APP_SFG_PRICE_TOKEN)
-      // XXX: ether?
-      price.ether = result
+      const { price } = this
+      const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=s-finance&vs_currencies=usd')
+        .then(response => response.json())
 
-      return result
+      price.ether = BN(res['s-finance'].usd).times(1e18).toString()
+
+      return price.ether
     },
 
     // 总锁仓量

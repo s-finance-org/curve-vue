@@ -521,6 +521,10 @@
               _gauges: gauges.bpt,
               _mortgage: gauges.bpt.mortgages.bpt,
             },
+            sfguu: {
+              _gauges: gauges.sfguu,
+              _mortgage: gauges.sfguu.mortgages.sfguu,
+            },
             usdg5: {
               _gauges: gauges.usdg5,
               _mortgage: gauges.usdg5.mortgages.usdg5,
@@ -569,6 +573,7 @@
                 result.dusd,
               ],
               sfg: [
+                result.sfguu,
                 result.bpt
               ]
             }
@@ -653,6 +658,28 @@
             )
 
             gauges.usd5.getNeedLockDay(gauges.usd5.mortgages.usd5.needLockDay, stakeTimeOfEther)
+
+            // sfguu
+            await lock.SFG.getWeightOfGauge(gauges.sfguu.rewards.sfg.weighting, gauges.sfguu.address)
+
+            gauges.sfguu.getMyApy(
+              gauges.sfguu.getAPY(
+                sfgPrice,
+                sfgDailyYield,
+                gauges.sfguu.getVirtualTotalSupply(), // gauges.usd5.getTotalStaking(gauges.usd5.mortgages.usd5.totalStaking),
+                tokens.sfguu.getPrice(),
+              ),
+              gauges.sfguu.getFactorOf(gauges.sfguu.mortgages.sfguu.factorOf, walletAddress)
+            )
+
+            gauges.sfguu.getNeedLockAmount(
+              gauges.sfguu.mortgages.sfguu.needLockAmount,
+              lock.SFG.getStakingPerLPT(gauges.sfguu.address),
+              gauges.sfguu.getBalanceOf(gauges.sfguu.mortgages.sfguu.userStaking, walletAddress),
+              sfgBalanceOf,
+            )
+
+            gauges.sfguu.getNeedLockDay(gauges.sfguu.mortgages.sfguu.needLockDay, stakeTimeOfEther)
 
             // bpt
             await lock.SFG.getWeightOfGauge(gauges.bpt.rewards.sfg.weighting, gauges.bpt.address)

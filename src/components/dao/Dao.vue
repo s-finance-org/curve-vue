@@ -1862,7 +1862,7 @@
           </div>
         </b-tab>
 
-        <b-tab :title="$t('dao.tokenTitle', [store.gauges.bpt.propagateMark])" class="pt-3">
+        <b-tab :title="$t('dao.tokenTitle', ['SFG'])" class="pt-3">
           <h4 class="mb-2 d-flex flex-wrap align-items-end">
             <span class="mr-3">{{ $t('dao.tokenTitle', [store.gauges.sfguu.propagateMark]) }}</span>
             <small class="mr-auto">{{ $t('dao.describe', [store.gauges.sfguu.mortgagesUnit, store.gauges.sfguu.rewardsUnit.join(' ')]) }}</small>
