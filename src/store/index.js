@@ -322,7 +322,7 @@ store.tokens = {
       //   .dividedBy(getTotalSupply).toString()
   
       // return price.handled
-      return 10000
+      return 1
     },
   },
 
@@ -4869,7 +4869,7 @@ store.gauges = {
         code: 'sfguu',
         name: 'SFG-UU',
         priceDecimal: 4,
-        gainUrl: 'https://?',
+        gainUrl: 'https://app.uniswap.org/#/add/0x6ad66dac965f61e55479213872a2f36908f30b58/0x8a6ACA71A218301c7081d4e96D64292D3B275ce0',
 
         totalStaking: valueModel.create(),
         userStaking: valueModel.create(),
