@@ -5128,9 +5128,9 @@ store.gauges = {
       const { tokens } = store
       const { name, address, contract, mortgages } = this
 
-      const deposit = BN(mortgages.bpt.userStake.revised).times(1e18)
+      const deposit = BN(mortgages.sfguu.userStake.revised).times(1e18)
 
-      // await common.approveAmount(tokens.bpt.contract, deposit, accountAddress, address, infApproval)
+      // await common.approveAmount(tokens.sfguu.contract, deposit, accountAddress, address, infApproval)
 
       var { dismiss } = notifyNotification(`Please confirm depositing into ${name} gauge`)
 
@@ -5148,7 +5148,7 @@ store.gauges = {
     async onRedemption (accountAddress, infApproval) {
       const { name, address, contract, mortgages } = this
 
-      let withdraw = BN(mortgages.bpt.userRedemption.revised).times(1e18)
+      let withdraw = BN(mortgages.sfguu.userRedemption.revised).times(1e18)
       let balance = BN(await contract.methods.balanceOf(accountAddress).call())
 
       console.log('withdraw', withdraw, 'balance', balance)
@@ -5468,7 +5468,7 @@ store.gauges = {
       // TODO: target
       const deposit = BN(mortgages.busd5.userStake.revised).times(1e18)
   
-      // await common.approveAmount(tokens.bpt.contract, deposit, accountAddress, address, infApproval)
+      // await common.approveAmount(tokens.sfguu.contract, deposit, accountAddress, address, infApproval)
   
       var { dismiss } = notifyNotification(`Please confirm depositing into ${name} gauge`)
   
