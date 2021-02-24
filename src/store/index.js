@@ -1824,7 +1824,7 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
     },
 
     // FIXME: change
-    priceUnit: 'DAI',
+    priceUnit: 'USD',
     priceUnitAddress: process.env.VUE_APP_DAI_TOKEN, // DAI
     price: valueModel.create(),
     async getPrice () {
