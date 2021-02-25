@@ -1812,7 +1812,6 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
     name: 'SFG',
 
     miningRate: 0.001,
-
     address: process.env.VUE_APP_SFG_TOKEN,
     abi: abiSFG,
     __contract: null,
@@ -1822,17 +1821,26 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
       return __contract ||
         (this.__contract = new web3.eth.Contract(abi, address))
     },
+        /**
+     *  @type {number}
+     */
+    get precision () {
+      const { decimal } = this
 
+      return Math.pow(10, decimal)
+    },
+    decimal: 18,
     // FIXME: change
-    priceUnit: 'USD',
+    priceUnit: 'UU',
     priceUnitAddress: process.env.VUE_APP_DAI_TOKEN, // DAI
     price: valueModel.create(),
     async getPrice () {
       const { price } = this
-      const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=s-finance&vs_currencies=usd')
-        .then(response => response.json())
 
-      price.ether = BN(res['s-finance'].usd).times(1e18).toString()
+      let amountsTether = await uniswapV2Router2.getPrice(this, store.tokens.uu)
+
+      // FIXME: try
+      price.ether = BN(amountsTether).times(1e18).toString()
 
       return price.ether
     },
