@@ -240,5 +240,8 @@ export default {
     // platformAddsDividendsToDistributedToday: '平台今日新增待分红',
   },
   temp: '* 如果要全部取款为一个币种，请点选该币种',
-  tempBasisCashV2: '在 Basis Cash 迁移至V2之后，我们将添加初始流动性，并开启双重挖矿奖励'
+  tempBasisCashV2: '在 Basis Cash 迁移至V2之后，我们将添加初始流动性，并开启双重挖矿奖励',
+  chains: {
+    coming: '即将支持 {0}'
+  }
 }

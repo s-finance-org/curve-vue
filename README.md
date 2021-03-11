@@ -1,8 +1,5 @@
 # S.finance
 
-<p align="center">
-</p>
-
 # S.finance FAQ
 
 ## What is S.finance?

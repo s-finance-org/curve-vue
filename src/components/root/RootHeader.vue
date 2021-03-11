@@ -6,8 +6,16 @@
     </div>
     <b-container>
       <b-navbar class="no-gutters align-items-center p-0">
-        <div class="col py-2 d-flex align-items-start">
-          <img class="logo-sm" :src="publicPath + 'res/icons/logo/logo_sm.svg'">
+        <div class="col py-2 d-flex align-items-center">
+          <img class="logo-sm mr-2" :src="publicPath + 'res/icons/logo/logo_sm.svg'">
+          <div class="tip">
+            <img :src="publicPath + 'res/icons/logo/ethereum.png'">
+            Ethereum
+          </div>
+          <div class="tip okexc">
+            <img :src="publicPath + 'res/icons/logo/okex_chain.png'">
+            {{ $t('chains.coming', ['OKEXChain']) }}
+          </div>
         </div>
         <div class="d-none d-md-flex align-items-center">
           <b-navbar-nav>
@@ -148,16 +156,33 @@
 </script>
 
 <style scoped>
-  .statement-banner {
-    background-color: #1BA57B;
-    color: rgba(255,255,255,0.85);
-    text-align: center;
-    line-height: 20px;
-    font-size: 12px;
-  }
-  .statement-banner a {
-    color: #fff;
-    padding-right: 8px;
-    text-decoration: underline;
-  }
+.statement-banner {
+  background-color: #1BA57B;
+  color: rgba(255,255,255,0.85);
+  text-align: center;
+  line-height: 20px;
+  font-size: 12px;
+}
+.statement-banner a {
+  color: #fff;
+  padding-right: 8px;
+  text-decoration: underline;
+}
+.tip {
+  padding: 6px 8px;
+  background: #E0E4E6;
+  border-radius: 12px;
+  margin-left: 8px;
+  font-size: 12px;
+  line-height: 12px;
+  display: flex;
+}
+.tip img {
+  height: 12px;
+  margin-right: 4px;
+}
+.tip.okexc {
+  background: #205FEC;
+  color: rgba(255, 255, 255, 0.85);
+}
 </style>

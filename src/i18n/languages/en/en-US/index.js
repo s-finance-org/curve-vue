@@ -240,5 +240,8 @@ export default {
     // platformAddsDividendsToDistributedToday: '平台今日新增待分红',
   },
   temp: '* If you only want to withdraw a single currency, you can modify the number of other currencies to 0',
-  tempBasisCashV2: 'We will start double mining rewards and adding basic liquidity after Basis Cash migration of V2'
+  tempBasisCashV2: 'We will start double mining rewards and adding basic liquidity after Basis Cash migration of V2',
+  chains: {
+    coming: 'Will support {0} soon'
+  }
 }
