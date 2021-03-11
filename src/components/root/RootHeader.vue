@@ -17,7 +17,7 @@
             {{ $t('chains.coming', ['OKEXChain']) }}
           </div>
         </div>
-        <div class="d-none d-md-flex align-items-center">
+        <div class="d-none d-lg-flex align-items-center">
           <b-navbar-nav>
             <b-nav-item v-for="item in headerNav.navs"
               :key="'nav_'+item.name"
@@ -40,7 +40,7 @@
           </b-navbar-nav>
           <sel-language class="ml-2" />
         </div>
-        <img class="d-md-none icon-w-20" v-b-toggle.sidebar-navbar :src="publicPath + 'res/icons/base/menu.svg'">
+        <img class="d-lg-none icon-w-20" v-b-toggle.sidebar-navbar :src="publicPath + 'res/icons/base/menu.svg'">
       </b-navbar>
 
       <b-sidebar id="sidebar-navbar" sidebar-class="w-240" backdrop shadow right>
