@@ -4,12 +4,12 @@
     <div class="total-bg">
       <b-container class="d-flex py-4 px-md-5">
         <b-navbar-nav class="navbar-tabs flex-row flex-wrap px-md-5">
-          <b-nav-item :to="{ name: 'Liquidity', params: { pool: 'basu' } }">basis</b-nav-item>
+          <b-nav-item :to="{ name: 'Liquidity', params: { pool: 'usd5' } }">5pool</b-nav-item>
           <b-nav-item :to="{ name: 'Liquidity', params: { pool: 'busd5' } }">binance</b-nav-item>
           <b-nav-item :to="{ name: 'Liquidity', params: { pool: 'usdg5' } }">gate</b-nav-item>
-          <b-nav-item :to="{ name: 'Liquidity', params: { pool: 'usd5' } }">5pool</b-nav-item>
           <b-nav-item :to="{ name: 'Liquidity', params: { pool: 'dusd' } }">dForce</b-nav-item>
           <b-nav-item :to="{ name: 'Liquidity', params: { pool: 'dfi' } }">dfi</b-nav-item>
+          <b-nav-item :to="{ name: 'Liquidity', params: { pool: 'basu' } }">basis</b-nav-item>
           <b-nav-item :to="{ name: 'Liquidity', params: { pool: 'qusd5' } }">qian</b-nav-item>
           <b-nav-item :to="{ name: 'Liquidity', params: { pool: 'susdv2' } }">sUSD</b-nav-item>
         </b-navbar-nav>
