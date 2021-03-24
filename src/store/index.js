@@ -1811,7 +1811,6 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
   sfg: {
     name: 'SFG',
 
-    miningRate: 0.0001,
     address: process.env.VUE_APP_SFG_TOKEN,
     abi: abiSFG,
     __contract: null,
@@ -1874,9 +1873,9 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
     // 每日预计发行量
     dailyYield: ModelValueEther.create({ contDecimal: 2 }),
     async getDailyYield () {
-      const { contract, dailyYield, miningRate } = this
-
-      // TEMP: 
+      const { contract, dailyYield } = this
+      const miningRate = 86400 / await store.gauges.sfguu.contract.methods.span().call()
+console.log('miningRate', miningRate)
       return dailyYield.ether = await contract.methods.balanceOf(process.env.VUE_APP_PS_MINTER).call() * miningRate
     },
 
