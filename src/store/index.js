@@ -1811,7 +1811,7 @@ console.log('allowance', allowance.toString(), allowance.toString() / 1e18, '->'
   sfg: {
     name: 'SFG',
 
-    miningRate: 0.001,
+    miningRate: 0.0001,
     address: process.env.VUE_APP_SFG_TOKEN,
     abi: abiSFG,
     __contract: null,
