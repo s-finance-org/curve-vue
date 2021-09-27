@@ -110,6 +110,8 @@ export async function getState() {
 		[state.minter._address, state.minter.methods.minted(contract.default_account, gauge).encodeABI()],
   ])
 
+  return false
+
 	let aggcalls1
 	try {
 		aggcalls1 = await contract.multicall.methods.aggregate(calls1).call()
@@ -182,7 +184,8 @@ export async function getState() {
 	//console.log(decodedGauges, "THE GAUGES")
 
   // 
-	let pools = ['compound','usdt','iearn','busd','susdv2','pax','ren','sbtc', 'dfi', 'dusd', 'basu', 'usd5', 'qusd5', 'usdg5']
+	// let pools = ['compound','usdt','iearn','busd','susdv2','pax','ren','sbtc', 'dfi', 'dusd', 'basu', 'usd5', 'qusd5', 'usdg5']
+	let pools = ['susdv2']
 
 	let prices = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,curve-dao-token&vs_currencies=usd')
 

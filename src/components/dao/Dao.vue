@@ -2734,12 +2734,12 @@
             })
             piedata = piedata.filter(pool => pool.y > 0)
 
-            let gaugeSum = Object.values(gaugeStore.state.pools).reduce((a,b) => +a + +b.gauge_relative_weight, 0)
-            let piegauges = Object.values(gaugeStore.state.pools).map(v => ({ name: v.name, y: v.gauge_relative_weight / gaugeSum}))
+            // let gaugeSum = Object.values(gaugeStore.state.pools).reduce((a,b) => +a + +b.gauge_relative_weight, 0)
+            // let piegauges = Object.values(gaugeStore.state.pools).map(v => ({ name: v.name, y: v.gauge_relative_weight / gaugeSum}))
 
-            let highest = piegauges.map(data=>data.y).indexOf(Math.max(...piegauges.map(data => data.y)))
-            piegauges[highest].sliced = true;
-            piegauges[highest].selected = true;
+            // let highest = piegauges.map(data=>data.y).indexOf(Math.max(...piegauges.map(data => data.y)))
+            // piegauges[highest].sliced = true;
+            // piegauges[highest].selected = true;
 
             const { crv, snx, sfg } = this.currentPool.tokens
             const { lock, gauges } = store
@@ -2932,7 +2932,14 @@
 
             // sfguu
             await lock.SFG.getWeightOfGauge(gauges.sfguu.rewards.sfg.weighting, gauges.sfguu.address)
+console.log(
+  await lock.SFG.getWeightOfGauge(gauges.sfguu.rewards.sfg.weighting, gauges.sfguu.address),
+  sfgPrice,
+  sfgDailyYield,
+  store.gauges.sfguu.getVirtualTotalSupply(),
+  store.tokens.sfguu.getPrice(),
 
+)
             sfguu.getTotalStaking(sfguu.mortgages.sfguu.totalStaking)
             store.gauges.sfguu.getMaxApy(
               store.gauges.sfguu.getAPY(
